@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monodoc>
+  <node label="Xamarin Components" name="components" parent="libraries" />
+  <node label="Advanced Color Picker" name="advancedcolorpicker" parent="components" />
+  <source provider="ecma" basefile="advancedcolorpicker" path="advancedcolorpicker" />
+</monodoc>

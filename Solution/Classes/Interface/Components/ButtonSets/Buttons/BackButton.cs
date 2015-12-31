@@ -1,0 +1,34 @@
+using System;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using CoreGraphics;
+
+using Foundation;
+using UIKit;
+
+using CoreAnimation;
+using CoreText;
+
+namespace Solution
+{
+	public class BackButton : Button
+	{
+		public BackButton ()
+		{
+			uiButton = new UIButton (UIButtonType.Custom);
+
+			UIImage uiImage = UIImage.FromFile ("./boardscreen/buttons/back2.png");
+			uiButton.SetImage (uiImage, UIControlState.Normal);
+
+			uiButton.Frame = new CGRect (0,0, ButtonSize, ButtonSize);
+			uiButton.Center = new CGPoint ((BoardInterface.ScreenWidth - ButtonSize) / 8, BoardInterface.ScreenHeight - ButtonSize / 2);
+
+			uiButton.TouchUpInside += (object sender, EventArgs e) => {
+
+				AppDelegate.NavigationController.PopViewController (true);
+			};
+
+		}
+	}
+}
+
