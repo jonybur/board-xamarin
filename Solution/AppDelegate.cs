@@ -6,6 +6,7 @@ using Foundation;
 using UIKit;
 using Facebook.CoreKit;
 
+using Google.Maps;
 using System.Net.Http;
 
 namespace Solution
@@ -36,8 +37,13 @@ namespace Solution
 		//
 		// You have 17 seconds to return from this method, or iOS will terminate your application.
 		//
+		const string MapsApiKey = "AIzaSyAyjPtEvhmhHHa5_aPiZPiPN3GUtIXxO6I";
+
+
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
+			MapServices.ProvideAPIKey (MapsApiKey);
+
 			ScreenWidth = (float)UIScreen.MainScreen.Bounds.Width;
 			ScreenHeight = (float)UIScreen.MainScreen.Bounds.Height;
 

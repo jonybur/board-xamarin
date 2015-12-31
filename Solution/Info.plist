@@ -12,6 +12,8 @@
 	<true/>
 	<key>MinimumOSVersion</key>
 	<string>9.1</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string></string>
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>1</integer>

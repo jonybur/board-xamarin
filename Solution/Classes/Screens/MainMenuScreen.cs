@@ -16,6 +16,9 @@ using System.Collections.Generic;
 using Facebook.CoreKit;
 using Facebook.LoginKit;
 
+using Geolocator.Plugin;
+using Google.Maps;
+
 namespace Solution
 {
 	public partial class MainMenuScreen : UIViewController
@@ -23,11 +26,13 @@ namespace Solution
 		UIImageView banner;
 		UIImageView sidemenu;
 		UIImageView map_button;
-		UIImageView map;
+		//UIImageView map;
 		bool sideMenuIsUp;
 		ProfilePictureView profileView;
 		UIScrollView content;
-		
+
+		MapView map;
+
 		public MainMenuScreen () : base ("Board", null){
 			
 		}
@@ -47,14 +52,14 @@ namespace Solution
 			InitializeInterface ();
 		}
 
-		private void InitializeInterface()
+		private async void InitializeInterface()
 		{
-			// loads center button
 			LoadContent ();
-			LoadMap ();
 			LoadBanner ();
 			LoadMapButton ();
 			LoadSideMenu ();
+			await LoadMap ();
+
 		}
 
 		private void LoadContent()
@@ -151,20 +156,30 @@ namespace Solution
 				}
 			});
 
-
-
 			banner.UserInteractionEnabled = true;
 			banner.AddGestureRecognizer (tap);
 			banner.Alpha = .95f;
 			View.AddSubview (banner);
 		}
 
-		private void LoadMap()
+		private async System.Threading.Tasks.Task LoadMap()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./mainmenu/mapscreen3.jpg");
+			Console.WriteLine ("started");
 
-			map = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-			map.Image = bannerImage;
+			var locator = CrossGeolocator.Current;
+			locator.DesiredAccuracy = 50;
+			var position = await locator.GetPositionAsync (timeoutMilliseconds: 10000);
+
+			Console.WriteLine ("position is " + position.Latitude.ToString() + " long " + position.Longitude.ToString() );
+
+			// Create a GMSCameraPosition that tells the map to display the
+			// coordinate 37.79,-122.40 at zoom level 6.
+			var camera = CameraPosition.FromCamera (latitude: position.Latitude, 
+				longitude: position.Longitude, 
+				zoom: 6);
+			map = MapView.FromCamera (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight), camera);
+			map.MyLocationEnabled = true;
+			map.Alpha = 0f;
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (sideMenuIsUp)
@@ -173,7 +188,9 @@ namespace Solution
 
 			map.UserInteractionEnabled = true;
 			map.AddGestureRecognizer (tap);
-			map.Alpha = 0f;
+
+			Console.WriteLine ("finished");
+
 			View.AddSubview (map);
 		}
 
