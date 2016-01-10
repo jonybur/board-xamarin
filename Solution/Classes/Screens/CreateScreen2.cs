@@ -59,9 +59,14 @@ namespace Solution
 
 			UIImageView color1 = CreateColorSquare (new CGSize (316, 40), 
 				                     new CGPoint (AppDelegate.ScreenWidth / 2, 350),
-									UIColor.Blue.CGColor);
+				UIColor.FromRGB(195,27,23).CGColor);
 
 			View.AddSubviews (color1);
+
+			UIImageView color2 = CreateColorSquare (new CGSize (316, 40), 
+				new CGPoint (AppDelegate.ScreenWidth / 2, 461),
+				UIColor.FromRGB(0,167,73).CGColor);
+			View.AddSubviews (color2);
 		}
 
 		private UIImageView CreateColorSquare(CGSize size, CGPoint center, CGColor startcolor)

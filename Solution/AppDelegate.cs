@@ -21,7 +21,6 @@ namespace Solution
 		// class-level declarations
 		UIWindow window;
 		public static UINavigationController NavigationController;
-		public static UIViewController LoginController;
 
 		public static CloudController CloudController;
 
@@ -44,35 +43,42 @@ namespace Solution
 		{
 			MapServices.ProvideAPIKey (MapsApiKey);
 
-			ScreenWidth = (float)UIScreen.MainScreen.Bounds.Width;
-			ScreenHeight = (float)UIScreen.MainScreen.Bounds.Height;
-
-			//CloudController = CloudController.DefaultService;
-
-			// create a new window instance based on the screen size
-			window = new UIWindow (UIScreen.MainScreen.Bounds);
-
-			LoginController = new LoginScreen ();
-			NavigationController = new UINavigationController();
-
-			window.RootViewController = LoginController;
-
-			NavigationController.PushViewController (LoginController, false);
-
-			window.AddSubview (NavigationController.View);
-
-			window.MakeKeyAndVisible ();
-
 			// FACEBOOK
 
 			Profile.EnableUpdatesOnAccessTokenChange (true);
 			Settings.AppID = FacebookAppId;
 			Settings.DisplayName = FacebookDisplayName;
-
-			// If you have defined a root view controller, set it here:
-			// window.RootViewController = myViewController;
-
 			ApplicationDelegate.SharedInstance.FinishedLaunching (app, options);
+
+			ScreenWidth = (float)UIScreen.MainScreen.Bounds.Width;
+			ScreenHeight = (float)UIScreen.MainScreen.Bounds.Height;
+
+
+			Console.WriteLine (AccessToken.CurrentAccessToken == null);
+
+			// CloudController = CloudController.DefaultService;
+
+			// create a new window instance based on the screen size
+			window = new UIWindow (UIScreen.MainScreen.Bounds);
+
+			UIViewController screen;
+
+			if (Profile.CurrentProfile != null) {
+				screen = new MainMenuScreen ();
+			} else {
+				screen = new LoginScreen ();	
+			}
+
+
+			NavigationController = new UINavigationController();
+
+			window.RootViewController = screen;
+
+			NavigationController.PushViewController (screen, false);
+
+			window.AddSubview (NavigationController.View);
+
+			window.MakeKeyAndVisible ();
 
 			return true;
 		}

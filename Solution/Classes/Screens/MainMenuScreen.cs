@@ -55,11 +55,10 @@ namespace Solution
 		private async void InitializeInterface()
 		{
 			LoadContent ();
+			LoadMap ();
 			LoadBanner ();
 			LoadMapButton ();
 			LoadSideMenu ();
-			await LoadMap ();
-
 		}
 
 		private void LoadContent()
@@ -162,7 +161,8 @@ namespace Solution
 			View.AddSubview (banner);
 		}
 
-		private async System.Threading.Tasks.Task LoadMap()
+
+		private async System.Threading.Tasks.Task LoadLocation()
 		{
 			Console.WriteLine ("started");
 
@@ -176,7 +176,17 @@ namespace Solution
 			// coordinate 37.79,-122.40 at zoom level 6.
 			var camera = CameraPosition.FromCamera (latitude: position.Latitude, 
 				longitude: position.Longitude, 
-				zoom: 6);
+				zoom: 12);
+
+			map.Camera = camera;
+		}
+
+		private async void LoadMap()
+		{
+			var camera = CameraPosition.FromCamera (latitude: 40, 
+				longitude: -100, 
+				zoom: 1);
+			
 			map = MapView.FromCamera (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight), camera);
 			map.MyLocationEnabled = true;
 			map.Alpha = 0f;
@@ -189,9 +199,9 @@ namespace Solution
 			map.UserInteractionEnabled = true;
 			map.AddGestureRecognizer (tap);
 
-			Console.WriteLine ("finished");
-
 			View.AddSubview (map);
+
+			await LoadLocation ();
 		}
 
 		private void LoadMapButton()

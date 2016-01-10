@@ -31,9 +31,7 @@ namespace Solution
 		AVPlayerItem _playerItem;
 		Thread looper;
 
-
 		bool keepLooping = true;
-
 
 		string [] extendedPermissions = new [] { "user_about_me", "read_stream"};
 		string [] publishPermissions = new [] { "publish_actions" };
@@ -54,18 +52,12 @@ namespace Solution
 			base.ViewDidLoad ();
 			this.AutomaticallyAdjustsScrollViewInsets = false;
 
-			if (Profile.CurrentProfile != null) {
-				UIViewController nextScreen = new MainMenuScreen ();
-				NavigationController.PushViewController (nextScreen, false);
-			} else {
-				NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
+			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
+			NavigationController.NavigationBarHidden = true;
 
-				NavigationController.NavigationBarHidden = true;
+			InitializeInterface ();
 
-				InitializeInterface ();
-			}
 		}
-
 
 		private void LoadFBButton()
 		{
@@ -82,9 +74,7 @@ namespace Solution
 				}
 
 				UIViewController nextScreen = new MainMenuScreen();
-
 				NavigationController.PushViewController(nextScreen, true);
-
 			};
 
 			// Handle actions once the user is logged out
@@ -129,7 +119,6 @@ namespace Solution
 		private void LoadBackground()
 		{
 			this.AutomaticallyAdjustsScrollViewInsets = false;
-
 
 			_asset = AVAsset.FromUrl (NSUrl.FromFilename ("./timelapse.mp4"));
 			_playerItem = new AVPlayerItem (_asset);
