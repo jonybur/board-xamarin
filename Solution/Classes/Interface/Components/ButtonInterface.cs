@@ -31,6 +31,7 @@ namespace Solution
 
 
 		// TODO: check if there's a way to properly tint the ButtonBar
+		/*
 		private UIImageView CreateOrangeBox(CGRect frame)
 		{
 			UIGraphics.BeginImageContextWithOptions (new CGSize(BoardInterface.ScreenWidth, BoardInterface.ScreenHeight), false, 0);
@@ -47,21 +48,21 @@ namespace Solution
 			UIImageView uiv = new UIImageView (orange);
 			uiv.Alpha = .9f;
 			return uiv;
-		}
+		}*/
 
 		public UIView[] GetAllViews()
 		{
-			int cantViews = 2 + ActionsButtonSet.CantButtons + ConfirmationButtonSet.CantButtons;
+			int cantViews = 1 + ActionsButtonSet.CantButtons + ConfirmationButtonSet.CantButtons;
 			UIView[] views = new UIView[cantViews];
 			CGRect frame = new CGRect (0, BoardInterface.ScreenHeight - Button.ButtonSize, BoardInterface.ScreenWidth, Button.ButtonSize);
-			views [0] = CreateOrangeBox (frame);
-			views [1] = actionsButtonSet.arrayButtons [0].uiButton;
-			views [2] = actionsButtonSet.arrayButtons [1].uiButton;
-			views [3] = actionsButtonSet.arrayButtons [2].uiButton;
-			views [4] = actionsButtonSet.arrayButtons [3].uiButton;
-			views [5] = confirmationButtonSet.arrayButtons [0].uiButton;
-			views [6] = confirmationButtonSet.arrayButtons [1].uiButton;
-			views [7] = navigationButton.uiButton;
+			//views [0] = CreateOrangeBox (frame);
+			views [0] = actionsButtonSet.arrayButtons [0].uiButton;
+			views [1] = actionsButtonSet.arrayButtons [1].uiButton;
+			views [2] = actionsButtonSet.arrayButtons [2].uiButton;
+			views [3] = actionsButtonSet.arrayButtons [3].uiButton;
+			views [4] = confirmationButtonSet.arrayButtons [0].uiButton;
+			views [5] = confirmationButtonSet.arrayButtons [1].uiButton;
+			views [6] = navigationButton.uiButton;
 			return views;
 		}
 

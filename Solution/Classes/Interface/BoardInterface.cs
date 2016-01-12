@@ -23,7 +23,8 @@ namespace Solution
 
 		private Gallery gallery;
 
-		public static UIColor InterfaceColor = UIColor.FromRGB(196,25,23);
+		public static UIImageView CenterLogo;
+		Board board;
 
 		private NSObject orientationObserver;
 		public static UIScrollView zoomingScrollView;
@@ -41,7 +42,9 @@ namespace Solution
 		public static List<Picture> ListPictures;
 		public static List<TextBox> ListTextboxes;
 
-		public BoardInterface () : base ("Board", null){}
+		public BoardInterface (Board _board) : base ("Board", null){
+			board = _board;
+		}
 
 		public override void DidReceiveMemoryWarning ()
 		{
@@ -87,6 +90,27 @@ namespace Solution
 			View.AddSubview (tbc.GetUIView ());*/
 
 		}
+
+
+		private static UIImageView CreateColorSquare(CGSize size, CGPoint center, CGColor startcolor)
+		{
+			CGRect frame = new CGRect (0, 0, size.Width, size.Height);
+
+			CGRect frame2 = frame;
+
+			UIGraphics.BeginImageContext (new CGSize(frame.Size.Width, frame.Size.Height));
+			CGContext context = UIGraphics.GetCurrentContext ();
+
+			context.SetFillColor(startcolor);
+			context.FillRect(frame);
+
+			UIImage orange = UIGraphics.GetImageFromCurrentImageContext ();
+			UIImageView uiv = new UIImageView (orange);
+			uiv.Center = center;
+
+			return uiv;
+		}
+
 
 		private void GetFromLocalDB()
 		{
@@ -160,7 +184,7 @@ namespace Solution
 
 		private void InitializeInterface()
 		{
-			this.View.BackgroundColor = InterfaceColor;
+			this.View.BackgroundColor = board.MainColor;
 			//this.View.BackgroundColor = UIColor.FromRGB(189,34,58);
 
 			// generate the scrollview and the zoomingscrollview
@@ -289,8 +313,8 @@ namespace Solution
 		}
 
 		private void LoadBackground()
-		{
-			UIImage pattern = UIImage.FromFile ("./boardscreen/backgrounds/mangos.jpg");
+		{	
+			UIImage pattern = UIImage.FromFile ("./boardscreen/backgrounds/branco.jpg");
 
 			UIImageView boardView = new UIImageView (pattern);
 			boardView.Frame = new CGRect (0, 0, ScrollViewWidthSize, ScreenHeight);
@@ -312,6 +336,65 @@ namespace Solution
 			};
 
 			zoomingScrollView.RemoveGestureRecognizer (zoomingScrollView.PinchGestureRecognizer);
+
+			UIImageView secondary = CreateColorSquare(new CGSize(ScrollViewWidthSize,50), new CGPoint(ScrollViewWidthSize/2,550), board.SecondaryColor.CGColor);
+			scrollView.AddSubview (secondary);
+
+			UIImageView primary = CreateColorSquare(new CGSize(ScrollViewWidthSize,120), new CGPoint(ScrollViewWidthSize/2,620), board.MainColor.CGColor);
+			scrollView.AddSubview (primary);
+
+			UIImage logo = board.Image;
+			UIImageView mainLogo = LoadMainLogo (logo, new CGPoint(ScrollViewWidthSize/2,-20));
+			scrollView.AddSubview (mainLogo);
+
+			UIImage contentdemo = UIImage.FromFile ("./boardscreen/backgrounds/contentdemo.png");
+			UIImageView contentDemo = new UIImageView (contentdemo);
+			contentDemo.Frame = new CGRect (0, 0, ScrollViewWidthSize, ScreenHeight);
+			scrollView.AddSubview (contentDemo);
+		}
+
+		private UIImageView LoadMainLogo(UIImage image, CGPoint ContentOffset)
+		{
+
+			// the image is uploadable
+			// so now launch image preview to choose position in the board
+			float imgx, imgy, imgw, imgh;
+			float autosize = AppDelegate.ScreenWidth;
+
+			float scale = (float)(image.Size.Width/image.Size.Height);
+
+			if (scale >= 1) {
+				imgw = autosize * scale;
+				imgh = autosize;
+
+				if (imgw > BoardInterface.ScreenWidth) {
+					scale = (float)(image.Size.Height/image.Size.Width);
+					imgw = BoardInterface.ScreenWidth;
+					imgh = imgw * scale;
+				}
+			} else {
+				scale = (float)(image.Size.Height / image.Size.Width);
+				imgw = autosize;
+				imgh = autosize * scale;
+			}
+
+
+			imgx = (float)(ContentOffset.X - imgw / 2);
+			imgy = (float)(ContentOffset.Y + BoardInterface.ScreenHeight / 2 - imgh / 2 - Button.ButtonSize / 2);
+
+			// launches the image preview
+
+			CGRect frame = new CGRect (imgx, imgy, imgw, imgh);
+			UIImageView mainLogo = new UIImageView(frame);
+
+			UIImageView uiImageView =  new UIImageView (new CGRect(0,0,frame.Width, frame.Height));
+
+			UIImage thumbImg = image.Scale (new CGSize (imgw, imgh));
+			uiImageView.Image = thumbImg;
+
+			mainLogo.AddSubviews(uiImageView);
+
+			return mainLogo;
 		}
 	}
 }

@@ -61,32 +61,93 @@ namespace Solution
 			LoadSideMenu ();
 		}
 
+
+		private List<Board> GenerateBoardList()
+		{
+			List<Board> boardList = new List<Board> ();
+			boardList.Add(new Board ("./logos/mangos.png", UIColor.FromRGB (195, 27, 23), UIColor.FromRGB (0, 167, 73), "South Beach"));
+			boardList.Add(new Board ("./logos/clevelander.png", UIColor.FromRGB (0, 158, 217), UIColor.FromRGB (159, 208, 97), "South Beach"));	
+			boardList.Add(new Board ("./logos/mansion.jpg", UIColor.FromRGB (35, 32, 35), UIColor.FromRGB (35, 32, 35), "South Beach"));
+			boardList.Add(new Board ("./logos/liv.jpg", UIColor.FromRGB (0, 0, 0), UIColor.FromRGB (0, 0, 0), "South Beach"));
+			return boardList;
+		}
+
+
+		private UIImageView GenerateBoardThumb(Board board, CGPoint ContentOffset)
+		{
+
+			// the image is uploadable
+			// so now launch image preview to choose position in the board
+			float imgx, imgy, imgw, imgh;
+			float autosize = AppDelegate.ScreenWidth / 5;
+
+			float scale = (float)(board.Image.Size.Height/board.Image.Size.Width);
+
+			imgw = autosize;
+			imgh = autosize * scale;
+
+			imgx = (float)(ContentOffset.X - imgw / 2);
+			imgy = (float)(ContentOffset.Y + BoardInterface.ScreenHeight / 2 - imgh / 2 - Button.ButtonSize / 2);
+
+			// launches the image preview
+
+			CGRect frame = new CGRect (imgx, imgy, imgw, imgh);
+
+			Console.WriteLine (imgw + " " +imgh);
+			UIImageView boardIcon = new UIImageView(frame);
+
+			UIImageView uiImageView =  new UIImageView (new CGRect(0,0,frame.Width, frame.Height));
+
+			UIImage thumbImg = board.Image.Scale (new CGSize (imgw, imgh));
+			uiImageView.Image = thumbImg;
+
+			boardIcon.AddSubviews(uiImageView);
+
+
+			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+				BoardInterface boardInterface = new BoardInterface(board);
+				NavigationController.PushViewController(boardInterface, true);
+			});
+
+			boardIcon.AddGestureRecognizer (tap);
+			boardIcon.UserInteractionEnabled = true;
+
+
+			return boardIcon;
+		}
+
+		int i = 0;
 		private void LoadContent()
 		{
-			UIImage contentImage = UIImage.FromFile ("./mainmenu/scroll.png");
-			UIImageView contentImageView = new UIImageView (new CGRect(0, 0, contentImage.Size.Width / 2, contentImage.Size.Height / 2));
-			contentImageView.Image = contentImage;
+			content = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			List<Board> boardList = GenerateBoardList ();
 
-			content = new UIScrollView(new CGRect(0, 0, contentImageView.Frame.Width, contentImageView.Frame.Height));
-			content.AddSubview (contentImageView);
+			int i = 1;
+			int n = 0;
+			foreach (Board b in boardList) {
+				UIImageView igv = GenerateBoardThumb (b, new CGPoint (((AppDelegate.ScreenWidth/ 4) + 18 ) * i - 40, 235 + 110 * n));
+				i++;
+				if (i >= 4) {
+					i = 1;
+					n++;
+				}
+				content.AddSubview (igv);
+			}
+
 			content.ScrollEnabled = true;
 			content.UserInteractionEnabled = true;
 
-			float contentHeight = (float)(contentImage.Size.Height - (AppDelegate.ScreenHeight));
+
+			//float contentHeight = (float)(contentImage.Size.Height - (AppDelegate.ScreenHeight));
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (sideMenuIsUp)
 				{sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return;}
-
-				float yPosition = (float)tg.LocationInView(content).Y;
-
-				BoardInterface boardInterface = new BoardInterface();
-				NavigationController.PushViewController(boardInterface, true);
 			});
 
 			content.AddGestureRecognizer (tap);
 			content.UserInteractionEnabled = true;
-			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, contentHeight);
+			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
 
 			View.AddSubview (content);
 		}
@@ -185,7 +246,7 @@ namespace Solution
 		{
 			var camera = CameraPosition.FromCamera (latitude: 40, 
 				longitude: -100, 
-				zoom: 1);
+				zoom: -2);
 			
 			map = MapView.FromCamera (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight), camera);
 			map.MyLocationEnabled = true;

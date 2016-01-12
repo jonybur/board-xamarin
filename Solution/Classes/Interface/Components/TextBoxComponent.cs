@@ -83,7 +83,7 @@ namespace Solution
 			uiView.UserInteractionEnabled = true;
 			
 			User user = await AppDelegate.CloudController.LookupUser (textbox.UserId);
-			uiView.BackgroundColor = BoardInterface.InterfaceColor;
+
 
 			List<UILabel> labels = CreateLabels (user, uiView.Frame);
 
