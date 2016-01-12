@@ -19,9 +19,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>CFBundleIconFiles</key>
 	<array>
@@ -95,9 +92,9 @@
 		<string>fbshareextension</string>
 	</array>
 	<key>CFBundleShortVersionString</key>
-	<string>0.1.3</string>
+	<string>0.1.4</string>
 	<key>CFBundleVersion</key>
-	<string>0.1.3</string>
+	<string>0.1.4</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.boardinc.Board</string>
 </dict>
