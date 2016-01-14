@@ -70,39 +70,53 @@ namespace Solution
 			boardList.Add(new Board ("./logos/mansion.jpg", UIColor.FromRGB (35, 32, 35), UIColor.FromRGB (35, 32, 35), "South Beach"));
 			boardList.Add(new Board ("./logos/liv.jpg", UIColor.FromRGB (0, 0, 0), UIColor.FromRGB (0, 0, 0), "South Beach"));
 			return boardList;
-		}
+		}  
 
 
 		private UIImageView GenerateBoardThumb(Board board, CGPoint ContentOffset)
 		{
-
-			// the image is uploadable
-			// so now launch image preview to choose position in the board
 			float imgx, imgy, imgw, imgh;
-			float autosize = AppDelegate.ScreenWidth / 5;
 
+			float autosize = AppDelegate.ScreenWidth / 4;
 			float scale = (float)(board.Image.Size.Height/board.Image.Size.Width);
 
-			imgw = autosize;
-			imgh = autosize * scale;
+			if (scale > 1) {
+				scale = (float)(board.Image.Size.Width/board.Image.Size.Height);
+				imgh = autosize;
+				imgw = autosize * scale;
+			}
+			else {
+				imgw = autosize;
+				imgh = autosize * scale;	
+			}
 
-			imgx = (float)(ContentOffset.X - imgw / 2);
-			imgy = (float)(ContentOffset.Y + BoardInterface.ScreenHeight / 2 - imgh / 2 - Button.ButtonSize / 2);
+			imgx = (float)(ContentOffset.X);
+
+			if (imgx < AppDelegate.ScreenWidth / 2) {
+				imgx -= autosize / 4;
+			} else if (AppDelegate.ScreenWidth / 2 < imgx) {
+				imgx += autosize / 4;
+			}
+
+			imgy = (float)(ContentOffset.Y + BoardInterface.ScreenHeight / 2);
 
 			// launches the image preview
+			UIImageView boardIcon = new UIImageView (new CGRect (0, 0, autosize, autosize));
+			boardIcon.Center = new CGPoint (imgx, imgy);
+			//boardIcon.BackgroundColor = UIColor.Black;
 
-			CGRect frame = new CGRect (imgx, imgy, imgw, imgh);
+			UIImageView boardImage = new UIImageView(new CGRect (0, 0, imgw* .8f, imgh* .8f));
+			boardImage.Center = new CGPoint (autosize/2, autosize/2);
+			UIImage img = CommonUtils.ResizeImageView (board.Image, boardIcon.Frame.Size);
+			boardImage.Image = img;
 
-			Console.WriteLine (imgw + " " +imgh);
-			UIImageView boardIcon = new UIImageView(frame);
+			boardIcon.AddSubview (boardImage);
 
-			UIImageView uiImageView =  new UIImageView (new CGRect(0,0,frame.Width, frame.Height));
+			UIImageView circle = new UIImageView (new CGRect(0,0,autosize,autosize));
+			circle.Center = new CGPoint(autosize/2, autosize/2);
+			circle.Image = circleImage;
 
-			UIImage thumbImg = board.Image.Scale (new CGSize (imgw, imgh));
-			uiImageView.Image = thumbImg;
-
-			boardIcon.AddSubviews(uiImageView);
-
+			boardIcon.AddSubview (circle);
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				BoardInterface boardInterface = new BoardInterface(board);
@@ -112,20 +126,20 @@ namespace Solution
 			boardIcon.AddGestureRecognizer (tap);
 			boardIcon.UserInteractionEnabled = true;
 
-
 			return boardIcon;
 		}
 
-		int i = 0;
+		UIImage circleImage;
 		private void LoadContent()
 		{
+			circleImage = UIImage.FromFile ("./mainmenu/circle.png");
 			content = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			List<Board> boardList = GenerateBoardList ();
 
 			int i = 1;
 			int n = 0;
 			foreach (Board b in boardList) {
-				UIImageView igv = GenerateBoardThumb (b, new CGPoint (((AppDelegate.ScreenWidth/ 4) + 18 ) * i - 40, 235 + 110 * n));
+				UIImageView igv = GenerateBoardThumb (b, new CGPoint ((AppDelegate.ScreenWidth/ 4) * i, 170 + 120 * n));
 				i++;
 				if (i >= 4) {
 					i = 1;

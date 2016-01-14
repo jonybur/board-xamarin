@@ -202,6 +202,8 @@
     <BundleResource Include="Resources\logos\mangos.png" />
     <BundleResource Include="Resources\boardscreen\backgrounds\contentdemo.png" />
     <BundleResource Include="Resources\mainmenu\miniscroll2.jpg" />
+    <BundleResource Include="Resources\mainmenu\circlered.png" />
+    <BundleResource Include="Resources\mainmenu\circle.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -256,6 +258,7 @@
     <Compile Include="Classes\Screens\CreateScreen1.cs" />
     <Compile Include="Classes\Screens\CreateScreen2.cs" />
     <Compile Include="Classes\Screens\CreateScreen3.cs" />
+    <Compile Include="Classes\Infrastructure\CommonUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

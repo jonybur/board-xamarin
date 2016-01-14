@@ -28,28 +28,7 @@ namespace Solution
 			confirmationButtonSet = new ConfirmationButtonSet (refreshContent);
 			navigationButton = new NavigationButton ();
 		}
-
-
-		// TODO: check if there's a way to properly tint the ButtonBar
-		/*
-		private UIImageView CreateOrangeBox(CGRect frame)
-		{
-			UIGraphics.BeginImageContextWithOptions (new CGSize(BoardInterface.ScreenWidth, BoardInterface.ScreenHeight), false, 0);
-			CGContext context = UIGraphics.GetCurrentContext ();
-
-			//this.View.BackgroundColor = UIColor.FromRGB(189,34,58);
-			//UIColor.FromRGB(238,26,48);
-			context.SetFillColor(BoardInterface.InterfaceColor.CGColor);
-			//context.SetFillColorWithColor(UIColor.FromRGB(1,4,41).CGColor);
-			//context.SetFillColorWithColor(UIColor.FromRGB(235,32,0).CGColor);
-			//context.SetFillColorWithColor(UIColor.FromRGB(240,31,1).CGColor);
-			context.FillRect(frame);
-			UIImage orange = UIGraphics.GetImageFromCurrentImageContext ();
-			UIImageView uiv = new UIImageView (orange);
-			uiv.Alpha = .9f;
-			return uiv;
-		}*/
-
+	
 		public UIView[] GetAllViews()
 		{
 			int cantViews = 1 + ActionsButtonSet.CantButtons + ConfirmationButtonSet.CantButtons;
