@@ -1,6 +1,9 @@
 using System;
 using System.Drawing;
+using System.Linq;
+
 using CoreGraphics;
+
 
 using Foundation;
 using UIKit;
@@ -65,19 +68,22 @@ namespace Solution
 		private List<Board> GenerateBoardList()
 		{
 			List<Board> boardList = new List<Board> ();
-			boardList.Add(new Board ("./logos/mangos.png", UIColor.FromRGB (195, 27, 23), UIColor.FromRGB (0, 167, 73), "South Beach"));
-			boardList.Add(new Board ("./logos/clevelander.png", UIColor.FromRGB (0, 158, 217), UIColor.FromRGB (159, 208, 97), "South Beach"));	
-			boardList.Add(new Board ("./logos/mansion.jpg", UIColor.FromRGB (35, 32, 35), UIColor.FromRGB (35, 32, 35), "South Beach"));
-			boardList.Add(new Board ("./logos/liv.jpg", UIColor.FromRGB (0, 0, 0), UIColor.FromRGB (0, 0, 0), "South Beach"));
+
+			boardList.Add(new Board ("./logos/americansocial.jpeg", UIColor.FromRGB (67, 15, 0), UIColor.FromRGB (221, 169, 91), "Brickell"));
+			boardList.Add(new Board ("./logos/doghouse.jpeg", UIColor.FromRGB (35, 32, 35), UIColor.FromRGB (220, 31, 24), "Brickell"));
+			boardList.Add(new Board ("./logos/doloreslolita.jpg", UIColor.FromRGB (185, 143, 6), UIColor.FromRGB (2, 0, 6), "Brickell"));	
+			boardList.Add(new Board ("./logos/tavernopa.png", UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Brickell"));	
+			boardList.Add(new Board ("./logos/mrmoes.jpg", UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "Coconut Grove"));
+
 			return boardList;
 		}  
 
-
+		float thumbSize;
 		private UIImageView GenerateBoardThumb(Board board, CGPoint ContentOffset)
 		{
 			float imgx, imgy, imgw, imgh;
 
-			float autosize = AppDelegate.ScreenWidth / 4;
+			float autosize = thumbSize;
 			float scale = (float)(board.Image.Size.Height/board.Image.Size.Width);
 
 			if (scale > 1) {
@@ -119,6 +125,9 @@ namespace Solution
 			boardIcon.AddSubview (circle);
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+				if (sideMenuIsUp)
+				{sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return;}
+
 				BoardInterface boardInterface = new BoardInterface(board);
 				NavigationController.PushViewController(boardInterface, true);
 			});
@@ -132,18 +141,39 @@ namespace Solution
 		UIImage circleImage;
 		private void LoadContent()
 		{
+			thumbSize = AppDelegate.ScreenWidth / 4;
 			circleImage = UIImage.FromFile ("./mainmenu/circle.png");
 			content = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			List<Board> boardList = GenerateBoardList ();
+			boardList = boardList.OrderBy(o=>o.Location).ToList();
 
 			int i = 1;
 			int n = 0;
+
+			string location = String.Empty;
+			// starting point
+			float yposition = 5;
+
 			foreach (Board b in boardList) {
-				UIImageView igv = GenerateBoardThumb (b, new CGPoint ((AppDelegate.ScreenWidth/ 4) * i, 170 + 120 * n));
+				if (location != b.Location) {
+					// draw new location string
+					yposition += 70;
+					UILabel lblLocation = new UILabel(new CGRect(30, yposition, AppDelegate.ScreenWidth - 40, 24));
+					yposition += (float)lblLocation.Frame.Height + thumbSize / 2 + 10;
+					lblLocation.Font = UIFont.FromName ("narwhal-bold", 20);
+					lblLocation.TextColor = UIColor.FromRGB (241, 93, 74);
+					location = b.Location;
+					lblLocation.Text = location.ToUpper();
+					content.AddSubview (lblLocation);
+					i = 1;
+				}
+				 
+				UIImageView igv = GenerateBoardThumb (b, new CGPoint ((AppDelegate.ScreenWidth/ 4) * i, yposition));
 				i++;
 				if (i >= 4) {
 					i = 1;
-					n++;
+					Console.WriteLine ("n is " + n);
+					yposition += thumbSize + 6;
 				}
 				content.AddSubview (igv);
 			}
@@ -161,7 +191,7 @@ namespace Solution
 
 			content.AddGestureRecognizer (tap);
 			content.UserInteractionEnabled = true;
-			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
+			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, yposition + thumbSize + 25);
 
 			View.AddSubview (content);
 		}

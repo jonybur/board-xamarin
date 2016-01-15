@@ -204,6 +204,11 @@
     <BundleResource Include="Resources\mainmenu\miniscroll2.jpg" />
     <BundleResource Include="Resources\mainmenu\circlered.png" />
     <BundleResource Include="Resources\mainmenu\circle.png" />
+    <BundleResource Include="Resources\logos\americansocial.jpeg" />
+    <BundleResource Include="Resources\logos\doghouse.jpeg" />
+    <BundleResource Include="Resources\logos\doloreslolita.jpg" />
+    <BundleResource Include="Resources\logos\mrmoes.jpg" />
+    <BundleResource Include="Resources\logos\tavernopa.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
