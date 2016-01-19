@@ -4,6 +4,10 @@ Bin/
 Obj/
 debug/
 Debug/
+Components/
+components/
+packages/
+Packages/
 *.user
 *.userprefs
 *.suo
