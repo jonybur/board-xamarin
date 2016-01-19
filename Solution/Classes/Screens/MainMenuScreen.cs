@@ -33,7 +33,8 @@ namespace Solution
 		bool sideMenuIsUp;
 		ProfilePictureView profileView;
 		UIScrollView content;
-
+		UIImage circleImage;
+		float thumbSize;
 		MapView map;
 
 		public MainMenuScreen () : base ("Board", null){
@@ -78,7 +79,6 @@ namespace Solution
 			return boardList;
 		}  
 
-		float thumbSize;
 		private UIImageView GenerateBoardThumb(Board board, CGPoint ContentOffset)
 		{
 			float imgx, imgy, imgw, imgh;
@@ -138,7 +138,6 @@ namespace Solution
 			return boardIcon;
 		}
 
-		UIImage circleImage;
 		private void LoadContent()
 		{
 			thumbSize = AppDelegate.ScreenWidth / 4;
