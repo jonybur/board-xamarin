@@ -53,11 +53,6 @@ namespace Solution
 			ScreenWidth = (float)UIScreen.MainScreen.Bounds.Width;
 			ScreenHeight = (float)UIScreen.MainScreen.Bounds.Height;
 
-
-			Console.WriteLine (AccessToken.CurrentAccessToken == null);
-
-			// CloudController = CloudController.DefaultService;
-
 			// create a new window instance based on the screen size
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
 

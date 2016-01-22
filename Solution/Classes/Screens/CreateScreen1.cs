@@ -18,7 +18,7 @@ using Facebook.LoginKit;
 
 namespace Solution
 {
-	public partial class CreateScreen1 : UIViewController
+	public class CreateScreen1 : UIViewController
 	{
 		UIImageView banner;
 

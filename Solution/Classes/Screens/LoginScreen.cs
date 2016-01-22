@@ -21,7 +21,7 @@ using Facebook.CoreKit;
 
 namespace Solution
 {
-	public partial class LoginScreen : UIViewController
+	public class LoginScreen : UIViewController
 	{
 		const int fontSize = 18;
 

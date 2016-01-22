@@ -3,8 +3,6 @@ using System.Drawing;
 using System.Linq;
 
 using CoreGraphics;
-
-
 using Foundation;
 using UIKit;
 
@@ -24,12 +22,11 @@ using Google.Maps;
 
 namespace Solution
 {
-	public partial class MainMenuScreen : UIViewController
+	public class MainMenuScreen : UIViewController
 	{
 		UIImageView banner;
 		UIImageView sidemenu;
 		UIImageView map_button;
-		//UIImageView map;
 		bool sideMenuIsUp;
 		ProfilePictureView profileView;
 		UIScrollView content;
@@ -171,7 +168,6 @@ namespace Solution
 				i++;
 				if (i >= 4) {
 					i = 1;
-					Console.WriteLine ("n is " + n);
 					yposition += thumbSize + 6;
 				}
 				content.AddSubview (igv);
@@ -179,9 +175,6 @@ namespace Solution
 
 			content.ScrollEnabled = true;
 			content.UserInteractionEnabled = true;
-
-
-			//float contentHeight = (float)(contentImage.Size.Height - (AppDelegate.ScreenHeight));
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (sideMenuIsUp)
@@ -195,6 +188,12 @@ namespace Solution
 			View.AddSubview (content);
 		}
 
+		public void HideSideMenu()
+		{
+			if (sideMenuIsUp)
+			{ sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; }
+		}
+
 		private void LoadSideMenu()
 		{
 			UIImage bannerImage = UIImage.FromFile ("./mainmenu/sidemenu.png");
@@ -203,7 +202,10 @@ namespace Solution
 			sidemenu.Image = bannerImage;
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				
+				if (tg.LocationInView(this.View).Y > 400 && tg.LocationInView(this.View).Y < 500 ){
+					BusinessScreen screen = new BusinessScreen();
+					NavigationController.PushViewController(screen, false);
+				}
 			});
 
 			sidemenu.UserInteractionEnabled = true;
@@ -253,9 +255,6 @@ namespace Solution
 					sidemenu.Alpha = 1f;
 					profileView.Alpha = 1f;
 					sideMenuIsUp = true;
-				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 3) * 2){
-					CreateScreen1 createScreen1 = new CreateScreen1();
-					NavigationController.PushViewController(createScreen1, false);	
 				}
 			});
 
@@ -268,19 +267,14 @@ namespace Solution
 
 		private async System.Threading.Tasks.Task LoadLocation()
 		{
-			Console.WriteLine ("started");
-
+			// TODO: remove geolocator and move this to use google's own api
 			var locator = CrossGeolocator.Current;
 			locator.DesiredAccuracy = 50;
 			var position = await locator.GetPositionAsync (timeoutMilliseconds: 10000);
 
-			Console.WriteLine ("position is " + position.Latitude.ToString() + " long " + position.Longitude.ToString() );
-
-			// Create a GMSCameraPosition that tells the map to display the
-			// coordinate 37.79,-122.40 at zoom level 6.
 			var camera = CameraPosition.FromCamera (latitude: position.Latitude, 
 				longitude: position.Longitude, 
-				zoom: 12);
+				zoom: 15);
 
 			map.Camera = camera;
 		}
