@@ -17,8 +17,6 @@ using System.Collections.Generic;
 using Facebook.CoreKit;
 using Facebook.LoginKit;
 
-using Geolocator.Plugin;
-
 using Google.Maps;
 
 namespace Solution

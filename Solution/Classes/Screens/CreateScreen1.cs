@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using Facebook.CoreKit;
 using Facebook.LoginKit;
 
-using Geolocator.Plugin;
 using Google.Maps;
 
 namespace Solution
@@ -106,13 +105,24 @@ namespace Solution
 			map.CoordinateLongPressed += (object sender, GMSCoordEventArgs e) => {
 				marker.Position = new CoreLocation.CLLocationCoordinate2D (e.Coordinate.Latitude, e.Coordinate.Longitude);
 				marker.Map = map;
-				geocoder.ReverseGeocodeCord (new CoreLocation.CLLocationCoordinate2D (e.Coordinate.Latitude, e.Coordinate.Longitude), HandleReverseGeocodeCallback);
+				addressView.Text = string.Empty;
 
-				using(WebClient client = new WebClient()) {
+				//geocoder.ReverseGeocodeCord (new CoreLocation.CLLocationCoordinate2D (e.Coordinate.Latitude, e.Coordinate.Longitude), HandleReverseGeocodeCallback);
 
-					string url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + e.Coordinate.Latitude.ToString() + "," + e.Coordinate.Longitude.ToString() + "&key=" + APIKey;
+				string jsonobj = JsonHandler.GET("https://maps.googleapis.com/maps/api/geocode/json?address=" + e.Coordinate.Latitude.ToString() + "," + e.Coordinate.Longitude.ToString() + "&key=" + APIKey);
+				GoogleGeolocatorObject geolocatorObject = JsonHandler.DeserializeObject(jsonobj);
 
-					string s = client.DownloadString(url);
+				try{
+					if (geolocatorObject.results.Count > 0)
+					{
+						addressView.Text += geolocatorObject.results[0].address_components[0].long_name + " " + 
+							geolocatorObject.results[0].address_components[1].short_name + ", " +
+							geolocatorObject.results[0].address_components[2].long_name;
+					}
+				}
+				catch{
+					Console.WriteLine("no neighborhood");
+					addressView.Text = string.Empty;
 				}
 
 			};
@@ -155,11 +165,11 @@ namespace Solution
 			LoadAddressView ();
 		}
 
+		// deprecated method
 		void HandleReverseGeocodeCallback (ReverseGeocodeResponse response, NSError error)
 		{
 			Address ad = response.FirstResult;
-
-			addressView.Text = ad.Thoroughfare + ", " + ad.SubLocality;
+			addressView.Text = ad.Thoroughfare;
 		}
 
 		private void LoadBanner()
