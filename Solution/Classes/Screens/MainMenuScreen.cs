@@ -18,6 +18,7 @@ using Facebook.CoreKit;
 using Facebook.LoginKit;
 
 using Geolocator.Plugin;
+
 using Google.Maps;
 
 namespace Solution
@@ -33,6 +34,7 @@ namespace Solution
 		UIImage circleImage;
 		float thumbSize;
 		MapView map;
+		bool firstLocationUpdate = false;
 
 		public MainMenuScreen () : base ("Board", null){
 			
@@ -53,12 +55,12 @@ namespace Solution
 			InitializeInterface ();
 		}
 
-		private async void InitializeInterface()
+		private void InitializeInterface()
 		{
 			LoadContent ();
-			LoadMap ();
 			LoadBanner ();
 			LoadMapButton ();
+			LoadMap ();
 			LoadSideMenu ();
 		}
 
@@ -178,7 +180,7 @@ namespace Solution
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (sideMenuIsUp)
-				{sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return;}
+				{ sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return; }
 			});
 
 			content.AddGestureRecognizer (tap);
@@ -263,31 +265,18 @@ namespace Solution
 			banner.Alpha = .95f;
 			View.AddSubview (banner);
 		}
-
-
-		private async System.Threading.Tasks.Task LoadLocation()
-		{
-			// TODO: remove geolocator and move this to use google's own api
-			var locator = CrossGeolocator.Current;
-			locator.DesiredAccuracy = 50;
-			var position = await locator.GetPositionAsync (timeoutMilliseconds: 10000);
-
-			var camera = CameraPosition.FromCamera (latitude: position.Latitude, 
-				longitude: position.Longitude, 
-				zoom: 15);
-
-			map.Camera = camera;
-		}
-
-		private async void LoadMap()
+			
+		private void LoadMap()
 		{
 			var camera = CameraPosition.FromCamera (latitude: 40, 
 				longitude: -100, 
 				zoom: -2);
 			
-			map = MapView.FromCamera (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight), camera);
-			map.MyLocationEnabled = true;
+			map = MapView.FromCamera (new CGRect (0, banner.Frame.Bottom, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight - banner.Frame.Height - map_button.Frame.Height), camera);
 			map.Alpha = 0f;
+			map.Settings.CompassButton = true;
+			map.Settings.MyLocationButton = true;
+			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (sideMenuIsUp)
@@ -299,7 +288,17 @@ namespace Solution
 
 			View.AddSubview (map);
 
-			await LoadLocation ();
+			InvokeOnMainThread (()=> map.MyLocationEnabled = true);
+		}
+
+		public override void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
+		{
+			if (!firstLocationUpdate) {
+				firstLocationUpdate = true; 
+
+				var location = change.ObjectForKey (NSValue.ChangeNewKey) as CoreLocation.CLLocation;
+				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
+			}
 		}
 
 		private void LoadMapButton()

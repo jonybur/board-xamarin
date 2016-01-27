@@ -27,6 +27,12 @@ namespace Solution
 		public static float ScreenWidth;
 		public static float ScreenHeight;
 
+		public static UIColor CityboardOrange;
+		public static UIColor CityboardBlue;
+
+		public static double Latitude;
+		public static double Longitude;
+
 		const string FacebookAppId = "761616930611025";
 		const string FacebookDisplayName = "CityBoard";
 
@@ -41,7 +47,13 @@ namespace Solution
 
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
+			CityboardOrange = UIColor.FromRGB(244, 108, 85);
+			CityboardBlue = UIColor.FromRGB(38, 106, 154);
+
 			MapServices.ProvideAPIKey (MapsApiKey);
+
+			Latitude = 0;
+			Longitude = 0;
 
 			// FACEBOOK
 

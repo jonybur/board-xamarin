@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using Facebook.CoreKit;
 using Facebook.LoginKit;
 
-using Geolocator.Plugin;
 using Google.Maps;
 
 namespace Solution
@@ -131,7 +130,7 @@ namespace Solution
 
 		private void LoadBanner()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./businessscreen/menu_banner.jpg");
+			UIImage bannerImage = UIImage.FromFile ("./businessscreen/business_banner.jpg");
 
 			banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
 			banner.Image = bannerImage;
@@ -145,7 +144,7 @@ namespace Solution
 					profileView.Alpha = 1f;
 					sideMenuIsUp = true;
 				}
-				else if (AppDelegate.ScreenWidth * 2/ 3 < tg.LocationInView(this.View).X){
+				else if (AppDelegate.ScreenWidth * 2 / 3 < tg.LocationInView(this.View).X){
 					CreateScreen1 createScreen1 = new CreateScreen1();
 					NavigationController.PushViewController(createScreen1, false);
 				}
