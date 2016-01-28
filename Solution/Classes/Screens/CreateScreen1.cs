@@ -23,12 +23,16 @@ namespace Solution
 {
 	public class CreateScreen1 : UIViewController
 	{
+		const string APIKey = "AIzaSyAUO-UX9QKVWK421yjXqoo02N5TYrG_hY8";
+
 		UIImageView banner;
 		MapView map;
+		Marker marker;
 		UITextField addressView;
 		UITextField nameView;
+		UIImageView whiteRectangle;
+		Result resultAddress;
 		bool firstLocationUpdate = false;
-		const string APIKey = "AIzaSyAUO-UX9QKVWK421yjXqoo02N5TYrG_hY8";
 
 		public CreateScreen1 () : base ("Board", null){
 
@@ -51,10 +55,17 @@ namespace Solution
 
 		private void InitializeInterface()
 		{
-			// loads center button
 			LoadBanner ();
 			LoadContent ();
 			LoadMap ();
+
+			/*UITapGestureRecognizer tapGesture= new UITapGestureRecognizer ((tg) => {
+				//nameView.ResignFirstResponder();
+
+				//EndsEditingStreet();
+			});
+
+			View.AddGestureRecognizer (tapGesture);*/
 		}
 
 		private void LoadNameView()
@@ -64,31 +75,29 @@ namespace Solution
 			nameView.TextColor = AppDelegate.CityboardBlue;
 			nameView.Font = UIFont.FromName ("roboto-regular", 20);
 
+			nameView.AutocapitalizationType = UITextAutocapitalizationType.Words;
 			nameView.KeyboardType = UIKeyboardType.Default;
-			nameView.ReturnKeyType = UIReturnKeyType.Continue;
+			nameView.ReturnKeyType = UIReturnKeyType.Done;
 			nameView.EnablesReturnKeyAutomatically = true;
+
+			nameView.ShouldReturn += (textField) => {
+				textField.ResignFirstResponder();
+				return true;
+			};
 
 			nameView.ShouldChangeCharacters = (textField, range, replacementString) => {
 				var newLength = textField.Text.Length + replacementString.Length - range.Length;
 				return newLength <= 30;
 			};
 
-			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer ((tg) => {
-				nameView.ResignFirstResponder();
-			});
-
-			View.AddGestureRecognizer (tapGesture);
 			View.AddSubview (nameView);
 		}
 
-		Marker marker;
 
-
-		private async void LoadMap()
+		private void LoadMap()
 		{
 			marker = new Marker ();
-
-			Geocoder geocoder = new Geocoder ();
+			marker.AppearAnimation = MarkerAnimation.Pop;
 
 			var camera = CameraPosition.FromCamera (latitude: 40, 
 				longitude: -100, 
@@ -107,21 +116,26 @@ namespace Solution
 				marker.Map = map;
 				addressView.Text = string.Empty;
 
-				//geocoder.ReverseGeocodeCord (new CoreLocation.CLLocationCoordinate2D (e.Coordinate.Latitude, e.Coordinate.Longitude), HandleReverseGeocodeCallback);
-
 				string jsonobj = JsonHandler.GET("https://maps.googleapis.com/maps/api/geocode/json?address=" + e.Coordinate.Latitude.ToString() + "," + e.Coordinate.Longitude.ToString() + "&key=" + APIKey);
 				GoogleGeolocatorObject geolocatorObject = JsonHandler.DeserializeObject(jsonobj);
 
 				try{
 					if (geolocatorObject.results.Count > 0)
 					{
+						// displays address taken from coordinates
 						addressView.Text += geolocatorObject.results[0].address_components[0].long_name + " " + 
-							geolocatorObject.results[0].address_components[1].short_name + ", " +
-							geolocatorObject.results[0].address_components[2].long_name;
+							geolocatorObject.results[0].address_components[1].short_name;
+
+						// saves result address, 
+						resultAddress = geolocatorObject.results[0];
+
+						// enables editing
+						addressView.UserInteractionEnabled = true;
+						whiteRectangle.Alpha = 0f;
 					}
 				}
 				catch{
-					Console.WriteLine("no neighborhood");
+					Console.WriteLine("Error creating address");
 					addressView.Text = string.Empty;
 				}
 
@@ -130,6 +144,25 @@ namespace Solution
 			View.AddSubview (map);
 
 			InvokeOnMainThread (()=> map.MyLocationEnabled = true);
+		}
+
+		private UIImageView CreateColorSquare(CGSize size, CGPoint center, CGColor startcolor)
+		{
+			CGRect frame = new CGRect (0, 0, size.Width, size.Height);
+
+			CGRect frame2 = frame;
+
+			UIGraphics.BeginImageContext (new CGSize(frame.Size.Width, frame.Size.Height));
+			CGContext context = UIGraphics.GetCurrentContext ();
+
+			context.SetFillColor(startcolor);
+			context.FillRect(frame);
+
+			UIImage orange = UIGraphics.GetImageFromCurrentImageContext ();
+			UIImageView uiv = new UIImageView (orange);
+			uiv.Center = center;
+
+			return uiv;
 		}
 
 		public override void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
@@ -142,22 +175,69 @@ namespace Solution
 			}
 		}
 
-
 		private void LoadAddressView()
 		{
 			addressView = new UITextField (new CGRect (30, 286, AppDelegate.ScreenWidth - 65, 26));
 			addressView.BackgroundColor = UIColor.White;
 			addressView.TextColor = AppDelegate.CityboardBlue;
 			addressView.Font = UIFont.FromName ("roboto-regular", 20);
+
+			addressView.KeyboardType = UIKeyboardType.Default;
+			addressView.ReturnKeyType = UIReturnKeyType.Done;
+
 			addressView.UserInteractionEnabled = false;
 			addressView.AdjustsFontSizeToFitWidth = true;
+
+			addressView.ShouldReturn += (textField) => {
+				EndsEditingStreet();
+				return true;
+			};
+
+			// loads center button
+			whiteRectangle = CreateColorSquare(new CGSize(AppDelegate.ScreenWidth, 10), new CGPoint(AppDelegate.ScreenWidth/2, addressView.Frame.Bottom), UIColor.White.CGColor);
+			View.AddSubview (whiteRectangle);
 
 			View.AddSubview(addressView);
 		}
 
+		private void EndsEditingStreet()
+		{
+			addressView.ResignFirstResponder();
+
+			string addressToSend = addressView.Text;
+			for (int i = 2; i < resultAddress.address_components.Count; i++)
+			{
+				addressToSend += ", " + resultAddress.address_components[i].short_name;
+			}
+			addressToSend = addressToSend.Replace(" ", "+");
+
+			string jsonobj = JsonHandler.GET("https://maps.googleapis.com/maps/api/geocode/json?address=" + addressToSend + "&key=" + APIKey);
+			GoogleGeolocatorObject geolocatorObject = JsonHandler.DeserializeObject(jsonobj);
+
+			if (geolocatorObject.results.Count == 0 || addressView.Text.Length == 0)
+			{
+				// if location doesnt get any results, or if text is left blank, kill marker and disable editing
+
+				addressView.UserInteractionEnabled = false;
+				addressView.Text = string.Empty;
+				marker.Map = null;
+				whiteRectangle.Alpha = 1f;
+
+				return;
+			}
+
+			// if location returns an object, get the location, set the marker, save new resultaddress
+
+			resultAddress = geolocatorObject.results [0];
+			Location location = resultAddress.geometry.location;
+			marker.Position = new CoreLocation.CLLocationCoordinate2D (location.lat, location.lng);
+
+			return;
+		}
+
 		private void LoadContent()
 		{
-			UIImage contentImage = UIImage.FromFile ("./createscreens/screen1/content6.jpg");
+			UIImage contentImage = UIImage.FromFile ("./createscreens/screen1/content7.jpg");
 			UIImageView contentImageView = new UIImageView (new CGRect(0, banner.Frame.Bottom, contentImage.Size.Width / 2, contentImage.Size.Height / 2));
 			contentImageView.Image = contentImage;
 			View.AddSubview (contentImageView);

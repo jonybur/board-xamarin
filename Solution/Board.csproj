@@ -207,6 +207,7 @@
     <BundleResource Include="Resources\businessscreen\businesscontent.jpg" />
     <BundleResource Include="Resources\createscreens\screen1\contentbak.jpg" />
     <BundleResource Include="Resources\createscreens\screen1\content6.jpg" />
+    <BundleResource Include="Resources\createscreens\screen1\content7.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
