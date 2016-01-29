@@ -67,11 +67,11 @@ namespace Solution
 		{
 			List<Board> boardList = new List<Board> ();
 
-			boardList.Add(new Board ("./logos/americansocial.jpeg", UIColor.FromRGB (67, 15, 0), UIColor.FromRGB (221, 169, 91), "Brickell"));
-			boardList.Add(new Board ("./logos/doghouse.jpeg", UIColor.FromRGB (35, 32, 35), UIColor.FromRGB (220, 31, 24), "Brickell"));
-			boardList.Add(new Board ("./logos/doloreslolita.jpg", UIColor.FromRGB (185, 143, 6), UIColor.FromRGB (2, 0, 6), "Brickell"));	
-			boardList.Add(new Board ("./logos/tavernopa.png", UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Brickell"));	
-			boardList.Add(new Board ("./logos/mrmoes.jpg", UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "Coconut Grove"));
+			boardList.Add(new Board ("American Social", "./logos/americansocial.jpeg", UIColor.FromRGB (67, 15, 0), UIColor.FromRGB (221, 169, 91), "Brickell"));
+			boardList.Add(new Board ("Dog House", "./logos/doghouse.jpeg", UIColor.FromRGB (35, 32, 35), UIColor.FromRGB (220, 31, 24), "Brickell"));
+			boardList.Add(new Board ("Dolores Lolita", "./logos/doloreslolita.jpg", UIColor.FromRGB (185, 143, 6), UIColor.FromRGB (2, 0, 6), "Brickell"));	
+			boardList.Add(new Board ("Taverna Opa", "./logos/tavernopa.png", UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Brickell"));	
+			boardList.Add(new Board ("Mr Moe's", "./logos/mrmoes.jpg", UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "Coconut Grove"));
 
 			return boardList;
 		}  

@@ -22,9 +22,10 @@ namespace Solution
 	public class CreateScreen2 : UIViewController
 	{
 		UIImageView banner;
+		Board board;
 
-		public CreateScreen2 () : base ("Board", null){
-
+		public CreateScreen2 (Board _board) : base ("Board", null){
+			board = _board;
 		}
 
 		public override void DidReceiveMemoryWarning ()

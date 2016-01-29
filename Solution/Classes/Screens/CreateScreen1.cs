@@ -31,7 +31,11 @@ namespace Solution
 		UITextField addressView;
 		UITextField nameView;
 		UIImageView whiteRectangle;
+		UIImageView orangeRectangle;
 		Result resultAddress;
+
+		bool nextEnabled;
+
 		bool firstLocationUpdate = false;
 
 		public CreateScreen1 () : base ("Board", null){
@@ -58,14 +62,6 @@ namespace Solution
 			LoadBanner ();
 			LoadContent ();
 			LoadMap ();
-
-			/*UITapGestureRecognizer tapGesture= new UITapGestureRecognizer ((tg) => {
-				//nameView.ResignFirstResponder();
-
-				//EndsEditingStreet();
-			});
-
-			View.AddGestureRecognizer (tapGesture);*/
 		}
 
 		private void LoadNameView()
@@ -73,7 +69,7 @@ namespace Solution
 			nameView = new UITextField (new CGRect (30, 173, AppDelegate.ScreenWidth - 65, 26));
 			nameView.BackgroundColor = UIColor.White;
 			nameView.TextColor = AppDelegate.CityboardBlue;
-			nameView.Font = UIFont.FromName ("roboto-regular", 20);
+			nameView.Font = UIFont.SystemFontOfSize (20);
 
 			nameView.AutocapitalizationType = UITextAutocapitalizationType.Words;
 			nameView.KeyboardType = UIKeyboardType.Default;
@@ -131,6 +127,9 @@ namespace Solution
 
 						// enables editing
 						addressView.UserInteractionEnabled = true;
+
+						NextButtonEnabled(true);
+
 						whiteRectangle.Alpha = 0f;
 					}
 				}
@@ -146,11 +145,20 @@ namespace Solution
 			InvokeOnMainThread (()=> map.MyLocationEnabled = true);
 		}
 
+		private void NextButtonEnabled(bool enabled)
+		{
+			nextEnabled = enabled;
+
+			if (nextEnabled) {
+				orangeRectangle.Alpha = 0f;
+			} else {
+				orangeRectangle.Alpha = .5f;
+			}
+		}
+
 		private UIImageView CreateColorSquare(CGSize size, CGPoint center, CGColor startcolor)
 		{
 			CGRect frame = new CGRect (0, 0, size.Width, size.Height);
-
-			CGRect frame2 = frame;
 
 			UIGraphics.BeginImageContext (new CGSize(frame.Size.Width, frame.Size.Height));
 			CGContext context = UIGraphics.GetCurrentContext ();
@@ -180,7 +188,7 @@ namespace Solution
 			addressView = new UITextField (new CGRect (30, 286, AppDelegate.ScreenWidth - 65, 26));
 			addressView.BackgroundColor = UIColor.White;
 			addressView.TextColor = AppDelegate.CityboardBlue;
-			addressView.Font = UIFont.FromName ("roboto-regular", 20);
+			addressView.Font = UIFont.SystemFontOfSize (20);
 
 			addressView.KeyboardType = UIKeyboardType.Default;
 			addressView.ReturnKeyType = UIReturnKeyType.Done;
@@ -193,8 +201,9 @@ namespace Solution
 				return true;
 			};
 
-			// loads center button
-			whiteRectangle = CreateColorSquare(new CGSize(AppDelegate.ScreenWidth, 10), new CGPoint(AppDelegate.ScreenWidth/2, addressView.Frame.Bottom), UIColor.White.CGColor);
+			// loads white box
+			whiteRectangle = CreateColorSquare(new CGSize(AppDelegate.ScreenWidth, 80), new CGPoint(AppDelegate.ScreenWidth/2, addressView.Frame.Y), UIColor.White.CGColor);
+
 			View.AddSubview (whiteRectangle);
 
 			View.AddSubview(addressView);
@@ -222,6 +231,14 @@ namespace Solution
 				addressView.Text = string.Empty;
 				marker.Map = null;
 				whiteRectangle.Alpha = 1f;
+
+				NextButtonEnabled(false);
+
+				UIAlertController alert = UIAlertController.Create("Street is out of reach", "The address is too far away from pin\nPlease pin your venue again", UIAlertControllerStyle.Alert);
+
+				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+
+				NavigationController.PresentViewController (alert, true, null);
 
 				return;
 			}
@@ -260,14 +277,25 @@ namespace Solution
 			banner.Image = bannerImage;
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 3){
+				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					NavigationController.PopViewController(false);
-				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 3) * 2){
-					CreateScreen2 createScreen2 = new CreateScreen2();
+				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 4) * 3 && nextEnabled){
+					Board newBoard = new Board();
+					newBoard.Location = resultAddress.formatted_address;
+					newBoard.Name = nameView.Text;
+						
+					CreateScreen2 createScreen2 = new CreateScreen2(newBoard);
 					NavigationController.PushViewController(createScreen2, false);
 				}
 			});
 
+			orangeRectangle = CreateColorSquare (new CGSize (75, 60), 
+				new CGPoint ((AppDelegate.ScreenWidth / 4) * 3 + 60, 25),
+				AppDelegate.CityboardOrange.CGColor);
+
+			NextButtonEnabled(false);
+
+			banner.AddSubview (orangeRectangle);
 			banner.UserInteractionEnabled = true;
 			banner.AddGestureRecognizer (tap);
 			banner.Alpha = .95f;

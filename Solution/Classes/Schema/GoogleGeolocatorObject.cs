@@ -101,12 +101,7 @@ namespace Solution
 				}
 			}
 			catch (WebException ex) {
-				WebResponse errorResponse = ex.Response;
-				using (Stream responseStream = errorResponse.GetResponseStream())
-				{
-					StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
-					String errorText = reader.ReadToEnd();
-				}
+				Console.WriteLine (ex);
 				throw;
 			}
 		}

@@ -20,13 +20,19 @@ namespace Solution
 		public UIColor MainColor;
 		public UIColor SecondaryColor;
 		public string Location;
+		public string Name;
 
-		public Board (string imageAddress, UIColor mainColor, UIColor secondaryColor, string location)
+		public Board()
+		{
+		}
+
+		public Board (string name, string imageAddress, UIColor mainColor, UIColor secondaryColor, string location)
 		{
 			Image = UIImage.FromFile (imageAddress);
 			MainColor = mainColor;
 			SecondaryColor = secondaryColor;
 			Location = location;
+			Name = name;
 		}
 	}
 }
