@@ -30,6 +30,39 @@ namespace Solution
 			UIImage image = UIGraphics.GetImageFromCurrentImageContext ();
 			return image;
 		}
+
+		public static string UIColorToHex(UIColor color)
+		{
+			nfloat red; nfloat green; nfloat blue; nfloat alpha; 
+			color.GetRGBA (out red, out green, out blue, out alpha);
+
+			int ired = (int)(red * 255);
+			int igreen = (int)(green * 255);
+			int iblue = (int)(blue * 255);
+
+			string hex = ired.ToString("x2") + igreen.ToString("x2") + iblue.ToString("x2");
+			return hex;
+		}
+
+		public static UIColor HexToUIColor(string hex)
+		{
+			if (hex.Length != 6) {
+				return UIColor.White;
+			}
+
+			try {
+				UIColor color = UIColor.FromRGB (
+					int.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber),
+					int.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber),
+					int.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber));
+
+				return color;
+			}
+			catch{
+				return UIColor.White;
+			}
+		}
+
 	}
 }
 

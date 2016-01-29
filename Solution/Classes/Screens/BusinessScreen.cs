@@ -145,7 +145,7 @@ namespace Solution
 					sideMenuIsUp = true;
 				}
 				else if (AppDelegate.ScreenWidth * 2 / 3 < tg.LocationInView(this.View).X){
-					CreateScreen1 createScreen1 = new CreateScreen1();
+					CreateScreen2 createScreen1 = new CreateScreen2(new Board());
 					NavigationController.PushViewController(createScreen1, false);
 				}
 			});

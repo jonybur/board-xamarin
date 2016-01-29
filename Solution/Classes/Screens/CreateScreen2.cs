@@ -24,6 +24,13 @@ namespace Solution
 		UIImageView banner;
 		Board board;
 
+		CGSize ColorSquareSize;
+		CGPoint ColorSquarePosition1;
+		CGPoint ColorSquarePosition2;
+
+		UITextField hexView1;
+		UITextField hexView2;
+
 		public CreateScreen2 (Board _board) : base ("Board", null){
 			board = _board;
 		}
@@ -40,6 +47,10 @@ namespace Solution
 			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
 			NavigationController.NavigationBarHidden = true;
 
+			ColorSquareSize = new CGSize (230, 40);
+			ColorSquarePosition1 = new CGPoint (145, 350);
+			ColorSquarePosition2 = new CGPoint (145, 461);
+
 			InitializeInterface ();
 		}
 
@@ -52,29 +63,90 @@ namespace Solution
 
 		private void LoadContent()
 		{
-			UIImage contentImage = UIImage.FromFile ("./createscreens/screen2/content.jpg");
+			UIImage contentImage = UIImage.FromFile ("./createscreens/screen2/content2.jpg");
 			UIImageView contentImageView = new UIImageView (new CGRect(0, banner.Frame.Bottom, contentImage.Size.Width / 2, contentImage.Size.Height / 2));
 			contentImageView.Image = contentImage;
 
 			View.AddSubviews (contentImageView);
 
-			UIImageView color1 = CreateColorSquare (new CGSize (316, 40), 
-				                     new CGPoint (AppDelegate.ScreenWidth / 2, 350),
-				UIColor.FromRGB(195,27,23).CGColor);
+			UIImageView color1 = CreateColorSquare (ColorSquareSize, 
+				ColorSquarePosition1,
+				AppDelegate.CityboardOrange.CGColor, 1);
+			
+			UITextField hash1 = new UITextField(new CGRect(color1.Frame.Right + 10, color1.Frame.Y + 10, 10, 20));
+			hash1.Font = UIFont.SystemFontOfSize (20);
+			hash1.BackgroundColor = UIColor.White;
+			hash1.TextColor = AppDelegate.CityboardBlue;
+			hash1.Text = "#";
+			hash1.UserInteractionEnabled = false;
 
-			View.AddSubviews (color1);
+			hexView1 = new UITextField(new CGRect(hash1.Frame.Right + 3, hash1.Frame.Y, 100, hash1.Frame.Height));
+			hexView1.Font = UIFont.SystemFontOfSize (20);
+			hexView1.BackgroundColor = UIColor.White;
+			hexView1.TextColor = AppDelegate.CityboardBlue;
+			hexView1.KeyboardType = UIKeyboardType.Default;
+			hexView1.ReturnKeyType = UIReturnKeyType.Done;
+			hexView1.Text = CommonUtils.UIColorToHex(AppDelegate.CityboardOrange);
+			hexView1.AutocapitalizationType = UITextAutocapitalizationType.None;
 
-			UIImageView color2 = CreateColorSquare (new CGSize (316, 40), 
-				new CGPoint (AppDelegate.ScreenWidth / 2, 461),
-				UIColor.FromRGB(0,167,73).CGColor);
-			View.AddSubviews (color2);
+			hexView1.ShouldChangeCharacters = (textField, range, replacementString) => {
+				var newLength = textField.Text.Length + replacementString.Length - range.Length;
+				return newLength <= 6;
+			};
+
+			hexView1.ShouldReturn += (textField) => {
+				UIColor color = CommonUtils.HexToUIColor(hexView1.Text);
+
+				color1.RemoveFromSuperview();
+
+				color1 = CreateColorSquare (ColorSquareSize, 
+					ColorSquarePosition1,
+					color.CGColor, 1);
+
+				View.AddSubview(color1);
+
+				textField.ResignFirstResponder();
+
+				return true;
+			};
+
+			UIImageView color2 = CreateColorSquare (ColorSquareSize, 
+				ColorSquarePosition2,
+				AppDelegate.CityboardBlue.CGColor, 2);
+
+			UITextField hash2 = new UITextField(new CGRect(color2.Frame.Right + 10, color2.Frame.Y + 10, 10, 20));
+			hash2.Font = UIFont.SystemFontOfSize (20);
+			hash2.BackgroundColor = UIColor.White;
+			hash2.TextColor = AppDelegate.CityboardBlue;
+			hash2.Text = "#";
+			hash2.UserInteractionEnabled = false;
+
+			hexView2 = new UITextField(new CGRect(hash2.Frame.Right + 3, hash2.Frame.Y, 100, hash2.Frame.Height));
+			hexView2.Font = UIFont.SystemFontOfSize (20);
+			hexView2.BackgroundColor = UIColor.White;
+			hexView2.TextColor = AppDelegate.CityboardBlue;
+			hexView2.KeyboardType = UIKeyboardType.Default;
+			hexView2.ReturnKeyType = UIReturnKeyType.Done;
+			hexView2.Text = CommonUtils.UIColorToHex(AppDelegate.CityboardBlue);
+			hexView2.AutocapitalizationType = UITextAutocapitalizationType.None;
+
+			hexView2.ShouldChangeCharacters = (textField, range, replacementString) => {
+				var newLength = textField.Text.Length + replacementString.Length - range.Length;
+				return newLength <= 6;
+			};
+
+			hexView2.ShouldReturn += (textField) => {
+				textField.ResignFirstResponder();
+				return true;
+			};
+
+
+			View.AddSubviews (color1, color2, hash1, hexView1, hash2, hexView2);
 		}
 
-		private UIImageView CreateColorSquare(CGSize size, CGPoint center, CGColor startcolor)
+		private UIImageView CreateColorSquare(CGSize size, CGPoint center, CGColor startcolor, int numberOfView)
 		{
 			CGRect frame = new CGRect (0, 0, size.Width, size.Height);
-
-			CGRect frame2 = frame;
 
 			UIGraphics.BeginImageContext (new CGSize(frame.Size.Width, frame.Size.Height));
 			CGContext context = UIGraphics.GetCurrentContext ();
@@ -97,11 +169,20 @@ namespace Solution
 				CGContext ctx = UIGraphics.GetCurrentContext ();
 
 				ctx.SetFillColor(color.CGColor);
-				ctx.FillRect(frame2);
+				ctx.FillRect(frame);
 
 				UIImage img = UIGraphics.GetImageFromCurrentImageContext ();
 				uiv.Image = img;
 
+				switch(numberOfView)
+				{
+				case 1:
+					hexView1.Text = CommonUtils.UIColorToHex(color);
+					break;
+				case 2:
+					hexView2.Text = CommonUtils.UIColorToHex(color);
+					break;
+				}
 
 			});
 
