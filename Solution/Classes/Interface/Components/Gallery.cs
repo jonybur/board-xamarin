@@ -35,7 +35,7 @@ namespace Solution
 			yPositions = new float[rows];
 			rotation = (float)(Math.PI * 90 / 180.0);
 
-			scrollView = new UIScrollView (new CGRect (0, 0, BoardInterface.ScreenWidth, BoardInterface.ScreenHeight));
+			scrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			scrollView.BackgroundColor = UIColor.Black;
 			defaultOrientation = scrollView.Transform;
 
@@ -63,7 +63,7 @@ namespace Solution
 				}
 
 				GenerateThumbnails (thumbnails);
-				scrollView.ContentSize = new CGSize(BoardInterface.ScreenWidth, FindLength());
+				scrollView.ContentSize = new CGSize(AppDelegate.ScreenWidth, FindLength());
 				return true;
 			}
 
@@ -113,7 +113,7 @@ namespace Solution
 
 			int row = FindShortestRow ();
 
-			float autosize = (BoardInterface.ScreenWidth / rows) - separation;
+			float autosize = (AppDelegate.ScreenWidth / rows) - separation;
 
 			float imgw, imgh;
 			float scale = (float)(image.Size.Width/image.Size.Height);
@@ -124,7 +124,7 @@ namespace Solution
 			UIImageView imageView = new UIImageView (new CGRect(0,0,imgw,imgh));
 			imageView.Image = image;
 			imageView.Transform = CGAffineTransform.MakeRotation(rotation);
-			imageView.Center = new CGPoint (imgh / 2 + row * (BoardInterface.ScreenWidth / rows), 
+			imageView.Center = new CGPoint (imgh / 2 + row * (AppDelegate.ScreenWidth / rows), 
 				yPositions[row] + imgw / 2);
 			yPositions [row] += imgw + separation;
 

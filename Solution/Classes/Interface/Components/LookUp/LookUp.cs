@@ -28,8 +28,8 @@ namespace Solution
 
 		public LookUp(Picture picture, UIImage image, Action refreshPictures, UINavigationController navigationController)
 		{
-			uiView = new UIView (new CGRect (0, 0, BoardInterface.ScreenWidth, BoardInterface.ScreenHeight));
-			UIScrollView scrollView = new UIScrollView (new CGRect (0, 0, BoardInterface.ScreenWidth, BoardInterface.ScreenHeight));
+			uiView = new UIView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			UIScrollView scrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 
 			uiView.BackgroundColor = UIColor.Black;
 
@@ -78,7 +78,7 @@ namespace Solution
 		public async Task CreateNameLabel(string userid)
 		{
 			const int LabelHeight = 21;
-			UILabel nameLabel = new UILabel (new CGRect (0, BoardInterface.ScreenHeight - LabelHeight - 5, BoardInterface.ScreenWidth, LabelHeight)) {
+			UILabel nameLabel = new UILabel (new CGRect (0, AppDelegate.ScreenHeight - LabelHeight - 5, AppDelegate.ScreenWidth, LabelHeight)) {
 				TextAlignment = UITextAlignment.Center,
 				BackgroundColor = UIColor.Clear,
 				TextColor = UIColor.White,
@@ -95,11 +95,11 @@ namespace Solution
 			float imgw, imgh;
 			float scale = (float)(image.Size.Height/image.Size.Width);
 
-			imgw = BoardInterface.ScreenWidth;
-			imgh = BoardInterface.ScreenWidth * scale;
+			imgw = AppDelegate.ScreenWidth;
+			imgh = AppDelegate.ScreenWidth * scale;
 
 			UIImageView imageView = new UIImageView (new CGRect (0, 0, imgw, imgh));
-			imageView.Center = new CGPoint(BoardInterface.ScreenWidth/2, BoardInterface.ScreenHeight/2);
+			imageView.Center = new CGPoint(AppDelegate.ScreenWidth/2, AppDelegate.ScreenHeight/2);
 			imageView.Image = image;
 			imageView.UserInteractionEnabled = true;
 
@@ -113,7 +113,7 @@ namespace Solution
 			uiv.Image = doneBut;
 			uiv.UserInteractionEnabled = true;
 			// hardcoded to be set in correct location
-			uiv.Center = new CGPoint (BoardInterface.ScreenWidth - doneBut.Size.Width / 2 + 15, 45);
+			uiv.Center = new CGPoint (AppDelegate.ScreenWidth - doneBut.Size.Width / 2 + 15, 45);
 
 			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer  ((tg) => {
 				// user tapped on "Done" button

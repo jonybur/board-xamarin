@@ -17,10 +17,8 @@ namespace Solution
 {
 	// user interface - connects to the board controller
 	// also called BoardView
-	public partial class BoardInterface : UIViewController
+	public class BoardInterface : UIViewController
 	{
-		public static float ScreenWidth, ScreenHeight;
-
 		private Gallery gallery;
 
 		public static UIImageView CenterLogo;
@@ -44,6 +42,7 @@ namespace Solution
 
 		public BoardInterface (Board _board) : base ("Board", null){
 			board = _board;
+
 		}
 
 		public override void DidReceiveMemoryWarning ()
@@ -56,18 +55,15 @@ namespace Solution
 			// if it reaches this section, user has been logged in and authorized
 			base.ViewDidLoad ();
 
-			ScreenWidth = (float)UIScreen.MainScreen.Bounds.Width;
-			ScreenHeight = (float)UIScreen.MainScreen.Bounds.Height;
-
 			//StorageController.Initialize ();
-
-			// initialices interface and place the local pictures on board
-			InitializeInterface ();
 
 			//GetFromLocalDB ();
 
 			// updates the board
 			//RefreshContent ();
+
+			// initialices interface and place the local pictures on board
+			InitializeInterface ();
 
 			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
 			NavigationController.NavigationBarHidden = true;
@@ -185,7 +181,6 @@ namespace Solution
 		private void InitializeInterface()
 		{
 			this.View.BackgroundColor = board.MainColor;
-			//this.View.BackgroundColor = UIColor.FromRGB(189,34,58);
 
 			// generate the scrollview and the zoomingscrollview
 			GenerateScrollViews ();
@@ -199,14 +194,8 @@ namespace Solution
 
 		private void GenerateScrollViews()
 		{
-			// board orange color
-			/*UIImage background = UIImage.FromFile ("./boardscreen/backgrounds/interfacebackground.png");
-			UIImageView boardBack = new UIImageView (background);
-			boardBack.Frame = new RectangleF (0, 0, ScreenWidth, ScreenHeight);
-			View.AddSubview (boardBack);*/
-
-			scrollView = new UIScrollView (new CGRect (0, 0, ScreenWidth, ScreenHeight));
-			zoomingScrollView = new UIScrollView (new CGRect (0, 0, ScrollViewWidthSize, ScreenHeight));
+			scrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			zoomingScrollView = new UIScrollView (new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight));
 			zoomingScrollView.AddSubview (scrollView);
 			View.AddSubview (zoomingScrollView);
 		}
@@ -214,7 +203,7 @@ namespace Solution
 		public static void ZoomScrollview()
 		{
 			zoomingScrollView.SetZoomScale(1f, true);
-			scrollView.Frame = new CGRect(0, 0, ScreenWidth, scrollView.Frame.Height);
+			scrollView.Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, scrollView.Frame.Height);
 			scrollView.SetContentOffset (new CGPoint (TempContentOffset, 0), false);
 		}
 
@@ -222,7 +211,7 @@ namespace Solution
 		{
 			// TODO: remove hardcode and programatically derive the correct zooming value (.15f is current)
 			TempContentOffset = (float)scrollView.ContentOffset.X;
-			scrollView.Frame = new CGRect(0, ScreenHeight/2 - 70,
+			scrollView.Frame = new CGRect(0, AppDelegate.ScreenHeight/2 - 70,
 												ScrollViewWidthSize, scrollView.Frame.Height);
 
 			zoomingScrollView.SetZoomScale(.15f, true);
@@ -317,12 +306,12 @@ namespace Solution
 			UIImage pattern = UIImage.FromFile ("./boardscreen/backgrounds/branco.jpg");
 
 			UIImageView boardView = new UIImageView (pattern);
-			boardView.Frame = new CGRect (0, 0, ScrollViewWidthSize, ScreenHeight);
+			boardView.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
 			boardView.Tag = (int)Tags.Background;
 			this.AutomaticallyAdjustsScrollViewInsets = false;
 
 			// this limits the size of the scrollview
-			scrollView.ContentSize = new CGSize(ScrollViewWidthSize, ScreenHeight);
+			scrollView.ContentSize = new CGSize(ScrollViewWidthSize, AppDelegate.ScreenHeight);
 			// sets the scrollview on the middle of the view
 			scrollView.SetContentOffset (new CGPoint(ScrollViewWidthSize/2 - AppDelegate.ScreenWidth/2, 0), false);
 			// adds the background
@@ -335,7 +324,7 @@ namespace Solution
 				return zoomingScrollView.Subviews[0];
 			};
 
-			zoomingScrollView.RemoveGestureRecognizer (zoomingScrollView.PinchGestureRecognizer);
+			//zoomingScrollView.RemoveGestureRecognizer (zoomingScrollView.PinchGestureRecognizer);
 
 			UIImageView secondary = CreateColorSquare(new CGSize(ScrollViewWidthSize,50), new CGPoint(ScrollViewWidthSize/2,550), board.SecondaryColor.CGColor);
 			scrollView.AddSubview (secondary);
@@ -347,9 +336,9 @@ namespace Solution
 			UIImageView mainLogo = LoadMainLogo (logo, new CGPoint(ScrollViewWidthSize/2,-20));
 			scrollView.AddSubview (mainLogo);
 
-			UIImage contentdemo = UIImage.FromFile ("./boardscreen/backgrounds/contentdemo.png");
+			UIImage contentdemo = UIImage.FromFile ("./boardscreen/backgrounds/contentdemo2.png");
 			UIImageView contentDemo = new UIImageView (contentdemo);
-			contentDemo.Frame = new CGRect (0, 0, ScrollViewWidthSize, ScreenHeight);
+			contentDemo.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
 			scrollView.AddSubview (contentDemo);
 		}
 
@@ -367,9 +356,9 @@ namespace Solution
 				imgw = autosize * scale;
 				imgh = autosize;
 
-				if (imgw > BoardInterface.ScreenWidth) {
+				if (imgw > AppDelegate.ScreenWidth) {
 					scale = (float)(image.Size.Height/image.Size.Width);
-					imgw = BoardInterface.ScreenWidth;
+					imgw = AppDelegate.ScreenWidth;
 					imgh = imgw * scale;
 				}
 			} else {
@@ -380,7 +369,7 @@ namespace Solution
 
 
 			imgx = (float)(ContentOffset.X - imgw / 2);
-			imgy = (float)(ContentOffset.Y + BoardInterface.ScreenHeight / 2 - imgh / 2 - Button.ButtonSize / 2);
+			imgy = (float)(ContentOffset.Y + AppDelegate.ScreenHeight / 2 - imgh / 2 - Button.ButtonSize / 2);
 
 			// launches the image preview
 

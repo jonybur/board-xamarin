@@ -65,9 +65,9 @@ namespace Solution
 				imgw = autosize * scale;
 				imgh = autosize;
 
-				if (imgw > BoardInterface.ScreenWidth) {
+				if (imgw > AppDelegate.ScreenWidth) {
 					scale = (float)(image.Size.Height/image.Size.Width);
-					imgw = BoardInterface.ScreenWidth;
+					imgw = AppDelegate.ScreenWidth;
 					imgh = imgw * scale;
 				}
 			} else {
@@ -77,8 +77,8 @@ namespace Solution
 			}
 
 
-			imgx = (float)(ContentOffset.X + BoardInterface.ScreenWidth / 2 - imgw / 2);
-			imgy = (float)(ContentOffset.Y + BoardInterface.ScreenHeight / 2 - imgh / 2 - Button.ButtonSize / 2);
+			imgx = (float)(ContentOffset.X + AppDelegate.ScreenWidth / 2 - imgw / 2);
+			imgy = (float)(ContentOffset.Y + AppDelegate.ScreenHeight / 2 - imgh / 2 - Button.ButtonSize / 2);
 
 			// launches the image preview
 
@@ -108,8 +108,8 @@ namespace Solution
 			IsPicturePreview = false;
 			// so now launch image preview to choose position in the board
 
-			textBox.ImgX = (float)(ContentOffset.X + BoardInterface.ScreenWidth / 2 - textBox.ImgW / 2);
-			textBox.ImgY = (float)(ContentOffset.Y + BoardInterface.ScreenHeight / 2 - textBox.ImgH / 2 - Button.ButtonSize / 2);
+			textBox.ImgX = (float)(ContentOffset.X + AppDelegate.ScreenWidth / 2 - textBox.ImgW / 2);
+			textBox.ImgY = (float)(ContentOffset.Y + AppDelegate.ScreenHeight / 2 - textBox.ImgH / 2 - Button.ButtonSize / 2);
 
 			CGRect frame = new CGRect (textBox.ImgX, textBox.ImgY, textBox.ImgW, textBox.ImgH);
 			textBoxComponent = new TextBoxComponent (textBox);

@@ -191,7 +191,6 @@
     <BundleResource Include="Resources\logos\mansion.jpg" />
     <BundleResource Include="Resources\logos\liv.jpg" />
     <BundleResource Include="Resources\logos\mangos.png" />
-    <BundleResource Include="Resources\boardscreen\backgrounds\contentdemo.png" />
     <BundleResource Include="Resources\mainmenu\miniscroll2.jpg" />
     <BundleResource Include="Resources\mainmenu\circlered.png" />
     <BundleResource Include="Resources\mainmenu\circle.png" />
@@ -209,6 +208,9 @@
     <BundleResource Include="Resources\createscreens\screen1\content6.jpg" />
     <BundleResource Include="Resources\createscreens\screen1\content7.jpg" />
     <BundleResource Include="Resources\createscreens\screen2\content2.jpg" />
+    <BundleResource Include="Resources\createscreens\screen2\content3.jpg" />
+    <BundleResource Include="Resources\createscreens\screen2\cityboard4.jpg" />
+    <BundleResource Include="Resources\boardscreen\backgrounds\contentdemo2.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -244,9 +246,6 @@
     <Compile Include="Classes\Interface\Components\ButtonSets\Buttons\CancelButton.cs" />
     <Compile Include="Classes\Interface\Components\ButtonSets\Buttons\GalleryButton.cs" />
     <Compile Include="Classes\Interface\Components\ButtonSets\Buttons\ImageButton.cs" />
-    <Compile Include="Classes\Interface\Components\ButtonSets\Buttons\ImagePicker.cs">
-      <DependentUpon>..\..\..\..\Components\Buttons\ImageButton.cs</DependentUpon>
-    </Compile>
     <Compile Include="Classes\Interface\Components\ButtonSets\Buttons\NavigationButton.cs" />
     <Compile Include="Classes\Interface\Components\ButtonSets\Buttons\TextButton.cs" />
     <Compile Include="Classes\Interface\Components\TextBoxComponent.cs" />
@@ -265,6 +264,7 @@
     <Compile Include="Classes\Infrastructure\CommonUtils.cs" />
     <Compile Include="Classes\Screens\BusinessScreen.cs" />
     <Compile Include="Classes\Schema\GoogleGeolocatorObject.cs" />
+    <Compile Include="Classes\Infrastructure\ImagePicker.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

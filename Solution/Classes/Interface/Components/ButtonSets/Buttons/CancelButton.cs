@@ -22,7 +22,7 @@ namespace Solution
 			uiButton.SetImage (image, UIControlState.Normal);
 
 			uiButton.Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
-			uiButton.Center = new CGPoint ((BoardInterface.ScreenWidth - ButtonSize) / 4, BoardInterface.ScreenHeight - ButtonSize /2);
+			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth - ButtonSize) / 4, AppDelegate.ScreenHeight - ButtonSize /2);
 
 
 			uiButton.TouchUpInside += (object sender, EventArgs e) => {

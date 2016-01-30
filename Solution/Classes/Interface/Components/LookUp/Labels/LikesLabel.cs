@@ -15,7 +15,7 @@ namespace Solution
 		{		
 			const int LabelHeight = 21;
 
-			Frame = new CGRect (0, BoardInterface.ScreenHeight - LabelHeight - 25, BoardInterface.ScreenWidth, LabelHeight);
+			Frame = new CGRect (0, AppDelegate.ScreenHeight - LabelHeight - 25, AppDelegate.ScreenWidth, LabelHeight);
 			TextAlignment = UITextAlignment.Center;
 			BackgroundColor = UIColor.Clear;
 			TextColor = UIColor.White;

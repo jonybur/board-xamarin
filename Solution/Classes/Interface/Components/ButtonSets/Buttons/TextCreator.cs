@@ -25,7 +25,7 @@ namespace Solution
 
 		public TextCreator (UINavigationController navigationController, Action refreshContent)
 		{
-			uiView = new UIView(new CGRect (0, 0, BoardInterface.ScreenWidth, BoardInterface.ScreenHeight));
+			uiView = new UIView(new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 
 			uiView.BackgroundColor = UIColor.White;
 
@@ -48,7 +48,7 @@ namespace Solution
 
 		private UINavigationBar CreateNavigationBar(UINavigationController navigationController, Action refreshContent, UITextView textview)
 		{
-			var frame = new CGRect (0,0,BoardInterface.ScreenWidth, hborder);
+			var frame = new CGRect (0,0,AppDelegate.ScreenWidth, hborder);
 			UINavigationBar navBar = new UINavigationBar (frame);
 			UINavigationItem[] item = new UINavigationItem[1];
 
@@ -114,7 +114,7 @@ namespace Solution
 
 		private UILabel CreateLabel()
 		{
-			UILabel label = new UILabel (new CGRect (0, 80, BoardInterface.ScreenWidth, fontSize + 10)) {
+			UILabel label = new UILabel (new CGRect (0, 80, AppDelegate.ScreenWidth, fontSize + 10)) {
 				TextAlignment = UITextAlignment.Center,
 				BackgroundColor = UIColor.Clear,
 				TextColor = UIColor.White,
@@ -129,8 +129,8 @@ namespace Solution
 		private UITextView CreateTextView()
 		{
 			var frame = new CGRect(wborder + 20, hborder + 23, 
-										BoardInterface.ScreenWidth - wborder - 23,
-										BoardInterface.ScreenHeight - hborder - 20);
+										AppDelegate.ScreenWidth - wborder - 23,
+										AppDelegate.ScreenHeight - hborder - 20);
 
 			UITextView textview = new UITextView(frame);
 

@@ -31,9 +31,9 @@ namespace Solution
 			uiButton = new UIButton (UIButtonType.Custom);
 			uiButton.SetImage (regular, UIControlState.Normal);
 
-			//uiButton.Frame = new RectangleF (ButtonSize*2, BoardInterface.ScreenHeight - ButtonSize, ButtonSize, ButtonSize);
+			//uiButton.Frame = new RectangleF (ButtonSize*2, AppDelegate.ScreenHeight - ButtonSize, ButtonSize, ButtonSize);
 			uiButton.Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
-			uiButton.Center = new CGPoint (BoardInterface.ScreenWidth / 2, BoardInterface.ScreenHeight - ButtonSize / 2);
+			uiButton.Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - ButtonSize / 2);
 
 			float i = 0;
 
@@ -41,7 +41,7 @@ namespace Solution
 				// OVERRIDE FOR PRESENTATION
 
 				CGPoint position;
-				position = new CGPoint (BoardInterface.ScreenWidth * i,0);
+				position = new CGPoint (AppDelegate.ScreenWidth * i,0);
 				BoardInterface.scrollView.SetContentOffset (position, true);
 				i+= .8f;
 
@@ -85,12 +85,12 @@ namespace Solution
 				if (pictureCycle)
 				{
 					content = BoardInterface.ListPictures[highlitedContent];
-					position = new PointF (content.ImgX - BoardInterface.ScreenWidth/2,
-											content.ImgY - BoardInterface.ScreenHeight/2);
+					position = new PointF (content.ImgX - AppDelegate.ScreenWidth/2,
+											content.ImgY - AppDelegate.ScreenHeight/2);
 				} else {
 					content = BoardInterface.ListTextboxes[highlitedContent];
-					position = new PointF (content.ImgX - BoardInterface.ScreenWidth/2 + content.ImgW/2,
-											content.ImgY - BoardInterface.ScreenHeight/2 + content.ImgH / 2);
+					position = new PointF (content.ImgX - AppDelegate.ScreenWidth/2 + content.ImgW/2,
+											content.ImgY - AppDelegate.ScreenHeight/2 + content.ImgH / 2);
 				}
 
 
@@ -153,7 +153,7 @@ namespace Solution
 
 			uiButton.SetImage(alert, UIControlState.Normal);
 
-			UIGraphics.BeginImageContextWithOptions (new CGSize(BoardInterface.ScreenWidth, BoardInterface.ScreenHeight), false, 0);
+			UIGraphics.BeginImageContextWithOptions (new CGSize(AppDelegate.ScreenWidth, AppDelegate.ScreenHeight), false, 0);
 			CGContext context = UIGraphics.GetCurrentContext ();
 			string contentString = content.ToString();
 
@@ -162,8 +162,8 @@ namespace Solution
 			CGSize contentSize = contentNSString.StringSize (font);
 
 			//TODO: get x and y from navigation button
-			CGRect rect = new CGRect (BoardInterface.ScreenWidth/2-32, ((64 - contentSize.Height) / 2) + 
-				BoardInterface.ScreenHeight-64, 64, contentSize.Height);
+			CGRect rect = new CGRect (AppDelegate.ScreenWidth/2-32, ((64 - contentSize.Height) / 2) + 
+				AppDelegate.ScreenHeight-64, 64, contentSize.Height);
 
 			context.SetFillColor (UIColor.Black.CGColor);
 			new NSString (contentString).DrawString (rect, font, UILineBreakMode.WordWrap, UITextAlignment.Center);

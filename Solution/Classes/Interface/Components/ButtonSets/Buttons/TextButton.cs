@@ -27,8 +27,8 @@ namespace Solution
 			uiButton.SetImage (uiImage, UIControlState.Normal);
 
 			uiButton.Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
-			uiButton.Center = new CGPoint ((BoardInterface.ScreenWidth + ButtonSize) / 2 +
-			(BoardInterface.ScreenWidth - ButtonSize) / 8, BoardInterface.ScreenHeight - ButtonSize / 2);
+			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth + ButtonSize) / 2 +
+			(AppDelegate.ScreenWidth - ButtonSize) / 8, AppDelegate.ScreenHeight - ButtonSize / 2);
 
 			uiButton.TouchUpInside += async (object sender, EventArgs e) => {
 				TextCreator tc = new TextCreator (navigationController, refreshContent);

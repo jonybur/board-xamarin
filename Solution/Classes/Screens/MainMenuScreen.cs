@@ -101,7 +101,7 @@ namespace Solution
 				imgx += autosize / 4;
 			}
 
-			imgy = (float)(ContentOffset.Y + BoardInterface.ScreenHeight / 2);
+			imgy = (float)(ContentOffset.Y);
 
 			// launches the image preview
 			UIImageView boardIcon = new UIImageView (new CGRect (0, 0, autosize, autosize));
@@ -119,7 +119,7 @@ namespace Solution
 			circle.Center = new CGPoint(autosize/2, autosize/2);
 			circle.Image = circleImage;
 
-			boardIcon.AddSubview (circle);
+			//boardIcon.AddSubview (circle);
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (sideMenuIsUp)

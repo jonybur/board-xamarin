@@ -38,7 +38,7 @@ namespace Solution
 
 		public ChatInterface (string contentId, UINavigationController navigationController)
 		{
-			scrollView = new UIScrollView (new CGRect (0, 0, BoardInterface.ScreenWidth, BoardInterface.ScreenHeight));
+			scrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			scrollView.BackgroundColor = UIColor.White;
 
 			CreateWritingField (contentId);
@@ -85,7 +85,7 @@ namespace Solution
 		public async void LoadChat(string contentId)
 		{
 			lstMessages = StorageController.ReturnConversation (contentId);
-			scrollView.ContentSize = new CGSize (BoardInterface.ScreenWidth, hborder + writingTextView.Bounds.Height);
+			scrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, hborder + writingTextView.Bounds.Height);
 			lstChatUsers = new List<ChatUser> ();
 
 
@@ -144,7 +144,7 @@ namespace Solution
 		{
 			UITextView headline = await CreateHeadline (msg, yposition);
 
-			//scrollView.ContentSize = new SizeF(BoardInterface.ScreenWidth, yposition + hborder + writingTextView.Bounds.Height + headline.Bounds.Height);
+			//scrollView.ContentSize = new SizeF(AppDelegate.ScreenWidth, yposition + hborder + writingTextView.Bounds.Height + headline.Bounds.Height);
 
 			scrollView.AddSubview (headline);
 		}
@@ -153,7 +153,7 @@ namespace Solution
 		{
 			UITextView messagebox = CreateMessageBox (msg, yposition);
 
-			scrollView.ContentSize = new CGSize(BoardInterface.ScreenWidth, yposition + hborder + writingTextView.Bounds.Height + messagebox.Bounds.Height);
+			scrollView.ContentSize = new CGSize(AppDelegate.ScreenWidth, yposition + hborder + writingTextView.Bounds.Height + messagebox.Bounds.Height);
 
 			scrollView.AddSubview (messagebox);
 		}
@@ -223,7 +223,7 @@ namespace Solution
 			if (msg.UserId == CloudController.BoardUser.Id) {
 				textview.TextAlignment = UITextAlignment.Right;
 
-				frame.X = BoardInterface.ScreenWidth - frame.Width - messageborder;
+				frame.X = AppDelegate.ScreenWidth - frame.Width - messageborder;
 
 				textview.BackgroundColor = UIColor.FromRGB(240,74,45);
 				//textview.BackgroundColor = UIColor.FromRGB(58,166,247);
@@ -243,7 +243,7 @@ namespace Solution
 
 		private UINavigationBar CreateNavigationBar (UINavigationController navigationController)
 		{
-			var frame = new CGRect (0,0,BoardInterface.ScreenWidth, hborder);
+			var frame = new CGRect (0,0,AppDelegate.ScreenWidth, hborder);
 			UINavigationBar navBar = new UINavigationBar (frame);
 			UINavigationItem[] item = new UINavigationItem[1];
 
@@ -283,7 +283,7 @@ namespace Solution
 		private UITextView CreateWritingTextView()
 		{
 			var frame = new CGRect(10, 0, 
-				BoardInterface.ScreenWidth - 80, fontSize + lineSize);
+				AppDelegate.ScreenWidth - 80, fontSize + lineSize);
 
 			UITextView textview = new UITextView(frame);
 
@@ -301,8 +301,8 @@ namespace Solution
 
 		private void CreateWritingField(string contentId)
 		{
-			var frame = new CGRect(0, BoardInterface.ScreenHeight - fontSize - lineSize, 
-				BoardInterface.ScreenWidth, fontSize + lineSize);
+			var frame = new CGRect(0, AppDelegate.ScreenHeight - fontSize - lineSize, 
+				AppDelegate.ScreenWidth, fontSize + lineSize);
 
 			writingField = new UIView (frame);
 			writingField.BackgroundColor = UIColor.FromRGB (247, 247, 247);
@@ -316,7 +316,7 @@ namespace Solution
 		private UIButton CreateSendButton(string contentId)
 		{
 			CGPoint buttonPosition = new CGPoint(writingTextView.Frame.X + writingTextView.Frame.Width, 0);
-			CGSize buttonSize = new CGSize(BoardInterface.ScreenWidth - (writingTextView.Frame.X + writingTextView.Frame.Width), fontSize + lineSize);
+			CGSize buttonSize = new CGSize(AppDelegate.ScreenWidth - (writingTextView.Frame.X + writingTextView.Frame.Width), fontSize + lineSize);
 			
 			UIGraphics.BeginImageContextWithOptions (new CGSize(buttonSize.Width, buttonSize.Height), false, 0);
 			CGContext context = UIGraphics.GetCurrentContext ();
@@ -425,9 +425,9 @@ namespace Solution
 		float preOffset;
 		private void ScrollToBottom(bool animated)
 		{
-			if (scrollView.ContentSize.Height > (BoardInterface.ScreenHeight - scroll_amount)) {
+			if (scrollView.ContentSize.Height > (AppDelegate.ScreenHeight - scroll_amount)) {
 				preOffset = (float)scrollView.ContentOffset.Y;
-				scrollView.SetContentOffset (new CGPoint (0, scrollView.ContentSize.Height - (BoardInterface.ScreenHeight - scroll_amount) + separation), animated);
+				scrollView.SetContentOffset (new CGPoint (0, scrollView.ContentSize.Height - (AppDelegate.ScreenHeight - scroll_amount) + separation), animated);
 			}
 		}
 

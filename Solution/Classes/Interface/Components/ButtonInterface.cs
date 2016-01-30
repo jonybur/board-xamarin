@@ -33,7 +33,7 @@ namespace Solution
 		{
 			int cantViews = 1 + ActionsButtonSet.CantButtons + ConfirmationButtonSet.CantButtons;
 			UIView[] views = new UIView[cantViews];
-			CGRect frame = new CGRect (0, BoardInterface.ScreenHeight - Button.ButtonSize, BoardInterface.ScreenWidth, Button.ButtonSize);
+			CGRect frame = new CGRect (0, AppDelegate.ScreenHeight - Button.ButtonSize, AppDelegate.ScreenWidth, Button.ButtonSize);
 			//views [0] = CreateOrangeBox (frame);
 			views [0] = actionsButtonSet.arrayButtons [0].uiButton;
 			views [1] = actionsButtonSet.arrayButtons [1].uiButton;
