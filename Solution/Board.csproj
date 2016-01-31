@@ -211,6 +211,7 @@
     <BundleResource Include="Resources\createscreens\screen2\content3.jpg" />
     <BundleResource Include="Resources\createscreens\screen2\cityboard4.jpg" />
     <BundleResource Include="Resources\boardscreen\backgrounds\contentdemo2.png" />
+    <BundleResource Include="Resources\createscreens\screen3\lock.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -260,11 +261,11 @@
     <Compile Include="Classes\Screens\MainMenuScreen.cs" />
     <Compile Include="Classes\Screens\CreateScreen1.cs" />
     <Compile Include="Classes\Screens\CreateScreen2.cs" />
-    <Compile Include="Classes\Screens\CreateScreen3.cs" />
     <Compile Include="Classes\Infrastructure\CommonUtils.cs" />
     <Compile Include="Classes\Screens\BusinessScreen.cs" />
     <Compile Include="Classes\Schema\GoogleGeolocatorObject.cs" />
     <Compile Include="Classes\Infrastructure\ImagePicker.cs" />
+    <Compile Include="Classes\Screens\CreateScreen3.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
