@@ -140,6 +140,7 @@
     <Reference Include="System.Net.Http.Primitives">
       <HintPath>..\Components\azure-mobile-services-1.3.1\lib\ios-unified\System.Net.Http.Primitives.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Icon%402x.png" />
@@ -199,9 +200,7 @@
     <BundleResource Include="Resources\logos\doloreslolita.jpg" />
     <BundleResource Include="Resources\logos\mrmoes.jpg" />
     <BundleResource Include="Resources\logos\tavernopa.png" />
-    <BundleResource Include="Resources\mainmenu\sidemenu.png" />
     <BundleResource Include="Resources\mainmenu\menu_banner.jpg" />
-    <BundleResource Include="Resources\businessscreen\sidemenu.png" />
     <BundleResource Include="Resources\businessscreen\business_banner.jpg" />
     <BundleResource Include="Resources\businessscreen\businesscontent.jpg" />
     <BundleResource Include="Resources\createscreens\screen1\contentbak.jpg" />
@@ -212,6 +211,13 @@
     <BundleResource Include="Resources\createscreens\screen2\cityboard4.jpg" />
     <BundleResource Include="Resources\boardscreen\backgrounds\contentdemo2.png" />
     <BundleResource Include="Resources\createscreens\screen3\lock.png" />
+    <BundleResource Include="Resources\mainmenu\sidemenu.png" />
+    <BundleResource Include="Resources\businessscreen\sidemenu.png" />
+    <BundleResource Include="Resources\supportscreen\banner.jpg" />
+    <BundleResource Include="Resources\settingsscreen\banner.jpg" />
+    <BundleResource Include="Resources\invitescreen\banner.jpg" />
+    <BundleResource Include="Resources\invitescreen\mailicon.png" />
+    <BundleResource Include="Resources\supportscreen\support.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -266,6 +272,9 @@
     <Compile Include="Classes\Schema\GoogleGeolocatorObject.cs" />
     <Compile Include="Classes\Infrastructure\ImagePicker.cs" />
     <Compile Include="Classes\Screens\CreateScreen3.cs" />
+    <Compile Include="Classes\Screens\InviteScreen.cs" />
+    <Compile Include="Classes\Screens\SettingsScreen.cs" />
+    <Compile Include="Classes\Screens\SupportScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -293,6 +302,9 @@
     <Folder Include="Resources\createscreens\screen3\" />
     <Folder Include="Resources\logos\" />
     <Folder Include="Resources\businessscreen\" />
+    <Folder Include="Resources\invitescreen\" />
+    <Folder Include="Resources\settingsscreen\" />
+    <Folder Include="Resources\supportscreen\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

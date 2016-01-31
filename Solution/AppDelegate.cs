@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,6 +9,8 @@ using Facebook.CoreKit;
 
 using Google.Maps;
 using System.Net.Http;
+
+using System.Dynamic;
 
 namespace Solution
 {
@@ -65,6 +68,13 @@ namespace Solution
 			ScreenWidth = (float)UIScreen.MainScreen.Bounds.Width;
 			ScreenHeight = (float)UIScreen.MainScreen.Bounds.Height;
 
+			/*
+			string json = "{ \"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\", " +
+				"\"userSecret\": \"" + AccessToken.CurrentAccessToken.TokenString + "\" }";
+
+			CommonUtils.JsonRequest ("http://192.168.1.105:5000/api/account/login", json);
+			*/
+
 			// create a new window instance based on the screen size
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
 
@@ -75,7 +85,6 @@ namespace Solution
 			} else {
 				screen = new LoginScreen ();	
 			}
-
 
 			NavigationController = new UINavigationController();
 

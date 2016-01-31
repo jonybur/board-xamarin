@@ -202,8 +202,20 @@ namespace Solution
 			sidemenu.Image = bannerImage;
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				if (tg.LocationInView(this.View).Y > 400 && tg.LocationInView(this.View).Y < 500 ){
+				if (tg.LocationInView(this.View).Y > 315 && tg.LocationInView(this.View).Y < 385 ){
 					BusinessScreen screen = new BusinessScreen();
+					NavigationController.PushViewController(screen, false);
+				}
+				else if (tg.LocationInView(this.View).Y > 405 && tg.LocationInView(this.View).Y < 465){
+					SettingsScreen screen = new SettingsScreen();
+					NavigationController.PushViewController(screen, false);
+				}
+				else if (tg.LocationInView(this.View).Y > 490 && tg.LocationInView(this.View).Y < 550){
+					SupportScreen screen = new SupportScreen();
+					NavigationController.PushViewController(screen, false);
+				}
+				else if (tg.LocationInView(this.View).Y > 570 && tg.LocationInView(this.View).Y < 630 ){
+					InviteScreen screen = new InviteScreen();
 					NavigationController.PushViewController(screen, false);
 				}
 			});

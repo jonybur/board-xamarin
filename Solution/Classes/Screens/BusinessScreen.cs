@@ -89,10 +89,22 @@ namespace Solution
 			sidemenu.Image = bannerImage;
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				if (tg.LocationInView(this.View).Y > 400 && tg.LocationInView(this.View).Y < 500 ){
+				if (tg.LocationInView(this.View).Y > 315 && tg.LocationInView(this.View).Y < 385 ){
 					MainMenuScreen mainMenu = (MainMenuScreen)(NavigationController.ViewControllers[NavigationController.ViewControllers.Length - 2]);
 					mainMenu.HideSideMenu();
 					NavigationController.PopViewController(false);
+				}
+				else if (tg.LocationInView(this.View).Y > 405 && tg.LocationInView(this.View).Y < 465){
+					SettingsScreen screen = new SettingsScreen();
+					NavigationController.PushViewController(screen, false);
+				}
+				else if (tg.LocationInView(this.View).Y > 490 && tg.LocationInView(this.View).Y < 550){
+					SupportScreen screen = new SupportScreen();
+					NavigationController.PushViewController(screen, false);
+				}
+				else if (tg.LocationInView(this.View).Y > 570 && tg.LocationInView(this.View).Y < 630 ){
+					InviteScreen screen = new InviteScreen();
+					NavigationController.PushViewController(screen, false);
 				}
 			});
 
@@ -144,7 +156,7 @@ namespace Solution
 					profileView.Alpha = 1f;
 					sideMenuIsUp = true;
 				}
-				else if (AppDelegate.ScreenWidth * 2 / 3 < tg.LocationInView(this.View).X){
+				else if (AppDelegate.ScreenWidth / 4 * 3 < tg.LocationInView(this.View).X){
 					CreateScreen1 createScreen1 = new CreateScreen1();
 					NavigationController.PushViewController(createScreen1, false);
 				}

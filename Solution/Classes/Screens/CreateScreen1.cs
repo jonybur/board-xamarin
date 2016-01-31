@@ -23,8 +23,6 @@ namespace Solution
 {
 	public class CreateScreen1 : UIViewController
 	{
-		const string APIKey = "AIzaSyAUO-UX9QKVWK421yjXqoo02N5TYrG_hY8";
-
 		UIImageView banner;
 		MapView map;
 		Marker marker;
@@ -37,6 +35,8 @@ namespace Solution
 		bool nextEnabled;
 
 		bool firstLocationUpdate = false;
+
+		const string APIKey = "AIzaSyAUO-UX9QKVWK421yjXqoo02N5TYrG_hY8";
 
 		public CreateScreen1 () : base ("Board", null){
 
