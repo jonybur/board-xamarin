@@ -61,6 +61,7 @@ namespace Solution
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					NavigationController.PopViewController(false);
 				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 4) * 3 && nextEnabled){
+					AppDelegate.ListNewBoards.Add(board);
 					NavigationController.PopToViewController(NavigationController.ViewControllers[NavigationController.ViewControllers.Length - 4], false);
 				}
 			});

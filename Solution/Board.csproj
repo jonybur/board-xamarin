@@ -147,14 +147,9 @@
     <BundleResource Include="Resources\Icon-60%402x.png" />
     <BundleResource Include="Resources\boardscreen\buttons\text.png" />
     <BundleResource Include="Resources\boardscreen\buttons\picture.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\navigation" />
     <BundleResource Include="Resources\boardscreen\buttons\alert.png" />
     <BundleResource Include="Resources\boardscreen\buttons\accept.png" />
     <BundleResource Include="Resources\boardscreen\buttons\cancel.png" />
-    <BundleResource Include="Resources\welcomescreen\background.png" />
-    <BundleResource Include="Resources\welcomescreen\banner.png" />
-    <BundleResource Include="Resources\welcomescreen\centerbutton.png" />
-    <BundleResource Include="Resources\welcomescreen\facebookbutton.png" />
     <BundleResource Include="Resources\boardscreen\lookup\done.png" />
     <BundleResource Include="Resources\boardscreen\lookup\archive.png" />
     <BundleResource Include="Resources\boardscreen\buttons\gallery.png" />
@@ -178,22 +173,18 @@
     <BundleResource Include="Resources\createscreens\screen3\banner.jpg" />
     <BundleResource Include="Resources\fonts\Narwhal_bold.ttf" />
     <BundleResource Include="Resources\fonts\Narwhal.ttf" />
-    <BundleResource Include="Resources\boardscreen\backgrounds\opatavern.jpg" />
     <BundleResource Include="Resources\Default-667h%402x.png.bak" />
     <BundleResource Include="Resources\Default-667h%402x.png" />
-    <BundleResource Include="Resources\boardscreen\backgrounds\mangos.jpg" />
     <BundleResource Include="Resources\Icon.png" />
     <BundleResource Include="Resources\Default.png" />
     <BundleResource Include="Resources\Default%402x.png" />
     <BundleResource Include="Resources\Default-568h%402x.png" />
     <BundleResource Include="Resources\boardscreen\backgrounds\branco.jpg" />
-    <BundleResource Include="Resources\boardscreen\mangoslogo.png" />
     <BundleResource Include="Resources\logos\clevelander.png" />
     <BundleResource Include="Resources\logos\mansion.jpg" />
     <BundleResource Include="Resources\logos\liv.jpg" />
     <BundleResource Include="Resources\logos\mangos.png" />
     <BundleResource Include="Resources\mainmenu\miniscroll2.jpg" />
-    <BundleResource Include="Resources\mainmenu\circlered.png" />
     <BundleResource Include="Resources\mainmenu\circle.png" />
     <BundleResource Include="Resources\logos\americansocial.jpeg" />
     <BundleResource Include="Resources\logos\doghouse.jpeg" />
@@ -218,6 +209,11 @@
     <BundleResource Include="Resources\invitescreen\banner.jpg" />
     <BundleResource Include="Resources\invitescreen\mailicon.png" />
     <BundleResource Include="Resources\supportscreen\support.png" />
+    <BundleResource Include="Resources\mainmenu\test_circle.png" />
+    <BundleResource Include="Resources\boardscreen\buttons\back3.png" />
+    <BundleResource Include="Resources\boardscreen\buttons\back4.png" />
+    <BundleResource Include="Resources\boardscreen\buttons\navigationback.png" />
+    <BundleResource Include="Resources\boardscreen\buttons\navigationfront.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -230,39 +226,12 @@
     <Compile Include="Classes\Infrastructure\StorageController.cs" />
     <Compile Include="Classes\Schema\Board.cs" />
     <Compile Include="Classes\Infrastructure\CloudController.cs" />
-    <Compile Include="Classes\Deprecated\ActivityIndicator.cs" />
-    <Compile Include="Classes\Interface\BoardInterface.cs" />
-    <Compile Include="Classes\Interface\Components\ButtonInterface.cs" />
-    <Compile Include="Classes\Interface\Components\ButtonSets\ActionsButtonSet.cs" />
-    <Compile Include="Classes\Interface\Components\ButtonSets\ButtonSet.cs" />
-    <Compile Include="Classes\Interface\Components\ButtonSets\ConfirmationButtonSet.cs" />
-    <Compile Include="Classes\Interface\Components\Preview.cs" />
-    <Compile Include="Classes\Interface\Components\Gallery.cs" />
     <Compile Include="Classes\Schema\User.cs" />
     <Compile Include="Classes\Schema\Like.cs" />
-    <Compile Include="Classes\Interface\Components\LookUp\LookUp.cs" />
-    <Compile Include="Classes\Interface\Components\LookUp\Labels\LikesLabel.cs" />
-    <Compile Include="Classes\Interface\Components\LookUp\Buttons\ArchiveButton.cs" />
-    <Compile Include="Classes\Interface\Components\LookUp\Buttons\LikeButton.cs" />
     <Compile Include="Classes\Schema\Content.cs" />
     <Compile Include="Classes\Schema\Content\Picture.cs" />
     <Compile Include="Classes\Schema\Content\TextBox.cs" />
-    <Compile Include="Classes\Interface\Components\ButtonSets\Buttons\AcceptButton.cs" />
-    <Compile Include="Classes\Interface\Components\ButtonSets\Buttons\BackButton.cs" />
-    <Compile Include="Classes\Interface\Components\ButtonSets\Buttons\Button.cs" />
-    <Compile Include="Classes\Interface\Components\ButtonSets\Buttons\CancelButton.cs" />
-    <Compile Include="Classes\Interface\Components\ButtonSets\Buttons\GalleryButton.cs" />
-    <Compile Include="Classes\Interface\Components\ButtonSets\Buttons\ImageButton.cs" />
-    <Compile Include="Classes\Interface\Components\ButtonSets\Buttons\NavigationButton.cs" />
-    <Compile Include="Classes\Interface\Components\ButtonSets\Buttons\TextButton.cs" />
-    <Compile Include="Classes\Interface\Components\TextBoxComponent.cs" />
-    <Compile Include="Classes\NavigateScreen.cs" />
-    <Compile Include="Classes\Interface\Components\ButtonSets\Buttons\TextCreator.cs">
-      <DependentUpon>TextButton.cs</DependentUpon>
-    </Compile>
     <Compile Include="Classes\Schema\Message.cs" />
-    <Compile Include="Classes\Interface\Components\LookUp\Buttons\ChatButton.cs" />
-    <Compile Include="Classes\Interface\Components\ChatInterface.cs" />
     <Compile Include="Classes\Screens\LoginScreen.cs" />
     <Compile Include="Classes\Screens\MainMenuScreen.cs" />
     <Compile Include="Classes\Screens\CreateScreen1.cs" />
@@ -275,6 +244,31 @@
     <Compile Include="Classes\Screens\InviteScreen.cs" />
     <Compile Include="Classes\Screens\SettingsScreen.cs" />
     <Compile Include="Classes\Screens\SupportScreen.cs" />
+    <Compile Include="Classes\BoardInterface\BoardInterface.cs" />
+    <Compile Include="Classes\BoardInterface\Components\ButtonInterface.cs" />
+    <Compile Include="Classes\BoardInterface\Components\ButtonSets\ActionsButtonSet.cs" />
+    <Compile Include="Classes\BoardInterface\Components\ButtonSets\ButtonSet.cs" />
+    <Compile Include="Classes\BoardInterface\Components\ButtonSets\ConfirmationButtonSet.cs" />
+    <Compile Include="Classes\BoardInterface\Components\Preview.cs" />
+    <Compile Include="Classes\BoardInterface\Components\Gallery.cs" />
+    <Compile Include="Classes\BoardInterface\Components\LookUp\LookUp.cs" />
+    <Compile Include="Classes\BoardInterface\Components\LookUp\Labels\LikesLabel.cs" />
+    <Compile Include="Classes\BoardInterface\Components\LookUp\Buttons\ArchiveButton.cs" />
+    <Compile Include="Classes\BoardInterface\Components\LookUp\Buttons\LikeButton.cs" />
+    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\AcceptButton.cs" />
+    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\BackButton.cs" />
+    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\Button.cs" />
+    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\CancelButton.cs" />
+    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\GalleryButton.cs" />
+    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\ImageButton.cs" />
+    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\NavigationButton.cs" />
+    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\TextButton.cs" />
+    <Compile Include="Classes\BoardInterface\Components\TextBoxComponent.cs" />
+    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\TextCreator.cs">
+      <DependentUpon>TextButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Classes\BoardInterface\Components\LookUp\Buttons\ChatButton.cs" />
+    <Compile Include="Classes\BoardInterface\Components\ChatInterface.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -284,13 +278,9 @@
     <Folder Include="Classes\" />
     <Folder Include="Classes\Infrastructure\" />
     <Folder Include="Classes\Schema\" />
-    <Folder Include="Classes\Deprecated\" />
-    <Folder Include="Classes\Interface\" />
     <Folder Include="Resources\boardscreen\" />
     <Folder Include="Resources\boardscreen\lookup\" />
     <Folder Include="Resources\boardscreen\backgrounds\" />
-    <Folder Include="Classes\Interface\Components\LookUp\" />
-    <Folder Include="Classes\Interface\Components\LookUp\Buttons\" />
     <Folder Include="Classes\Schema\Content\" />
     <Folder Include="Resources\fonts\" />
     <Folder Include="Resources\mainmenu\" />
@@ -305,6 +295,9 @@
     <Folder Include="Resources\invitescreen\" />
     <Folder Include="Resources\settingsscreen\" />
     <Folder Include="Resources\supportscreen\" />
+    <Folder Include="Classes\BoardInterface\" />
+    <Folder Include="Classes\BoardInterface\Components\LookUp\" />
+    <Folder Include="Classes\BoardInterface\Components\LookUp\Buttons\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

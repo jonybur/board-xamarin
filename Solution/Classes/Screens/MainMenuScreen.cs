@@ -67,11 +67,11 @@ namespace Solution
 		{
 			List<Board> boardList = new List<Board> ();
 
-			boardList.Add(new Board ("American Social", "./logos/americansocial.jpeg", UIColor.FromRGB (67, 15, 0), UIColor.FromRGB (221, 169, 91), "Brickell"));
-			boardList.Add(new Board ("Dog House", "./logos/doghouse.jpeg", UIColor.FromRGB (35, 32, 35), UIColor.FromRGB (220, 31, 24), "Brickell"));
-			boardList.Add(new Board ("Dolores Lolita", "./logos/doloreslolita.jpg", UIColor.FromRGB (185, 143, 6), UIColor.FromRGB (2, 0, 6), "Brickell"));	
-			boardList.Add(new Board ("Taverna Opa", "./logos/tavernopa.png", UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Brickell"));	
-			boardList.Add(new Board ("Mr Moe's", "./logos/mrmoes.jpg", UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "Coconut Grove"));
+			boardList.Add(new Board ("American Social", "./logos/americansocial.jpeg", UIColor.FromRGB (67, 15, 0), UIColor.FromRGB (221, 169, 91), "Brickell", Profile.CurrentProfile.UserID));
+			boardList.Add(new Board ("Dog House", "./logos/doghouse.jpeg", UIColor.FromRGB (35, 32, 35), UIColor.FromRGB (220, 31, 24), "Brickell", string.Empty));
+			boardList.Add(new Board ("Dolores Lolita", "./logos/doloreslolita.jpg", UIColor.FromRGB (185, 143, 6), UIColor.FromRGB (2, 0, 6), "Brickell", string.Empty));	
+			boardList.Add(new Board ("Taverna Opa", "./logos/tavernopa.png", UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Brickell", string.Empty));	
+			boardList.Add(new Board ("Mr Moe's", "./logos/mrmoes.jpg", UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "Coconut Grove", string.Empty));
 
 			return boardList;
 		}  
@@ -125,7 +125,7 @@ namespace Solution
 				if (sideMenuIsUp)
 				{sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return;}
 
-				BoardInterface boardInterface = new BoardInterface(board);
+				BoardInterface boardInterface = new BoardInterface(board, false);
 				NavigationController.PushViewController(boardInterface, true);
 			});
 
@@ -208,16 +208,17 @@ namespace Solution
 				}
 				else if (tg.LocationInView(this.View).Y > 405 && tg.LocationInView(this.View).Y < 465){
 					SettingsScreen screen = new SettingsScreen();
-					NavigationController.PushViewController(screen, false);
+					NavigationController.PushViewController(screen, true);
 				}
 				else if (tg.LocationInView(this.View).Y > 490 && tg.LocationInView(this.View).Y < 550){
 					SupportScreen screen = new SupportScreen();
-					NavigationController.PushViewController(screen, false);
+					NavigationController.PushViewController(screen, true);
 				}
 				else if (tg.LocationInView(this.View).Y > 570 && tg.LocationInView(this.View).Y < 630 ){
 					InviteScreen screen = new InviteScreen();
-					NavigationController.PushViewController(screen, false);
+					NavigationController.PushViewController(screen, true);
 				}
+				HideSideMenu();
 			});
 
 			sidemenu.UserInteractionEnabled = true;
@@ -235,7 +236,7 @@ namespace Solution
 			UIFont namefont = UIFont.FromName("narwhal-bold", 20);
 			UIFont lastnamefont = UIFont.FromName("narwhal-bold", 24);
 
-			UILabel name = new UILabel (new CGRect(0, profileView.Frame.Bottom + 15, sidemenu.Frame.Width, 20));
+			UILabel name = new UILabel (new CGRect(10, profileView.Frame.Bottom + 15, sidemenu.Frame.Width - 20, 20));
 			name.Font = namefont;
 			name.Text = Profile.CurrentProfile.FirstName;
 			name.TextColor = UIColor.White;
@@ -243,7 +244,7 @@ namespace Solution
 			name.AdjustsFontSizeToFitWidth = true;
 			sidemenu.AddSubview (name);
 
-			UILabel lastname = new UILabel (new CGRect(0, name.Frame.Bottom + 3, sidemenu.Frame.Width, 24));
+			UILabel lastname = new UILabel (new CGRect(10, name.Frame.Bottom + 3, sidemenu.Frame.Width - 20, 24));
 			lastname.Font = lastnamefont;
 			lastname.AdjustsFontSizeToFitWidth = true;
 			lastname.Text = Profile.CurrentProfile.LastName;

@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
 
+using Facebook.CoreKit;
+
 namespace Solution
 {
 	// user interface - connects to the board controller
@@ -20,6 +22,9 @@ namespace Solution
 	public class BoardInterface : UIViewController
 	{
 		private Gallery gallery;
+
+		const float primaryBar = Button.ButtonSize + 20;
+		const float secondaryBar = primaryBar / 2;
 
 		public static UIImageView CenterLogo;
 		Board board;
@@ -37,12 +42,14 @@ namespace Solution
 
 		public static int ScrollViewWidthSize = 2500;
 
+		bool TestMode;
+
 		public static List<Picture> ListPictures;
 		public static List<TextBox> ListTextboxes;
 
-		public BoardInterface (Board _board) : base ("Board", null){
+		public BoardInterface (Board _board, bool _testMode) : base ("Board", null){
 			board = _board;
-
+			TestMode = _testMode;
 		}
 
 		public override void DidReceiveMemoryWarning ()
@@ -110,8 +117,8 @@ namespace Solution
 
 		private void GetFromLocalDB()
 		{
-			ListPictures = StorageController.ReturnAllStoredPictures (false);
-			ListTextboxes = StorageController.ReturnAllStoredTextboxes (false);
+			//ListPictures = StorageController.ReturnAllStoredPictures (false);
+			//ListTextboxes = StorageController.ReturnAllStoredTextboxes (false);
 		}
 
 		private void InitializeGallery() {
@@ -172,8 +179,7 @@ namespace Solution
 			if (enabled) {
 				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.NavigationBar);	
 			}
-			else
-			{
+			else{
 				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.Disable);
 			}
 		}
@@ -219,9 +225,14 @@ namespace Solution
 
 		private void LoadButtons()
 		{
-			buttonInterface = new ButtonInterface (RefreshContent, scrollView, NavigationController);
+			buttonInterface = new ButtonInterface (RefreshContent, scrollView, NavigationController, board.SecondaryColor);
 
-			this.View.AddSubviews (buttonInterface.GetAllViews());
+			this.View.AddSubviews (buttonInterface.GetUserButtons ());
+			/*
+			if (Profile.CurrentProfile.UserID == board.CreatorId) {
+				this.View.AddSubviews (buttonInterface.GetCreatorButtons());
+			} else {
+			}*/
 		}
 
 		public void RemoveAllContent()
@@ -238,6 +249,9 @@ namespace Solution
 		{
 			RemoveAllContent();
 
+			ListPictures = new List<Picture> ();
+			ListTextboxes = new List<TextBox> ();
+
 			GetFromLocalDB ();
 
 			foreach (Picture p in ListPictures) {
@@ -247,24 +261,6 @@ namespace Solution
 			foreach (TextBox tb in ListTextboxes) {
 				DrawTextbox (tb);
 			}
-		}
-			
-		public static bool CheckRectangleFCollision(CGRect prev)
-		{
-			foreach (Picture pic in ListPictures) {
-				CGRect aux = pic.GetRectangleF();
-				if (prev.IntersectsWith (aux)) {
-					return true;
-				}
-			}
-
-			foreach (TextBox tb in ListTextboxes) {
-				CGRect aux = tb.GetRectangleF();
-				if (prev.IntersectsWith (aux)) {
-					return true;
-				}
-			}
-			return false;
 		}
 
 		private void DrawPicture(Picture p)
@@ -324,22 +320,25 @@ namespace Solution
 				return zoomingScrollView.Subviews[0];
 			};
 
-			//zoomingScrollView.RemoveGestureRecognizer (zoomingScrollView.PinchGestureRecognizer);
+			zoomingScrollView.RemoveGestureRecognizer (zoomingScrollView.PinchGestureRecognizer);
 
-			UIImageView secondary = CreateColorSquare(new CGSize(ScrollViewWidthSize,50), new CGPoint(ScrollViewWidthSize/2,550), board.SecondaryColor.CGColor);
+			UIImageView secondary = CreateColorSquare(new CGSize(ScrollViewWidthSize,secondaryBar), new CGPoint(ScrollViewWidthSize/2,AppDelegate.ScreenHeight - primaryBar - secondaryBar / 2), board.SecondaryColor.CGColor);
+			secondary.Tag = (int)Tags.Background;
 			scrollView.AddSubview (secondary);
 
-			UIImageView primary = CreateColorSquare(new CGSize(ScrollViewWidthSize,120), new CGPoint(ScrollViewWidthSize/2,620), board.MainColor.CGColor);
+			UIImageView primary = CreateColorSquare(new CGSize(ScrollViewWidthSize,primaryBar), new CGPoint(ScrollViewWidthSize/2, AppDelegate.ScreenHeight - primaryBar / 2), board.MainColor.CGColor);
+			primary.Tag = (int)Tags.Background;
 			scrollView.AddSubview (primary);
 
 			UIImage logo = board.Image;
 			UIImageView mainLogo = LoadMainLogo (logo, new CGPoint(ScrollViewWidthSize/2,-20));
 			scrollView.AddSubview (mainLogo);
 
-			UIImage contentdemo = UIImage.FromFile ("./boardscreen/backgrounds/contentdemo2.png");
-			UIImageView contentDemo = new UIImageView (contentdemo);
-			contentDemo.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
-			scrollView.AddSubview (contentDemo);
+			if (TestMode) {
+				UIImageView democontent = new UIImageView (UIImage.FromFile ("./boardscreen/backgrounds/contentdemo2.png"));
+				democontent.Frame = boardView.Frame;
+				scrollView.AddSubview (democontent);
+			}
 		}
 
 		private UIImageView LoadMainLogo(UIImage image, CGPoint ContentOffset)
@@ -367,7 +366,6 @@ namespace Solution
 				imgh = autosize * scale;
 			}
 
-
 			imgx = (float)(ContentOffset.X - imgw / 2);
 			imgy = (float)(ContentOffset.Y + AppDelegate.ScreenHeight / 2 - imgh / 2 - Button.ButtonSize / 2);
 
@@ -381,6 +379,7 @@ namespace Solution
 			UIImage thumbImg = image.Scale (new CGSize (imgw, imgh));
 			uiImageView.Image = thumbImg;
 
+			mainLogo.Tag = (int)Tags.Background;
 			mainLogo.AddSubviews(uiImageView);
 
 			return mainLogo;

@@ -58,7 +58,7 @@ namespace Solution
 		}
 
 		private void LoadContent()
-		{
+		{ 
 			// si el usuario no tiene boards creados...
 			thumbSize = AppDelegate.ScreenWidth / 4;
 			circleImage = UIImage.FromFile ("./mainmenu/circle.png");
@@ -90,22 +90,21 @@ namespace Solution
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).Y > 315 && tg.LocationInView(this.View).Y < 385 ){
-					MainMenuScreen mainMenu = (MainMenuScreen)(NavigationController.ViewControllers[NavigationController.ViewControllers.Length - 2]);
-					mainMenu.HideSideMenu();
 					NavigationController.PopViewController(false);
 				}
 				else if (tg.LocationInView(this.View).Y > 405 && tg.LocationInView(this.View).Y < 465){
 					SettingsScreen screen = new SettingsScreen();
-					NavigationController.PushViewController(screen, false);
+					NavigationController.PushViewController(screen, true);
 				}
 				else if (tg.LocationInView(this.View).Y > 490 && tg.LocationInView(this.View).Y < 550){
 					SupportScreen screen = new SupportScreen();
-					NavigationController.PushViewController(screen, false);
+					NavigationController.PushViewController(screen, true);
 				}
 				else if (tg.LocationInView(this.View).Y > 570 && tg.LocationInView(this.View).Y < 630 ){
 					InviteScreen screen = new InviteScreen();
-					NavigationController.PushViewController(screen, false);
+					NavigationController.PushViewController(screen, true);
 				}
+				HideSideMenu();
 			});
 
 			sidemenu.UserInteractionEnabled = true;
@@ -138,6 +137,12 @@ namespace Solution
 			lastname.TextColor = UIColor.White;
 			lastname.TextAlignment = UITextAlignment.Center;
 			sidemenu.AddSubview (lastname);
+		}
+
+		public void HideSideMenu()
+		{
+			if (sideMenuIsUp)
+			{ sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; }
 		}
 
 		private void LoadBanner()

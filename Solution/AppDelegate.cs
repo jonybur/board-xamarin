@@ -19,10 +19,14 @@ namespace Solution
 	// application events from iOS.
 
 	[Register ("AppDelegate")]
-	public partial class AppDelegate : UIApplicationDelegate
+	public class AppDelegate : UIApplicationDelegate
 	{
 		// class-level declarations
 		UIWindow window;
+
+		// until we get backend support and we can actually store new boards online
+		public static List<Board> ListNewBoards;
+
 		public static UINavigationController NavigationController;
 
 		public static CloudController CloudController;
@@ -57,6 +61,8 @@ namespace Solution
 
 			Latitude = 0;
 			Longitude = 0;
+
+			ListNewBoards = new List<Board> ();
 
 			// FACEBOOK
 

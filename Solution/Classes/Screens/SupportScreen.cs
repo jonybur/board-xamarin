@@ -126,7 +126,7 @@ namespace Solution
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					NavigationController.PopViewController(false);
+					NavigationController.PopViewController(true);
 				}
 			});
 

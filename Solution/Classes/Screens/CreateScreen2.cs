@@ -89,7 +89,7 @@ namespace Solution
 			contentDemo.Frame = new CGRect(0,0, boardView.Frame.Width, boardView.Frame.Height);
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				BoardInterface boardInterface = new BoardInterface(board);
+				BoardInterface boardInterface = new BoardInterface(board, true);
 				NavigationController.PushViewController(boardInterface, true);
 			});
 
@@ -136,8 +136,6 @@ namespace Solution
 			GenerateColorSelectors ();
 
 			// bottom preview
-
-			BoardInterface boardInterface = new BoardInterface (board);
 
 			UIImageView previewBoard = GeneratePreviewBoard ();
 

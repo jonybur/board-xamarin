@@ -14,18 +14,14 @@ namespace Solution
 	// Board's way of storing its UIImageViews on the DB
 	public class Picture : Content
 	{
-		[JsonProperty(PropertyName = "id")]
 		public string Id { get; set; }
 
 		// Image is a JPEG saved as an enconded Base64
-		[JsonProperty(PropertyName = "image")]
 		public string Image { get; set; }
 
 		// Thumbnail is a JPEG saved as an enconded Base64, with a low resolution, for the main board
-		[JsonProperty(PropertyName = "thumbnail")]
 		public string Thumbnail { get; set; }
 
-		[JsonProperty(PropertyName = "rotation")]
 		public float Rotation { get; set; }
 
 		public UIImage GetImage()
