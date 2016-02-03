@@ -147,11 +147,13 @@ namespace Solution
 			int n = 0;
 
 			string location = String.Empty;
+
 			// starting point
 			float yposition = 5;
 
 			foreach (Board b in boardList) {
 				if (location != b.Location) {
+					
 					// draw new location string
 					yposition += 70;
 					UILabel lblLocation = new UILabel(new CGRect(30, yposition, AppDelegate.ScreenWidth - 40, 24));

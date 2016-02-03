@@ -23,11 +23,11 @@ namespace Solution
 			} 
 		}
 
-		public ImagePicker (UIScrollView scrollView)
+		public ImagePicker (UIScrollView scrollView, UIImagePickerControllerSourceType sourceType)
 		{
 			imagePickerController = new UIImagePickerController();
 
-			imagePickerController.SourceType = UIImagePickerControllerSourceType.PhotoLibrary;
+			imagePickerController.SourceType = sourceType;
 			imagePickerController.MediaTypes = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.PhotoLibrary);
 
 			imagePickerController.FinishedPickingMedia += (sender, e) => {

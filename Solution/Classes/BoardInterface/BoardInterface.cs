@@ -227,12 +227,12 @@ namespace Solution
 		{
 			buttonInterface = new ButtonInterface (RefreshContent, scrollView, NavigationController, board.SecondaryColor);
 
-			this.View.AddSubviews (buttonInterface.GetUserButtons ());
-			/*
+
 			if (Profile.CurrentProfile.UserID == board.CreatorId) {
 				this.View.AddSubviews (buttonInterface.GetCreatorButtons());
 			} else {
-			}*/
+				this.View.AddSubviews (buttonInterface.GetUserButtons ());
+			}
 		}
 
 		public void RemoveAllContent()

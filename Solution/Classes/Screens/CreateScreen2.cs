@@ -138,7 +138,6 @@ namespace Solution
 			// bottom preview
 
 			UIImageView previewBoard = GeneratePreviewBoard ();
-
 			View.AddSubview (previewBoard); 
 		}
 

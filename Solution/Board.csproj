@@ -214,6 +214,17 @@
     <BundleResource Include="Resources\boardscreen\buttons\back4.png" />
     <BundleResource Include="Resources\boardscreen\buttons\navigationback.png" />
     <BundleResource Include="Resources\boardscreen\buttons\navigationfront.png" />
+    <BundleResource Include="Resources\boardscreen\buttons\camera1.png" />
+    <BundleResource Include="Resources\boardscreen\buttons\camera2.png" />
+    <BundleResource Include="Resources\boardscreen\buttons\back5.png" />
+    <BundleResource Include="Resources\boardscreen\buttons\camera3.png" />
+    <BundleResource Include="Resources\boardscreen\buttons\picture2.png" />
+    <BundleResource Include="Resources\boardscreen\buttons\picture3.png" />
+    <BundleResource Include="Resources\boardscreen\buttons\plus.png" />
+    <BundleResource Include="Resources\boardscreen\buttons\plus2.png" />
+    <BundleResource Include="Resources\boardscreen\buttons\plus3.png" />
+    <BundleResource Include="Resources\boardscreen\buttons\card.png" />
+    <BundleResource Include="Resources\boardscreen\buttons\picture6.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -245,30 +256,32 @@
     <Compile Include="Classes\Screens\SettingsScreen.cs" />
     <Compile Include="Classes\Screens\SupportScreen.cs" />
     <Compile Include="Classes\BoardInterface\BoardInterface.cs" />
-    <Compile Include="Classes\BoardInterface\Components\ButtonInterface.cs" />
-    <Compile Include="Classes\BoardInterface\Components\ButtonSets\ActionsButtonSet.cs" />
-    <Compile Include="Classes\BoardInterface\Components\ButtonSets\ButtonSet.cs" />
-    <Compile Include="Classes\BoardInterface\Components\ButtonSets\ConfirmationButtonSet.cs" />
-    <Compile Include="Classes\BoardInterface\Components\Preview.cs" />
-    <Compile Include="Classes\BoardInterface\Components\Gallery.cs" />
-    <Compile Include="Classes\BoardInterface\Components\LookUp\LookUp.cs" />
-    <Compile Include="Classes\BoardInterface\Components\LookUp\Labels\LikesLabel.cs" />
-    <Compile Include="Classes\BoardInterface\Components\LookUp\Buttons\ArchiveButton.cs" />
-    <Compile Include="Classes\BoardInterface\Components\LookUp\Buttons\LikeButton.cs" />
-    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\AcceptButton.cs" />
-    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\BackButton.cs" />
-    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\Button.cs" />
-    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\CancelButton.cs" />
-    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\GalleryButton.cs" />
-    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\ImageButton.cs" />
-    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\NavigationButton.cs" />
-    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\TextButton.cs" />
-    <Compile Include="Classes\BoardInterface\Components\TextBoxComponent.cs" />
-    <Compile Include="Classes\BoardInterface\Components\ButtonSets\Buttons\TextCreator.cs">
+    <Compile Include="Classes\BoardInterface\BoardComponents\ButtonInterface.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\ButtonSets\ActionsButtonSet.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\ButtonSets\ButtonSet.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\ButtonSets\ConfirmationButtonSet.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\Preview.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\Gallery.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\LookUp\LookUp.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\LookUp\Labels\LikesLabel.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\LookUp\Buttons\ArchiveButton.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\LookUp\Buttons\LikeButton.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\ButtonSets\Buttons\AcceptButton.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\ButtonSets\Buttons\BackButton.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\ButtonSets\Buttons\Button.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\ButtonSets\Buttons\CancelButton.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\ButtonSets\Buttons\GalleryButton.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\ButtonSets\Buttons\ImageButton.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\ButtonSets\Buttons\NavigationButton.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\ButtonSets\Buttons\TextButton.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\TextBoxComponent.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\ButtonSets\Buttons\TextCreator.cs">
       <DependentUpon>TextButton.cs</DependentUpon>
     </Compile>
-    <Compile Include="Classes\BoardInterface\Components\LookUp\Buttons\ChatButton.cs" />
-    <Compile Include="Classes\BoardInterface\Components\ChatInterface.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\LookUp\Buttons\ChatButton.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\ChatInterface.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\ButtonSets\Buttons\CameraButton.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\ButtonSets\Buttons\CardButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -296,8 +309,8 @@
     <Folder Include="Resources\settingsscreen\" />
     <Folder Include="Resources\supportscreen\" />
     <Folder Include="Classes\BoardInterface\" />
-    <Folder Include="Classes\BoardInterface\Components\LookUp\" />
-    <Folder Include="Classes\BoardInterface\Components\LookUp\Buttons\" />
+    <Folder Include="Classes\BoardInterface\BoardComponents\LookUp\" />
+    <Folder Include="Classes\BoardInterface\BoardComponents\LookUp\Buttons\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">
