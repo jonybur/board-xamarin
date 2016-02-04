@@ -1,3 +1,4 @@
+
 using System;
 using Newtonsoft.Json;
 using CoreGraphics;
@@ -20,40 +21,22 @@ namespace Solution
 		// TODO: preview should handle picture previews with a PictureComponent
 		public static TextBoxComponent textBoxComponent;
 
-		public static bool Collision;
 		private static UIView uiView;
 		private static UIImage compressedImage;
 
-		private static float Compression = .6f;
-		private static float ThumbCompression = .4f;
-
 		public static bool IsPicturePreview;
+
+		private static float Rotation = 0;
 
 		public static UIView GetUIView()
 		{
 			return uiView;
 		}
 
-		public static CGRect GetRectangleF()
-		{
-			return new CGRect (uiView.Center.X - uiView.Bounds.Width / 2,
-				uiView.Center.Y - uiView.Bounds.Height / 2, 
-				uiView.Bounds.Width, uiView.Bounds.Height);
-		}
-
 		public static void Initialize (UIImage image, CGPoint ContentOffset)
 		{
 			IsPicturePreview = true;
 			compressedImage = image;
-			string imageString = (compressedImage.AsJPEG (Compression).GetBase64EncodedString (NSDataBase64EncodingOptions.None) as string);
-
-			// while the string is too long (the image is too heavy)
-			while (imageString.Length > 100000) {
-				// reescale
-				compressedImage = compressedImage.Scale(new CGSize (compressedImage.Size.Width * 0.75f, compressedImage.Size.Height * 0.75f));
-				// recompress
-				imageString = (compressedImage.AsJPEG (Compression).GetBase64EncodedString (NSDataBase64EncodingOptions.None) as string);
-			}
 
 			// the image is uploadable
 			// so now launch image preview to choose position in the board
@@ -90,7 +73,7 @@ namespace Solution
 		
 			UIImage thumbImg = image.Scale (new CGSize (imgw, imgh));
 			uiImageView.Image = thumbImg;
-			uiImageView.Alpha = 0.5f;
+			uiImageView.Alpha = .5f;
 
 			uiImageView.UserInteractionEnabled = true;
 			uiImageView.AddGestureRecognizer (SetNewRotationGestureRecognizer(true));
@@ -101,6 +84,8 @@ namespace Solution
 
 		public static async System.Threading.Tasks.Task Initialize (TextBox textBox, CGPoint ContentOffset, Action refreshContent, UINavigationController navigationController)
 		{
+			TextBoxComponent textBoxComponent;
+
 			IsPicturePreview = false;
 			// so now launch image preview to choose position in the board
 
@@ -110,7 +95,7 @@ namespace Solution
 			CGRect frame = new CGRect (textBox.ImgX, textBox.ImgY, textBox.ImgW, textBox.ImgH);
 			textBoxComponent = new TextBoxComponent (textBox);
 
-			await textBoxComponent.LoadTextBoxComponent (navigationController, refreshContent);
+			await textBoxComponent.Load (navigationController, refreshContent);
 
 			// launches the textbox preview
 			uiView = textBoxComponent.GetUIView ();
@@ -140,8 +125,6 @@ namespace Solution
 
 					uiView.Center = p1;
 
-					//CheckCollision();
-
 				} else if (pg.State == UIGestureRecognizerState.Ended) {
 					dx = 0;
 					dy = 0;
@@ -150,7 +133,6 @@ namespace Solution
 			return panGesture;
 		}
 
-		private static float Rotation = 0;
 		private static UIRotationGestureRecognizer SetNewRotationGestureRecognizer(bool autoRotate)
 		{
 			float r = 0;
@@ -183,30 +165,20 @@ namespace Solution
 			uiView.Dispose ();
 		}
 
+		public static Picture GetPicture()
+		{
+			CGRect rec = new CGRect (uiView.Center, uiView.Bounds.Size);
+			Picture p = new Picture (	string.Empty, string.Empty, Rotation, rec, Profile.CurrentProfile.UserID);
+			return p;
+		}
 
-		public static TextBox ConvertToTextBox()
+		public static TextBox GetTextBox()
 		{
 			TextBox aux = textBoxComponent.GetTextBox ();
 			aux.SetRotation (Rotation);
 			return aux;
 		}
 
-		public static Picture ConvertToPicture()
-		{
-			// TODO: mejorar el algoritmo de compresion, sacar el pasaje a string.
-			string encodedPicture = compressedImage.AsJPEG (Compression).GetBase64EncodedString (NSDataBase64EncodingOptions.None) as string;
-			string encodedThumb = CreateThumbnail (((UIImageView)uiView.Subviews [0]).Image);
-
-			CGRect rec = new CGRect (uiView.Center, uiView.Bounds.Size);
-			Picture p = new Picture (string.Empty, string.Empty, Rotation, rec, Profile.CurrentProfile.UserID);
-				
-			return p;
-		}
-
-		private static string CreateThumbnail(UIImage thumbImg)
-		{
-			return thumbImg.AsJPEG (ThumbCompression).GetBase64EncodedString (NSDataBase64EncodingOptions.None) as string;
-		}
 
 	}
 }

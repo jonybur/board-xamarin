@@ -290,7 +290,7 @@ namespace Solution
 		{
 			TextBoxComponent textBoxComponent = new TextBoxComponent (tb);
 
-			await textBoxComponent.LoadTextBoxComponent (NavigationController, RefreshContent);
+			await textBoxComponent.Load (NavigationController, RefreshContent);
 
 			UIView uiv = textBoxComponent.GetUIView ();
 
@@ -343,7 +343,6 @@ namespace Solution
 
 		private UIImageView LoadMainLogo(UIImage image, CGPoint ContentOffset)
 		{
-
 			// the image is uploadable
 			// so now launch image preview to choose position in the board
 			float imgx, imgy, imgw, imgh;

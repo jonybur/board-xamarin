@@ -42,7 +42,8 @@ namespace Solution
 
 		private void LoadInterface()
 		{
-			View.BackgroundColor = UIColor.FromRGB (150, 150, 150);
+			//View.BackgroundColor = UIColor.FromRGB (150, 150, 150);
+			View.BackgroundColor = UIColor.White;
 
 			LoadBanner ();
 
@@ -51,7 +52,7 @@ namespace Solution
 
 		private void LoadBanner()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./createscreens/screen3/banner.jpg");
+			UIImage bannerImage = UIImage.FromFile ("./screens/create/3/banner/"+AppDelegate.PhoneVersion+".jpg");
 
 			banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
 			banner.Image = bannerImage;
@@ -132,12 +133,12 @@ namespace Solution
 					break;	
 				case 1:
 					but = CreateSuscriptionButton (i, "Premium", "· Target to a specific audience\n· Get daily analytics\n· Broaden your CityBoard’s\narea range", "TBA", frame);
-					but.AddSubview(CreateTopLayer (but.Frame, UIColor.Black.CGColor, UIImage.FromFile("./createscreens/screen3/lock.png")));
+					but.AddSubview(CreateTopLayer (but.Frame, UIColor.Black.CGColor, UIImage.FromFile("./screens/create/3/lock.png")));
 					but.Enabled = false;
 					break;
 				case 2:
 					but = CreateSuscriptionButton (i, string.Empty, string.Empty, string.Empty, frame);
-					but.AddSubview(CreateTopLayer (but.Frame, UIColor.Black.CGColor, UIImage.FromFile("./createscreens/screen3/lock.png")));
+					but.AddSubview(CreateTopLayer (but.Frame, UIColor.Black.CGColor, UIImage.FromFile("./screens/create/3/lock.png")));
 					but.Enabled = false;
 					break;
 				default:
@@ -188,14 +189,14 @@ namespace Solution
 			SuscriptionButton button = new SuscriptionButton ();
 			button.Frame = frame;
 
-			UIColor unselectedColor = UIColor.FromRGB (230, 230, 230);
+			UIColor unselectedColor = UIColor.White;
 
 			button.BackgroundColor = unselectedColor;
 			button.Index = index;
 			button.Name = name;
 			button.Description = description;
 
-			UIFont nameFont = UIFont.SystemFontOfSize (24);
+			UIFont nameFont = UIFont.FromName("narwhal-bold", 24);
 			CGSize labelSize = name.StringSize (nameFont);
 
 			button.NameLabel = new UILabel (new CGRect(0, 0, button.Frame.Width, labelSize.Height));
@@ -203,7 +204,7 @@ namespace Solution
 			button.NameLabel.Font = nameFont;
 			button.NameLabel.Text = name;
 			button.NameLabel.UserInteractionEnabled = false;
-			button.NameLabel.TextColor = AppDelegate.CityboardBlue;
+			button.NameLabel.TextColor = AppDelegate.CityboardOrange;
 			button.NameLabel.TextAlignment = UITextAlignment.Left;
 			button.AddSubview (button.NameLabel);
 
@@ -239,13 +240,13 @@ namespace Solution
 						// unselect the selected one
 
 						numberButtons[(int)selectedIndex].BackgroundColor = unselectedColor;
-						numberButtons[(int)selectedIndex].NameLabel.TextColor = AppDelegate.CityboardBlue;
+						numberButtons[(int)selectedIndex].NameLabel.TextColor = AppDelegate.CityboardOrange;
 						numberButtons[(int)selectedIndex].DescriptionView.TextColor = AppDelegate.CityboardBlue;
 						numberButtons[(int)selectedIndex].PriceLabel.TextColor = AppDelegate.CityboardBlue;
 
 						// select the pressed one
 
-						numberButtons[button.Index].BackgroundColor = AppDelegate.CityboardBlue;
+						numberButtons[button.Index].BackgroundColor = AppDelegate.CityboardLightBlue;
 						numberButtons[button.Index].NameLabel.TextColor = UIColor.White;
 						numberButtons[button.Index].DescriptionView.TextColor = UIColor.White;
 						numberButtons[button.Index].PriceLabel.TextColor = UIColor.White;
@@ -256,7 +257,7 @@ namespace Solution
 						// unselect the selected one
 
 						numberButtons[(int)selectedIndex].BackgroundColor = unselectedColor;
-						numberButtons[(int)selectedIndex].NameLabel.TextColor = AppDelegate.CityboardBlue;
+						numberButtons[(int)selectedIndex].NameLabel.TextColor = AppDelegate.CityboardOrange;
 						numberButtons[(int)selectedIndex].DescriptionView.TextColor = AppDelegate.CityboardBlue;
 						numberButtons[(int)selectedIndex].PriceLabel.TextColor = AppDelegate.CityboardBlue;
 
@@ -268,7 +269,7 @@ namespace Solution
 					// nothing has been selected yet
 
 					// select the one that has been pressed
-					numberButtons[button.Index].BackgroundColor = AppDelegate.CityboardBlue;
+					numberButtons[button.Index].BackgroundColor = AppDelegate.CityboardLightBlue;
 					numberButtons[button.Index].NameLabel.TextColor = UIColor.White;
 					numberButtons[button.Index].DescriptionView.TextColor = UIColor.White;
 					numberButtons[button.Index].PriceLabel.TextColor = UIColor.White;

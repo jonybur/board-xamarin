@@ -138,7 +138,7 @@ namespace Solution
 		private void LoadContent()
 		{
 			thumbSize = AppDelegate.ScreenWidth / 4;
-			circleImage = UIImage.FromFile ("./mainmenu/circle.png");
+			circleImage = UIImage.FromFile ("./screems/home/circle.png");
 			content = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			List<Board> boardList = GenerateBoardList ();
 			boardList = boardList.OrderBy(o=>o.Location).ToList();
@@ -198,27 +198,40 @@ namespace Solution
 
 		private void LoadSideMenu()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./mainmenu/sidemenu.png");
+			UIImage bannerImage = UIImage.FromFile ("./screens/home/sidemenu/" + AppDelegate.PhoneVersion + ".png");
 
 			sidemenu = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
 			sidemenu.Image = bannerImage;
 
+			float[] buttonLocations = new float[4];
+			if (AppDelegate.PhoneVersion == "6") {
+				buttonLocations [0] = 350;
+				buttonLocations [1] = 440;
+				buttonLocations [2] = 525;
+				buttonLocations [3] = 605;
+			} else {
+				buttonLocations [0] = 390;
+				buttonLocations [1] = 470;
+				buttonLocations [2] = 550;
+				buttonLocations [3] = 630;
+			}
+
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				if (tg.LocationInView(this.View).Y > 315 && tg.LocationInView(this.View).Y < 385 ){
+				if (tg.LocationInView(this.View).Y > buttonLocations[0]-35 && tg.LocationInView(this.View).Y < buttonLocations[0]+35 ){
 					BusinessScreen screen = new BusinessScreen();
 					NavigationController.PushViewController(screen, false);
 				}
-				else if (tg.LocationInView(this.View).Y > 405 && tg.LocationInView(this.View).Y < 465){
+				else if (tg.LocationInView(this.View).Y > buttonLocations[1]-35 && tg.LocationInView(this.View).Y < buttonLocations[1]+35){
 					SettingsScreen screen = new SettingsScreen();
-					NavigationController.PushViewController(screen, true);
+					NavigationController.PushViewController(screen, false);
 				}
-				else if (tg.LocationInView(this.View).Y > 490 && tg.LocationInView(this.View).Y < 550){
+				else if (tg.LocationInView(this.View).Y > buttonLocations[2]-35 && tg.LocationInView(this.View).Y < buttonLocations[2]+35){
 					SupportScreen screen = new SupportScreen();
-					NavigationController.PushViewController(screen, true);
+					NavigationController.PushViewController(screen, false);
 				}
-				else if (tg.LocationInView(this.View).Y > 570 && tg.LocationInView(this.View).Y < 630 ){
+				else if (tg.LocationInView(this.View).Y > buttonLocations[3]-35 && tg.LocationInView(this.View).Y < buttonLocations[3]+35){
 					InviteScreen screen = new InviteScreen();
-					NavigationController.PushViewController(screen, true);
+					NavigationController.PushViewController(screen, false);
 				}
 				HideSideMenu();
 			});
@@ -257,16 +270,16 @@ namespace Solution
 
 		private void LoadBanner()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./mainmenu/menu_banner.jpg");
+			UIImage bannerImage = UIImage.FromFile ("./screens/home/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
 			banner.Image = bannerImage;
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (sideMenuIsUp)
-				{sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return;}
+				{ sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return; }
 
-				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 3){
+				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					sidemenu.Alpha = 1f;
 					profileView.Alpha = 1f;
 					sideMenuIsUp = true;
@@ -293,7 +306,7 @@ namespace Solution
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (sideMenuIsUp)
-				{sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return;}
+				{ sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return; }
 			});
 
 			map.UserInteractionEnabled = true;
@@ -316,8 +329,8 @@ namespace Solution
 
 		private void LoadMapButton()
 		{
-			UIImage mapImage = UIImage.FromFile ("./mainmenu/mapbutton.jpg");
-			UIImage listImage = UIImage.FromFile ("./mainmenu/listbutton.jpg");
+			UIImage mapImage = UIImage.FromFile ("./screens/home/map/" + AppDelegate.PhoneVersion + ".jpg");;
+			UIImage listImage = UIImage.FromFile ("./screens/home/list/" + AppDelegate.PhoneVersion + ".jpg");;
 
 			map_button = new UIImageView(new CGRect(0,AppDelegate.ScreenHeight - (mapImage.Size.Height / 2),
 				mapImage.Size.Width / 2, mapImage.Size.Height / 2));
@@ -325,7 +338,7 @@ namespace Solution
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (sideMenuIsUp)
-				{sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return;}
+				{ sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return; }
 
 				if (map.Alpha == 0f)
 				{ map.Alpha = 1f; map_button.Image = listImage; } else { map.Alpha = 0f; map_button.Image = mapImage; } 

@@ -27,7 +27,6 @@ namespace Solution
 		UIImageView sidemenu;
 		ProfilePictureView profileView;
 		UIScrollView content;
-		UIImage circleImage;
 		float thumbSize;
 		bool sideMenuIsUp;
 
@@ -61,11 +60,10 @@ namespace Solution
 		{ 
 			// si el usuario no tiene boards creados...
 			thumbSize = AppDelegate.ScreenWidth / 4;
-			circleImage = UIImage.FromFile ("./mainmenu/circle.png");
 			content = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 
 			UIImageView imgv = new UIImageView (new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
-			imgv.Image = UIImage.FromFile ("./businessscreen/businesscontent.jpg");;
+			imgv.Image = UIImage.FromFile ("./screens/business/empty/" + AppDelegate.PhoneVersion + ".jpg");;
 
 			content.AddSubview (imgv);
 			content.ScrollEnabled = true;
@@ -83,26 +81,39 @@ namespace Solution
 
 		private void LoadSideMenu()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./businessscreen/sidemenu.png");
+			UIImage bannerImage = UIImage.FromFile ("./screens/business/sidemenu/" + AppDelegate.PhoneVersion + ".png");
 
 			sidemenu = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
 			sidemenu.Image = bannerImage;
 
+			float[] buttonLocations = new float[4];
+			if (AppDelegate.PhoneVersion == "6") {
+				buttonLocations [0] = 350;
+				buttonLocations [1] = 440;
+				buttonLocations [2] = 525;
+				buttonLocations [3] = 605;
+			} else {
+				buttonLocations [0] = 390;
+				buttonLocations [1] = 470;
+				buttonLocations [2] = 550;
+				buttonLocations [3] = 630;
+			}
+
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				if (tg.LocationInView(this.View).Y > 315 && tg.LocationInView(this.View).Y < 385 ){
+				if (tg.LocationInView(this.View).Y > buttonLocations[0]-35 && tg.LocationInView(this.View).Y < buttonLocations[0]+35 ){
 					NavigationController.PopViewController(false);
 				}
-				else if (tg.LocationInView(this.View).Y > 405 && tg.LocationInView(this.View).Y < 465){
+				else if (tg.LocationInView(this.View).Y > buttonLocations[1]-35 && tg.LocationInView(this.View).Y < buttonLocations[1]+35){
 					SettingsScreen screen = new SettingsScreen();
-					NavigationController.PushViewController(screen, true);
+					NavigationController.PushViewController(screen, false);
 				}
-				else if (tg.LocationInView(this.View).Y > 490 && tg.LocationInView(this.View).Y < 550){
+				else if (tg.LocationInView(this.View).Y > buttonLocations[2]-35 && tg.LocationInView(this.View).Y < buttonLocations[2]+35){
 					SupportScreen screen = new SupportScreen();
-					NavigationController.PushViewController(screen, true);
+					NavigationController.PushViewController(screen, false);
 				}
-				else if (tg.LocationInView(this.View).Y > 570 && tg.LocationInView(this.View).Y < 630 ){
+				else if (tg.LocationInView(this.View).Y > buttonLocations[3]-35 && tg.LocationInView(this.View).Y < buttonLocations[3]+35){
 					InviteScreen screen = new InviteScreen();
-					NavigationController.PushViewController(screen, true);
+					NavigationController.PushViewController(screen, false);
 				}
 				HideSideMenu();
 			});
@@ -122,7 +133,7 @@ namespace Solution
 			UIFont namefont = UIFont.FromName("narwhal-bold", 20);
 			UIFont lastnamefont = UIFont.FromName("narwhal-bold", 24);
 
-			UILabel name = new UILabel (new CGRect(0, profileView.Frame.Bottom + 15, sidemenu.Frame.Width, 20));
+			UILabel name = new UILabel (new CGRect(10, profileView.Frame.Bottom + 15, sidemenu.Frame.Width - 20, 20));
 			name.Font = namefont;
 			name.Text = Profile.CurrentProfile.FirstName;
 			name.TextColor = UIColor.White;
@@ -130,7 +141,7 @@ namespace Solution
 			name.AdjustsFontSizeToFitWidth = true;
 			sidemenu.AddSubview (name);
 
-			UILabel lastname = new UILabel (new CGRect(0, name.Frame.Bottom + 3, sidemenu.Frame.Width, 24));
+			UILabel lastname = new UILabel (new CGRect(10, name.Frame.Bottom + 3, sidemenu.Frame.Width - 20, 24));
 			lastname.Font = lastnamefont;
 			lastname.AdjustsFontSizeToFitWidth = true;
 			lastname.Text = Profile.CurrentProfile.LastName;
@@ -147,7 +158,7 @@ namespace Solution
 
 		private void LoadBanner()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./businessscreen/business_banner.jpg");
+			UIImage bannerImage = UIImage.FromFile ("./screens/business/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
 			banner.Image = bannerImage;
@@ -156,13 +167,13 @@ namespace Solution
 				if (sideMenuIsUp)
 				{sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return;}
 
-				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 3){
+				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					sidemenu.Alpha = 1f;
 					profileView.Alpha = 1f;
 					sideMenuIsUp = true;
 				}
 				else if (AppDelegate.ScreenWidth / 4 * 3 < tg.LocationInView(this.View).X){
-					CreateScreen1 createScreen1 = new CreateScreen1();
+					CreateScreen2 createScreen1 = new CreateScreen2(new Board());
 					NavigationController.PushViewController(createScreen1, false);
 				}
 			});

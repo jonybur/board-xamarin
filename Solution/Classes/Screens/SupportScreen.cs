@@ -38,7 +38,7 @@ namespace Solution
 
 		private void LoadContent()
 		{
-			UIImage mailicon = UIImage.FromFile("./supportscreen/support.png");
+			UIImage mailicon = UIImage.FromFile("./screens/support/icon.png");
 			UIImageView uivmailicon = new UIImageView (mailicon);
 			uivmailicon.Frame = new CGRect (0, 0, mailicon.Size.Width / 2, mailicon.Size.Height / 2);
 			uivmailicon.Center = new CGPoint (AppDelegate.ScreenWidth / 2, yposition);
@@ -49,7 +49,13 @@ namespace Solution
 			UIFont regular = UIFont.SystemFontOfSize(20);
 
 			string earningsString = "CONTACT CITYBOARD";
-			string withdrawString = "Want to contact our staff?\nJust send us an email and a representative will assist you\nas soon as possible";
+			string withdrawString;
+
+			if (AppDelegate.PhoneVersion == "6") {
+				withdrawString = "Want to contact our staff?\nJust send us an email and a representative will assist you\nas soon as possible";
+			} else {
+				withdrawString = "Want to contact our staff?\nJust send us an email and\na representative will assist you\nas soon as possible";
+			}
 
 			UILabel lbl1 = new UILabel (new CGRect (10, (nfloat)yposition, (nfloat)AppDelegate.ScreenWidth - 20, earningsString.StringSize(bold).Height));
 			lbl1.Text = earningsString;
@@ -119,14 +125,14 @@ namespace Solution
 
 		private void LoadBanner()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./supportscreen/banner.jpg");
+			UIImage bannerImage = UIImage.FromFile ("./screens/support/banner/"+ AppDelegate.PhoneVersion +".jpg");
 
 			banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
 			banner.Image = bannerImage;
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					NavigationController.PopViewController(true);
+					NavigationController.PopViewController(false);
 				}
 			});
 

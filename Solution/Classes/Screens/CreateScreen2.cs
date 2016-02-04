@@ -35,6 +35,8 @@ namespace Solution
 		float topBarHeight;
 		float bottomBarHeight;
 
+		UIScrollView scrollView;
+
 		// previewboard
 		UIImageView boardView;
 		UIImageView preview_secondaryBar;
@@ -54,14 +56,21 @@ namespace Solution
 		{
 			base.ViewDidLoad ();
 
-			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
-			NavigationController.NavigationBarHidden = true;
+			this.AutomaticallyAdjustsScrollViewInsets = false;
 
 			ColorSquareSize = new CGSize (230, 40);
 			ColorSquarePosition1 = new CGPoint (145, 350);
 			ColorSquarePosition2 = new CGPoint (145, 461);
 
 			InitializeInterface ();
+
+			// Keyboard popup
+			NSNotificationCenter.DefaultCenter.AddObserver
+			(UIKeyboard.DidShowNotification,KeyBoardUpNotification);
+
+			// Keyboard Down
+			NSNotificationCenter.DefaultCenter.AddObserver
+			(UIKeyboard.WillHideNotification,KeyBoardDownNotification);
 		}
 
 		private UIImageView GeneratePreviewBoard()
@@ -70,23 +79,29 @@ namespace Solution
 
 			boardHeight = (float)((AppDelegate.ScreenWidth * AppDelegate.ScreenHeight) / BoardInterface.ScrollViewWidthSize);
 			topBarHeight = (float)((50 * boardHeight) / AppDelegate.ScreenHeight);
-			bottomBarHeight = (float)((120 * boardHeight) / AppDelegate.ScreenHeight);
+			bottomBarHeight = (float)((100 * boardHeight) / AppDelegate.ScreenHeight);
 
-			boardView = new UIImageView (new CGRect(0, AppDelegate.ScreenHeight - boardHeight, AppDelegate.ScreenWidth, boardHeight));
+			float pushDown = 0;
+
+			if (AppDelegate.PhoneVersion == "6plus") {
+				pushDown = 15;
+			}
+
+			boardView = new UIImageView (new CGRect(0, AppDelegate.ScreenHeight - boardHeight + pushDown, AppDelegate.ScreenWidth, boardHeight + pushDown));
 			boardView.Image = pattern;
 
-			preview_secondaryBar = CreateColorSquare(new CGSize(boardView.Frame.Width, topBarHeight), new CGPoint(AppDelegate.ScreenWidth/2, (boardHeight * 550) / AppDelegate.ScreenHeight), board.SecondaryColor.CGColor);
+			preview_secondaryBar = CreateColorSquare(new CGSize(boardView.Frame.Width, topBarHeight), new CGPoint(AppDelegate.ScreenWidth/2, (boardHeight * 560) / AppDelegate.ScreenHeight), board.SecondaryColor.CGColor);
 			boardView.AddSubview (preview_secondaryBar);
 
-			preview_primaryBar = CreateColorSquare(new CGSize(boardView.Frame.Width, bottomBarHeight), new CGPoint(AppDelegate.ScreenWidth/2, (boardHeight * 620) / AppDelegate.ScreenHeight), board.MainColor.CGColor);
+			preview_primaryBar = CreateColorSquare(new CGSize(boardView.Frame.Width, bottomBarHeight), new CGPoint(AppDelegate.ScreenWidth/2, (boardHeight * 630) / AppDelegate.ScreenHeight), board.MainColor.CGColor);
 			boardView.AddSubview (preview_primaryBar);
 
-			preview_mainLogo = GenerateBoardThumb (board.Image, new CGPoint (AppDelegate.ScreenWidth / 2, (boardView.Frame.Height / 2) - 5), false);
+			preview_mainLogo = GenerateBoardThumb (board.Image, new CGPoint (AppDelegate.ScreenWidth / 2, (boardView.Frame.Height / 2) - 5 - pushDown), false);
 			boardView.AddSubview (preview_mainLogo);
 
 			UIImage contentdemo = UIImage.FromFile ("./boardscreen/backgrounds/contentdemo2.png");
 			UIImageView contentDemo = new UIImageView (contentdemo);
-			contentDemo.Frame = new CGRect(0,0, boardView.Frame.Width, boardView.Frame.Height);
+			contentDemo.Frame = new CGRect(0, 0, boardView.Frame.Width, boardView.Frame.Height - 25);
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				BoardInterface boardInterface = new BoardInterface(board, true);
@@ -103,21 +118,25 @@ namespace Solution
 
 		private void InitializeInterface()
 		{
+			scrollView = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+
 			// loads center button
 			LoadBanner ();
 			LoadContent ();
+
+			View.AddSubview (scrollView);
 		}
 
 		private void LoadContent()
 		{
-			UIImage contentImage = UIImage.FromFile ("./createscreens/screen2/content3.jpg");
+			UIImage contentImage = UIImage.FromFile ("./screens/create/2/content/"+AppDelegate.PhoneVersion+".jpg");
 			UIImageView contentImageView = new UIImageView (new CGRect(0, banner.Frame.Bottom, contentImage.Size.Width / 2, contentImage.Size.Height / 2));
 			contentImageView.Image = contentImage;
-			View.AddSubviews (contentImageView);
+			scrollView.AddSubviews (contentImageView);
 
 			// top image
 
-			UIImageView boardThumb = GenerateBoardThumb (UIImage.FromFile ("./createscreens/screen2/cityboard4.jpg"), new CGPoint (AppDelegate.ScreenWidth / 2, 220), true);
+			UIImageView boardThumb = GenerateBoardThumb (UIImage.FromFile ("./screens/create/2/icon.jpg"), new CGPoint (AppDelegate.ScreenWidth / 2, 220), true);
 	
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				ImagePicker ip = new ImagePicker (boardThumb.Subviews[0] as UIImageView, preview_mainLogo, board);
@@ -128,8 +147,8 @@ namespace Solution
 			boardThumb.AddGestureRecognizer (tap);
 			boardThumb.UserInteractionEnabled = true;
 
-			board.Image = UIImage.FromFile ("./createscreens/screen2/cityboard4.jpg");
-			View.AddSubview (boardThumb);
+			board.Image = UIImage.FromFile ("./screens/create/2/icon.jpg");
+			scrollView.AddSubview (boardThumb);
 
 			// color selectors + hex
 
@@ -138,11 +157,19 @@ namespace Solution
 			// bottom preview
 
 			UIImageView previewBoard = GeneratePreviewBoard ();
-			View.AddSubview (previewBoard); 
+			scrollView.AddSubview (previewBoard); 
 		}
+
+		float pushRight;
 
 		private void GenerateColorSelectors()
 		{
+			pushRight = 0f;
+
+			if (AppDelegate.PhoneVersion == "6plus") {
+				pushRight = 23;
+			}
+
 			board.MainColor = AppDelegate.CityboardOrange;
 			board.SecondaryColor = AppDelegate.CityboardBlue;
 
@@ -152,7 +179,7 @@ namespace Solution
 
 			// creates first colorsquare + first hash + first hexstring
 
-			UITextField hash1 = new UITextField(new CGRect(color1.Frame.Right + 10, color1.Frame.Y + 10, 10, 20));
+			UITextField hash1 = new UITextField(new CGRect(color1.Frame.Right + pushRight + 10, color1.Frame.Y + 10, 10, 20));
 			hash1.Font = UIFont.SystemFontOfSize (20);
 			hash1.BackgroundColor = UIColor.White;
 			hash1.TextColor =AppDelegate.CityboardBlue;
@@ -184,7 +211,7 @@ namespace Solution
 					ColorSquarePosition1,
 					color.CGColor, 1);
 
-				View.AddSubview(color1);
+				scrollView.AddSubview(color1);
 
 				board.MainColor = color;
 
@@ -203,7 +230,7 @@ namespace Solution
 				ColorSquarePosition2,
 				AppDelegate.CityboardBlue.CGColor, 2);
 
-			UITextField hash2 = new UITextField(new CGRect(color2.Frame.Right + 10, color2.Frame.Y + 10, 10, 20));
+			UITextField hash2 = new UITextField(new CGRect(color2.Frame.Right + pushRight + 10, color2.Frame.Y + 10, 10, 20));
 			hash2.Font = UIFont.SystemFontOfSize (20);
 			hash2.BackgroundColor = UIColor.White;
 			hash2.TextColor = AppDelegate.CityboardBlue;
@@ -235,7 +262,7 @@ namespace Solution
 					ColorSquarePosition2,
 					color.CGColor, 2);
 
-				View.AddSubview(color2);
+				scrollView.AddSubview(color2);
 
 				board.SecondaryColor = color;
 
@@ -248,7 +275,7 @@ namespace Solution
 				return true;
 			};
 
-			View.AddSubviews (color1, color2, hash1, hexView1, hash2, hexView2);
+			scrollView.AddSubviews (color1, color2, hash1, hexView1, hash2, hexView2);
 		}
 
 		// this one just creates a color square
@@ -297,7 +324,7 @@ namespace Solution
 					center,
 					color.CGColor, numberOfView);
 
-				View.AddSubview(uiv);
+				scrollView.AddSubview(uiv);
 
 
 				switch(numberOfView)
@@ -332,7 +359,7 @@ namespace Solution
 
 		private void LoadBanner()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./createscreens/screen2/banner.jpg");
+			UIImage bannerImage = UIImage.FromFile ("./screens/create/2/banner/"+AppDelegate.PhoneVersion+".jpg");
 
 			banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
 			banner.Image = bannerImage;
@@ -350,7 +377,7 @@ namespace Solution
 			banner.UserInteractionEnabled = true;
 			banner.AddGestureRecognizer (tap);
 			banner.Alpha = .95f;
-			View.AddSubview (banner);
+			scrollView.AddSubview (banner);
 		}
 
 
@@ -408,5 +435,50 @@ namespace Solution
 
 			return boardIcon;
 		}
+
+		#region Keyboard
+
+		private void ScrollTheView(bool move)
+		{
+			// scroll the view up or down
+			UIView.BeginAnimations (string.Empty, System.IntPtr.Zero);
+			UIView.SetAnimationDuration (0.3);
+			UIView.CommitAnimations();
+
+			if (move) {
+				OpenKeyboard (hexView2.Frame);
+			} else {
+				CloseKeyboard (hexView2.Frame);
+			}
+
+		}
+
+		private void OpenKeyboard(CGRect writingFieldFrame)
+		{
+			scrollView.SetContentOffset (new CGPoint (0, 85), true);
+
+			hexView2.Frame = writingFieldFrame;
+		}
+
+		private void CloseKeyboard(CGRect writingFieldFrame)
+		{
+			scrollView.SetContentOffset (new CGPoint (0, 0), true);
+
+			hexView2.Frame = writingFieldFrame;
+		}
+
+		private void KeyBoardUpNotification(NSNotification notification)
+		{
+			// get the keyboard size
+			ScrollTheView (true);
+		}
+
+		private void KeyBoardDownNotification(NSNotification notification)
+		{
+			// Calculate how far we need to scroll
+			ScrollTheView(false);
+		}
+
+		#endregion
 	}
 }

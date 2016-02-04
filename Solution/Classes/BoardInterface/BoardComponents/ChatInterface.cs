@@ -58,8 +58,6 @@ namespace Solution
 
 			UINavigationBar uiNavigationBar = CreateNavigationBar (navigationController);
 
-			float dy = 0;
-
 			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer ((tg) => {
 				writingTextView.ResignFirstResponder();
 

@@ -99,7 +99,15 @@ namespace Solution
 				longitude: -100, 
 				zoom: -2);
 
-			map = MapView.FromCamera (new CGRect (0, AppDelegate.ScreenHeight - 295, AppDelegate.ScreenWidth, 296), camera);
+			float mapSize = 0;
+
+			if (AppDelegate.PhoneVersion == "6") {
+				mapSize = 295;
+			} else {
+				mapSize = 350;
+			}
+
+			map = MapView.FromCamera (new CGRect (0, AppDelegate.ScreenHeight - mapSize, AppDelegate.ScreenWidth, mapSize), camera);
 
 			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
 
@@ -254,7 +262,7 @@ namespace Solution
 
 		private void LoadContent()
 		{
-			UIImage contentImage = UIImage.FromFile ("./createscreens/screen1/content7.jpg");
+			UIImage contentImage = UIImage.FromFile ("./screens/create/1/content/"+AppDelegate.PhoneVersion+".jpg");
 			UIImageView contentImageView = new UIImageView (new CGRect(0, banner.Frame.Bottom, contentImage.Size.Width / 2, contentImage.Size.Height / 2));
 			contentImageView.Image = contentImage;
 			View.AddSubview (contentImageView);
@@ -271,7 +279,7 @@ namespace Solution
 
 		private void LoadBanner()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./createscreens/screen1/banner.jpg");
+			UIImage bannerImage = UIImage.FromFile ("./screens/create/1/banner/"+AppDelegate.PhoneVersion+".jpg");
 
 			banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
 			banner.Image = bannerImage;

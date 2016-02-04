@@ -36,9 +36,12 @@ namespace Solution
 
 		public static UIColor CityboardOrange;
 		public static UIColor CityboardBlue;
+		public static UIColor CityboardLightBlue;
 
 		public static double Latitude;
 		public static double Longitude;
+
+		public static string PhoneVersion;
 
 		const string FacebookAppId = "761616930611025";
 		const string FacebookDisplayName = "CityBoard";
@@ -56,6 +59,7 @@ namespace Solution
 		{
 			CityboardOrange = UIColor.FromRGB(244, 108, 85);
 			CityboardBlue = UIColor.FromRGB(38, 106, 154);
+			CityboardLightBlue = UIColor.FromRGB(45, 121, 180);
 
 			MapServices.ProvideAPIKey (MapsApiKey);
 
@@ -73,6 +77,14 @@ namespace Solution
 
 			ScreenWidth = (float)UIScreen.MainScreen.Bounds.Width;
 			ScreenHeight = (float)UIScreen.MainScreen.Bounds.Height;
+
+			if (ScreenWidth == 375) {
+				PhoneVersion = "6";
+			} else if (ScreenWidth == 414) {
+				PhoneVersion = "6plus";
+			} else {
+				PhoneVersion = "6";
+			}
 
 			/*
 			string json = "{ \"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\", " +

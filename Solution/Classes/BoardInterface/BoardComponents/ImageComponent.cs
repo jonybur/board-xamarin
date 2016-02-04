@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Newtonsoft.Json;
 using CoreGraphics;
 
@@ -15,7 +15,7 @@ using System.Collections.Generic;
 
 namespace Solution
 {
-	public class TextBoxComponent
+	public class ImageComponent
 	{
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
@@ -36,12 +36,12 @@ namespace Solution
 			return uiView;
 		}
 
-		public TextBoxComponent()
+		public ImageComponent()
 		{
 
 		}
 
-		public TextBoxComponent(TextBox tb)
+		public ImageComponent(TextBox tb)
 		{
 			textbox = tb;
 
@@ -71,7 +71,7 @@ namespace Solution
 
 			uiView.AddGestureRecognizer (tap);
 			uiView.UserInteractionEnabled = true;
-			
+
 			User user = await AppDelegate.CloudController.LookupUser (textbox.UserId);
 
 
@@ -128,7 +128,7 @@ namespace Solution
 			}*/
 
 			UILabel contentLabel = new UILabel (new CGRect (0, nameLabel.Frame.Y + nameLabelHeight + 10, 
-																bounds.Width, contentLabelHeight + 5)) {
+				bounds.Width, contentLabelHeight + 5)) {
 				TextAlignment = UITextAlignment.Center,
 				BackgroundColor = UIColor.Clear,
 				TextColor = UIColor.White,
