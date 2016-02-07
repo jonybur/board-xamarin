@@ -41,7 +41,7 @@ namespace Solution
 		
 			pictureComponent = new PictureComponent (picture);
 
-			CGRect frame = pictureComponent.GetUIView ().Frame;
+			CGRect frame = pictureComponent.View.Frame;
 
 			uiView = new UIView (new CGRect(ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
 				ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Button.ButtonSize / 2,frame.Width, frame.Height));
@@ -49,7 +49,7 @@ namespace Solution
 			//uiView.Alpha = .5f;
 			uiView.AddGestureRecognizer (SetNewPanGestureRecognizer());
 			uiView.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
-			uiView.AddSubviews(pictureComponent.GetUIView());
+			uiView.AddSubviews(pictureComponent.View);
 		}
 
 		public static async System.Threading.Tasks.Task Initialize (TextBox textBox, CGPoint ContentOffset, Action refreshContent, UINavigationController navigationController)

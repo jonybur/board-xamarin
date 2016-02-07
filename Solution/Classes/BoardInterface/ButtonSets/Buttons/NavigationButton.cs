@@ -93,7 +93,7 @@ namespace Solution
 				{
 
 					PictureComponent pictureComponent = BoardInterface.ListPictureComponents[highlitedContent];
-					UIView uivComponent = pictureComponent.GetUIView();
+					UIView uivComponent = pictureComponent.View;
 					position = new PointF ((float)(uivComponent.Frame.X - AppDelegate.ScreenWidth/2 + uivComponent.Frame.Width/2), 0f);
 
 				} else {

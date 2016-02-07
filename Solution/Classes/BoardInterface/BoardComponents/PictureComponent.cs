@@ -20,21 +20,26 @@ namespace Solution
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
 		private UIView uiView;
+		public UIView View
+		{
+			get { return uiView; }
+		}
+
 		private Picture picture;
 
 		UIImageView eye;
 		UIImage closedEyeImage;
 		UIImage openEyeImage;
 
+		private bool eyeOpen;
+		public bool EyeOpen{
+			get { return eyeOpen; }
+		}
+
 		public Picture GetPicture()
 		{
 			//textbox.SetPosition (new CGPoint(uiView.Frame.X, uiView.Frame.Y));
 			return picture;
-		}
-
-		public UIView GetUIView()
-		{
-			return uiView;
 		}
 
 		public PictureComponent()
@@ -79,11 +84,14 @@ namespace Solution
 			uiView.Frame = new CGRect (pic.ImgX, pic.ImgY, mounting.Frame.Width, mounting.Frame.Height);
 			uiView.Transform = CGAffineTransform.MakeRotation(pic.Rotation);
 
+			eyeOpen = false;
+
 		}
 
 		public void OpenEye()
 		{
 			eye.Image = openEyeImage;
+			eyeOpen = true;
 		}
 
 		private UIImageView CreateMounting(CGRect frame)
@@ -116,7 +124,7 @@ namespace Solution
 			UIImageView eyeView = new UIImageView(new CGRect (frame.X + 10, frame.Height - iconSize.Height - 5, iconSize.Width, iconSize.Height));
 			//eyeView.Image = UIImage.FromFile ("./boardscreen/openeye3.png");
 			closedEyeImage = UIImage.FromFile ("./boardscreen/closedeye.png");
-			openEyeImage = UIImage.FromFile ("./boardscreen/closedeye.png");
+			openEyeImage = UIImage.FromFile ("./boardscreen/openeye3.png");
 			eyeView.Image = closedEyeImage;
 			eyeView.Image = eyeView.Image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			eyeView.TintColor = UIColor.FromRGB(140,140,140);

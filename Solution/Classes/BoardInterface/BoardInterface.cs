@@ -1,5 +1,6 @@
 using System;
 using CoreGraphics;
+using System.Linq;
 
 using Foundation;
 using UIKit;
@@ -8,6 +9,7 @@ using CoreAnimation;
 using CoreText;
 
 using System.Net.Http;
+using System.Collections.Generic;
 
 using System.Threading.Tasks;
 using System.Threading;
@@ -206,6 +208,23 @@ namespace Solution
 
 			scrollView.Scrolled += (object sender, EventArgs e) => {
 				// call from here "open eye" function
+
+				if (ListPictureComponents == null || ListPictureComponents.Count == 0)
+				{ return; }
+
+				// TODO: add to have eye closed as condition as well
+
+				PictureComponent pic = ListPictureComponents.Find(item => item.View.Frame.X > scrollView.ContentOffset.X &&
+										   item.View.Frame.X < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth) &&
+					!item.EyeOpen);
+
+				if (pic == null)
+				{ return; }
+
+				Console.WriteLine("opens eye");
+
+				pic.OpenEye();
+
 			};
 
 			zoomingScrollView = new UIScrollView (new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight));
@@ -272,15 +291,18 @@ namespace Solution
 			foreach (TextBox tb in ListTextboxes) {
 				DrawTextbox (tb);
 			}
+
+
+			ListPictureComponents = ListPictureComponents.OrderBy(o=>o.View.Frame.X).ToList();
 		}
 
 		private void GenerateTestPictures()
 		{
 			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/0.jpg"), 40, 40, -.03f);
-			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/1.jpg"), 25, 330, -.1f);
-			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/2.jpg"), 290, 20, 0f);
 			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/3.jpg"), 330, 280, -.04f);
+			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/2.jpg"), 290, 20, 0f);
 			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/4.jpg"), 710, 50, .05f);
+			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/1.jpg"), 25, 330, -.1f);
 			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/5.jpg"), 650, 310, -.02f);
 		}
 
@@ -298,7 +320,7 @@ namespace Solution
 		{
 			PictureComponent component = new PictureComponent (picture);
 
-			UIView componentView = component.GetUIView ();
+			UIView componentView = component.View;
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				LookUp lookUp = new LookUp(picture);
@@ -308,7 +330,7 @@ namespace Solution
 			componentView.AddGestureRecognizer (tap);
 			componentView.UserInteractionEnabled = true;
 
-			scrollView.AddSubview (component.GetUIView());
+			scrollView.AddSubview (component.View);
 			ListPictureComponents.Add (component);
 		}
 
