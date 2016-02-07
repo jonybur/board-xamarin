@@ -30,7 +30,7 @@ namespace Solution
 			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth - ButtonSize) / 8 * 3 - 5, AppDelegate.ScreenHeight - ButtonSize / 2 - 10);
 
 			uiButton.TouchUpInside += (object sender, EventArgs e) => {
-				ImagePicker ip = new ImagePicker (scrollView, UIImagePickerControllerSourceType.PhotoLibrary);
+				ImagePicker ip = new ImagePicker (scrollView, UIImagePickerControllerSourceType.PhotoLibrary, navigationController);
 
 				navigationController.PresentViewController (ip.UIImagePicker, true, null);
 			};

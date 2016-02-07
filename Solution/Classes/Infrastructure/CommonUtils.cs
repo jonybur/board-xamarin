@@ -22,7 +22,7 @@ namespace Solution
 {
 	public static class CommonUtils
 	{
-		public static UIImage ResizeImageView(UIImage imageToResize, CGSize desiredSize)
+		public static UIImage ResizeImage(UIImage imageToResize, CGSize desiredSize)
 		{
 			float scale = (float)(desiredSize.Width / imageToResize.Size.Width) + .1f ;
 
@@ -65,21 +65,35 @@ namespace Solution
 			}
 		}
 
-		public static void JsonRequest(string url, string json)
+		public static string JsonRequest(string url, string json)
 		{
 			var httpWebRequest = (HttpWebRequest)WebRequest.Create (url);
 			httpWebRequest.ContentType = "application/json";
 			httpWebRequest.Method = "POST";
+			httpWebRequest.Timeout = 8000;
+				
+			try{
+				using (var streamWriter = new StreamWriter (httpWebRequest.GetRequestStream ())) {
+					streamWriter.Write (json);
+					streamWriter.Flush ();
+					streamWriter.Close ();
+				}
 
-			using (var streamWriter = new StreamWriter (httpWebRequest.GetRequestStream ())) {
-				streamWriter.Write (json);
-				streamWriter.Flush ();
-				streamWriter.Close ();
-			}
+				var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse ();
+				string result = string.Empty;
+				using (var streamReader = new StreamReader (httpResponse.GetResponseStream ())) {
+					result = streamReader.ReadToEnd ();
+				}
+				return result;
+			} catch (WebException e) {
+				
+				if (e.Status == WebExceptionStatus.ProtocolError) 
+				{
+					return ((HttpWebResponse)e.Response).StatusCode.ToString();
+				}
 
-			var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse ();
-			using (var streamReader = new StreamReader (httpResponse.GetResponseStream ())) {
-				var result = streamReader.ReadToEnd ();
+				return e.Status.ToString();
+
 			}
 		}
 

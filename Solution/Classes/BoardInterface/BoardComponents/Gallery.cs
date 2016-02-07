@@ -74,7 +74,7 @@ namespace Solution
 		private void GenerateThumbnails(List<Picture> thumbnails)
 		{
 			foreach (Picture p in thumbnails) {
-				UIImage image = p.GetThumbnailImage ();
+				UIImage image = p.Thumbnail;
 				UIImageView thumb = CreateImageFrame (image);
 
 				scrollView.AddSubview (thumb);

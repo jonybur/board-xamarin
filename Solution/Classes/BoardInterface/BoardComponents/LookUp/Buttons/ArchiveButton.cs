@@ -38,7 +38,7 @@ namespace Solution
 			// first sets the OnGallery status on true for the picture
 			StorageController.SendPictureToGallery (picture.Id);
 			// then removes the picture from the cloud storage
-			await AppDelegate.CloudController.RemovePictureAsync (picture);
+
 			// refreshes the main view
 			refreshPictures ();
 			// kills this button

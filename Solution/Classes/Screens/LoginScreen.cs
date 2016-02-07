@@ -40,7 +40,15 @@ namespace Solution
 		const string FacebookAppId = "761616930611025";
 		const string DisplayName = "CityBoard";
 
-		public LoginScreen () : base ("Board", null){}
+		string responseError;
+
+		public LoginScreen (){
+			responseError = null;
+		}
+
+		public LoginScreen (string error){
+			responseError = error;	
+		}
 
 		public override void DidReceiveMemoryWarning ()
 		{
@@ -57,6 +65,11 @@ namespace Solution
 
 			InitializeInterface ();
 
+			if (responseError != null) {
+				UIAlertController alert = UIAlertController.Create(responseError, null, UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+				NavigationController.PresentViewController (alert, true, null);
+			}
 		}
 
 		private void LoadFBButton()

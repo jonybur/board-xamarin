@@ -29,8 +29,6 @@ namespace Solution
 
 		public static UINavigationController NavigationController;
 
-		public static CloudController CloudController;
-
 		public static float ScreenWidth;
 		public static float ScreenHeight;
 
@@ -86,22 +84,26 @@ namespace Solution
 				PhoneVersion = "6";
 			}
 
-			/*
-			string json = "{ \"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\", " +
-				"\"userSecret\": \"" + AccessToken.CurrentAccessToken.TokenString + "\" }";
-
-			CommonUtils.JsonRequest ("http://192.168.1.105:5000/api/account/login", json);
-			*/
-
-			// create a new window instance based on the screen size
-			window = new UIWindow (UIScreen.MainScreen.Bounds);
 
 			UIViewController screen;
 
-			if (Profile.CurrentProfile != null) {
-				screen = new MainMenuScreen ();
+			// cxreate a new window instance based on the screen size
+			window = new UIWindow (UIScreen.MainScreen.Bounds);
+
+			if (AccessToken.CurrentAccessToken != null) {
+				string json = "{ \"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\", " +
+				              "\"accessToken\": \"" + AccessToken.CurrentAccessToken.TokenString + "\" }";
+
+				string result = CommonUtils.JsonRequest ("http://10.0.11.144:5000/api/account/login", json);
+			
+				// change || for && when testing server
+				if (Profile.CurrentProfile != null || (result != "InternalServerError" && result != "ConnectFailure")) {
+					screen = new MainMenuScreen ();
+				} else {
+					screen = new LoginScreen (result);	
+				}
 			} else {
-				screen = new LoginScreen ();	
+				screen = new LoginScreen ();
 			}
 
 			NavigationController = new UINavigationController();

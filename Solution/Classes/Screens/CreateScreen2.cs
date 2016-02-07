@@ -1,4 +1,4 @@
-﻿using System;
+﻿	using System;
 using System.Drawing;
 using CoreGraphics;
 
@@ -422,7 +422,7 @@ namespace Solution
 
 			UIImageView boardImage = new UIImageView(new CGRect (0, 0, imgw * .8f, imgh * .8f));
 			boardImage.Center = new CGPoint (autosize/2, autosize/2);
-			UIImage img = CommonUtils.ResizeImageView (image, boardIcon.Frame.Size);
+			UIImage img = CommonUtils.ResizeImage (image, boardIcon.Frame.Size);
 			boardImage.Image = img;
 
 			boardIcon.AddSubview (boardImage);

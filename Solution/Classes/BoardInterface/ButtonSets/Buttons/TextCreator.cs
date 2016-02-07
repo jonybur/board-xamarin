@@ -14,7 +14,6 @@ namespace Solution
 	public class TextCreator : UIViewController
 	{
 		private const int sizePicture = 60;
-		private const string fontName = "Roboto-Regular";
 		private const int fontSize = 18;
 
 		const int wborder = 50;
@@ -37,7 +36,6 @@ namespace Solution
 			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer ((tg) => {
 				textView.ResignFirstResponder();
 			});
-
 
 			UINavigationBar uiNavigationBar = CreateNavigationBar (navigationController, refreshContent, textView);
 			View.AddSubview (uiNavigationBar);
@@ -85,7 +83,7 @@ namespace Solution
 			};
 
 			rightBarButtonItem.Clicked+= async (sender, e) => {
-				TextBox tb = new TextBox (null, CloudController.BoardUser.Id, textView.Text, new CGRect(0,0, 200, 140), 0);
+				TextBox tb = new TextBox (null, null, textView.Text, new CGRect(0,0, 200, 140), 0);
 
 				await Preview.Initialize (tb, BoardInterface.scrollView.ContentOffset, refreshContent, navigationController);
 				// shows the image preview so that the user can position the image
@@ -118,7 +116,7 @@ namespace Solution
 				TextAlignment = UITextAlignment.Center,
 				BackgroundColor = UIColor.Clear,
 				TextColor = UIColor.White,
-				Font = UIFont.FromName(fontName, fontSize),
+				Font = UIFont.SystemFontOfSize (fontSize),
 				Text = "Write Your Message",
 				AdjustsFontSizeToFitWidth = true
 			};
@@ -139,7 +137,7 @@ namespace Solution
 			textview.EnablesReturnKeyAutomatically = true;
 			textview.BackgroundColor = UIColor.White;
 			textview.TextColor = UIColor.Black;
-			textview.Font = UIFont.FromName (fontName,fontSize);;
+			textview.Font = UIFont.SystemFontOfSize (fontSize);;
 
 			return textview;
 		}

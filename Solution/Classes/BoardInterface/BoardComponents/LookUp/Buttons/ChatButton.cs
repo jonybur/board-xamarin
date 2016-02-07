@@ -25,9 +25,7 @@ namespace Solution
 			uiButton.SetImage (chatImage, UIControlState.Normal);
 
 			uiButton.TouchUpInside += async (object sender, EventArgs e) => {
-				ChatInterface ci = new ChatInterface (contentId, navigationController);
-
-				navigationController.PresentViewController (ci, true, null);
+				
 			};
 		}
 

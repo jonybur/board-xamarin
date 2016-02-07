@@ -17,7 +17,7 @@ namespace Solution
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			UIImage uiImage = UIImage.FromFile ("./boardscreen/buttons/accept.png");
+			UIImage uiImage = UIImage.FromFile ("./boardscreen/buttons/accept2.png");
 			uiButton.SetImage (uiImage, UIControlState.Normal);
 
 			uiButton.Frame = new CGRect (0,0, ButtonSize, ButtonSize);

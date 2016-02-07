@@ -18,11 +18,10 @@ namespace Solution
 {
 	public static class Preview
 	{
-		// TODO: preview should handle picture previews with a PictureComponent
 		public static TextBoxComponent textBoxComponent;
+		public static PictureComponent pictureComponent;
 
 		private static UIView uiView;
-		private static UIImage compressedImage;
 
 		public static bool IsPicturePreview;
 
@@ -33,59 +32,28 @@ namespace Solution
 			return uiView;
 		}
 
-		public static void Initialize (UIImage image, CGPoint ContentOffset)
+		public static void Initialize (UIImage image, CGPoint ContentOffset, UINavigationController navigationController)
 		{
+			Picture picture = new Picture ();
+			picture.Image = image;
+
 			IsPicturePreview = true;
-			compressedImage = image;
-
-			// the image is uploadable
-			// so now launch image preview to choose position in the board
-			float imgx, imgy, imgw, imgh;
-			float autosize = 150;
-
-			float scale = (float)(image.Size.Width/image.Size.Height);
-
-			if (scale >= 1) {
-				imgw = autosize * scale;
-				imgh = autosize;
-
-				if (imgw > AppDelegate.ScreenWidth) {
-					scale = (float)(image.Size.Height/image.Size.Width);
-					imgw = AppDelegate.ScreenWidth;
-					imgh = imgw * scale;
-				}
-			} else {
-				scale = (float)(image.Size.Height / image.Size.Width);
-				imgw = autosize;
-				imgh = autosize * scale;
-			}
-
-
-			imgx = (float)(ContentOffset.X + AppDelegate.ScreenWidth / 2 - imgw / 2);
-			imgy = (float)(ContentOffset.Y + AppDelegate.ScreenHeight / 2 - imgh / 2 - Button.ButtonSize / 2);
-
-			// launches the image preview
-
-			CGRect frame = new CGRect (imgx, imgy, imgw, imgh);
-			uiView = new UIView (frame);
-
-			UIImageView uiImageView =  new UIImageView (new CGRect(0,0,frame.Width, frame.Height));
 		
-			UIImage thumbImg = image.Scale (new CGSize (imgw, imgh));
-			uiImageView.Image = thumbImg;
-			uiImageView.Alpha = .5f;
+			pictureComponent = new PictureComponent (picture);
 
-			uiImageView.UserInteractionEnabled = true;
-			uiImageView.AddGestureRecognizer (SetNewRotationGestureRecognizer(true));
-			uiImageView.AddGestureRecognizer (SetNewPanGestureRecognizer());
+			CGRect frame = pictureComponent.GetUIView ().Frame;
 
-			uiView.AddSubviews(uiImageView);
+			uiView = new UIView (new CGRect(ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
+				ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Button.ButtonSize / 2,frame.Width, frame.Height));
+
+			//uiView.Alpha = .5f;
+			uiView.AddGestureRecognizer (SetNewPanGestureRecognizer());
+			uiView.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
+			uiView.AddSubviews(pictureComponent.GetUIView());
 		}
 
 		public static async System.Threading.Tasks.Task Initialize (TextBox textBox, CGPoint ContentOffset, Action refreshContent, UINavigationController navigationController)
 		{
-			TextBoxComponent textBoxComponent;
-
 			IsPicturePreview = false;
 			// so now launch image preview to choose position in the board
 
@@ -99,7 +67,7 @@ namespace Solution
 
 			// launches the textbox preview
 			uiView = textBoxComponent.GetUIView ();
-			uiView.Alpha = .5f;
+			//uiView.Alpha = .5f;
 			uiView.UserInteractionEnabled = true;
 			uiView.AddGestureRecognizer (SetNewPanGestureRecognizer());
 			uiView.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
@@ -138,7 +106,7 @@ namespace Solution
 			float r = 0;
 			if (autoRotate) {
 				Random rnd = new Random ();
-				r = (float)(rnd.NextDouble () / 2) - .25f;
+				r = (float)(rnd.NextDouble () / 3);
 				Rotation = r;
 				uiView.Transform = CGAffineTransform.MakeRotation (r);
 			}
@@ -168,7 +136,8 @@ namespace Solution
 		public static Picture GetPicture()
 		{
 			CGRect rec = new CGRect (uiView.Center, uiView.Bounds.Size);
-			Picture p = new Picture (	string.Empty, string.Empty, Rotation, rec, Profile.CurrentProfile.UserID);
+			Picture p1 = pictureComponent.GetPicture ();
+			Picture p = new Picture (p1.Image, p1.Thumbnail, Rotation, rec, Profile.CurrentProfile.UserID);
 			return p;
 		}
 

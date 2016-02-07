@@ -45,6 +45,8 @@ namespace Solution
 		bool TestMode;
 
 		public static List<Picture> ListPictures;
+		public static List<PictureComponent> ListPictureComponents;
+
 		public static List<TextBox> ListTextboxes;
 
 		public BoardInterface (Board _board, bool _testMode) : base ("Board", null){
@@ -79,7 +81,7 @@ namespace Solution
 			//await StorageController.UpdateLocalDB ();
 
 			// updates the board
-			//RefreshContent ();
+			RefreshContent ();
 
 			// initializes the gallery
 			//InitializeGallery ();
@@ -201,6 +203,11 @@ namespace Solution
 		private void GenerateScrollViews()
 		{
 			scrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+
+			scrollView.Scrolled += (object sender, EventArgs e) => {
+				// call from here "open eye" function
+			};
+
 			zoomingScrollView = new UIScrollView (new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight));
 			zoomingScrollView.AddSubview (scrollView);
 			View.AddSubview (zoomingScrollView);
@@ -227,7 +234,6 @@ namespace Solution
 		{
 			buttonInterface = new ButtonInterface (RefreshContent, scrollView, NavigationController, board.SecondaryColor);
 
-
 			if (Profile.CurrentProfile.UserID == board.CreatorId) {
 				this.View.AddSubviews (buttonInterface.GetCreatorButtons());
 			} else {
@@ -250,12 +256,17 @@ namespace Solution
 			RemoveAllContent();
 
 			ListPictures = new List<Picture> ();
+			ListPictureComponents = new List<PictureComponent> ();
+
 			ListTextboxes = new List<TextBox> ();
 
-			GetFromLocalDB ();
+			//GetFromLocalDB ();
+
+			GenerateTestPictures ();
+
 
 			foreach (Picture p in ListPictures) {
-				DrawPicture (p);
+				DrawPictureComponent (p);
 			}
 
 			foreach (TextBox tb in ListTextboxes) {
@@ -263,27 +274,42 @@ namespace Solution
 			}
 		}
 
-		private void DrawPicture(Picture p)
+		private void GenerateTestPictures()
 		{
-			UIImageView imageView = new UIImageView (new CGRect (0, 0, p.ImgW, p.ImgH));
-			imageView.Transform = CGAffineTransform.MakeRotation (p.Rotation);
-			imageView.Center = new CGPoint (p.ImgX, p.ImgY);
-			imageView.Image = p.GetThumbnailImage ();
-			imageView.UserInteractionEnabled = true;
-			imageView.Tag = (int)Tags.Content;
+			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/0.jpg"), 40, 40, -.03f);
+			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/1.jpg"), 25, 330, -.1f);
+			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/2.jpg"), 290, 20, 0f);
+			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/3.jpg"), 330, 280, -.04f);
+			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/4.jpg"), 710, 50, .05f);
+			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/5.jpg"), 650, 310, -.02f);
+		}
 
-			// creates the imageview which contains the corresponding tap gesture
-			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer (async (tg) => {
-				// there was a tap on the board's image so it is brought full-screen
-				LookUp lookup = new LookUp(p, p.GetImage(), RefreshContent, NavigationController);
-				await lookup.CreateNameLabel(p.UserId);
-				NavigationController.PushViewController(lookup, true);
-				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.Disable);
+		private void AddTestPicture(UIImage image, float imgx, float imgy, float rotation)
+		{
+			Picture pic = new Picture ();
+			pic.Image = image;
+			pic.ImgX = imgx;
+			pic.ImgY = imgy;
+			pic.Rotation = rotation;
+			ListPictures.Add (pic);
+		}
+
+		private void DrawPictureComponent(Picture picture)
+		{
+			PictureComponent component = new PictureComponent (picture);
+
+			UIView componentView = component.GetUIView ();
+
+			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+				LookUp lookUp = new LookUp(picture);
+				NavigationController.PushViewController(lookUp, true);
 			});
 
-			imageView.AddGestureRecognizer (tapGesture);
+			componentView.AddGestureRecognizer (tap);
+			componentView.UserInteractionEnabled = true;
 
-			scrollView.AddSubview (imageView);
+			scrollView.AddSubview (component.GetUIView());
+			ListPictureComponents.Add (component);
 		}
 
 		private async void DrawTextbox(TextBox tb)

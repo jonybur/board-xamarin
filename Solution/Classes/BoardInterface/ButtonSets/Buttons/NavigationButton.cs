@@ -1,5 +1,7 @@
 using System;
 using System.Timers;
+using System.Drawing;
+
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using CoreGraphics;
@@ -43,6 +45,7 @@ namespace Solution
 			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer  ((tg) => {
 				// OVERRIDE FOR PRESENTATION
 
+				/*
 				CGPoint position;
 				position = new CGPoint (AppDelegate.ScreenWidth * i,0);
 				BoardInterface.scrollView.SetContentOffset (position, true);
@@ -50,8 +53,8 @@ namespace Solution
 
 				if (i > 5.8f) {
 					i = 0;
-				}
-				/*
+				}*/
+
 				if (BoardInterface.zoomingScrollView.ZoomScale < 1)
 				{
 					BoardInterface.ZoomScrollview();
@@ -85,11 +88,14 @@ namespace Solution
 
 				Content content;
 				PointF position;
+
 				if (pictureCycle)
 				{
-					content = BoardInterface.ListPictures[highlitedContent];
-					position = new PointF (content.ImgX - AppDelegate.ScreenWidth/2,
-											content.ImgY - AppDelegate.ScreenHeight/2);
+
+					PictureComponent pictureComponent = BoardInterface.ListPictureComponents[highlitedContent];
+					UIView uivComponent = pictureComponent.GetUIView();
+					position = new PointF ((float)(uivComponent.Frame.X - AppDelegate.ScreenWidth/2 + uivComponent.Frame.Width/2), 0f);
+
 				} else {
 					content = BoardInterface.ListTextboxes[highlitedContent];
 					position = new PointF (content.ImgX - AppDelegate.ScreenWidth/2 + content.ImgW/2,
@@ -98,7 +104,7 @@ namespace Solution
 
 
 				BoardInterface.scrollView.SetContentOffset (position, true);
-				highlitedContent++;*/
+				highlitedContent++;
 			});
 
 			UILongPressGestureRecognizer longPressGesture = new UILongPressGestureRecognizer ((tg) => {

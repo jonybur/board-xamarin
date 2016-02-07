@@ -20,7 +20,6 @@ namespace Solution
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
 		private const int sizePicture = 60;
-		private const string fontName = "Roboto-Regular";
 
 		private UIView uiView;
 		private TextBox textbox;
@@ -71,11 +70,8 @@ namespace Solution
 
 			uiView.AddGestureRecognizer (tap);
 			uiView.UserInteractionEnabled = true;
-			
-			User user = await AppDelegate.CloudController.LookupUser (textbox.UserId);
 
-
-			List<UILabel> labels = CreateLabels (user, uiView.Frame);
+			List<UILabel> labels = CreateLabels (null, uiView.Frame);
 
 			foreach (UILabel label in labels) {
 				uiView.AddSubview (label);	
@@ -91,7 +87,6 @@ namespace Solution
 			StorageController.SendTextBoxToGallery (textbox.Id);
 
 			// then removes the picture from the cloud storage
-			await AppDelegate.CloudController.RemoveTextBoxAsync (textbox);
 
 			// refreshes the main view
 			refreshContent ();
@@ -109,7 +104,7 @@ namespace Solution
 				TextAlignment = UITextAlignment.Center,
 				BackgroundColor = UIColor.Clear,
 				TextColor = UIColor.White,
-				Font = UIFont.FromName(fontName, nameLabelHeight),
+				Font = UIFont.SystemFontOfSize(nameLabelHeight),
 				Text = user.Name,
 				AdjustsFontSizeToFitWidth = true
 			};
@@ -122,7 +117,7 @@ namespace Solution
 
 			string text = textbox.Text;
 
-			UIFont contentFont = UIFont.FromName (fontName, contentLabelHeight);
+			UIFont contentFont = UIFont.SystemFontOfSize (contentLabelHeight);
 			/*if (text.StringSize (contentFont).Width > bounds.Width) {
 				text = text.Insert (text.Length / 2, "\t");
 			}*/

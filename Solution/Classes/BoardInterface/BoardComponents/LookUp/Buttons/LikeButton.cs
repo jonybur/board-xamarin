@@ -24,8 +24,6 @@ namespace Solution
 			UIImage likeImage = UIImage.FromFile ("./boardscreen/lookup/like.png");
 			UIImage unlikeImage = UIImage.FromFile ("./boardscreen/lookup/unlike.png");
 
-			like = StorageController.LookupLike (CloudController.BoardUser.Id, contentId);
-
 			if (like.Id == null) {
 				// there's no like
 				uiButton.SetImage (likeImage, UIControlState.Normal);
@@ -40,12 +38,10 @@ namespace Solution
 				if (like.Id == null)
 				{
 					// add the like
-					like = await AppDelegate.CloudController.InsertLikeAsync(contentId);
 				}
 				else 
 				{
 					// delete the like
-					like = await AppDelegate.CloudController.RemoveLikeAsync(like);
 				}
 
 

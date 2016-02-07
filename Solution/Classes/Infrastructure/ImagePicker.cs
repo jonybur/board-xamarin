@@ -23,7 +23,7 @@ namespace Solution
 			} 
 		}
 
-		public ImagePicker (UIScrollView scrollView, UIImagePickerControllerSourceType sourceType)
+		public ImagePicker (UIScrollView scrollView, UIImagePickerControllerSourceType sourceType, UINavigationController navigationController)
 		{
 			imagePickerController = new UIImagePickerController();
 
@@ -53,7 +53,7 @@ namespace Solution
 					UIImage originalImage = e.Info[UIImagePickerController.OriginalImage] as UIImage;
 					if(originalImage != null) {
 						// call addimage
-						LaunchPicturePreview (originalImage, scrollView);
+						LaunchPicturePreview (originalImage, scrollView, navigationController);
 					}
 				} else { // if it's a video
 					// get video url
@@ -141,15 +141,16 @@ namespace Solution
 			imagePickerController.Canceled += OnCancelation;
 		}
 
-		private void LaunchPicturePreview(UIImage image, UIScrollView scrollView)
-		{
-			Preview.Initialize (image, scrollView.ContentOffset);
+		private void LaunchPicturePreview(UIImage image, UIScrollView scrollView, UINavigationController navigationController)
+		{		
+			Preview.Initialize(image, BoardInterface.scrollView.ContentOffset, navigationController);
 
 			// shows the image preview so that the user can position the image
-			scrollView.AddSubview(Preview.GetUIView());
+			BoardInterface.scrollView.AddSubview(Preview.GetUIView());
 
 			// switches to confbar
 			ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
+			navigationController.DismissViewController(true, null);
 		}
 
 

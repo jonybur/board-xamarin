@@ -165,7 +165,6 @@
     <BundleResource Include="Resources\intro\logo.png" />
     <BundleResource Include="Resources\fonts\Narwhal_bold.ttf" />
     <BundleResource Include="Resources\fonts\Narwhal.ttf" />
-    <BundleResource Include="Resources\Default-667h%402x.png.bak" />
     <BundleResource Include="Resources\Default-667h%402x.png" />
     <BundleResource Include="Resources\Icon.png" />
     <BundleResource Include="Resources\Default.png" />
@@ -231,6 +230,19 @@
     <BundleResource Include="Resources\screens\create\1\content\6plus.jpg" />
     <BundleResource Include="Resources\screens\create\2\icon.jpg" />
     <BundleResource Include="Resources\screens\create\3\lock.png" />
+    <BundleResource Include="Resources\boardscreen\buttons\accept2.png" />
+    <BundleResource Include="Resources\boardscreen\buttons\cancel3.png" />
+    <BundleResource Include="Resources\boardscreen\like.png" />
+    <BundleResource Include="Resources\boardscreen\closedeye.png" />
+    <BundleResource Include="Resources\boardscreen\openeye3.png" />
+    <BundleResource Include="Resources\boardscreen\testpictures\0.jpg" />
+    <BundleResource Include="Resources\boardscreen\testpictures\1.jpg" />
+    <BundleResource Include="Resources\boardscreen\testpictures\2.jpg" />
+    <BundleResource Include="Resources\boardscreen\testpictures\3.jpg" />
+    <BundleResource Include="Resources\boardscreen\testpictures\4.jpg" />
+    <BundleResource Include="Resources\boardscreen\testpictures\5.jpg" />
+    <BundleResource Include="Resources\boardscreen\testpictures\6.png" />
+    <BundleResource Include="Resources\boardscreen\testpictures\7.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -242,7 +254,6 @@
     <Compile Include="AppDelegate.cs" />
     <Compile Include="Classes\Infrastructure\StorageController.cs" />
     <Compile Include="Classes\Schema\Board.cs" />
-    <Compile Include="Classes\Infrastructure\CloudController.cs" />
     <Compile Include="Classes\Schema\User.cs" />
     <Compile Include="Classes\Schema\Like.cs" />
     <Compile Include="Classes\Schema\Content.cs" />
@@ -270,7 +281,6 @@
     <Compile Include="Classes\BoardInterface\BoardComponents\LookUp\Buttons\LikeButton.cs" />
     <Compile Include="Classes\BoardInterface\BoardComponents\TextBoxComponent.cs" />
     <Compile Include="Classes\BoardInterface\BoardComponents\LookUp\Buttons\ChatButton.cs" />
-    <Compile Include="Classes\BoardInterface\BoardComponents\ChatInterface.cs" />
     <Compile Include="Classes\BoardInterface\ButtonInterface.cs" />
     <Compile Include="Classes\BoardInterface\ButtonSets\ActionsButtonSet.cs" />
     <Compile Include="Classes\BoardInterface\ButtonSets\Buttons\AcceptButton.cs" />
@@ -288,7 +298,7 @@
     </Compile>
     <Compile Include="Classes\BoardInterface\ButtonSets\ButtonSet.cs" />
     <Compile Include="Classes\BoardInterface\ButtonSets\ConfirmationButtonSet.cs" />
-    <Compile Include="Classes\BoardInterface\BoardComponents\ImageComponent.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\PictureComponent.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -335,6 +345,8 @@
     <Folder Include="Resources\screens\create\3\banner\" />
     <Folder Include="Resources\screens\create\2\content\" />
     <Folder Include="Resources\screens\create\1\content\" />
+    <Folder Include="Resources\boardscreen\testpictures\" />
+    <Folder Include="Resources\boardscreen\backgrounds\New Folder\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

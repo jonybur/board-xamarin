@@ -160,10 +160,6 @@ namespace Solution
 		public static async Task UpdateLocalDB()
 		{
 			// downloads new content
-			await AppDelegate.CloudController.RefreshPictureDataAsync ();
-			await AppDelegate.CloudController.RefreshLikeDataAsync ();
-			await AppDelegate.CloudController.RefreshTextBoxDataAsync ();
-			await AppDelegate.CloudController.RefreshMessageDataAsync ();
 		}
 
 		public static void UpdateLikeTable(IEnumerable<Like> enumLikes)
@@ -195,13 +191,8 @@ namespace Solution
 				           NSSearchPathDomain.User) [0]).Path;
 			string imgFilename = System.IO.Path.Combine (docs, p.Id + ".jpg"); 
 			string thumbFilename = System.IO.Path.Combine (docs, p.Id + "-thumb.jpg");
-			NSData imgData = p.GetImage ().AsJPEG ();
-			NSError err = null;
-			if (imgData.Save (imgFilename, false, out err) && imgData.Save (thumbFilename, false, out err)) {
-				database.Insert (picL);
-			} else {
-				Console.WriteLine ("ERROR : picture hasnt been saved " + err.LocalizedDescription);
-			}
+			UIImage imgData = p.Image;
+			database.Insert (picL);
 		}
 
 		public static DateTimeOffset GetLastMessage(string contentID)
@@ -267,9 +258,7 @@ namespace Solution
 					NSSearchPathDomain.User) [0]).Path;
 				string jpgFilename = System.IO.Path.Combine (docs, p.Id + ".jpg"); 
 
-				aux.Image = UIImage.FromBundle (jpgFilename).AsJPEG()
-												.GetBase64EncodedString (NSDataBase64EncodingOptions.None)
-												as string;
+				aux.Image = UIImage.FromBundle (jpgFilename);
 
 				lstPictures.Add (aux);
 			}
@@ -341,14 +330,10 @@ namespace Solution
 					NSSearchPathDomain.User) [0]).Path;
 				string imgFilename = System.IO.Path.Combine (docs, p.Id + ".jpg"); 
 
-				aux.Image = UIImage.FromBundle (imgFilename).AsJPEG()
-					.GetBase64EncodedString (NSDataBase64EncodingOptions.None)
-					as string;
+				aux.Image = UIImage.FromBundle (imgFilename);
 
 				string thumbFilename = System.IO.Path.Combine (docs, p.Id + "-thumb.jpg"); 
-				aux.Thumbnail = UIImage.FromBundle (thumbFilename).AsJPEG()
-					.GetBase64EncodedString (NSDataBase64EncodingOptions.None)
-					as string;
+				aux.Thumbnail = UIImage.FromBundle (thumbFilename);
 
 				lstPictures.Add (aux);
 			}

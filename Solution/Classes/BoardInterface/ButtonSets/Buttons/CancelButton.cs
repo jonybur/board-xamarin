@@ -17,7 +17,7 @@ namespace Solution
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			UIImage image = UIImage.FromFile ("./boardscreen/buttons/cancel.png");
+			UIImage image = UIImage.FromFile ("./boardscreen/buttons/cancel3.png");
 			uiButton = new UIButton (UIButtonType.Custom);
 			uiButton.SetImage (image, UIControlState.Normal);
 

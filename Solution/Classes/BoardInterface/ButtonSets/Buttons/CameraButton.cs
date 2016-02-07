@@ -31,7 +31,7 @@ namespace Solution
 				(AppDelegate.ScreenWidth - ButtonSize) / 8 + 5, AppDelegate.ScreenHeight - ButtonSize / 2 - 10);
 
 			uiButton.TouchUpInside += (object sender, EventArgs e) => {
-				ImagePicker ip = new ImagePicker (scrollView, UIImagePickerControllerSourceType.Camera);
+				ImagePicker ip = new ImagePicker (scrollView, UIImagePickerControllerSourceType.Camera, navigationController);
 
 				navigationController.PresentViewController (ip.UIImagePicker, true, null);
 			};
