@@ -52,6 +52,8 @@ namespace Solution
 		//
 		const string MapsApiKey = "AIzaSyAyjPtEvhmhHHa5_aPiZPiPN3GUtIXxO6I";
 
+		const bool ServerActive = false;
+
 
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
@@ -90,20 +92,28 @@ namespace Solution
 			// cxreate a new window instance based on the screen size
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
 
-			if (AccessToken.CurrentAccessToken != null) {
-				string json = "{ \"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\", " +
-				              "\"accessToken\": \"" + AccessToken.CurrentAccessToken.TokenString + "\" }";
+			if (ServerActive) {
+				if (AccessToken.CurrentAccessToken != null) {
+					string json = "{ \"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\", " +
+					              "\"accessToken\": \"" + AccessToken.CurrentAccessToken.TokenString + "\" }";
 
-				string result = CommonUtils.JsonRequest ("http://10.0.11.144:5000/api/account/login", json);
+					string result = CommonUtils.JsonRequest ("http://10.0.11.144:5000/api/account/login", json);
 			
-				// change || for && when testing server
-				if (Profile.CurrentProfile != null || (result != "InternalServerError" && result != "ConnectFailure")) {
-					screen = new MainMenuScreen ();
+					// change || for && when testing server
+					if (Profile.CurrentProfile != null || (result != "InternalServerError" && result != "ConnectFailure")) {
+						screen = new MainMenuScreen ();
+					} else {
+						screen = new LoginScreen (result);	
+					}
 				} else {
-					screen = new LoginScreen (result);	
+					screen = new LoginScreen ();
 				}
 			} else {
-				screen = new LoginScreen ();
+				if (Profile.CurrentProfile != null) {
+					screen = new MainMenuScreen ();
+				} else {
+					screen = new LoginScreen ();	
+				}
 			}
 
 			NavigationController = new UINavigationController();

@@ -48,7 +48,7 @@ namespace Solution
 			UIFont bold = UIFont.FromName("narwhal-bold", 24);
 			UIFont regular = UIFont.SystemFontOfSize(20);
 
-			string earningsString = "CONTACT CITYBOARD";
+			string earningsString = "CONTACT BOARD";
 			string withdrawString;
 
 			if (AppDelegate.PhoneVersion == "6") {

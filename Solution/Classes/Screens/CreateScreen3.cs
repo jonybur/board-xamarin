@@ -129,7 +129,7 @@ namespace Solution
 
 				switch (i) {
 				case 0:
-					but = CreateSuscriptionButton (i, "Basic", "· Create a CityBoard\n· Engage with your audience\n· Post content to all of your\nsocial media sites", "Free", frame);
+					but = CreateSuscriptionButton (i, "Basic", "· Create a Board\n· Engage with your audience\n· Post content to all of your\nsocial media sites", "Free", frame);
 					break;	
 				case 1:
 					but = CreateSuscriptionButton (i, "Premium", "· Target to a specific audience\n· Get daily analytics\n· Broaden your CityBoard’s\narea range", "TBA", frame);

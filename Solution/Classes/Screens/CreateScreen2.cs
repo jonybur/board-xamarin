@@ -136,7 +136,7 @@ namespace Solution
 
 			// top image
 
-			UIImageView boardThumb = GenerateBoardThumb (UIImage.FromFile ("./screens/create/2/icon.jpg"), new CGPoint (AppDelegate.ScreenWidth / 2, 220), true);
+			UIImageView boardThumb = GenerateBoardThumb (UIImage.FromFile  ("./screens/create/2/icon.png"), new CGPoint (AppDelegate.ScreenWidth / 2, 220), true);
 	
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				ImagePicker ip = new ImagePicker (boardThumb.Subviews[0] as UIImageView, preview_mainLogo, board);
@@ -147,7 +147,7 @@ namespace Solution
 			boardThumb.AddGestureRecognizer (tap);
 			boardThumb.UserInteractionEnabled = true;
 
-			board.Image = UIImage.FromFile ("./screens/create/2/icon.jpg");
+			board.Image = UIImage.FromFile ("./screens/create/2/icon.png");
 			scrollView.AddSubview (boardThumb);
 
 			// color selectors + hex

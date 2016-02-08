@@ -69,7 +69,7 @@
 		<string>fonts/Narwhal_bold.ttf</string>
 	</array>
 	<key>CFBundleDisplayName</key>
-	<string>CityBoard</string>
+	<string>Board</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -97,5 +97,7 @@
 	<string>0.2</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.boardinc.Board</string>
+	<key>CFBundleName</key>
+	<string>Board</string>
 </dict>
 </plist>

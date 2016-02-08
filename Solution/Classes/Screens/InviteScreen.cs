@@ -47,11 +47,12 @@ namespace Solution
 			UIFont bold = UIFont.FromName("narwhal-bold", 24);
 			UIFont regular = UIFont.SystemFontOfSize(20);
 
-			string earningsString = "SHARE CITYBOARD";
-			string withdrawString = "Earn commissions and win prizes\nfor referring friends and businesses\nto use CityBoard!";
+			string earningsString = "SHARE BOARD";
+			string withdrawString = "Earn commissions and win prizes\nfor referring friends and businesses\nto get on Board!";
 
 			UILabel lbl1 = new UILabel (new CGRect (0, (nfloat)yposition, (nfloat)AppDelegate.ScreenWidth, earningsString.StringSize(bold).Height));
 			lbl1.Text = earningsString;
+			lbl1.Enabled = false;
 			lbl1.AdjustsFontSizeToFitWidth = true;
 			lbl1.TextColor = AppDelegate.CityboardOrange;
 			lbl1.TextAlignment = UITextAlignment.Center;

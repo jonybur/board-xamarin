@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+using System.Linq;
 using Newtonsoft.Json;
 using CoreGraphics;
 
@@ -10,8 +12,8 @@ using CoreText;
 
 using System.Threading.Tasks;
 using System.Threading;
-
 using System.Collections.Generic;
+using System.Net.Http;
 
 namespace Solution
 {
@@ -91,6 +93,7 @@ namespace Solution
 		public void OpenEye()
 		{
 			eye.Image = openEyeImage;
+			eye.TintColor = AppDelegate.CityboardOrange;
 			eyeOpen = true;
 		}
 
@@ -125,8 +128,9 @@ namespace Solution
 			//eyeView.Image = UIImage.FromFile ("./boardscreen/openeye3.png");
 			closedEyeImage = UIImage.FromFile ("./boardscreen/closedeye.png");
 			openEyeImage = UIImage.FromFile ("./boardscreen/openeye3.png");
+			closedEyeImage = closedEyeImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+			openEyeImage = openEyeImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			eyeView.Image = closedEyeImage;
-			eyeView.Image = eyeView.Image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			eyeView.TintColor = UIColor.FromRGB(140,140,140);
 
 			return eyeView;

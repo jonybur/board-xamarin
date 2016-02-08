@@ -212,24 +212,29 @@ namespace Solution
 				if (ListPictureComponents == null || ListPictureComponents.Count == 0)
 				{ return; }
 
-				// TODO: add to have eye closed as condition as well
+				// TODO: set a timer
 
 				PictureComponent pic = ListPictureComponents.Find(item => item.View.Frame.X > scrollView.ContentOffset.X &&
 										   item.View.Frame.X < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth) &&
-					!item.EyeOpen);
+											!item.EyeOpen);
 
 				if (pic == null)
 				{ return; }
 
-				Console.WriteLine("opens eye");
-
-				pic.OpenEye();
+				Thread thread = new Thread(() => OpenEye(pic));
+				thread.Start();
 
 			};
 
 			zoomingScrollView = new UIScrollView (new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight));
 			zoomingScrollView.AddSubview (scrollView);
 			View.AddSubview (zoomingScrollView);
+		}
+
+		private void OpenEye(PictureComponent picComponent)
+		{
+			Thread.Sleep (1000);
+			InvokeOnMainThread(picComponent.OpenEye);
 		}
 
 		public static void ZoomScrollview()
