@@ -40,6 +40,7 @@ namespace Solution
 					if (p != null) {
 						// uploads
 
+						BoardInterface.ListPictures.Add(p);
 					}
 				}
 				else

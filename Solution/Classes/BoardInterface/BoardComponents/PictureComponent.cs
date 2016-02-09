@@ -38,10 +38,9 @@ namespace Solution
 			get { return eyeOpen; }
 		}
 
-		public Picture GetPicture()
+		public Picture Picture
 		{
-			//textbox.SetPosition (new CGPoint(uiView.Frame.X, uiView.Frame.Y));
-			return picture;
+			get { return picture; }
 		}
 
 		public PictureComponent()
@@ -87,7 +86,6 @@ namespace Solution
 			uiView.Transform = CGAffineTransform.MakeRotation(pic.Rotation);
 
 			eyeOpen = false;
-
 		}
 
 		public void OpenEye()
@@ -125,7 +123,6 @@ namespace Solution
 			CGSize iconSize = new CGSize (30, 30);
 
 			UIImageView eyeView = new UIImageView(new CGRect (frame.X + 10, frame.Height - iconSize.Height - 5, iconSize.Width, iconSize.Height));
-			//eyeView.Image = UIImage.FromFile ("./boardscreen/openeye3.png");
 			closedEyeImage = UIImage.FromFile ("./boardscreen/closedeye.png");
 			openEyeImage = UIImage.FromFile ("./boardscreen/openeye3.png");
 			closedEyeImage = closedEyeImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);

@@ -63,10 +63,12 @@ namespace Solution
 			lbl1.TextColor = AppDelegate.CityboardOrange;
 			lbl1.TextAlignment = UITextAlignment.Center;
 			yposition += (float)lbl1.Frame.Height + 5;
+			lbl1.Enabled = false;
 			lbl1.Font = bold;
 
 			UITextView uit = new UITextView (new CGRect (10, yposition, AppDelegate.ScreenWidth - 20, 420));
 			uit.Text = withdrawString;
+			uit.Selectable = false;
 			uit.Font = regular;
 			uit.ScrollEnabled = false;
 			uit.PagingEnabled = false;

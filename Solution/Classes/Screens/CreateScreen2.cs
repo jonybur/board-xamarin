@@ -31,6 +31,7 @@ namespace Solution
 		UITextField hexView1;
 		UITextField hexView2;
 
+		float pushRight;
 		float boardHeight;
 		float topBarHeight;
 		float bottomBarHeight;
@@ -159,8 +160,6 @@ namespace Solution
 			UIImageView previewBoard = GeneratePreviewBoard ();
 			scrollView.AddSubview (previewBoard); 
 		}
-
-		float pushRight;
 
 		private void GenerateColorSelectors()
 		{

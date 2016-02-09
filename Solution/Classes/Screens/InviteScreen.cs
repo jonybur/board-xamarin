@@ -62,6 +62,7 @@ namespace Solution
 			UITextView uit = new UITextView (new CGRect (0,yposition,AppDelegate.ScreenWidth, 420));
 			uit.Text = withdrawString;
 			uit.Font = regular;
+			uit.Selectable = false;
 			uit.ScrollEnabled = false;
 			uit.PagingEnabled = false;
 			uit.Editable = false;

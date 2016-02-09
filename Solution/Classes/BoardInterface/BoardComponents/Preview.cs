@@ -22,15 +22,12 @@ namespace Solution
 		public static PictureComponent pictureComponent;
 
 		private static UIView uiView;
+		public static UIView View{
+			get { return uiView; }
+		}
 
 		public static bool IsPicturePreview;
-
 		private static float Rotation = 0;
-
-		public static UIView GetUIView()
-		{
-			return uiView;
-		}
 
 		public static void Initialize (UIImage image, CGPoint ContentOffset, UINavigationController navigationController)
 		{
@@ -44,9 +41,9 @@ namespace Solution
 			CGRect frame = pictureComponent.View.Frame;
 
 			uiView = new UIView (new CGRect(ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
-				ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Button.ButtonSize / 2,frame.Width, frame.Height));
+				ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Button.ButtonSize / 2, frame.Width, frame.Height));
 
-			//uiView.Alpha = .5f;
+			uiView.Alpha = .5f;
 			uiView.AddGestureRecognizer (SetNewPanGestureRecognizer());
 			uiView.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
 			uiView.AddSubviews(pictureComponent.View);
@@ -60,7 +57,6 @@ namespace Solution
 			textBox.ImgX = (float)(ContentOffset.X + AppDelegate.ScreenWidth / 2 - textBox.ImgW / 2);
 			textBox.ImgY = (float)(ContentOffset.Y + AppDelegate.ScreenHeight / 2 - textBox.ImgH / 2 - Button.ButtonSize / 2);
 
-			CGRect frame = new CGRect (textBox.ImgX, textBox.ImgY, textBox.ImgW, textBox.ImgH);
 			textBoxComponent = new TextBoxComponent (textBox);
 
 			await textBoxComponent.Load (navigationController, refreshContent);
@@ -104,6 +100,8 @@ namespace Solution
 		private static UIRotationGestureRecognizer SetNewRotationGestureRecognizer(bool autoRotate)
 		{
 			float r = 0;
+			Rotation = 0;
+
 			if (autoRotate) {
 				Random rnd = new Random ();
 				r = (float)(rnd.NextDouble () / 3);
@@ -131,13 +129,13 @@ namespace Solution
 		{
 			uiView.RemoveFromSuperview ();
 			uiView.Dispose ();
+			uiView = null;
 		}
 
 		public static Picture GetPicture()
 		{
-			CGRect rec = new CGRect (uiView.Center, uiView.Bounds.Size);
-			Picture p1 = pictureComponent.GetPicture ();
-			Picture p = new Picture (p1.Image, p1.Thumbnail, Rotation, rec, Profile.CurrentProfile.UserID);
+			uiView.Transform = CGAffineTransform.MakeRotation (0);
+			Picture p = new Picture (pictureComponent.Picture.Image, pictureComponent.Picture.Thumbnail, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
 			return p;
 		}
 

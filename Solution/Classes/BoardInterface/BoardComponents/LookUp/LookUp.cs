@@ -42,27 +42,8 @@ namespace Solution
 				return lookUpImage;
 			};
 
-			/*
-			UIPinchGestureRecognizer pinch = new UIPinchGestureRecognizer ((tg) => {	
-				CGPoint anchor = tg.LocationInView(lookUpImage);
-				anchor = new CGPoint(anchor.X - lookUpImage.Bounds.Size.Width / 2,
-					anchor.Y - lookUpImage.Bounds.Size.Height / 2);
-
-				CGAffineTransform affineMatrix = lookUpImage.Transform;
-				affineMatrix = CGAffineTransform.Translate(affineMatrix, anchor.X, anchor.Y);
-				affineMatrix = CGAffineTransform.Scale(affineMatrix, tg.Scale, tg.Scale);
-				affineMatrix = CGAffineTransform.Translate(affineMatrix, -anchor.X, -anchor.Y);
-				lookUpImage.Transform = affineMatrix;
-
-				tg.Scale = 1;
-
-			});
-			scrollView.AddGestureRecognizer (pinch);
-			*/
-
 			UITapGestureRecognizer doubletap = new UITapGestureRecognizer  ((tg) => {
-
-				// TODO: zoom at a certain point in the image 
+				
 				if (scrollView.ZoomScale > 1)
 					scrollView.SetZoomScale(1f, true);
 				else
@@ -70,9 +51,24 @@ namespace Solution
 
 				tg.NumberOfTapsRequired = 2;
 
-			});
-			scrollView.AddGestureRecognizer (doubletap);
+				/* CODE TO MANUALLY ZOOM TO A SPECIFIC POINT ON THE IMAGE
+				 
+					CGPoint anchor = tg.LocationInView(lookUpImage);
+					anchor = new CGPoint(anchor.X - lookUpImage.Bounds.Size.Width / 2,
+						anchor.Y - lookUpImage.Bounds.Size.Height / 2);
 
+					CGAffineTransform affineMatrix = lookUpImage.Transform;
+					affineMatrix = CGAffineTransform.Translate(affineMatrix, anchor.X, anchor.Y);
+					affineMatrix = CGAffineTransform.Scale(affineMatrix, tg.Scale, tg.Scale);
+					affineMatrix = CGAffineTransform.Translate(affineMatrix, -anchor.X, -anchor.Y);
+					lookUpImage.Transform = affineMatrix;
+
+					tg.Scale = 1;
+				*/
+
+			});
+
+			scrollView.AddGestureRecognizer (doubletap);
 			scrollView.UserInteractionEnabled = true;
 
 			UIImageView backButton = CreateBackButton ();
@@ -89,14 +85,37 @@ namespace Solution
 			imgw = AppDelegate.ScreenWidth;
 			imgh = AppDelegate.ScreenWidth * scale;
 
-			UIImageView imageView = new UIImageView (new CGRect (0, 0, imgw, imgh));
+			UIImageView imageView = new UIImageView (new CGRect (0, AppDelegate.ScreenHeight/2 - imgh / 2, imgw, imgh));
 			imageView.Layer.AnchorPoint = new CGPoint(.5f, .5f);
-			imageView.Center = new CGPoint(AppDelegate.ScreenWidth/2, AppDelegate.ScreenHeight/2);
 			imageView.Image = image;
 			imageView.UserInteractionEnabled = true;
 
-			return imageView;
+			UIImageView blackTop = CreateColorView(new CGRect(0,0,AppDelegate.ScreenWidth, imageView.Frame.Top), UIColor.Black.CGColor);
+
+			UIImageView composite = new UIImageView(new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+
+			composite.AddSubviews (blackTop, imageView);
+
+
+			return composite;
 		}
+
+
+		private UIImageView CreateColorView(CGRect frame, CGColor color)
+		{
+			UIGraphics.BeginImageContext (new CGSize(frame.Size.Width, frame.Size.Height));
+			CGContext context = UIGraphics.GetCurrentContext ();
+
+			context.SetFillColor(color);
+			context.FillRect(frame);
+
+			UIImage orange = UIGraphics.GetImageFromCurrentImageContext ();
+			UIImageView uiv = new UIImageView (orange);
+			uiv.Frame = frame;
+
+			return uiv;
+		}
+
 
 		private UIImageView CreateBackButton()
 		{

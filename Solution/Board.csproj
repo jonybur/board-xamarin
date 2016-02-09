@@ -244,6 +244,16 @@
     <BundleResource Include="Resources\screens\business\sidemenu\6plus.png" />
     <BundleResource Include="Resources\screens\business\sidemenu\6.png" />
     <BundleResource Include="Resources\screens\create\2\icon.png" />
+    <BundleResource Include="Resources\logos\fattuesdays.jpg" />
+    <BundleResource Include="Resources\logos\wetwillies.jpg" />
+    <BundleResource Include="Resources\logos\brickhouse.png" />
+    <BundleResource Include="Resources\logos\space.jpg" />
+    <BundleResource Include="Resources\logos\coyo.jpeg" />
+    <BundleResource Include="Resources\logos\wood.jpg" />
+    <BundleResource Include="Resources\logos\panther.JPG" />
+    <BundleResource Include="Resources\logos\bluemartini.png" />
+    <BundleResource Include="Resources\logos\nikki.jpg" />
+    <BundleResource Include="Resources\logos\electricpickle.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

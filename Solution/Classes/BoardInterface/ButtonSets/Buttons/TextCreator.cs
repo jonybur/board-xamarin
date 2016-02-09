@@ -87,7 +87,7 @@ namespace Solution
 
 				await Preview.Initialize (tb, BoardInterface.scrollView.ContentOffset, refreshContent, navigationController);
 				// shows the image preview so that the user can position the image
-				BoardInterface.scrollView.AddSubview(Preview.GetUIView());
+				BoardInterface.scrollView.AddSubview(Preview.View);
 
 				// switches to confbar
 				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);

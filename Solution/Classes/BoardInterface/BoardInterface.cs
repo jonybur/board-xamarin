@@ -66,6 +66,12 @@ namespace Solution
 			// if it reaches this section, user has been logged in and authorized
 			base.ViewDidLoad ();
 
+			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
+			NavigationController.NavigationBarHidden = true;
+
+			ListPictures = new List<Picture> ();
+			ListTextboxes = new List<TextBox> ();
+
 			//StorageController.Initialize ();
 
 			//GetFromLocalDB ();
@@ -76,14 +82,12 @@ namespace Solution
 			// initialices interface and place the local pictures on board
 			InitializeInterface ();
 
-			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
-			NavigationController.NavigationBarHidden = true;
+			// updates the board
+			RefreshContent ();
 
 			// downloads new Board content into the local DB
 			//await StorageController.UpdateLocalDB ();
 
-			// updates the board
-			RefreshContent ();
 
 			// initializes the gallery
 			//InitializeGallery ();
@@ -102,8 +106,6 @@ namespace Solution
 		private static UIImageView CreateColorSquare(CGSize size, CGPoint center, CGColor startcolor)
 		{
 			CGRect frame = new CGRect (0, 0, size.Width, size.Height);
-
-			CGRect frame2 = frame;
 
 			UIGraphics.BeginImageContext (new CGSize(frame.Size.Width, frame.Size.Height));
 			CGContext context = UIGraphics.GetCurrentContext ();
@@ -212,8 +214,6 @@ namespace Solution
 				if (ListPictureComponents == null || ListPictureComponents.Count == 0)
 				{ return; }
 
-				// TODO: set a timer
-
 				PictureComponent pic = ListPictureComponents.Find(item => item.View.Frame.X > scrollView.ContentOffset.X &&
 										   item.View.Frame.X < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth) &&
 											!item.EyeOpen);
@@ -233,7 +233,7 @@ namespace Solution
 
 		private void OpenEye(PictureComponent picComponent)
 		{
-			Thread.Sleep (1000);
+			Thread.Sleep (750);
 			InvokeOnMainThread(picComponent.OpenEye);
 		}
 
@@ -279,15 +279,9 @@ namespace Solution
 		{
 			RemoveAllContent();
 
-			ListPictures = new List<Picture> ();
+			//GenerateTestPictures ();
+
 			ListPictureComponents = new List<PictureComponent> ();
-
-			ListTextboxes = new List<TextBox> ();
-
-			//GetFromLocalDB ();
-
-			GenerateTestPictures ();
-
 
 			foreach (Picture p in ListPictures) {
 				DrawPictureComponent (p);
@@ -328,6 +322,8 @@ namespace Solution
 			UIView componentView = component.View;
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+				if (Preview.View != null) { return; }
+
 				LookUp lookUp = new LookUp(picture);
 				NavigationController.PushViewController(lookUp, true);
 			});
