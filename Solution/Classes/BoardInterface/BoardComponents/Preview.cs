@@ -59,7 +59,7 @@ namespace Solution
 			Video video = new Video ();
 
 			MPMoviePlayerController moviePlayer = new MPMoviePlayerController (new NSUrl(Url));
-			video.Thumbnail = moviePlayer.ThumbnailImageAt (moviePlayer.Duration / 2, MPMovieTimeOption.Exact);
+			video.Thumbnail = moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact);
 
 			video.Url = Url;
 

@@ -31,7 +31,6 @@ namespace Solution
 
 			uiButton.TouchUpInside += (object sender, EventArgs e) => {
 				ImagePicker ip = new ImagePicker (scrollView, UIImagePickerControllerSourceType.PhotoLibrary, navigationController);
-
 				navigationController.PresentViewController (ip.UIImagePicker, true, null);
 			};
 		}

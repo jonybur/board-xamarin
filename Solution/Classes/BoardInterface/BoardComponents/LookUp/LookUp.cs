@@ -29,6 +29,7 @@ namespace Solution
 
 		public LookUp(Picture picture)
 		{
+			this.AutomaticallyAdjustsScrollViewInsets = false;
 			uiView = new UIView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			UIScrollView scrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 

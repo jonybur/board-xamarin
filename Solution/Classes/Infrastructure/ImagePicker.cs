@@ -129,24 +129,22 @@ namespace Solution
 		{
 			Preview.Initialize (url.ToString(), BoardInterface.scrollView.ContentOffset, navigationController);
 
-			// shows the image preview so that the user can position the image
-			BoardInterface.scrollView.AddSubview(Preview.View);
+			ShareScreen shareScreen = new ShareScreen();
 
-			// switches to confbar
-			ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
-			navigationController.DismissViewController(true, null);
+			navigationController.DismissViewController(false, null);
+
+			navigationController.PushViewController(shareScreen, false);
 		}
 
 		private void LaunchPicturePreview(UIImage image, UINavigationController navigationController)
 		{		
 			Preview.Initialize(image, BoardInterface.scrollView.ContentOffset, navigationController);
 
-			// shows the image preview so that the user can position the image
-			BoardInterface.scrollView.AddSubview(Preview.View);
+			ShareScreen shareScreen = new ShareScreen();
 
-			// switches to confbar
-			ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
-			navigationController.DismissViewController(true, null);
+			navigationController.DismissViewController(false, null);
+
+			navigationController.PushViewController(shareScreen, false);
 		}
 
 

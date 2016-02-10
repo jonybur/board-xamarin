@@ -26,9 +26,6 @@ namespace Solution
 		const int fontSize = 18;
 
 		AVPlayer _player;
-		AVPlayerLayer _playerLayer;
-		AVAsset _asset;
-		AVPlayerItem _playerItem;
 		Thread looper;
 
 		bool keepLooping = true;
@@ -133,10 +130,10 @@ namespace Solution
 		{
 			this.AutomaticallyAdjustsScrollViewInsets = false;
 
-			_asset = AVAsset.FromUrl (NSUrl.FromFilename ("./timelapse.mp4"));
-			_playerItem = new AVPlayerItem (_asset);
+			AVAsset _asset = AVAsset.FromUrl (NSUrl.FromFilename ("./timelapse.mp4"));
+			AVPlayerItem _playerItem = new AVPlayerItem (_asset);
 			_player = new AVPlayer (_playerItem);
-			_playerLayer = AVPlayerLayer.FromPlayer (_player);
+			AVPlayerLayer _playerLayer = AVPlayerLayer.FromPlayer (_player);
 			_playerLayer.Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
 			_player.ActionAtItemEnd = AVPlayerActionAtItemEnd.Pause;
 			_player.Volume = 0;

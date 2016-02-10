@@ -13,6 +13,8 @@ using System.Collections.Generic;
 
 using System.Threading.Tasks;
 using System.Threading;
+using AVFoundation;
+using AVKit;
 
 using MediaPlayer;
 
@@ -106,17 +108,6 @@ namespace Solution
 
 			View.AddSubview (tbc.GetUIView ());*/
 
-		}
-
-
-		private void TestWebView()
-		{
-			UIWebView webView = new UIWebView (new CGRect (000, 000, 300, 500));
-			var url = new NSUrl ("https://i.imgur.com/A61SaA1.gifv");
-			var request = new NSUrlRequest (url);
-			webView.ScalesPageToFit = true;
-			webView.LoadRequest (request);
-			scrollView.AddSubview (webView);
 		}
 
 		private static UIImageView CreateColorSquare(CGSize size, CGPoint center, CGColor startcolor)
@@ -333,7 +324,6 @@ namespace Solution
 				DrawTextbox (tb);
 			}
 
-
 			ListPictureComponents = ListPictureComponents.OrderBy(o=>o.View.Frame.X).ToList();
 		}
 
@@ -379,7 +369,6 @@ namespace Solution
 			scrollView.AddSubview (component.View);
 			ListVideoComponents.Add (component);
 		}
-
 
 		private void DrawPictureComponent(Picture picture)
 		{

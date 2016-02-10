@@ -255,6 +255,10 @@
     <BundleResource Include="Resources\logos\nikki.jpg" />
     <BundleResource Include="Resources\logos\electricpickle.jpg" />
     <BundleResource Include="Resources\boardscreen\playbutton.png" />
+    <BundleResource Include="Resources\screens\share\banner\6.jpg" />
+    <BundleResource Include="Resources\screens\share\next\6.jpg" />
+    <BundleResource Include="Resources\screens\share\banner\6plus.jpg" />
+    <BundleResource Include="Resources\screens\share\next\6plus.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -313,6 +317,7 @@
     <Compile Include="Classes\BoardInterface\BoardComponents\PictureComponent.cs" />
     <Compile Include="Classes\Schema\Content\Video.cs" />
     <Compile Include="Classes\BoardInterface\BoardComponents\VideoComponent.cs" />
+    <Compile Include="Classes\Screens\ShareScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -361,6 +366,9 @@
     <Folder Include="Resources\boardscreen\testpictures\" />
     <Folder Include="Resources\boardscreen\backgrounds\New Folder\" />
     <Folder Include="Resources\screens\login\" />
+    <Folder Include="Resources\screens\share\" />
+    <Folder Include="Resources\screens\share\banner\" />
+    <Folder Include="Resources\screens\share\next\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

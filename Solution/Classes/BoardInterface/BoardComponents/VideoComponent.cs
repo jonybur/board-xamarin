@@ -9,6 +9,10 @@ using UIKit;
 
 using CoreAnimation;
 using CoreText;
+using AVFoundation;
+using CoreMedia;
+using AVKit;
+using MediaPlayer;
 
 using System.Threading.Tasks;
 using System.Threading;
@@ -61,15 +65,19 @@ namespace Solution
 			uiView.AddSubview (mounting);
 
 			// picture
-
 			CGRect pictureFrame = new CGRect (mounting.Frame.X + 10, 10, frame.Width, frame.Height);
+			AVPlayerLayer videoLayer = LoadVideoThumbnail (pictureFrame);
+			uiView.Layer.AddSublayer (videoLayer);
+
+			/*
 			UIImageView uiv = new UIImageView (pictureFrame);
 			uiv.Image = vid.Thumbnail;
 			uiView.AddSubview (uiv);
 
 			// play button
-			UIImageView playButton = CreatePlayButton (pictureFrame);
-			uiView.AddSubview (playButton);
+			//UIImageView playButton = CreatePlayButton (pictureFrame);
+			//uiView.AddSubview (playButton);
+			*/
 
 			// like
 
@@ -212,6 +220,55 @@ namespace Solution
 		public void SetFrame(CGRect frame)
 		{
 			uiView.Frame = frame;
+		}
+
+
+		private void LooperMethod()
+		{
+			const int NSEC_PER_SEC = 1000000000;
+
+			while (keepLooping) {
+
+				int time = 0;
+
+				while (time < videoDuration) {
+					System.Threading.Thread.Sleep (1000);
+					time++;
+				}
+
+				uiView.InvokeOnMainThread (() => {
+					_player.Seek (new CMTime (0, NSEC_PER_SEC));
+				});
+			}
+		}
+
+		bool keepLooping = true;
+		Thread looper;
+		AVPlayer _player;
+		double videoDuration;
+
+		private AVPlayerLayer LoadVideoThumbnail(CGRect frame)
+		{	
+			AVAsset _asset;
+			AVPlayerItem _playerItem;
+			AVPlayerLayer _playerLayer;
+
+			_asset = AVAsset.FromUrl (NSUrl.FromString (video.Url));
+			_playerItem = new AVPlayerItem (_asset);
+
+			_player = new AVPlayer (_playerItem);
+			_playerLayer = AVPlayerLayer.FromPlayer (_player);
+			_playerLayer.Frame = frame;
+			_player.ActionAtItemEnd = AVPlayerActionAtItemEnd.Pause;
+			_player.Volume = 0;
+			_player.Play ();
+
+			videoDuration = Math.Floor(_player.CurrentItem.Asset.Duration.Seconds);
+
+			looper = new Thread (new ThreadStart (LooperMethod));
+			looper.Start ();
+
+			return _playerLayer;
 		}
 
 	}
