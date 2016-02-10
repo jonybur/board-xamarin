@@ -254,6 +254,7 @@
     <BundleResource Include="Resources\logos\bluemartini.png" />
     <BundleResource Include="Resources\logos\nikki.jpg" />
     <BundleResource Include="Resources\logos\electricpickle.jpg" />
+    <BundleResource Include="Resources\boardscreen\playbutton.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -310,6 +311,8 @@
     <Compile Include="Classes\BoardInterface\ButtonSets\ButtonSet.cs" />
     <Compile Include="Classes\BoardInterface\ButtonSets\ConfirmationButtonSet.cs" />
     <Compile Include="Classes\BoardInterface\BoardComponents\PictureComponent.cs" />
+    <Compile Include="Classes\Schema\Content\Video.cs" />
+    <Compile Include="Classes\BoardInterface\BoardComponents\VideoComponent.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

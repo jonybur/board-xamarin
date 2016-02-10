@@ -31,8 +31,9 @@ namespace Solution
 				// takes out the confirmation bar and resets navigation
 				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.NavigationBar);
 
-				if (Preview.IsPicturePreview)
+				switch (Preview.TypeOfPreview)
 				{
+				case (int)Preview.Type.Picture:
 					// create the picture from the preview
 					Picture p = Preview.GetPicture ();
 
@@ -42,18 +43,28 @@ namespace Solution
 
 						BoardInterface.ListPictures.Add(p);
 					}
-				}
-				else
-				{
+					break;
+
+				case (int)Preview.Type.Video:
+					Video v = Preview.GetVideo();
+
+					if (v != null)
+					{
+						BoardInterface.ListVideos.Add(v);
+					}
+					break;
+
+				case (int)Preview.Type.TextBox:
 					TextBox tb = Preview.GetTextBox ();
 
 					if (tb != null)
 					{
 						// uploads
-						
-					}
-				}
 
+					}
+					break;
+				}
+		
 				// remove the preview imageview from the superview
 				Preview.RemoveFromSuperview ();
 

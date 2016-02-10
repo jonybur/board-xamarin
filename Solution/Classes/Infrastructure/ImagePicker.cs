@@ -9,6 +9,8 @@ using UIKit;
 using CoreAnimation;
 using CoreText;
 
+using MediaPlayer;
+
 namespace Solution
 {
 	public class ImagePicker
@@ -33,19 +35,11 @@ namespace Solution
 			imagePickerController.FinishedPickingMedia += (sender, e) => {
 				// determines what was selected, video or image
 				bool isImage = false;
-				switch(e.Info[UIImagePickerController.MediaType].ToString()) {
-				case "public.image":
-					isImage = true;
-					break;
-				case "public.video":
-					Console.WriteLine("Video selected");
-					break;
-				}
 
-				// get common info (shared between images and video)
-				NSUrl referenceURL = e.Info[new NSString("UIImagePickerControllerReferenceUrl")] as NSUrl;
-				if (referenceURL != null)
-					Console.WriteLine("Url:"+referenceURL.ToString ());
+				if (e.Info[UIImagePickerController.MediaType].ToString() == "public.image")
+				{
+					isImage = true;
+				}
 
 				// if it was an image, get the other image info
 				if(isImage) {
@@ -53,14 +47,15 @@ namespace Solution
 					UIImage originalImage = e.Info[UIImagePickerController.OriginalImage] as UIImage;
 					if(originalImage != null) {
 						// call addimage
-						LaunchPicturePreview (originalImage, scrollView, navigationController);
+						LaunchPicturePreview (originalImage, navigationController);
 					}
 				} else { // if it's a video
 					// get video url
 					NSUrl mediaURL = e.Info[UIImagePickerController.MediaURL] as NSUrl;
+
 					if(mediaURL != null) {
-						// TODO: leave the video input here or separate video and pictures in two different functions
-						Console.WriteLine(mediaURL.ToString());
+						// launch video
+						LaunchVideoPreview(mediaURL, navigationController);
 					}
 				}          
 				// dismiss the picker
@@ -75,24 +70,19 @@ namespace Solution
 			imagePickerController = new UIImagePickerController();
 
 			imagePickerController.SourceType = UIImagePickerControllerSourceType.PhotoLibrary;
-			imagePickerController.MediaTypes = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.SavedPhotosAlbum);
+			imagePickerController.MediaTypes = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.PhotoLibrary);
 
 			imagePickerController.FinishedPickingMedia += (sender, e) => {
 				// determines what was selected, video or image
 				bool isImage = false;
-				switch(e.Info[UIImagePickerController.MediaType].ToString()) {
-				case "public.image":
+
+				if (e.Info[UIImagePickerController.MediaType].ToString() == "public.image")
+				{
 					isImage = true;
-					break;
-				case "public.video":
-					Console.WriteLine("Video selected");
-					break;
 				}
 
 				// get common info (shared between images and video)
 				NSUrl referenceURL = e.Info[new NSString("UIImagePickerControllerReferenceUrl")] as NSUrl;
-				if (referenceURL != null)
-					Console.WriteLine("Url:"+referenceURL.ToString ());
 
 				// if it was an image, get the other image info
 				if(isImage) {
@@ -126,14 +116,8 @@ namespace Solution
 						board.Image = image;
 
 					}
-				} else { // if it's a video
-					// get video url
-					NSUrl mediaURL = e.Info[UIImagePickerController.MediaURL] as NSUrl;
-					if(mediaURL != null) {
-						// TODO: leave the video input here or separate video and pictures in two different functions
-						Console.WriteLine(mediaURL.ToString());
-					}
-				}          
+				}
+
 				// dismiss the picker
 				imagePickerController.DismissViewController(true, null);
 			};
@@ -141,7 +125,19 @@ namespace Solution
 			imagePickerController.Canceled += OnCancelation;
 		}
 
-		private void LaunchPicturePreview(UIImage image, UIScrollView scrollView, UINavigationController navigationController)
+		private void LaunchVideoPreview(NSUrl url, UINavigationController navigationController)
+		{
+			Preview.Initialize (url.ToString(), BoardInterface.scrollView.ContentOffset, navigationController);
+
+			// shows the image preview so that the user can position the image
+			BoardInterface.scrollView.AddSubview(Preview.View);
+
+			// switches to confbar
+			ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
+			navigationController.DismissViewController(true, null);
+		}
+
+		private void LaunchPicturePreview(UIImage image, UINavigationController navigationController)
 		{		
 			Preview.Initialize(image, BoardInterface.scrollView.ContentOffset, navigationController);
 

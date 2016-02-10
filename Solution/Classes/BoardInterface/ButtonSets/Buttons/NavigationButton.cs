@@ -42,19 +42,15 @@ namespace Solution
 
 			float i = 0;
 
+
+			UITapGestureRecognizer doubletap = new UITapGestureRecognizer ((tg) => {
+				tg.NumberOfTapsRequired = 2;
+
+				BoardInterface.scrollView.SetContentOffset(new CGPoint(BoardInterface.ScrollViewWidthSize / 2 - AppDelegate.ScreenWidth / 2, 0), true);
+			});
+
 			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer  ((tg) => {
-				// OVERRIDE FOR PRESENTATION
-
-				/*
-				CGPoint position;
-				position = new CGPoint (AppDelegate.ScreenWidth * i,0);
-				BoardInterface.scrollView.SetContentOffset (position, true);
-				i+= .8f;
-
-				if (i > 5.8f) {
-					i = 0;
-				}*/
-
+				
 				if (BoardInterface.zoomingScrollView.ZoomScale < 1)
 				{
 					BoardInterface.ZoomScrollview();
@@ -121,6 +117,7 @@ namespace Solution
 
 			uiButton.UserInteractionEnabled = true;
 			uiButton.AddGestureRecognizer (tapGesture);
+			//uiButton.AddGestureRecognizer (doubletap);
 			uiButton.AddGestureRecognizer (longPressGesture);
 		}
 

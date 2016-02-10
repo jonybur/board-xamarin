@@ -1,4 +1,3 @@
-
 using System;
 using Newtonsoft.Json;
 using CoreGraphics;
@@ -10,6 +9,8 @@ using CoreAnimation;
 using CoreText;
 using System.Threading.Tasks;
 
+using MediaPlayer;
+
 using System.Collections.Generic;
 
 using Facebook.CoreKit;
@@ -20,22 +21,24 @@ namespace Solution
 	{
 		public static TextBoxComponent textBoxComponent;
 		public static PictureComponent pictureComponent;
+		public static VideoComponent videoComponent;
 
 		private static UIView uiView;
 		public static UIView View{
 			get { return uiView; }
 		}
-
-		public static bool IsPicturePreview;
 		private static float Rotation = 0;
+
+		public enum Type {Picture = 1, Video, TextBox};
+		public static int TypeOfPreview;
 
 		public static void Initialize (UIImage image, CGPoint ContentOffset, UINavigationController navigationController)
 		{
+			TypeOfPreview = (int)Type.Picture;
+
 			Picture picture = new Picture ();
 			picture.Image = image;
 
-			IsPicturePreview = true;
-		
 			pictureComponent = new PictureComponent (picture);
 
 			CGRect frame = pictureComponent.View.Frame;
@@ -49,9 +52,33 @@ namespace Solution
 			uiView.AddSubviews(pictureComponent.View);
 		}
 
+		public static void Initialize (string Url, CGPoint ContentOffset, UINavigationController navigationController)
+		{
+			TypeOfPreview = (int)Type.Video;
+
+			Video video = new Video ();
+
+			MPMoviePlayerController moviePlayer = new MPMoviePlayerController (new NSUrl(Url));
+			video.Thumbnail = moviePlayer.ThumbnailImageAt (moviePlayer.Duration / 2, MPMovieTimeOption.Exact);
+
+			video.Url = Url;
+
+			videoComponent = new VideoComponent (video);
+
+			CGRect frame = videoComponent.View.Frame;
+
+			uiView = new UIView (new CGRect(ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
+				ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Button.ButtonSize / 2, frame.Width, frame.Height));
+
+			uiView.Alpha = .5f;
+			uiView.AddGestureRecognizer (SetNewPanGestureRecognizer());
+			uiView.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
+			uiView.AddSubviews(videoComponent.View);
+		}
+
 		public static async System.Threading.Tasks.Task Initialize (TextBox textBox, CGPoint ContentOffset, Action refreshContent, UINavigationController navigationController)
 		{
-			IsPicturePreview = false;
+			TypeOfPreview = (int)Type.TextBox;
 			// so now launch image preview to choose position in the board
 
 			textBox.ImgX = (float)(ContentOffset.X + AppDelegate.ScreenWidth / 2 - textBox.ImgW / 2);
@@ -137,6 +164,13 @@ namespace Solution
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
 			Picture p = new Picture (pictureComponent.Picture.Image, pictureComponent.Picture.Thumbnail, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
 			return p;
+		}
+
+		public static Video GetVideo()
+		{
+			uiView.Transform = CGAffineTransform.MakeRotation (0);
+			Video v = new Video (videoComponent.Video.Url, videoComponent.Video.Thumbnail, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
+			return v;
 		}
 
 		public static TextBox GetTextBox()

@@ -13,7 +13,8 @@ using System.Collections.Generic;
 
 using System.Threading.Tasks;
 using System.Threading;
-using System.Collections.Generic;
+
+using MediaPlayer;
 
 using Facebook.CoreKit;
 
@@ -47,9 +48,12 @@ namespace Solution
 		bool TestMode;
 
 		public static List<Picture> ListPictures;
-		public static List<PictureComponent> ListPictureComponents;
-
 		public static List<TextBox> ListTextboxes;
+		public static List<Video> ListVideos;
+
+		public static List<PictureComponent> ListPictureComponents;
+		public static List<VideoComponent> ListVideoComponents;
+
 
 		public BoardInterface (Board _board, bool _testMode) : base ("Board", null){
 			board = _board;
@@ -70,6 +74,7 @@ namespace Solution
 			NavigationController.NavigationBarHidden = true;
 
 			ListPictures = new List<Picture> ();
+			ListVideos = new List<Video> ();
 			ListTextboxes = new List<TextBox> ();
 
 			//StorageController.Initialize ();
@@ -84,6 +89,7 @@ namespace Solution
 
 			// updates the board
 			RefreshContent ();
+
 
 			// downloads new Board content into the local DB
 			//await StorageController.UpdateLocalDB ();
@@ -102,6 +108,16 @@ namespace Solution
 
 		}
 
+
+		private void TestWebView()
+		{
+			UIWebView webView = new UIWebView (new CGRect (000, 000, 300, 500));
+			var url = new NSUrl ("https://i.imgur.com/A61SaA1.gifv");
+			var request = new NSUrlRequest (url);
+			webView.ScalesPageToFit = true;
+			webView.LoadRequest (request);
+			scrollView.AddSubview (webView);
+		}
 
 		private static UIImageView CreateColorSquare(CGSize size, CGPoint center, CGColor startcolor)
 		{
@@ -211,23 +227,38 @@ namespace Solution
 			scrollView.Scrolled += (object sender, EventArgs e) => {
 				// call from here "open eye" function
 
-				if (ListPictureComponents == null || ListPictureComponents.Count == 0)
-				{ return; }
+				if (!(ListPictureComponents == null || ListPictureComponents.Count == 0))
+				{
+					PictureComponent pic = ListPictureComponents.Find(item => item.View.Frame.X > scrollView.ContentOffset.X &&
+											   item.View.Frame.X < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth) &&
+												!item.EyeOpen);
 
-				PictureComponent pic = ListPictureComponents.Find(item => item.View.Frame.X > scrollView.ContentOffset.X &&
-										   item.View.Frame.X < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth) &&
-											!item.EyeOpen);
+					if (pic != null)
+					{
+						Thread thread = new Thread(() => OpenEye(pic));
+						thread.Start();
+					}
+				}
 
-				if (pic == null)
-				{ return; }
+				if (!(ListVideoComponents == null || ListVideoComponents.Count == 0))
+				{
+					VideoComponent vid = ListVideoComponents.Find(item => item.View.Frame.X > scrollView.ContentOffset.X &&
+						item.View.Frame.X < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth) &&
+						!item.EyeOpen);
 
-				Thread thread = new Thread(() => OpenEye(pic));
-				thread.Start();
+					if (vid != null)
+					{
+						Thread thread = new Thread(() => OpenEye(vid));
+						thread.Start();
+					}
+				}
+
 
 			};
 
 			zoomingScrollView = new UIScrollView (new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight));
 			zoomingScrollView.AddSubview (scrollView);
+
 			View.AddSubview (zoomingScrollView);
 		}
 
@@ -235,6 +266,12 @@ namespace Solution
 		{
 			Thread.Sleep (750);
 			InvokeOnMainThread(picComponent.OpenEye);
+		}
+
+		private void OpenEye(VideoComponent vidComponent)
+		{
+			Thread.Sleep (750);
+			InvokeOnMainThread(vidComponent.OpenEye);
 		}
 
 		public static void ZoomScrollview()
@@ -282,9 +319,14 @@ namespace Solution
 			//GenerateTestPictures ();
 
 			ListPictureComponents = new List<PictureComponent> ();
+			ListVideoComponents = new List<VideoComponent> ();
 
 			foreach (Picture p in ListPictures) {
 				DrawPictureComponent (p);
+			}
+
+			foreach (Video v in ListVideos) {
+				DrawVideoComponent (v);
 			}
 
 			foreach (TextBox tb in ListTextboxes) {
@@ -315,6 +357,30 @@ namespace Solution
 			ListPictures.Add (pic);
 		}
 
+		private void DrawVideoComponent(Video video)
+		{
+			VideoComponent component = new VideoComponent (video);
+
+			UIView componentView = component.View;
+
+			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+				if (Preview.View != null) { return; }
+
+				MPMoviePlayerController moviePlayer = new MPMoviePlayerController (new NSUrl(video.Url));
+
+				View.AddSubview (moviePlayer.View);
+				moviePlayer.SetFullscreen (true, false);
+				moviePlayer.Play ();
+			});
+
+			componentView.AddGestureRecognizer (tap);
+			componentView.UserInteractionEnabled = true;
+
+			scrollView.AddSubview (component.View);
+			ListVideoComponents.Add (component);
+		}
+
+
 		private void DrawPictureComponent(Picture picture)
 		{
 			PictureComponent component = new PictureComponent (picture);
@@ -334,6 +400,7 @@ namespace Solution
 			scrollView.AddSubview (component.View);
 			ListPictureComponents.Add (component);
 		}
+
 
 		private async void DrawTextbox(TextBox tb)
 		{
