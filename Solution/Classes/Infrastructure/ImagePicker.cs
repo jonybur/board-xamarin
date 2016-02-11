@@ -133,6 +133,9 @@ namespace Solution
 
 			ShareScreen shareScreen = new ShareScreen(moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact));
 
+			moviePlayer.Pause ();
+			moviePlayer.Dispose ();
+
 			navigationController.DismissViewController(false, null);
 
 			navigationController.PushViewController(shareScreen, false);

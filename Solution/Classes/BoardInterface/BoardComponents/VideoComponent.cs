@@ -222,11 +222,10 @@ namespace Solution
 			uiView.Frame = frame;
 		}
 
+		const int NSEC_PER_SEC = 1000000000;
 
 		private void LooperMethod()
 		{
-			const int NSEC_PER_SEC = 1000000000;
-
 			while (keepLooping) {
 
 				int time = 0;
@@ -255,14 +254,14 @@ namespace Solution
 
 			_asset = AVAsset.FromUrl (NSUrl.FromString (video.Url));
 			_playerItem = new AVPlayerItem (_asset);
-
+			_playerItem.AudioMix = new AVAudioMix ();
 			_player = new AVPlayer (_playerItem);
 			_playerLayer = AVPlayerLayer.FromPlayer (_player);
 			_playerLayer.Frame = frame;
-			_player.ActionAtItemEnd = AVPlayerActionAtItemEnd.Pause;
-			_player.Volume = 0;
-			_player.Muted = true;
+			_player.Seek (new CMTime (0, NSEC_PER_SEC));
 			_player.Play ();
+			_player.Muted = true;
+			_player.Volume = 0;
 
 			videoDuration = Math.Floor(_player.CurrentItem.Asset.Duration.Seconds);
 
