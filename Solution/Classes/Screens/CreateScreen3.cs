@@ -70,7 +70,7 @@ namespace Solution
 
 			orangeRectangle = CreateColorSquare (new CGSize (75, 60), 
 				new CGPoint ((AppDelegate.ScreenWidth / 4) * 3 + 60, 25),
-				AppDelegate.CityboardOrange.CGColor);
+				AppDelegate.BoardOrange.CGColor);
 
 			NextButtonEnabled(false);
 
@@ -132,7 +132,7 @@ namespace Solution
 					but = CreateSuscriptionButton (i, "Basic", "· Create a Board\n· Engage with your audience\n· Post content to all of your\nsocial media sites", "Free", frame);
 					break;	
 				case 1:
-					but = CreateSuscriptionButton (i, "Premium", "· Target to a specific audience\n· Get daily analytics\n· Broaden your CityBoard’s\narea range", "TBA", frame);
+					but = CreateSuscriptionButton (i, "Premium", "· Target to a specific audience\n· Get daily analytics\n· Broaden your Board’s\narea range", "TBA", frame);
 					but.AddSubview(CreateTopLayer (but.Frame, UIColor.Black.CGColor, UIImage.FromFile("./screens/create/3/lock.png")));
 					but.Enabled = false;
 					break;
@@ -204,7 +204,7 @@ namespace Solution
 			button.NameLabel.Font = nameFont;
 			button.NameLabel.Text = name;
 			button.NameLabel.UserInteractionEnabled = false;
-			button.NameLabel.TextColor = AppDelegate.CityboardOrange;
+			button.NameLabel.TextColor = AppDelegate.BoardOrange;
 			button.NameLabel.TextAlignment = UITextAlignment.Left;
 			button.AddSubview (button.NameLabel);
 
@@ -213,7 +213,7 @@ namespace Solution
 			button.DescriptionView.Font = descriptionFont;
 			button.DescriptionView.Text = description;
 			button.DescriptionView.UserInteractionEnabled = false;
-			button.DescriptionView.TextColor = AppDelegate.CityboardBlue;
+			button.DescriptionView.TextColor = AppDelegate.BoardBlue;
 			button.DescriptionView.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 			button.DescriptionView.TextAlignment = UITextAlignment.Left;
 			button.AddSubview (button.DescriptionView);
@@ -225,7 +225,7 @@ namespace Solution
 			button.PriceLabel.Font = priceFont;
 			button.PriceLabel.Text = price;
 			button.PriceLabel.UserInteractionEnabled = false;
-			button.PriceLabel.TextColor = AppDelegate.CityboardBlue;
+			button.PriceLabel.TextColor = AppDelegate.BoardBlue;
 			button.PriceLabel.TextAlignment = UITextAlignment.Left;
 			button.AddSubview (button.PriceLabel);
 
@@ -240,13 +240,13 @@ namespace Solution
 						// unselect the selected one
 
 						numberButtons[(int)selectedIndex].BackgroundColor = unselectedColor;
-						numberButtons[(int)selectedIndex].NameLabel.TextColor = AppDelegate.CityboardOrange;
-						numberButtons[(int)selectedIndex].DescriptionView.TextColor = AppDelegate.CityboardBlue;
-						numberButtons[(int)selectedIndex].PriceLabel.TextColor = AppDelegate.CityboardBlue;
+						numberButtons[(int)selectedIndex].NameLabel.TextColor = AppDelegate.BoardOrange;
+						numberButtons[(int)selectedIndex].DescriptionView.TextColor = AppDelegate.BoardBlue;
+						numberButtons[(int)selectedIndex].PriceLabel.TextColor = AppDelegate.BoardBlue;
 
 						// select the pressed one
 
-						numberButtons[button.Index].BackgroundColor = AppDelegate.CityboardLightBlue;
+						numberButtons[button.Index].BackgroundColor = AppDelegate.BoardLightBlue;
 						numberButtons[button.Index].NameLabel.TextColor = UIColor.White;
 						numberButtons[button.Index].DescriptionView.TextColor = UIColor.White;
 						numberButtons[button.Index].PriceLabel.TextColor = UIColor.White;
@@ -257,9 +257,9 @@ namespace Solution
 						// unselect the selected one
 
 						numberButtons[(int)selectedIndex].BackgroundColor = unselectedColor;
-						numberButtons[(int)selectedIndex].NameLabel.TextColor = AppDelegate.CityboardOrange;
-						numberButtons[(int)selectedIndex].DescriptionView.TextColor = AppDelegate.CityboardBlue;
-						numberButtons[(int)selectedIndex].PriceLabel.TextColor = AppDelegate.CityboardBlue;
+						numberButtons[(int)selectedIndex].NameLabel.TextColor = AppDelegate.BoardOrange;
+						numberButtons[(int)selectedIndex].DescriptionView.TextColor = AppDelegate.BoardBlue;
+						numberButtons[(int)selectedIndex].PriceLabel.TextColor = AppDelegate.BoardBlue;
 
 						selectedIndex = null;
 					}
@@ -269,7 +269,7 @@ namespace Solution
 					// nothing has been selected yet
 
 					// select the one that has been pressed
-					numberButtons[button.Index].BackgroundColor = AppDelegate.CityboardLightBlue;
+					numberButtons[button.Index].BackgroundColor = AppDelegate.BoardLightBlue;
 					numberButtons[button.Index].NameLabel.TextColor = UIColor.White;
 					numberButtons[button.Index].DescriptionView.TextColor = UIColor.White;
 					numberButtons[button.Index].PriceLabel.TextColor = UIColor.White;

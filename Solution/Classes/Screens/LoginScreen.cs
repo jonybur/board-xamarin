@@ -30,8 +30,7 @@ namespace Solution
 
 		bool keepLooping = true;
 
-		string [] extendedPermissions = new [] { "user_about_me", "read_stream"};
-		string [] publishPermissions = new [] { "publish_actions" };
+		string [] extendedPermissions = new [] { "public_profile" };
 		LoginButton logInButton;
 
 		const string FacebookAppId = "761616930611025";
@@ -74,8 +73,7 @@ namespace Solution
 			logInButton = new LoginButton (new CGRect (0, 0, AppDelegate.ScreenWidth - 70, 50)) {
 				LoginBehavior = LoginBehavior.Native,
 				Center = new CGPoint(AppDelegate.ScreenWidth/2, AppDelegate.ScreenHeight * (.90f)),
-				ReadPermissions = extendedPermissions,
-				PublishPermissions = publishPermissions
+				ReadPermissions = extendedPermissions
 			};
 
 			logInButton.Completed += (sender, e) => {

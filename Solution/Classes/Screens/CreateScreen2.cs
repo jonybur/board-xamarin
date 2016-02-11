@@ -169,29 +169,29 @@ namespace Solution
 				pushRight = 23;
 			}
 
-			board.MainColor = AppDelegate.CityboardOrange;
-			board.SecondaryColor = AppDelegate.CityboardBlue;
+			board.MainColor = AppDelegate.BoardOrange;
+			board.SecondaryColor = AppDelegate.BoardBlue;
 
 			UIImageView color1 = CreateColorSquare (ColorSquareSize, 
 				ColorSquarePosition1,
-				AppDelegate.CityboardOrange.CGColor, 1);
+				AppDelegate.BoardOrange.CGColor, 1);
 
 			// creates first colorsquare + first hash + first hexstring
 
 			UITextField hash1 = new UITextField(new CGRect(color1.Frame.Right + pushRight + 10, color1.Frame.Y + 10, 10, 20));
 			hash1.Font = UIFont.SystemFontOfSize (20);
 			hash1.BackgroundColor = UIColor.White;
-			hash1.TextColor =AppDelegate.CityboardBlue;
+			hash1.TextColor =AppDelegate.BoardBlue;
 			hash1.Text = "#";
 			hash1.UserInteractionEnabled = false;
 
 			hexView1 = new UITextField(new CGRect(hash1.Frame.Right + 3, hash1.Frame.Y, 100, hash1.Frame.Height));
 			hexView1.Font = UIFont.SystemFontOfSize (20);
 			hexView1.BackgroundColor = UIColor.White;
-			hexView1.TextColor = AppDelegate.CityboardBlue;
+			hexView1.TextColor = AppDelegate.BoardBlue;
 			hexView1.KeyboardType = UIKeyboardType.Default;
 			hexView1.ReturnKeyType = UIReturnKeyType.Done;
-			hexView1.Text = CommonUtils.UIColorToHex(AppDelegate.CityboardOrange);
+			hexView1.Text = CommonUtils.UIColorToHex(AppDelegate.BoardOrange);
 			hexView1.AutocapitalizationType = UITextAutocapitalizationType.None;
 
 			hexView1.ShouldChangeCharacters = (textField, range, replacementString) => {
@@ -227,22 +227,22 @@ namespace Solution
 
 			UIImageView color2 = CreateColorSquare (ColorSquareSize, 
 				ColorSquarePosition2,
-				AppDelegate.CityboardBlue.CGColor, 2);
+				AppDelegate.BoardBlue.CGColor, 2);
 
 			UITextField hash2 = new UITextField(new CGRect(color2.Frame.Right + pushRight + 10, color2.Frame.Y + 10, 10, 20));
 			hash2.Font = UIFont.SystemFontOfSize (20);
 			hash2.BackgroundColor = UIColor.White;
-			hash2.TextColor = AppDelegate.CityboardBlue;
+			hash2.TextColor = AppDelegate.BoardBlue;
 			hash2.Text = "#";
 			hash2.UserInteractionEnabled = false;
 
 			hexView2 = new UITextField(new CGRect(hash2.Frame.Right + 3, hash2.Frame.Y, 100, hash2.Frame.Height));
 			hexView2.Font = UIFont.SystemFontOfSize (20);
 			hexView2.BackgroundColor = UIColor.White;
-			hexView2.TextColor = AppDelegate.CityboardBlue;
+			hexView2.TextColor = AppDelegate.BoardBlue;
 			hexView2.KeyboardType = UIKeyboardType.Default;
 			hexView2.ReturnKeyType = UIReturnKeyType.Done;
-			hexView2.Text = CommonUtils.UIColorToHex(AppDelegate.CityboardBlue);
+			hexView2.Text = CommonUtils.UIColorToHex(AppDelegate.BoardBlue);
 			hexView2.AutocapitalizationType = UITextAutocapitalizationType.None;
 
 			hexView2.ShouldChangeCharacters = (textField, range, replacementString) => {

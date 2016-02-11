@@ -42,7 +42,6 @@ namespace Solution
 
 			float i = 0;
 
-
 			UITapGestureRecognizer doubletap = new UITapGestureRecognizer ((tg) => {
 				tg.NumberOfTapsRequired = 2;
 

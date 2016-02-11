@@ -129,7 +129,9 @@ namespace Solution
 		{
 			Preview.Initialize (url.ToString(), BoardInterface.scrollView.ContentOffset, navigationController);
 
-			ShareScreen shareScreen = new ShareScreen();
+			MPMoviePlayerController moviePlayer = new MPMoviePlayerController (url);
+
+			ShareScreen shareScreen = new ShareScreen(moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact));
 
 			navigationController.DismissViewController(false, null);
 
@@ -140,7 +142,7 @@ namespace Solution
 		{		
 			Preview.Initialize(image, BoardInterface.scrollView.ContentOffset, navigationController);
 
-			ShareScreen shareScreen = new ShareScreen();
+			ShareScreen shareScreen = new ShareScreen(image);
 
 			navigationController.DismissViewController(false, null);
 

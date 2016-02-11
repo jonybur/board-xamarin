@@ -32,9 +32,9 @@ namespace Solution
 		public static float ScreenWidth;
 		public static float ScreenHeight;
 
-		public static UIColor CityboardOrange;
-		public static UIColor CityboardBlue;
-		public static UIColor CityboardLightBlue;
+		public static UIColor BoardOrange;
+		public static UIColor BoardBlue;
+		public static UIColor BoardLightBlue;
 
 		public static double Latitude;
 		public static double Longitude;
@@ -42,7 +42,7 @@ namespace Solution
 		public static string PhoneVersion;
 
 		const string FacebookAppId = "761616930611025";
-		const string FacebookDisplayName = "CityBoard";
+		const string FacebookDisplayName = "Board";
 
 		// This method is invoked when the application hqas loaded and is ready to run. In this
 		// method you should instantiate the window, load the UI into it and then make the window
@@ -57,9 +57,9 @@ namespace Solution
 
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
-			CityboardOrange = UIColor.FromRGB(244, 108, 85);
-			CityboardBlue = UIColor.FromRGB(38, 106, 154);
-			CityboardLightBlue = UIColor.FromRGB(45, 121, 180);
+			BoardOrange = UIColor.FromRGB(244, 108, 85);
+			BoardBlue = UIColor.FromRGB(38, 106, 154);
+			BoardLightBlue = UIColor.FromRGB(45, 121, 180);
 
 			MapServices.ProvideAPIKey (MapsApiKey);
 
@@ -109,7 +109,7 @@ namespace Solution
 					screen = new LoginScreen ();
 				}
 			} else {
-				if (Profile.CurrentProfile != null) {
+				if (Profile.CurrentProfile != null && AccessToken.CurrentAccessToken != null) {
 					screen = new MainMenuScreen ();
 				} else {
 					screen = new LoginScreen ();	

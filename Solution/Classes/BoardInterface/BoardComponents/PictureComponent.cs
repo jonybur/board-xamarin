@@ -91,7 +91,7 @@ namespace Solution
 		public void OpenEye()
 		{
 			eye.Image = openEyeImage;
-			eye.TintColor = AppDelegate.CityboardOrange;
+			eye.TintColor = AppDelegate.BoardOrange;
 			eyeOpen = true;
 		}
 
@@ -110,7 +110,7 @@ namespace Solution
 			string likeText = "0";
 			CGSize likeLabelSize = likeText.StringSize (likeFont);
 			UILabel likeLabel = new UILabel(new CGRect(frame.X - likeLabelSize.Width - 4, frame.Y + 4, likeLabelSize.Width, likeLabelSize.Height));
-			likeLabel.TextColor = AppDelegate.CityboardOrange;
+			likeLabel.TextColor = AppDelegate.BoardOrange;
 			likeLabel.Font = likeFont;
 			likeLabel.Text = likeText;
 			likeLabel.TextAlignment = UITextAlignment.Right;

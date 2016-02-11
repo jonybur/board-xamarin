@@ -60,7 +60,7 @@ namespace Solution
 			UILabel lbl1 = new UILabel (new CGRect (10, (nfloat)yposition, (nfloat)AppDelegate.ScreenWidth - 20, earningsString.StringSize(bold).Height));
 			lbl1.Text = earningsString;
 			lbl1.AdjustsFontSizeToFitWidth = true;
-			lbl1.TextColor = AppDelegate.CityboardOrange;
+			lbl1.TextColor = AppDelegate.BoardOrange;
 			lbl1.TextAlignment = UITextAlignment.Center;
 			yposition += (float)lbl1.Frame.Height + 5;
 			lbl1.Enabled = false;
@@ -89,7 +89,7 @@ namespace Solution
 			UIButton uib = new UIButton ();
 			CGRect uibframe = new CGRect (0, 0, widthButton, heightButton);
 			uib.Frame = uibframe;
-			uib.BackgroundColor = AppDelegate.CityboardBlue;
+			uib.BackgroundColor = AppDelegate.BoardBlue;
 			uib.Center = new CGPoint (AppDelegate.ScreenWidth / 2, yposition+ 200);
 
 			UILabel lbl = new UILabel ();
@@ -110,7 +110,7 @@ namespace Solution
 				if (MFMailComposeViewController.CanSendMail) {
 					// do mail operations here
 					MFMailComposeViewController mailController = new MFMailComposeViewController ();
-					mailController.SetToRecipients(new string[]{"support@cityboard.co"});
+					mailController.SetToRecipients(new string[]{"support@getonboard.us"});
 					mailController.SetMessageBody ("", false);
 					mailController.Finished += ( object s, MFComposeResultEventArgs args) => {
 						Console.WriteLine (args.Result.ToString ());

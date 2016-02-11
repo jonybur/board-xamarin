@@ -68,7 +68,7 @@ namespace Solution
 		{
 			nameView = new UITextField (new CGRect (30, 173, AppDelegate.ScreenWidth - 65, 26));
 			nameView.BackgroundColor = UIColor.White;
-			nameView.TextColor = AppDelegate.CityboardBlue;
+			nameView.TextColor = AppDelegate.BoardBlue;
 			nameView.Font = UIFont.SystemFontOfSize (20);
 
 			nameView.AutocapitalizationType = UITextAutocapitalizationType.Words;
@@ -195,7 +195,7 @@ namespace Solution
 		{
 			addressView = new UITextField (new CGRect (30, 286, AppDelegate.ScreenWidth - 65, 26));
 			addressView.BackgroundColor = UIColor.White;
-			addressView.TextColor = AppDelegate.CityboardBlue;
+			addressView.TextColor = AppDelegate.BoardBlue;
 			addressView.Font = UIFont.SystemFontOfSize (20);
 
 			addressView.KeyboardType = UIKeyboardType.Default;
@@ -299,7 +299,7 @@ namespace Solution
 
 			orangeRectangle = CreateColorSquare (new CGSize (75, 60), 
 				new CGPoint ((AppDelegate.ScreenWidth / 4) * 3 + 60, 25),
-				AppDelegate.CityboardOrange.CGColor);
+				AppDelegate.BoardOrange.CGColor);
 
 			NextButtonEnabled(false);
 

@@ -156,7 +156,6 @@ namespace Solution
 			boardList = boardList.OrderBy(o=>o.Location).ToList();
 
 			int i = 1;
-			int n = 0;
 
 			string location = String.Empty;
 
