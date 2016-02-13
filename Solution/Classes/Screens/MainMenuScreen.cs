@@ -233,7 +233,7 @@ namespace Solution
 					NavigationController.PushViewController(screen, false);
 				}
 				else if (tg.LocationInView(this.View).Y > buttonLocations[1]-35 && tg.LocationInView(this.View).Y < buttonLocations[1]+35){
-					SettingsScreen screen = new SettingsScreen();
+					PageSelectorScreen screen = new PageSelectorScreen();
 					NavigationController.PushViewController(screen, false);
 				}
 				else if (tg.LocationInView(this.View).Y > buttonLocations[2]-35 && tg.LocationInView(this.View).Y < buttonLocations[2]+35){

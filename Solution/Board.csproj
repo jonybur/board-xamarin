@@ -265,6 +265,8 @@
     <BundleResource Include="Resources\screens\share\twitter\logo.png" />
     <BundleResource Include="Resources\screens\announcement\banner\6.jpg" />
     <BundleResource Include="Resources\screens\announcement\banner\6plus.jpg" />
+    <BundleResource Include="Resources\screens\pageselector\banner\6.jpg" />
+    <BundleResource Include="Resources\screens\pageselector\banner\6plus.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -323,7 +325,7 @@
     <Compile Include="Classes\Schema\Widgets\Announcement.cs" />
     <Compile Include="Classes\Screens\AnnouncementScreen.cs" />
     <Compile Include="Classes\Schema\ServerResponses\TokenResponse.cs" />
-    <Compile Include="Classes\Screens\PageSelector.cs" />
+    <Compile Include="Classes\Screens\PageSelectorScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -383,6 +385,8 @@
     <Folder Include="Classes\Schema\ServerResponses\" />
     <Folder Include="Resources\screens\announcement\" />
     <Folder Include="Resources\screens\announcement\banner\" />
+    <Folder Include="Resources\screens\pageselector\" />
+    <Folder Include="Resources\screens\pageselector\banner\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

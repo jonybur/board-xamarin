@@ -87,7 +87,7 @@ namespace Solution
 
 					TokenResponse tk = TokenResponse.Deserialize (result);
 
-					if (result != "InternalServerError" && result != "ConnectFailure" && tk != null) {
+					if (result != "InternalServerError" && result != "ConnectFailure" && tk != null && tk.authToken != null & tk.authToken != string.Empty) {
 						AppDelegate.BoardToken = tk.authToken;
 						MainMenuScreen screen = new MainMenuScreen ();
 						NavigationController.PushViewController(screen, true);

@@ -107,7 +107,7 @@ namespace Solution
 			
 					TokenResponse tk = TokenResponse.Deserialize (result);
 
-					if (Profile.CurrentProfile != null && result != "InternalServerError" && result != "ConnectFailure" && tk != null) {
+					if (Profile.CurrentProfile != null && result != "InternalServerError" && result != "ConnectFailure" && tk != null && tk.authToken != null & tk.authToken != string.Empty) {
 						BoardToken = tk.authToken;
 						screen = new MainMenuScreen ();
 					} else {
