@@ -56,7 +56,7 @@ namespace Solution
 			List<string> lstNames = NSObjectToString ("data.name", obj);
 			List<string> lstCategories = NSObjectToString ("data.category", obj);
 
-			scrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, 50 * (int)lstNames.Count);
+			scrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, 80 * (int)lstNames.Count + banner.Frame.Height + lstNames.Count);
 
 			float yPosition = (float)banner.Frame.Height;
 			int i = 0;
@@ -68,6 +68,8 @@ namespace Solution
 			}
 
 			View.AddSubview (scrollView);
+
+			View.AddSubview (banner);
 		}
 
 		private List<string> NSObjectToString(string fetch, NSObject obj)
@@ -91,7 +93,7 @@ namespace Solution
 			pageButton.BackgroundColor = UIColor.FromRGB (250, 250, 250);	
 
 			UIFont nameFont = UIFont.SystemFontOfSize (20);
-			UILabel nameLabel = new UILabel (new CGRect (40, 25, AppDelegate.ScreenWidth - 50, 20));
+			UILabel nameLabel = new UILabel (new CGRect (40, 20, AppDelegate.ScreenWidth - 50, 20));
 			nameLabel.Font = nameFont;
 			nameLabel.Text = name;
 			nameLabel.AdjustsFontSizeToFitWidth = true;
@@ -127,7 +129,7 @@ namespace Solution
 
 		private void PopOut()
 		{
-			Thread.Sleep (500);
+			Thread.Sleep (300);
 			InvokeOnMainThread(() => NavigationController.PopViewController(true));
 		}
 
@@ -147,7 +149,6 @@ namespace Solution
 			banner.UserInteractionEnabled = true;
 			banner.AddGestureRecognizer (tap);
 			banner.Alpha = .95f;
-			View.AddSubview (banner);
 		}
 	}
 }
