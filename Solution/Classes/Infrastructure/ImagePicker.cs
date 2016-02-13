@@ -127,11 +127,11 @@ namespace Solution
 
 		private void LaunchVideoPreview(NSUrl url, UINavigationController navigationController)
 		{
-			Preview.Initialize (url.ToString(), BoardInterface.scrollView.ContentOffset, navigationController);
+			Video video = Preview.Initialize (url.ToString(), navigationController);
 
 			MPMoviePlayerController moviePlayer = new MPMoviePlayerController (url);
 
-			ShareScreen shareScreen = new ShareScreen(moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact));
+			ShareScreen shareScreen = new ShareScreen(moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact), video);
 
 			moviePlayer.Pause ();
 			moviePlayer.Dispose ();
@@ -143,9 +143,9 @@ namespace Solution
 
 		private void LaunchPicturePreview(UIImage image, UINavigationController navigationController)
 		{		
-			Preview.Initialize(image, BoardInterface.scrollView.ContentOffset, navigationController);
+			Picture picture = Preview.Initialize(image, navigationController);
 
-			ShareScreen shareScreen = new ShareScreen(image);
+			ShareScreen shareScreen = new ShareScreen(image, picture);
 
 			navigationController.DismissViewController(false, null);
 

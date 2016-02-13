@@ -9,10 +9,6 @@ using UIKit;
 
 using CoreAnimation;
 using CoreText;
-using AVFoundation;
-using CoreMedia;
-using AVKit;
-using MediaPlayer;
 
 using System.Threading.Tasks;
 using System.Threading;
@@ -21,7 +17,7 @@ using System.Net.Http;
 
 namespace Solution
 {
-	public class VideoComponent
+	public class PictureWidget
 	{
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
@@ -31,7 +27,7 @@ namespace Solution
 			get { return uiView; }
 		}
 
-		private Video video;
+		private Picture picture;
 
 		UIImageView eye;
 		UIImage closedEyeImage;
@@ -42,21 +38,21 @@ namespace Solution
 			get { return eyeOpen; }
 		}
 
-		public Video Video
+		public Picture Picture
 		{
-			get { return video; }
+			get { return picture; }
 		}
 
-		public VideoComponent()
+		public PictureWidget()
 		{
 
 		}
 
-		public VideoComponent(Video vid)
+		public PictureWidget(Picture pic)
 		{
-			video = vid;
+			picture = pic;
 
-			CGRect frame = GetFrame (vid);
+			CGRect frame = GetFrame (pic);
 
 			// mounting
 
@@ -65,19 +61,11 @@ namespace Solution
 			uiView.AddSubview (mounting);
 
 			// picture
+
 			CGRect pictureFrame = new CGRect (mounting.Frame.X + 10, 10, frame.Width, frame.Height);
-			AVPlayerLayer videoLayer = LoadVideoThumbnail (pictureFrame);
-			uiView.Layer.AddSublayer (videoLayer);
-
-			/*
 			UIImageView uiv = new UIImageView (pictureFrame);
-			uiv.Image = vid.Thumbnail;
+			uiv.Image = picture.Thumbnail;
 			uiView.AddSubview (uiv);
-
-			// play button
-			//UIImageView playButton = CreatePlayButton (pictureFrame);
-			//uiView.AddSubview (playButton);
-			*/
 
 			// like
 
@@ -94,8 +82,8 @@ namespace Solution
 			eye = CreateEye (mounting.Frame);
 			uiView.AddSubview (eye);
 
-			uiView.Frame = new CGRect (vid.ImgX, vid.ImgY, mounting.Frame.Width, mounting.Frame.Height);
-			uiView.Transform = CGAffineTransform.MakeRotation(vid.Rotation);
+			uiView.Frame = new CGRect (pic.ImgX, pic.ImgY, mounting.Frame.Width, mounting.Frame.Height);
+			uiView.Transform = CGAffineTransform.MakeRotation(pic.Rotation);
 
 			eyeOpen = false;
 		}
@@ -114,20 +102,6 @@ namespace Solution
 			UIImageView mountingView = CreateColorView (mountingFrame, UIColor.White.CGColor);
 
 			return mountingView;
-		}
-
-		private UIImageView CreatePlayButton(CGRect frame)
-		{
-			UIImage playButtonImage = UIImage.FromFile ("./boardscreen/playbutton.png");
-			CGSize imageSize = new CGSize (playButtonImage.Size.Width / 2, playButtonImage.Size.Height / 2);
-
-
-			UIImageView playButton = new UIImageView(new CGRect (frame.Width / 2 - imageSize.Width / 4, frame.Height / 2 - imageSize.Height / 4, imageSize.Width, imageSize.Height));
-
-			playButton.Image = playButtonImage;
-			playButton.Alpha = .95f;
-
-			return playButton;
 		}
 
 		private UILabel CreateLikeLabel(CGRect frame)
@@ -188,31 +162,31 @@ namespace Solution
 			return uiv;
 		}
 
-		private CGRect GetFrame(Video vid)
+		private CGRect GetFrame(Picture picture)
 		{
 			float imgw, imgh;
 			float autosize = 150;
 
-			float scale = (float)(vid.Thumbnail.Size.Width/vid.Thumbnail.Size.Height);
+			float scale = (float)(picture.Image.Size.Width/picture.Image.Size.Height);
 
 			if (scale >= 1) {
 				imgw = autosize * scale;
 				imgh = autosize;
 
 				if (imgw > AppDelegate.ScreenWidth) {
-					scale = (float)(vid.Thumbnail.Size.Height/vid.Thumbnail.Size.Width);
+					scale = (float)(picture.Image.Size.Height/picture.Image.Size.Width);
 					imgw = AppDelegate.ScreenWidth;
 					imgh = imgw * scale;
 				}
 			} else {
-				scale = (float)(vid.Thumbnail.Size.Height / vid.Thumbnail.Size.Width);
+				scale = (float)(picture.Image.Size.Height / picture.Image.Size.Width);
 				imgw = autosize;
 				imgh = autosize * scale;
 			}
 
-			vid.Thumbnail = CommonUtils.ResizeImage (vid.Thumbnail, new CGSize (imgw, imgh));
+			picture.Thumbnail = CommonUtils.ResizeImage (picture.Image, new CGSize (imgw, imgh));
 
-			CGRect frame = new CGRect (vid.ImgX, vid.ImgY, imgw, imgh);
+			CGRect frame = new CGRect (picture.ImgX, picture.ImgY, imgw, imgh);
 
 			return frame;
 		}
@@ -220,55 +194,6 @@ namespace Solution
 		public void SetFrame(CGRect frame)
 		{
 			uiView.Frame = frame;
-		}
-
-		const int NSEC_PER_SEC = 1000000000;
-
-		private void LooperMethod()
-		{
-			while (keepLooping) {
-
-				int time = 0;
-
-				while (time < videoDuration) {
-					System.Threading.Thread.Sleep (1000);
-					time++;
-				}
-
-				uiView.InvokeOnMainThread (() => {
-					_player.Seek (new CMTime (0, NSEC_PER_SEC));
-				});
-			}
-		}
-
-		bool keepLooping = true;
-		Thread looper;
-		AVPlayer _player;
-		double videoDuration;
-
-		private AVPlayerLayer LoadVideoThumbnail(CGRect frame)
-		{	
-			AVAsset _asset;
-			AVPlayerItem _playerItem;
-			AVPlayerLayer _playerLayer;
-
-			_asset = AVAsset.FromUrl (NSUrl.FromString (video.Url));
-			_playerItem = new AVPlayerItem (_asset);
-			_playerItem.AudioMix = new AVAudioMix ();
-			_player = new AVPlayer (_playerItem);
-			_playerLayer = AVPlayerLayer.FromPlayer (_player);
-			_playerLayer.Frame = frame;
-			_player.Seek (new CMTime (0, NSEC_PER_SEC));
-			_player.Play ();
-			_player.Muted = true;
-			_player.Volume = 0;
-
-			videoDuration = Math.Floor(_player.CurrentItem.Asset.Duration.Seconds);
-
-			looper = new Thread (new ThreadStart (LooperMethod));
-			looper.Start ();
-
-			return _playerLayer;
 		}
 
 	}

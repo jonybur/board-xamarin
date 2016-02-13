@@ -17,7 +17,7 @@ using System.Net.Http;
 
 namespace Solution
 {
-	public class PictureComponent
+	public class AnnouncementWidget
 	{
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
@@ -27,7 +27,7 @@ namespace Solution
 			get { return uiView; }
 		}
 
-		private Picture picture;
+		private Announcement announcement;
 
 		UIImageView eye;
 		UIImage closedEyeImage;
@@ -38,37 +38,28 @@ namespace Solution
 			get { return eyeOpen; }
 		}
 
-		public Picture Picture
+		public Announcement Announcement
 		{
-			get { return picture; }
+			get { return announcement; }
 		}
 
-		public PictureComponent()
+		public AnnouncementWidget()
 		{
 
 		}
 
-		public PictureComponent(Picture pic)
+		public AnnouncementWidget(Announcement ann)
 		{
-			picture = pic;
+			announcement = ann;
 
-			CGRect frame = GetFrame (pic);
+			UITextView insideText = CreateText ();
 
 			// mounting
-
-			UIImageView mounting = CreateMounting (frame);
+			UIImageView mounting = CreateMounting (insideText.Frame);
 			uiView = new UIView(mounting.Frame);
-			uiView.AddSubview (mounting);
-
-			// picture
-
-			CGRect pictureFrame = new CGRect (mounting.Frame.X + 10, 10, frame.Width, frame.Height);
-			UIImageView uiv = new UIImageView (pictureFrame);
-			uiv.Image = picture.Thumbnail;
-			uiView.AddSubview (uiv);
+			uiView.AddSubviews (mounting, insideText);
 
 			// like
-
 			UIImageView like = CreateLike (mounting.Frame);
 			uiView.AddSubview (like);
 
@@ -82,11 +73,25 @@ namespace Solution
 			eye = CreateEye (mounting.Frame);
 			uiView.AddSubview (eye);
 
-			uiView.Frame = new CGRect (pic.ImgX, pic.ImgY, mounting.Frame.Width, mounting.Frame.Height);
-			uiView.Transform = CGAffineTransform.MakeRotation(pic.Rotation);
+			uiView.Frame = new CGRect (ann.ImgX, ann.ImgY, mounting.Frame.Width, mounting.Frame.Height);
+			uiView.Transform = CGAffineTransform.MakeRotation(ann.Rotation);
 
 			eyeOpen = false;
 		}
+
+		private UITextView CreateText()
+		{
+			UIFont font = UIFont.SystemFontOfSize (20);
+			UITextView textview = new UITextView (new CGRect(0, 0, 250, 100));
+			textview.Font = font;
+			textview.TextColor = AppDelegate.BoardBlue;
+			textview.Editable = false;
+			textview.Selectable = true;
+			textview.Text = announcement.Text;
+			textview.SizeToFit ();
+			return textview;
+		}
+
 
 		public void OpenEye()
 		{
@@ -160,35 +165,6 @@ namespace Solution
 			uiv.Frame = frame;
 
 			return uiv;
-		}
-
-		private CGRect GetFrame(Picture picture)
-		{
-			float imgw, imgh;
-			float autosize = 150;
-
-			float scale = (float)(picture.Image.Size.Width/picture.Image.Size.Height);
-
-			if (scale >= 1) {
-				imgw = autosize * scale;
-				imgh = autosize;
-
-				if (imgw > AppDelegate.ScreenWidth) {
-					scale = (float)(picture.Image.Size.Height/picture.Image.Size.Width);
-					imgw = AppDelegate.ScreenWidth;
-					imgh = imgw * scale;
-				}
-			} else {
-				scale = (float)(picture.Image.Size.Height / picture.Image.Size.Width);
-				imgw = autosize;
-				imgh = autosize * scale;
-			}
-
-			picture.Thumbnail = CommonUtils.ResizeImage (picture.Image, new CGSize (imgw, imgh));
-
-			CGRect frame = new CGRect (picture.ImgX, picture.ImgY, imgw, imgh);
-
-			return frame;
 		}
 
 		public void SetFrame(CGRect frame)

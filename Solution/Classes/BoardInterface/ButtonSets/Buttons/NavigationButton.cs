@@ -18,12 +18,12 @@ namespace Solution
 	{
 		public static UIImageView NavigationText;
 		private static UIImageView alertStroke;
-		private bool pictureCycle;
+		private int cycle;
 		private int highlitedContent, contentToSee;
 
 		public NavigationButton (UIColor color)
 		{
-			pictureCycle = true;
+			cycle = 0;
 			highlitedContent = 0;
 			contentToSee = 0;
 
@@ -56,47 +56,53 @@ namespace Solution
 					return;
 				}
 
-				if (BoardInterface.ListPictures == null && BoardInterface.ListTextboxes == null)
+				if (BoardInterface.ListPictureWidgets == null && BoardInterface.ListAnnouncementWidgets == null && BoardInterface.ListVideoWidgets == null)
 					return;
 
-				if (BoardInterface.ListPictures.Count == 0 && BoardInterface.ListTextboxes.Count == 0)
+				if (BoardInterface.ListPictureWidgets.Count == 0 && BoardInterface.ListAnnouncementWidgets.Count == 0 && BoardInterface.ListVideoWidgets == null)
 					return;
 
-				if (highlitedContent >= BoardInterface.ListPictures.Count && pictureCycle) {
-					highlitedContent = 0;
-
-					if (BoardInterface.ListTextboxes.Count > 0)
-					{
-						pictureCycle = false;
-					}
-				}
-
-				else if (highlitedContent >= BoardInterface.ListTextboxes.Count && !pictureCycle)
+				// llega al tope
+				if (highlitedContent >= BoardInterface.ListPictureWidgets.Count && cycle == 0) 
 				{
 					highlitedContent = 0;
+					cycle++;
+				}
 
-					if (BoardInterface.ListPictures.Count > 0)
-					{
-						pictureCycle = true;
-					}
+				if (highlitedContent >= BoardInterface.ListVideoWidgets.Count && cycle == 1)
+				{
+					highlitedContent = 0;
+					cycle++;
+				}
+
+				if (highlitedContent >= BoardInterface.ListAnnouncementWidgets.Count && cycle == 2)
+				{
+					highlitedContent = 0;
+					cycle = 0;
 				}
 
 				Content content;
-				PointF position;
+				PointF position = new PointF(0,0);
+				UIView uivComponent;
 
-				if (pictureCycle)
+				switch (cycle)
 				{
-
-					PictureComponent pictureComponent = BoardInterface.ListPictureComponents[highlitedContent];
-					UIView uivComponent = pictureComponent.View;
+				case 0:
+					PictureWidget pictureWidget = BoardInterface.ListPictureWidgets[highlitedContent];
+					uivComponent = pictureWidget.View;
 					position = new PointF ((float)(uivComponent.Frame.X - AppDelegate.ScreenWidth/2 + uivComponent.Frame.Width/2), 0f);
-
-				} else {
-					content = BoardInterface.ListTextboxes[highlitedContent];
-					position = new PointF (content.ImgX - AppDelegate.ScreenWidth/2 + content.ImgW/2,
-											content.ImgY - AppDelegate.ScreenHeight/2 + content.ImgH / 2);
+					break;
+				case 1:
+					VideoWidget videoWidget = BoardInterface.ListVideoWidgets[highlitedContent];
+					uivComponent = videoWidget.View;
+					position = new PointF ((float)(uivComponent.Frame.X - AppDelegate.ScreenWidth/2 + uivComponent.Frame.Width/2), 0f);
+					break;
+				case 2:
+					AnnouncementWidget announcementWidget = BoardInterface.ListAnnouncementWidgets[highlitedContent];
+					uivComponent = announcementWidget.View;
+					position = new PointF ((float)(uivComponent.Frame.X - AppDelegate.ScreenWidth/2 + uivComponent.Frame.Width/2), 0f);
+					break;
 				}
-
 
 				BoardInterface.scrollView.SetContentOffset (position, true);
 				highlitedContent++;

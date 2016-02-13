@@ -76,39 +76,6 @@ namespace Solution
 			}
 		}
 
-		[Table("Textboxes")]
-		public class TextBoxL {
-			[PrimaryKey, Column("id"), MaxLength(128)]
-			public string Id { get; set; }
-
-			[MaxLength(128)]
-			public string UserID { get; set; }
-			public string Text { get; set; }
-			public float ImgX{ get; set;}
-			public float ImgY{ get; set;}
-			public float ImgW{ get; set;}
-			public float ImgH{ get; set;}
-			public float Rotation{ get; set;}
-
-			[Column ("ongallery")]
-			public bool OnGallery { get; set;}
-
-			public TextBoxL(){}
-
-			public TextBoxL(TextBox tb, bool ongallery)
-			{
-				Text = tb.Text;
-				Id = tb.Id;
-				UserID = tb.UserId;
-				Rotation = tb.Rotation;
-				ImgX = tb.ImgX;
-				ImgY = tb.ImgY;
-				ImgW = tb.ImgW;
-				ImgH = tb.ImgH;
-				OnGallery = ongallery;
-			}
-		}
-
 		[Table("Likes")]
 		public class LikeL {
 			[PrimaryKey, Column("id"), MaxLength(128)]
@@ -140,7 +107,6 @@ namespace Solution
 			database = new SQLiteConnection (dbPath);
 			database.CreateTable<PictureL> ();
 			database.CreateTable<LikeL> ();
-			database.CreateTable<TextBoxL> ();
 			database.CreateTable<MessageL> ();
 		}
 
@@ -206,16 +172,6 @@ namespace Solution
 			}
 		}
 
-		public static void InsertTextBox(TextBox tb)
-		{
-			try{
-				TextBoxL tbl = new TextBoxL (tb, false);
-				database.Insert (tbl);
-			} catch (Exception e){
-				Console.WriteLine ("ERROR: " + e.Message);
-			}
-		}
-
 		public static void InsertMessage(Message msg)
 		{
 			List<MessageL> aux = database.Query<MessageL> ("SELECT * FROM Messages WHERE id = ?", msg.Id);
@@ -264,34 +220,6 @@ namespace Solution
 			}
 
 			return lstPictures;
-		}
-
-		// returns all textboxes
-		public static List<TextBox> ReturnAllStoredTextboxes()
-		{
-			List<TextBox> lstTextboxes = new List<TextBox>();
-			List<TextBoxL> table = database.Query<TextBoxL> ("SELECT * FROM Textboxes");
-			foreach (var p in table) {
-
-				TextBox aux = new TextBox (p.Id, p.UserID, p.Text, new CGRect(p.ImgX, p.ImgY, p.ImgW, p.ImgH), p.Rotation);
-				lstTextboxes.Add (aux);
-			}
-
-			return lstTextboxes;
-		}
-
-		// returns all textboxes with ongallery discrimination
-		public static List<TextBox> ReturnAllStoredTextboxes(bool onGallery)
-		{
-			List<TextBox> lstTextboxes = new List<TextBox>();
-			List<TextBoxL> table = database.Query<TextBoxL> ("SELECT * FROM Textboxes WHERE ongallery = ?", onGallery);
-			foreach (var p in table) {
-
-				TextBox aux = new TextBox (p.Id, p.UserID, p.Text, new CGRect(p.ImgX, p.ImgY, p.ImgW, p.ImgH), p.Rotation);
-				lstTextboxes.Add (aux);
-			}
-
-			return lstTextboxes;
 		}
 
 		public static int ReturnNumberOfLikes(string contentid)
@@ -367,19 +295,6 @@ namespace Solution
 			return lstIDs;
 		}
 
-		// returns all textbox's id's from the local storage
-		public static List<string> ReturnAllTextBoxIDs()
-		{
-			List<string> lstIDs = new List<string> ();
-			List<TextBoxL> textboxTable = database.Query<TextBoxL> ("SELECT id FROM Textboxes");
-
-			foreach (TextBoxL tb in textboxTable){
-				lstIDs.Add(tb.Id);
-			}
-
-			return lstIDs;
-		}
-
 		// returns all picture id's depending on it's gallery status
 		public static List<string> ReturnAllPictureIDs(bool onGallery)
 		{
@@ -388,19 +303,6 @@ namespace Solution
 
 			foreach (PictureL p in pictureTable){
 				lstIDs.Add(p.Id);
-			}
-
-			return lstIDs;
-		}
-
-		// returns all picture id's depending on it's gallery status
-		public static List<string> ReturnAllTextBoxIDs(bool onGallery)
-		{
-			List<string> lstIDs = new List<string> ();
-			List<TextBoxL> textboxTable = database.Query<TextBoxL> ("SELECT id FROM Textboxes WHERE ongallery = ?", onGallery);
-
-			foreach (TextBoxL tb in textboxTable){
-				lstIDs.Add(tb.Id);
 			}
 
 			return lstIDs;

@@ -37,14 +37,18 @@ namespace Solution
 			Initialize ();
 		}
 
+		public bool IsPlaceHolder;
+
 		public void Initialize ()
 		{
+			IsPlaceHolder = true;
 			Text = Placeholder;
-			Alpha = .6f;
+			Alpha = .7f;
 
 			ShouldBeginEditing = t => {
 				if (Text == Placeholder)
 				{
+					IsPlaceHolder = false;
 					Text = string.Empty;
 					Alpha = 1f;
 				}
@@ -54,8 +58,9 @@ namespace Solution
 			ShouldEndEditing = t => {
 				if (string.IsNullOrEmpty (Text))
 				{
+					IsPlaceHolder = true;
 					Text = Placeholder;
-					Alpha = .8f;
+					Alpha = .7f;
 				}
 
 				return true;

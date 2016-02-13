@@ -13,9 +13,13 @@ namespace Solution
 {
 	public class CardButton : Button
 	{
+		UINavigationController NavigationController;
+
 		public CardButton (UINavigationController navigationController)
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
+
+			NavigationController = navigationController;
 
 			UIImage uiImage = UIImage.FromFile ("./boardscreen/buttons/card.png");
 			uiButton.SetImage (uiImage, UIControlState.Normal);
@@ -27,13 +31,19 @@ namespace Solution
 			uiButton.TouchUpInside += (object sender, EventArgs e) => {
 				UIAlertController alert = UIAlertController.Create(null, "Select the type of component", UIAlertControllerStyle.ActionSheet);
 
-				alert.AddAction (UIAlertAction.Create ("Announcement", UIAlertActionStyle.Default, null));
+				alert.AddAction (UIAlertAction.Create ("Announcement", UIAlertActionStyle.Default, CreateAnnouncement));
 				alert.AddAction (UIAlertAction.Create ("Event", UIAlertActionStyle.Default, null));
-				alert.AddAction (UIAlertAction.Create ("Survey", UIAlertActionStyle.Default, null));
+				alert.AddAction (UIAlertAction.Create ("Poll", UIAlertActionStyle.Default, null));
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 
 				navigationController.PresentViewController (alert, true, null);
 			};
+		}
+
+		private void CreateAnnouncement(UIAlertAction act)
+		{
+			AnnouncementScreen announcementScreen = new AnnouncementScreen ();
+			NavigationController.PushViewController (announcementScreen, true);
 		}
 	}
 }

@@ -77,13 +77,13 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb761616930611025</string>
+				<string>fb793699580736093</string>
 				<string>fbauth2</string>
 			</array>
 		</dict>
 	</array>
 	<key>FacebookAppID</key>
-	<string>761616930611025</string>
+	<string>793699580736093</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
@@ -92,9 +92,9 @@
 		<string>fbshareextension</string>
 	</array>
 	<key>CFBundleShortVersionString</key>
-	<string>0.2.2</string>
+	<string>0.2.3</string>
 	<key>CFBundleVersion</key>
-	<string>0.2.2</string>
+	<string>0.2.3</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.boardinc.Board</string>
 	<key>CFBundleName</key>

@@ -2,6 +2,7 @@ using System;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using CoreGraphics;
+using System.Net;
 
 using Foundation;
 using UIKit;
@@ -54,13 +55,28 @@ namespace Solution
 					}
 					break;
 
-				case (int)Preview.Type.TextBox:
-					TextBox tb = Preview.GetTextBox ();
+				case (int)Preview.Type.Announcement:
+					Announcement ann = Preview.GetAnnouncement ();
 
-					if (tb != null)
+					if (ann != null)
 					{
-						// uploads
 
+						if (ann.SocialChannel != null && ann.SocialChannel.Count > 0)
+						{
+							if (ann.SocialChannel.Contains(0))
+							{
+								string json = "{ \"text\": \"" + ann.Text + "\", " +
+									"\"socialChannel\": \"" + "0" + "\" }";
+
+								string encodedToken = WebUtility.UrlEncode(AppDelegate.BoardToken);
+
+								string result = CommonUtils.JsonRequest ("http://192.168.1.101:5000/api/publications?authToken=" + encodedToken, json);
+
+								Console.WriteLine (result);
+							}
+						}
+
+						BoardInterface.ListAnnouncements.Add(ann);
 					}
 					break;
 				}

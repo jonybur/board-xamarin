@@ -50,11 +50,12 @@ namespace Solution
 		bool TestMode;
 
 		public static List<Picture> ListPictures;
-		public static List<TextBox> ListTextboxes;
+		public static List<Announcement> ListAnnouncements;
 		public static List<Video> ListVideos;
 
-		public static List<PictureComponent> ListPictureComponents;
-		public static List<VideoComponent> ListVideoComponents;
+		public static List<PictureWidget> ListPictureWidgets;
+		public static List<AnnouncementWidget> ListAnnouncementWidgets;
+		public static List<VideoWidget> ListVideoWidgets;
 
 
 		public BoardInterface (Board _board, bool _testMode) : base ("Board", null){
@@ -77,7 +78,7 @@ namespace Solution
 
 			ListPictures = new List<Picture> ();
 			ListVideos = new List<Video> ();
-			ListTextboxes = new List<TextBox> ();
+			ListAnnouncements = new List<Announcement> ();
 
 			//StorageController.Initialize ();
 
@@ -218,9 +219,9 @@ namespace Solution
 			scrollView.Scrolled += (object sender, EventArgs e) => {
 				// call from here "open eye" function
 
-				if (!(ListPictureComponents == null || ListPictureComponents.Count == 0))
+				if (!(ListPictureWidgets == null || ListPictureWidgets.Count == 0))
 				{
-					PictureComponent pic = ListPictureComponents.Find(item => item.View.Frame.X > scrollView.ContentOffset.X &&
+					PictureWidget pic = ListPictureWidgets.Find(item => item.View.Frame.X > scrollView.ContentOffset.X &&
 											   item.View.Frame.X < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth) &&
 												!item.EyeOpen);
 
@@ -231,15 +232,28 @@ namespace Solution
 					}
 				}
 
-				if (!(ListVideoComponents == null || ListVideoComponents.Count == 0))
+				if (!(ListVideoWidgets == null || ListVideoWidgets.Count == 0))
 				{
-					VideoComponent vid = ListVideoComponents.Find(item => item.View.Frame.X > scrollView.ContentOffset.X &&
+					VideoWidget vid = ListVideoWidgets.Find(item => item.View.Frame.X > scrollView.ContentOffset.X &&
 						item.View.Frame.X < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth) &&
 						!item.EyeOpen);
 
 					if (vid != null)
 					{
 						Thread thread = new Thread(() => OpenEye(vid));
+						thread.Start();
+					}
+				}
+
+				if (!(ListAnnouncementWidgets == null || ListAnnouncementWidgets.Count == 0))
+				{
+					AnnouncementWidget ann = ListAnnouncementWidgets.Find(item => item.View.Frame.X > scrollView.ContentOffset.X &&
+						item.View.Frame.X < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth) &&
+						!item.EyeOpen);
+
+					if (ann != null)
+					{
+						Thread thread = new Thread(() => OpenEye(ann));
 						thread.Start();
 					}
 				}
@@ -253,16 +267,22 @@ namespace Solution
 			View.AddSubview (zoomingScrollView);
 		}
 
-		private void OpenEye(PictureComponent picComponent)
+		private void OpenEye(PictureWidget picWidget)
 		{
 			Thread.Sleep (750);
-			InvokeOnMainThread(picComponent.OpenEye);
+			InvokeOnMainThread(picWidget.OpenEye);
 		}
 
-		private void OpenEye(VideoComponent vidComponent)
+		private void OpenEye(VideoWidget vidWidget)
 		{
 			Thread.Sleep (750);
-			InvokeOnMainThread(vidComponent.OpenEye);
+			InvokeOnMainThread(vidWidget.OpenEye);
+		}
+
+		private void OpenEye(AnnouncementWidget annWidget)
+		{
+			Thread.Sleep (750);
+			InvokeOnMainThread(annWidget.OpenEye);
 		}
 
 		public static void ZoomScrollview()
@@ -309,22 +329,25 @@ namespace Solution
 
 			//GenerateTestPictures ();
 
-			ListPictureComponents = new List<PictureComponent> ();
-			ListVideoComponents = new List<VideoComponent> ();
+			ListPictureWidgets = new List<PictureWidget> ();
+			ListVideoWidgets = new List<VideoWidget> ();
+			ListAnnouncementWidgets = new List<AnnouncementWidget> ();
 
 			foreach (Picture p in ListPictures) {
-				DrawPictureComponent (p);
+				DrawPictureWidget (p);
 			}
 
 			foreach (Video v in ListVideos) {
-				DrawVideoComponent (v);
+				DrawVideoWidget (v);
 			}
 
-			foreach (TextBox tb in ListTextboxes) {
-				DrawTextbox (tb);
+			foreach (Announcement a in ListAnnouncements) {
+				DrawAnnouncementWidget (a);
 			}
 
-			ListPictureComponents = ListPictureComponents.OrderBy(o=>o.View.Frame.X).ToList();
+			ListPictureWidgets = ListPictureWidgets.OrderBy(o=>o.View.Frame.X).ToList();
+			ListVideoWidgets = ListVideoWidgets.OrderBy(o=>o.View.Frame.X).ToList();
+			ListAnnouncementWidgets = ListAnnouncementWidgets.OrderBy(o=>o.View.Frame.X).ToList();
 		}
 
 		private void GenerateTestPictures()
@@ -347,9 +370,9 @@ namespace Solution
 			ListPictures.Add (pic);
 		}
 
-		private void DrawVideoComponent(Video video)
+		private void DrawVideoWidget(Video video)
 		{
-			VideoComponent component = new VideoComponent (video);
+			VideoWidget component = new VideoWidget (video);
 
 			UIView componentView = component.View;
 
@@ -367,12 +390,12 @@ namespace Solution
 			componentView.UserInteractionEnabled = true;
 
 			scrollView.AddSubview (component.View);
-			ListVideoComponents.Add (component);
+			ListVideoWidgets.Add (component);
 		}
 
-		private void DrawPictureComponent(Picture picture)
+		private void DrawPictureWidget(Picture picture)
 		{
-			PictureComponent component = new PictureComponent (picture);
+			PictureWidget component = new PictureWidget (picture);
 
 			UIView componentView = component.View;
 
@@ -387,19 +410,17 @@ namespace Solution
 			componentView.UserInteractionEnabled = true;
 
 			scrollView.AddSubview (component.View);
-			ListPictureComponents.Add (component);
+			ListPictureWidgets.Add (component);
 		}
 
 
-		private async void DrawTextbox(TextBox tb)
+		private void DrawAnnouncementWidget(Announcement ann)
 		{
-			TextBoxComponent textBoxComponent = new TextBoxComponent (tb);
+			AnnouncementWidget announcementWidget = new AnnouncementWidget (ann);
 
-			await textBoxComponent.Load (NavigationController, RefreshContent);
+			scrollView.AddSubview (announcementWidget.View);
 
-			UIView uiv = textBoxComponent.GetUIView ();
-
-			scrollView.AddSubview (uiv);
+			ListAnnouncementWidgets.Add (announcementWidget);
 		}
 
 		private void LoadBackground()

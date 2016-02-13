@@ -23,25 +23,21 @@ using Google.Maps;
 
 namespace Solution
 {
-	public class ShareScreen : UIViewController
+	public class AnnouncementScreen : UIViewController
 	{
 		UIImageView banner;
 		UIImageView nextbutton;
-		UIScrollView scrollView;
+		UIScrollView content;
 		PlaceholderTextView textview;
-		UIImage image;
-		float buttonY = 230;
-		Content content;
 
-		bool IGActive;
-		bool TWActive;
 		bool FBActive;
+		bool IGActive;
 		bool RSSActive;
+		bool TWActive;
 
 		string [] publishPermissions = new [] { "publish_actions" };
 
-		public ShareScreen (UIImage _image, Content _content){
-			image = _image; content = _content;
+		public AnnouncementScreen (){
 		}
 
 		public override void DidReceiveMemoryWarning ()
@@ -71,6 +67,7 @@ namespace Solution
 			LoadRSSButton ();
 		}
 
+		float buttonY = 230;
 
 		private void LoadFacebookButton()
 		{
@@ -120,9 +117,8 @@ namespace Solution
 				}
 			};
 
-			scrollView.AddSubview(composite);
+			content.AddSubview(composite);
 		}
-
 
 		private void LoadInstagramButton()
 		{
@@ -147,7 +143,7 @@ namespace Solution
 			IGActive = false;
 
 			composite.TouchUpInside += (object sender, EventArgs e) => {
-				
+
 				if (!IGActive)
 				{
 					label.TextColor = UIColor.FromRGB(80, 127, 166);
@@ -160,7 +156,7 @@ namespace Solution
 				}
 			};
 
-			scrollView.AddSubview(composite);
+			content.AddSubview(composite);
 		}
 
 		private void LoadTwitterButton()
@@ -199,8 +195,8 @@ namespace Solution
 				}
 			};
 
-			scrollView.ScrollEnabled = false;
-			scrollView.AddSubview(composite);
+			content.ScrollEnabled = false;
+			content.AddSubview(composite);
 		}
 
 		private void LoadRSSButton()
@@ -239,35 +235,51 @@ namespace Solution
 				}
 			};
 
-			scrollView.AddSubview(composite);
+			content.AddSubview(composite);
 		}
 
 		private void LoadContent()
 		{
-			scrollView = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
-			scrollView.BackgroundColor = UIColor.FromRGB(249, 250, 249);
-			scrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
+			content = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			content.BackgroundColor = UIColor.FromRGB(249, 250, 249);
+			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((UITapGestureRecognizer obj) => {
 				textview.ResignFirstResponder();
 			});
 
-			scrollView.UserInteractionEnabled = true;
-			scrollView.AddGestureRecognizer (tap);
+			content.UserInteractionEnabled = true;
+			content.AddGestureRecognizer (tap);
 
-			View.AddSubview (scrollView);
+			View.AddSubview (content);
 		}
 
 		private void LoadBanner()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./screens/share/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			UIImage bannerImage = UIImage.FromFile ("./screens/announcement/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			banner = new UIImageView(new CGRect(0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
 			banner.Image = bannerImage;
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					NavigationController.PopViewController(true);
+
+					if (textview.Text.Length > 0 && !textview.IsPlaceHolder)
+					{
+						var alert = new UIAlertView ("Discard Announcement?", "Your message will be discarded", null, "Keep", new string[] {"Discard"});
+						alert.Clicked += (s, b) => {
+							if (b.ButtonIndex == 0)
+							{ return; }
+
+							NavigationController.PopViewController(true);
+						};
+						alert.Show();
+					} 
+					else 
+					{
+						NavigationController.PopViewController(true);
+					}
+
 				}
 			});
 
@@ -287,30 +299,50 @@ namespace Solution
 			nextbutton.Image = mapImage;
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				NavigationController.PopViewController(false);
+
+				if (textview.IsPlaceHolder || textview.Text.Length == 0)
+				{
+					UIAlertController alert = UIAlertController.Create("Can't create announcement", "Please write a caption", UIAlertControllerStyle.Alert);
+
+					alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+
+					NavigationController.PresentViewController (alert, true, null);
+
+					return;
+				}
+
+				Announcement ann = new Announcement();
+
+				ann.SocialChannel = new List<int>();
 
 				if (FBActive)
 				{
-					content.SocialChannel.Add(0);
+					ann.SocialChannel.Add(0);
 				}
 				if (IGActive)
 				{
-					content.SocialChannel.Add(1);
+					ann.SocialChannel.Add(1);
 				}
 				if (TWActive)
 				{
-					content.SocialChannel.Add(2);
+					ann.SocialChannel.Add(2);
 				}
 				if (RSSActive)
 				{
-					content.SocialChannel.Add(3);
+					ann.SocialChannel.Add(3);
 				}
+
+				ann.Text = textview.Text;
+
+				Preview.Initialize(ann, NavigationController);
 
 				// shows the image preview so that the user can position the image
 				BoardInterface.scrollView.AddSubview(Preview.View);
 
 				// switches to confbar
 				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
+
+				NavigationController.PopViewController(false);
 			});
 
 			nextbutton.UserInteractionEnabled = true;
@@ -321,17 +353,7 @@ namespace Solution
 
 		private void LoadTextView()
 		{
-			float autosize = 50;
-			float imgw, imgh;
-
-			float scale = (float)(image.Size.Height / image.Size.Width);
-			imgw = autosize;
-			imgh = autosize * scale;
-
-			UIImageView imageView = new UIImageView (new CGRect (10, banner.Frame.Height + 10, imgw, imgh));
-			imageView.Image = image;
-
-			var frame = new CGRect(70, banner.Frame.Height, 
+			var frame = new CGRect(10, banner.Frame.Height, 
 				AppDelegate.ScreenWidth - 50 - 23,
 				140);
 
@@ -342,11 +364,11 @@ namespace Solution
 			textview.EnablesReturnKeyAutomatically = true;
 			textview.BackgroundColor = UIColor.White;
 			textview.TextColor = AppDelegate.BoardBlue;
-			textview.Font = UIFont.SystemFontOfSize (20);;
+			textview.Font = UIFont.SystemFontOfSize (20);
 
 			UIImageView colorWhite = CreateColorView (new CGRect (0, 0, AppDelegate.ScreenWidth, frame.Bottom), UIColor.White.CGColor);
 
-			scrollView.AddSubviews (colorWhite, textview, imageView);
+			content.AddSubviews (colorWhite, textview);
 		}
 
 		private UIImageView CreateColorView(CGRect frame, CGColor color)

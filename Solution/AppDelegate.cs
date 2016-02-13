@@ -41,8 +41,14 @@ namespace Solution
 
 		public static string PhoneVersion;
 
-		const string FacebookAppId = "761616930611025";
-		const string FacebookDisplayName = "Board";
+		public const string FacebookAppId = "793699580736093";
+		public const string FacebookDisplayName = "Board Alpha - Deve­l­o­p­ment";
+		public static string BoardToken;
+
+		/*
+		public const string FacebookAppId = "761616930611025";
+		public const string FacebookDisplayName = "Board";
+		*/
 
 		// This method is invoked when the application hqas loaded and is ready to run. In this
 		// method you should instantiate the window, load the UI into it and then make the window
@@ -52,7 +58,7 @@ namespace Solution
 		//
 		const string MapsApiKey = "AIzaSyAyjPtEvhmhHHa5_aPiZPiPN3GUtIXxO6I";
 
-		const bool ServerActive = false;
+		const bool ServerActive = true;
 
 
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
@@ -97,10 +103,12 @@ namespace Solution
 					string json = "{ \"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\", " +
 					              "\"accessToken\": \"" + AccessToken.CurrentAccessToken.TokenString + "\" }";
 
-					string result = CommonUtils.JsonRequest ("http://10.0.11.144:5000/api/account/login", json);
+					string result = CommonUtils.JsonRequest ("http://192.168.1.101:5000/api/account/login", json);
 			
-					// change || for && when testing server
-					if (Profile.CurrentProfile != null || (result != "InternalServerError" && result != "ConnectFailure")) {
+					TokenResponse tk = TokenResponse.Deserialize (result);
+
+					if (Profile.CurrentProfile != null && result != "InternalServerError" && result != "ConnectFailure" && tk != null) {
+						BoardToken = tk.authToken;
 						screen = new MainMenuScreen ();
 					} else {
 						screen = new LoginScreen (result);	

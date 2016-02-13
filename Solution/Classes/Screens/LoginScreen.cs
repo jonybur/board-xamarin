@@ -30,11 +30,9 @@ namespace Solution
 
 		bool keepLooping = true;
 
-		string [] extendedPermissions = new [] { "public_profile" };
 		LoginButton logInButton;
 
-		const string FacebookAppId = "761616930611025";
-		const string DisplayName = "Board";
+		string [] extendedPermissions = new [] { "public_profile" };
 
 		string responseError;
 
@@ -78,11 +76,28 @@ namespace Solution
 
 			logInButton.Completed += (sender, e) => {
 				if (e.Error != null) {
-					// Handle if there was an error
+					return;
 				}
 
-				UIViewController nextScreen = new MainMenuScreen();
-				NavigationController.PushViewController(nextScreen, true);
+				if (AccessToken.CurrentAccessToken != null) {
+					string json = "{ \"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\", " +
+						"\"accessToken\": \"" + AccessToken.CurrentAccessToken.TokenString + "\" }";
+
+					string result = CommonUtils.JsonRequest ("http://192.168.1.101:5000/api/account/login", json);
+
+					TokenResponse tk = TokenResponse.Deserialize (result);
+
+					if (result != "InternalServerError" && result != "ConnectFailure" && tk != null) {
+						AppDelegate.BoardToken = tk.authToken;
+						MainMenuScreen screen = new MainMenuScreen ();
+						NavigationController.PushViewController(screen, true);
+					} else {
+						responseError = result;
+						UIAlertController alert = UIAlertController.Create(responseError, null, UIAlertControllerStyle.Alert);
+						alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+						NavigationController.PresentViewController (alert, true, null);
+					}
+				}
 			};
 
 			// Handle actions once the user is logged out

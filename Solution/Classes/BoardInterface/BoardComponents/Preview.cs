@@ -19,9 +19,9 @@ namespace Solution
 {
 	public static class Preview
 	{
-		public static TextBoxComponent textBoxComponent;
-		public static PictureComponent pictureComponent;
-		public static VideoComponent videoComponent;
+		public static AnnouncementWidget announcementWidget;
+		public static PictureWidget pictureWidget;
+		public static VideoWidget videoWidget;
 
 		private static UIView uiView;
 		public static UIView View{
@@ -29,30 +29,49 @@ namespace Solution
 		}
 		private static float Rotation = 0;
 
-		public enum Type {Picture = 1, Video, TextBox};
+		public enum Type {Picture = 1, Video, Announcement};
 		public static int TypeOfPreview;
 
-		public static void Initialize (UIImage image, CGPoint ContentOffset, UINavigationController navigationController)
+		public static void Initialize (Announcement ann, UINavigationController navigationController)
+		{
+			TypeOfPreview = (int)Type.Announcement;
+
+			announcementWidget = new AnnouncementWidget (ann);
+
+			CGRect frame = announcementWidget.View.Frame;
+
+			uiView = new UIView (new CGRect(BoardInterface.scrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
+				BoardInterface.scrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Button.ButtonSize / 2, frame.Width, frame.Height));
+
+			uiView.Alpha = .5f;
+			uiView.AddGestureRecognizer (SetNewPanGestureRecognizer());
+			uiView.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
+			uiView.AddSubviews(announcementWidget.View);
+		}
+
+		public static Picture Initialize (UIImage image, UINavigationController navigationController)
 		{
 			TypeOfPreview = (int)Type.Picture;
 
 			Picture picture = new Picture ();
 			picture.Image = image;
 
-			pictureComponent = new PictureComponent (picture);
+			pictureWidget = new PictureWidget (picture);
 
-			CGRect frame = pictureComponent.View.Frame;
+			CGRect frame = pictureWidget.View.Frame;
 
-			uiView = new UIView (new CGRect(ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
-				ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Button.ButtonSize / 2, frame.Width, frame.Height));
+			uiView = new UIView (new CGRect(BoardInterface.scrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
+				BoardInterface.scrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Button.ButtonSize / 2, frame.Width, frame.Height));
 
 			uiView.Alpha = .5f;
 			uiView.AddGestureRecognizer (SetNewPanGestureRecognizer());
 			uiView.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
-			uiView.AddSubviews(pictureComponent.View);
+			uiView.AddSubviews(pictureWidget.View);
+
+			return picture;
 		}
 
-		public static void Initialize (string Url, CGPoint ContentOffset, UINavigationController navigationController)
+		public static Video Initialize (string Url, UINavigationController navigationController)
 		{
 			TypeOfPreview = (int)Type.Video;
 
@@ -65,37 +84,19 @@ namespace Solution
 
 			video.Url = Url;
 
-			videoComponent = new VideoComponent (video);
+			videoWidget = new VideoWidget (video);
 
-			CGRect frame = videoComponent.View.Frame;
+			CGRect frame = videoWidget.View.Frame;
 
-			uiView = new UIView (new CGRect(ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
-				ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Button.ButtonSize / 2, frame.Width, frame.Height));
+			uiView = new UIView (new CGRect(BoardInterface.scrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
+				BoardInterface.scrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Button.ButtonSize / 2, frame.Width, frame.Height));
 
 			uiView.Alpha = .5f;
 			uiView.AddGestureRecognizer (SetNewPanGestureRecognizer());
 			uiView.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
-			uiView.AddSubviews(videoComponent.View);
-		}
+			uiView.AddSubviews(videoWidget.View);
 
-		public static async System.Threading.Tasks.Task Initialize (TextBox textBox, CGPoint ContentOffset, Action refreshContent, UINavigationController navigationController)
-		{
-			TypeOfPreview = (int)Type.TextBox;
-			// so now launch image preview to choose position in the board
-
-			textBox.ImgX = (float)(ContentOffset.X + AppDelegate.ScreenWidth / 2 - textBox.ImgW / 2);
-			textBox.ImgY = (float)(ContentOffset.Y + AppDelegate.ScreenHeight / 2 - textBox.ImgH / 2 - Button.ButtonSize / 2);
-
-			textBoxComponent = new TextBoxComponent (textBox);
-
-			await textBoxComponent.Load (navigationController, refreshContent);
-
-			// launches the textbox preview
-			uiView = textBoxComponent.GetUIView ();
-			//uiView.Alpha = .5f;
-			uiView.UserInteractionEnabled = true;
-			uiView.AddGestureRecognizer (SetNewPanGestureRecognizer());
-			uiView.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
+			return video;
 		}
 
 		public static UIPanGestureRecognizer SetNewPanGestureRecognizer()
@@ -164,24 +165,24 @@ namespace Solution
 		public static Picture GetPicture()
 		{
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
-			Picture p = new Picture (pictureComponent.Picture.Image, pictureComponent.Picture.Thumbnail, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
+			Picture p = new Picture (pictureWidget.Picture.Image, pictureWidget.Picture.Thumbnail, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
 			return p;
 		}
 
 		public static Video GetVideo()
 		{
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
-			Video v = new Video (videoComponent.Video.Url, videoComponent.Video.Thumbnail, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
+			Video v = new Video (videoWidget.Video.Url, videoWidget.Video.Thumbnail, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
 			return v;
 		}
 
-		public static TextBox GetTextBox()
+		public static Announcement GetAnnouncement()
 		{
-			TextBox aux = textBoxComponent.GetTextBox ();
-			aux.SetRotation (Rotation);
-			return aux;
+			uiView.Transform = CGAffineTransform.MakeRotation (0);
+			Announcement ann = new Announcement (announcementWidget.Announcement.Text, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
+			ann.SocialChannel = announcementWidget.Announcement.SocialChannel;
+			return ann;
 		}
-
 
 	}
 }
