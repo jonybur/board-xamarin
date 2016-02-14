@@ -14,7 +14,7 @@ using CoreText;
 
 using Solution;
 
-namespace Board.Buttons
+namespace Board.Interface.Buttons
 {
 	public class NavigationButton : Button
 	{

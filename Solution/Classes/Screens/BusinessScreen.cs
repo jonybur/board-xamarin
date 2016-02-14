@@ -20,6 +20,8 @@ using Facebook.CoreKit;
 using System.Net;
 using Facebook.LoginKit;
 
+using Board.Interface;
+
 using Google.Maps;
 
 namespace Solution

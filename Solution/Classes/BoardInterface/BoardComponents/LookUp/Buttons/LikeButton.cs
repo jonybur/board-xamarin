@@ -9,8 +9,9 @@ using UIKit;
 using CoreAnimation;
 using CoreText;
 using Solution;
+using Board.Interface.Buttons;
 
-namespace Board.Buttons
+namespace Board.Lookup.Buttons
 {
 	public class LikeButton : Button
 	{

@@ -19,9 +19,10 @@ using AVKit;
 using MediaPlayer;
 
 using Facebook.CoreKit;
-using Board.Buttons;
+using Board.Interface.Buttons;
+using Solution;
 
-namespace Solution
+namespace Board.Interface
 {
 	// user interface - connects to the board controller
 	// also called BoardView
@@ -29,7 +30,7 @@ namespace Solution
 	{
 		private Gallery gallery;
 
-		const float primaryBar = Board.Buttons.Button.ButtonSize + 20;
+		const float primaryBar = Board.Interface.Buttons.Button.ButtonSize + 20;
 		const float secondaryBar = primaryBar / 2;
 
 		public static UIImageView CenterLogo;
@@ -493,7 +494,7 @@ namespace Solution
 			}
 
 			imgx = (float)(ContentOffset.X - imgw / 2);
-			imgy = (float)(ContentOffset.Y + AppDelegate.ScreenHeight / 2 - imgh / 2 - Board.Buttons.Button.ButtonSize / 2);
+			imgy = (float)(ContentOffset.Y + AppDelegate.ScreenHeight / 2 - imgh / 2 - Board.Interface.Buttons.Button.ButtonSize / 2);
 
 			// launches the image preview
 

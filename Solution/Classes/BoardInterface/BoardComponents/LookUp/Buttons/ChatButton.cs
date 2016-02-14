@@ -8,8 +8,9 @@ using UIKit;
 
 using CoreAnimation;
 using CoreText;
+using Board.Interface.Buttons;
 
-namespace Board.Buttons
+namespace Board.Lookup.Buttons
 {
 	public class ChatButton : Button
 	{

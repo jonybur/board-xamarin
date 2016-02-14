@@ -15,7 +15,7 @@ using System.Collections.Generic;
 
 using Solution;
 
-namespace Board.Buttons
+namespace Board.Interface.Buttons
 {
 	public class ImageButton : Button
 	{

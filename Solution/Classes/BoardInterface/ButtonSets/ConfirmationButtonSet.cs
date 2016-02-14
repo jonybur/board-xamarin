@@ -1,6 +1,7 @@
+
 using System;
 
-namespace Board.Buttons
+namespace Board.Interface.Buttons
 {
 	public class ConfirmationButtonSet : ButtonSet
 	{

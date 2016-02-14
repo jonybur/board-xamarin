@@ -9,7 +9,7 @@ using UIKit;
 using CoreAnimation;
 using CoreText;
 
-namespace Board.Buttons
+namespace Board.Interface.Buttons
 {
 	// father class to all buttons
 	public class Button

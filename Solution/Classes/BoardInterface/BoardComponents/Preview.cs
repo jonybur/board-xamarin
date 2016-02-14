@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 
 using MediaPlayer;
 
+using Board.Interface;
+
 using System.Collections.Generic;
 
 using Facebook.CoreKit;
@@ -41,7 +43,7 @@ namespace Solution
 			CGRect frame = announcementWidget.View.Frame;
 
 			uiView = new UIView (new CGRect(BoardInterface.scrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
-				BoardInterface.scrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Board.Buttons.Button.ButtonSize / 2, frame.Width, frame.Height));
+				BoardInterface.scrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Board.Interface.Buttons.Button.ButtonSize / 2, frame.Width, frame.Height));
 
 			uiView.Alpha = .5f;
 			uiView.AddGestureRecognizer (SetNewPanGestureRecognizer());
@@ -61,7 +63,7 @@ namespace Solution
 			CGRect frame = pictureWidget.View.Frame;
 
 			uiView = new UIView (new CGRect(BoardInterface.scrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
-				BoardInterface.scrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Board.Buttons.Button.ButtonSize / 2, frame.Width, frame.Height));
+				BoardInterface.scrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Board.Interface.Buttons.Button.ButtonSize / 2, frame.Width, frame.Height));
 
 			uiView.Alpha = .5f;
 			uiView.AddGestureRecognizer (SetNewPanGestureRecognizer());
@@ -89,7 +91,7 @@ namespace Solution
 			CGRect frame = videoWidget.View.Frame;
 
 			uiView = new UIView (new CGRect(BoardInterface.scrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
-				BoardInterface.scrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Board.Buttons.Button.ButtonSize / 2, frame.Width, frame.Height));
+				BoardInterface.scrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Board.Interface.Buttons.Button.ButtonSize / 2, frame.Width, frame.Height));
 
 			uiView.Alpha = .5f;
 			uiView.AddGestureRecognizer (SetNewPanGestureRecognizer());
