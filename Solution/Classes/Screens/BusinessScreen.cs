@@ -52,6 +52,9 @@ namespace Solution
 			NavigationController.NavigationBarHidden = true;
 			content = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			thumbSize = AppDelegate.ScreenWidth / 4;
+
+			LoadBanner ();
+			LoadSideMenu ();
 		}
 
 		public override async void ViewDidAppear(bool animated)
@@ -80,6 +83,12 @@ namespace Solution
 			}
 
 			InitializeInterface ();
+
+			banner.RemoveFromSuperview ();
+			sidemenu.RemoveFromSuperview ();
+			profileView.RemoveFromSuperview ();
+			LoadBanner ();
+			LoadSideMenu ();
 		}
 
 		private async Task<UIImage> SaveImage(string webAddress, string boardName)
@@ -117,9 +126,6 @@ namespace Solution
 			} else {
 				LoadContent ();
 			}
-
-			LoadBanner ();
-			LoadSideMenu ();
 		}
 
 		private void LoadContent()
@@ -136,7 +142,6 @@ namespace Solution
 			foreach (Board.Schema.Board b in boardList) {
 				string hood = b.GeolocatorObject.results [0].address_components [2].long_name;
 				if (location != hood) {
-
 					// draw new location string
 					yposition += 70;
 					UILabel lblLocation = new UILabel(new CGRect(30, yposition, AppDelegate.ScreenWidth - 40, 24));
@@ -169,7 +174,7 @@ namespace Solution
 
 			content.AddGestureRecognizer (tap);
 			content.UserInteractionEnabled = true;
-			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, yposition + thumbSize + 25);
+			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, yposition + thumbSize);
 
 			View.AddSubview (content);
 		}

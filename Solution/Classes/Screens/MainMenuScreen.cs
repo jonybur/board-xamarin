@@ -170,7 +170,6 @@ namespace Solution
 
 			foreach (Board.Schema.Board b in boardList) {
 				if (location != b.Location) {
-					
 					// draw new location string
 					yposition += 70;
 					UILabel lblLocation = new UILabel(new CGRect(30, yposition, AppDelegate.ScreenWidth - 40, 24));
