@@ -22,7 +22,7 @@ namespace Solution
 	public class CreateScreen2 : UIViewController
 	{
 		UIImageView banner;
-		Board board;
+		Board.Schema.Board board;
 
 		CGSize ColorSquareSize;
 		CGPoint ColorSquarePosition1;
@@ -44,7 +44,7 @@ namespace Solution
 		UIImageView preview_primaryBar;
 		UIImageView preview_mainLogo;
 
-		public CreateScreen2 (Board _board) : base ("Board", null){
+		public CreateScreen2 (Board.Schema.Board _board) : base ("Board", null){
 			board = _board;
 		}
 

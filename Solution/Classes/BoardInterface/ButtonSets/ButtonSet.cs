@@ -1,6 +1,7 @@
 using System;
+using Board.Buttons;
 
-namespace Solution
+namespace Board.Buttons
 {
 	public class ButtonSet
 	{

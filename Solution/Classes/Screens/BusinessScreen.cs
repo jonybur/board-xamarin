@@ -30,7 +30,7 @@ namespace Solution
 		UIImageView sidemenu;
 		ProfilePictureView profileView;
 		UIScrollView content;
-		List<Board> boardList;
+		List<Board.Schema.Board> boardList;
 		float thumbSize;
 		bool sideMenuIsUp;
 
@@ -58,7 +58,7 @@ namespace Solution
 		{
 			string result = CommonUtils.JsonGETRequest ("http://192.168.1.101:5000/api/user/boards?authToken="+ AppDelegate.EncodedBoardToken);
 
-			boardList = new List<Board> ();
+			boardList = new List<Board.Schema.Board> ();
 
 			BoardsResponse response = BoardsResponse.Deserialize (result);
 
@@ -72,7 +72,7 @@ namespace Solution
 					GoogleGeolocatorObject geolocatorObject = JsonHandler.DeserializeObject(jsonobj);
 
 					// compiles the board, adds the geolocator object for further reference
-					Board board = new Board (r.name, boardImage, CommonUtils.HexToUIColor (r.mainColorCode), CommonUtils.HexToUIColor (r.secondaryColorCode), r.address, null);
+					Board.Schema.Board board = new Board.Schema.Board (r.name, boardImage, CommonUtils.HexToUIColor (r.mainColorCode), CommonUtils.HexToUIColor (r.secondaryColorCode), r.address, null);
 					board.GeolocatorObject = geolocatorObject;
 
 					boardList.Add (board);
@@ -133,7 +133,7 @@ namespace Solution
 			// starting point
 			float yposition = 25;
 
-			foreach (Board b in boardList) {
+			foreach (Board.Schema.Board b in boardList) {
 				string hood = b.GeolocatorObject.results [0].address_components [2].long_name;
 				if (location != hood) {
 
@@ -174,7 +174,7 @@ namespace Solution
 			View.AddSubview (content);
 		}
 
-		private UIImageView GenerateBoardThumb(Board board, CGPoint ContentOffset)
+		private UIImageView GenerateBoardThumb(Board.Schema.Board board, CGPoint ContentOffset)
 		{
 			float imgx, imgy, imgw, imgh;
 

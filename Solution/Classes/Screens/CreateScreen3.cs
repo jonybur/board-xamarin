@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
 
+using Board.Schema;
+
 namespace Solution
 {
 	public class CreateScreen3 : UIViewController
@@ -18,7 +20,7 @@ namespace Solution
 
 		// hborder is navbar + completionbar height
 		SuscriptionButton[] numberButtons;
-		Board board;
+		Board.Schema.Board board;
 
 		UIImageView orangeRectangle;
 		UIImageView banner;
@@ -27,7 +29,7 @@ namespace Solution
 
 		bool nextEnabled;
 
-		public CreateScreen3 (Board _board){
+		public CreateScreen3 (Board.Schema.Board _board){
 			board = _board;
 		}
 

@@ -56,9 +56,12 @@ namespace Solution
 			List<string> lstNames = NSObjectToString ("data.name", obj);
 			List<string> lstCategories = NSObjectToString ("data.category", obj);
 
-			scrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, 80 * (int)lstNames.Count + banner.Frame.Height + lstNames.Count);
+			scrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, 80 * (int)lstNames.Count + banner.Frame.Height + lstNames.Count + 1);
 
 			float yPosition = (float)banner.Frame.Height;
+			UIButton nameButton = ProfileButton(yPosition, Profile.CurrentProfile.Name + "'s Profile");
+			scrollView.AddSubview (nameButton);
+			yPosition += (float)nameButton.Frame.Height + 1;
 			int i = 0;
 			foreach (string name in lstNames) {
 				UIButton pageButton = PageButton (yPosition, name, lstCategories[i]);
@@ -87,6 +90,43 @@ namespace Solution
 			return list;
 		}
 
+
+		private UIButton ProfileButton(float yPosition, string name)
+		{
+			UIButton pageButton = new UIButton (new CGRect (0, yPosition, AppDelegate.ScreenWidth, 80));
+			pageButton.BackgroundColor = UIColor.FromRGB (250, 250, 250);	
+
+			UIFont nameFont = UIFont.SystemFontOfSize (20);
+			UILabel nameLabel = new UILabel (new CGRect (40, 30, AppDelegate.ScreenWidth - 50, 20));
+			nameLabel.Font = nameFont;
+			nameLabel.Text = name;
+			nameLabel.AdjustsFontSizeToFitWidth = true;
+			nameLabel.TextColor = AppDelegate.BoardBlue;
+
+			bool pressed = false;
+
+			pageButton.TouchUpInside += (object sender, EventArgs e) => {
+				if (!pressed)
+				{
+					pressed = true;
+					pageButton.BackgroundColor = AppDelegate.BoardLightBlue;
+					nameLabel.TextColor = UIColor.White;
+
+					/*Thread thread = new Thread(new ThreadStart(PopOut));
+					thread.Start();*/
+				} else {
+					pressed = false;
+					pageButton.BackgroundColor = UIColor.FromRGB(250,250,250);
+					nameLabel.TextColor = AppDelegate.BoardBlue;
+				}				
+			};
+
+			pageButton.UserInteractionEnabled = true;
+			pageButton.AddSubviews (nameLabel);
+
+			return pageButton;
+		}
+
 		private UIButton PageButton(float yPosition, string name, string category)
 		{
 			UIButton pageButton = new UIButton (new CGRect (0, yPosition, AppDelegate.ScreenWidth, 80));
@@ -106,6 +146,8 @@ namespace Solution
 			categoryLabel.AdjustsFontSizeToFitWidth = true;
 			categoryLabel.TextColor = AppDelegate.BoardBlue;
 
+			bool pressed = false;
+
 			pageButton.TouchUpInside += (object sender, EventArgs e) => {
 				if (!pressed)
 				{
@@ -114,9 +156,14 @@ namespace Solution
 					nameLabel.TextColor = UIColor.White;
 					categoryLabel.TextColor = UIColor.White;
 
-					Thread thread = new Thread(new ThreadStart(PopOut));
-					thread.Start();
-				}
+					/*Thread thread = new Thread(new ThreadStart(PopOut));
+					thread.Start();*/
+				} else {
+					pressed = false;
+					pageButton.BackgroundColor = UIColor.FromRGB(250,250,250);
+					nameLabel.TextColor = AppDelegate.BoardBlue;
+					categoryLabel.TextColor = AppDelegate.BoardBlue;
+				}				
 			};
 
 			pageButton.UserInteractionEnabled = true;
@@ -124,8 +171,6 @@ namespace Solution
 
 			return pageButton;
 		}
-
-		bool pressed = false;
 
 		private void PopOut()
 		{
@@ -142,7 +187,7 @@ namespace Solution
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					NavigationController.PopViewController(false);
+					NavigationController.PopViewController(true);
 				}
 			});
 

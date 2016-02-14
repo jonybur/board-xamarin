@@ -11,6 +11,7 @@ using Google.Maps;
 using System.Net.Http;
 
 using System.Dynamic;
+using Board.Schema;
 
 namespace Solution
 {
@@ -25,7 +26,7 @@ namespace Solution
 		UIWindow window;
 
 		// until we get backend support and we can actually store new boards online
-		public static List<Board> ListNewBoards;
+		public static List<Board.Schema.Board> ListNewBoards;
 
 		public static UINavigationController NavigationController;
 
@@ -74,7 +75,7 @@ namespace Solution
 			Latitude = 0;
 			Longitude = 0;
 
-			ListNewBoards = new List<Board> ();
+			ListNewBoards = new List<Board.Schema.Board> ();
 
 			// FACEBOOK
 

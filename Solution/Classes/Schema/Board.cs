@@ -10,9 +10,9 @@ using CoreText;
 using System.Threading.Tasks;
 
 using System.Collections.Generic;
+using Solution;
 
-
-namespace Solution
+namespace Board.Schema
 {
 	public class Board
 	{

@@ -12,8 +12,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
+using Solution;
 
-namespace Solution
+namespace Board.Buttons
 {
 	public class CameraButton : Button
 	{

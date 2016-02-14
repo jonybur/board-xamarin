@@ -28,14 +28,19 @@ namespace Solution
 		UIImageView banner;
 		UIImageView nextbutton;
 		UIScrollView content;
+		UILabel instructionsLabel;
 		PlaceholderTextView textview;
+		List<UIButton> fbPageButtons;
 
 		bool FBActive;
 		bool IGActive;
 		bool RSSActive;
 		bool TWActive;
 
+		float positionY;
+
 		string [] publishPermissions = new [] { "publish_actions" };
+		string [] readPermissions = new [] { "pages_show_list" };
 
 		public AnnouncementScreen (){
 		}
@@ -55,19 +60,169 @@ namespace Solution
 			InitializeInterface ();
 		}
 
-		private void InitializeInterface()
+		private async void InitializeInterface()
 		{
 			LoadContent ();
 			LoadBanner ();
 			LoadNextButton ();
 			LoadTextView ();
+
+			positionY = 230;
+
 			LoadFacebookButton ();
 			LoadInstagramButton ();
+
+			positionY += 50;
+
 			LoadTwitterButton ();
 			LoadRSSButton ();
+
+			positionY += 145;
+			listStartPositionY = positionY;
 		}
 
-		float buttonY = 230;
+		float listStartPositionY;
+
+		private async System.Threading.Tasks.Task CheckPageReadPermissions()
+		{
+			if (!AccessToken.CurrentAccessToken.HasGranted(readPermissions[0]))
+			{
+				// lo pido
+				LoginManager manager = new LoginManager ();
+				await manager.LogInWithReadPermissionsAsync (readPermissions, this);
+			}
+
+			Facebook.CoreKit.GraphRequest graph = new GraphRequest ("me/accounts", null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
+			graph.Start (LoadList);
+		}
+
+		private void LoadList(Facebook.CoreKit.GraphRequestConnection connection, Foundation.NSObject obj, Foundation.NSError err)
+		{
+			List<string> lstNames = NSObjectToString ("data.name", obj);
+			List<string> lstCategories = NSObjectToString ("data.category", obj);
+
+			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, 60 * ((int)lstNames.Count + 1) + banner.Frame.Height + nextbutton.Frame.Height + lstNames.Count + positionY + 1);
+
+			UIFont font = UIFont.FromName ("narwhal-bold", 20);
+			instructionsLabel = new UILabel (new CGRect(20, positionY, AppDelegate.ScreenWidth - 40, 20));
+			instructionsLabel.Text = "SELECT FACEBOOK PAGES";
+			instructionsLabel.Font = font;
+			instructionsLabel.TextColor = AppDelegate.BoardOrange;
+			instructionsLabel.AdjustsFontSizeToFitWidth = true;
+			content.AddSubview (instructionsLabel);
+
+			positionY += (float)instructionsLabel.Frame.Height + 10;
+			fbPageButtons = new List<UIButton> ();
+
+			UIButton nameButton = ProfileButton(positionY, Profile.CurrentProfile.Name + "'s Profile");
+			fbPageButtons.Add (nameButton);
+			content.AddSubview (nameButton);
+			positionY += (float)nameButton.Frame.Height + 1;
+			int i = 0;
+			foreach (string name in lstNames) {
+				UIButton pageButton = PageButton (positionY, name, lstCategories[i]);
+				fbPageButtons.Add (pageButton);
+				i++;
+				positionY += (float)pageButton.Frame.Height + 1;
+				content.AddSubview (pageButton);
+			}
+		}
+
+		private List<string> NSObjectToString(string fetch, NSObject obj)
+		{
+			NSString nsString = new NSString (fetch);
+
+			NSArray array = (NSArray)obj.ValueForKeyPath (nsString);
+			List<string> list = new List<string> ();
+
+			for (int i = 0; i < (int)array.Count; i++) {
+				var item = array.GetItem<NSObject> ((nuint)i);
+				list.Add(item.ToString());
+			}
+
+			return list;
+		}
+
+		private UIButton ProfileButton(float yPosition, string name)
+		{
+			UIButton pageButton = new UIButton (new CGRect (0, yPosition, AppDelegate.ScreenWidth, 60));
+			pageButton.BackgroundColor = UIColor.White;	
+
+			UIFont nameFont = UIFont.SystemFontOfSize (20);
+			UILabel nameLabel = new UILabel (new CGRect (40, 20, AppDelegate.ScreenWidth - 50, 20));
+			nameLabel.Font = nameFont;
+			nameLabel.Text = name;
+			nameLabel.AdjustsFontSizeToFitWidth = true;
+			nameLabel.TextColor = AppDelegate.BoardBlue;
+
+			bool pressed = false;
+
+			pageButton.TouchUpInside += (object sender, EventArgs e) => {
+				if (!pressed)
+				{
+					pressed = true;
+					pageButton.BackgroundColor = AppDelegate.BoardLightBlue;
+					nameLabel.TextColor = UIColor.White;
+
+					/*Thread thread = new Thread(new ThreadStart(PopOut));
+					thread.Start();*/
+				} else {
+					pressed = false;
+					pageButton.BackgroundColor = UIColor.White;
+					nameLabel.TextColor = AppDelegate.BoardBlue;
+				}				
+			};
+
+			pageButton.UserInteractionEnabled = true;
+			pageButton.AddSubviews (nameLabel);
+
+			return pageButton;
+		}
+
+		private UIButton PageButton(float yPosition, string name, string category)
+		{
+			UIButton pageButton = new UIButton (new CGRect (0, yPosition, AppDelegate.ScreenWidth, 60));
+			pageButton.BackgroundColor = UIColor.White;
+
+			UIFont nameFont = UIFont.SystemFontOfSize (20);
+			UILabel nameLabel = new UILabel (new CGRect (40, 10, AppDelegate.ScreenWidth - 50, 20));
+			nameLabel.Font = nameFont;
+			nameLabel.Text = name;
+			nameLabel.AdjustsFontSizeToFitWidth = true;
+			nameLabel.TextColor = AppDelegate.BoardBlue;
+
+			UIFont categoryFont = UIFont.SystemFontOfSize(14);
+			UILabel categoryLabel = new UILabel (new CGRect (40, nameLabel.Frame.Bottom + 5, AppDelegate.ScreenWidth - 50, 16));
+			categoryLabel.Font = categoryFont;
+			categoryLabel.Text = category;
+			categoryLabel.AdjustsFontSizeToFitWidth = true;
+			categoryLabel.TextColor = AppDelegate.BoardBlue;
+
+			bool pressed = false;
+
+			pageButton.TouchUpInside += (object sender, EventArgs e) => {
+				if (!pressed)
+				{
+					pressed = true;
+					pageButton.BackgroundColor = AppDelegate.BoardLightBlue;
+					nameLabel.TextColor = UIColor.White;
+					categoryLabel.TextColor = UIColor.White;
+
+					/*Thread thread = new Thread(new ThreadStart(PopOut));
+					thread.Start();*/
+				} else {
+					pressed = false;
+					pageButton.BackgroundColor = UIColor.White;
+					nameLabel.TextColor = AppDelegate.BoardBlue;
+					categoryLabel.TextColor = AppDelegate.BoardBlue;
+				}				
+			};
+
+			pageButton.UserInteractionEnabled = true;
+			pageButton.AddSubviews (nameLabel, categoryLabel);
+
+			return pageButton;
+		}
 
 		private void LoadFacebookButton()
 		{
@@ -85,7 +240,7 @@ namespace Solution
 			label.TextColor = UIColor.FromRGB(34, 36, 39);
 			label.TextAlignment = UITextAlignment.Center;
 
-			UIButton composite = new UIButton (new CGRect(0, buttonY, AppDelegate.ScreenWidth / 2, 50));
+			UIButton composite = new UIButton (new CGRect(0, positionY, AppDelegate.ScreenWidth / 2, 50));
 			composite.AddSubviews (logoView, label);
 			composite.BackgroundColor = UIColor.FromRGB(255,255,255);
 
@@ -109,11 +264,24 @@ namespace Solution
 						label.TextColor = UIColor.FromRGB(59, 89, 152);
 						logoView.TintColor = UIColor.FromRGB(59, 89, 152);
 						FBActive = true;
+
+						// obtengo lista de paginas
+						await CheckPageReadPermissions();
 					}
 				}else{
+					// desactivo FB y la lista
+
 					label.TextColor = UIColor.FromRGB(34, 36, 39);
 					logoView.TintColor = UIColor.FromRGB(165, 167, 169);
 					FBActive = false;
+					instructionsLabel.RemoveFromSuperview();
+
+					foreach(UIButton uib in fbPageButtons)
+					{
+						uib.RemoveFromSuperview();
+						positionY = listStartPositionY;
+						content.ContentSize = new CGSize (AppDelegate.ScreenWidth, banner.Frame.Height + positionY);
+					}
 				}
 			};
 
@@ -136,7 +304,7 @@ namespace Solution
 			label.TextColor = UIColor.FromRGB(34, 36, 39);
 			label.TextAlignment = UITextAlignment.Center;
 
-			UIButton composite = new UIButton (new CGRect(AppDelegate.ScreenWidth / 2, buttonY, AppDelegate.ScreenWidth / 2, 50));
+			UIButton composite = new UIButton (new CGRect(AppDelegate.ScreenWidth / 2, positionY, AppDelegate.ScreenWidth / 2, 50));
 			composite.AddSubviews (logoView, label);
 			composite.BackgroundColor = UIColor.FromRGB(255,255,255);
 
@@ -175,7 +343,7 @@ namespace Solution
 			label.TextColor = UIColor.FromRGB(34, 36, 39);
 			label.TextAlignment = UITextAlignment.Center;
 
-			UIButton composite = new UIButton (new CGRect(0, buttonY + 50, AppDelegate.ScreenWidth / 2, 50));
+			UIButton composite = new UIButton (new CGRect(0, positionY, AppDelegate.ScreenWidth / 2, 50));
 			composite.AddSubviews (logoView, label);
 			composite.BackgroundColor = UIColor.FromRGB(255,255,255);
 
@@ -195,7 +363,6 @@ namespace Solution
 				}
 			};
 
-			content.ScrollEnabled = false;
 			content.AddSubview(composite);
 		}
 
@@ -215,7 +382,7 @@ namespace Solution
 			label.TextColor = UIColor.FromRGB(34, 36, 39);
 			label.TextAlignment = UITextAlignment.Center;
 
-			UIButton composite = new UIButton (new CGRect(AppDelegate.ScreenWidth / 2, buttonY + 50, AppDelegate.ScreenWidth / 2, 50));
+			UIButton composite = new UIButton (new CGRect(AppDelegate.ScreenWidth / 2, positionY, AppDelegate.ScreenWidth / 2, 50));
 			composite.AddSubviews (logoView, label);
 			composite.BackgroundColor = UIColor.FromRGB(255,255,255);
 
@@ -242,7 +409,6 @@ namespace Solution
 		{
 			content = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			content.BackgroundColor = UIColor.FromRGB(249, 250, 249);
-			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((UITapGestureRecognizer obj) => {
 				textview.ResignFirstResponder();

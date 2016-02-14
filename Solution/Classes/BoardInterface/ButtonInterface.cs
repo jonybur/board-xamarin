@@ -8,6 +8,7 @@ using UIKit;
 
 using CoreAnimation;
 using CoreText;
+using Board.Buttons;
 
 namespace Solution
 {

@@ -12,7 +12,9 @@ using UIKit;
 using CoreAnimation;
 using CoreText;
 
-namespace Solution
+using Solution;
+
+namespace Board.Buttons
 {
 	public class NavigationButton : Button
 	{

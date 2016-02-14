@@ -8,8 +8,9 @@ using UIKit;
 
 using CoreAnimation;
 using CoreText;
+using Solution;
 
-namespace Solution
+namespace Board.Buttons
 {
 	public class LikeButton : Button
 	{

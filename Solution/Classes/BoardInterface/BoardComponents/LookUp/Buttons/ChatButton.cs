@@ -9,7 +9,7 @@ using UIKit;
 using CoreAnimation;
 using CoreText;
 
-namespace Solution
+namespace Board.Buttons
 {
 	public class ChatButton : Button
 	{

@@ -69,7 +69,6 @@ namespace Solution
 			uiView.AddSubview (likeLabel);
 
 			// eye
-
 			eye = CreateEye (mounting.Frame);
 			uiView.AddSubview (eye);
 

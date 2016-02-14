@@ -19,6 +19,7 @@ using AVKit;
 using MediaPlayer;
 
 using Facebook.CoreKit;
+using Board.Buttons;
 
 namespace Solution
 {
@@ -28,11 +29,11 @@ namespace Solution
 	{
 		private Gallery gallery;
 
-		const float primaryBar = Button.ButtonSize + 20;
+		const float primaryBar = Board.Buttons.Button.ButtonSize + 20;
 		const float secondaryBar = primaryBar / 2;
 
 		public static UIImageView CenterLogo;
-		Board board;
+		Board.Schema.Board board;
 
 		private NSObject orientationObserver;
 		public static UIScrollView zoomingScrollView;
@@ -58,7 +59,7 @@ namespace Solution
 		public static List<VideoWidget> ListVideoWidgets;
 
 
-		public BoardInterface (Board _board, bool _testMode) : base ("Board", null){
+		public BoardInterface (Board.Schema.Board _board, bool _testMode) : base ("Board", null){
 			board = _board;
 			TestMode = _testMode;
 		}
@@ -492,7 +493,7 @@ namespace Solution
 			}
 
 			imgx = (float)(ContentOffset.X - imgw / 2);
-			imgy = (float)(ContentOffset.Y + AppDelegate.ScreenHeight / 2 - imgh / 2 - Button.ButtonSize / 2);
+			imgy = (float)(ContentOffset.Y + AppDelegate.ScreenHeight / 2 - imgh / 2 - Board.Buttons.Button.ButtonSize / 2);
 
 			// launches the image preview
 

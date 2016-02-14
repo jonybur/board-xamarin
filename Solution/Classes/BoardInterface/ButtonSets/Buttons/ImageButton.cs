@@ -13,7 +13,9 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
 
-namespace Solution
+using Solution;
+
+namespace Board.Buttons
 {
 	public class ImageButton : Button
 	{

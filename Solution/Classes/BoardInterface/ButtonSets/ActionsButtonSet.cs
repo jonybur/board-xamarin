@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
 
-namespace Solution
+namespace Board.Buttons
 {
 	public class ActionsButtonSet : ButtonSet
 	{

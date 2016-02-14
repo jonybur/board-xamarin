@@ -65,7 +65,7 @@ namespace Solution
 			imagePickerController.Canceled += OnCancelation;
 		}
 
-		public ImagePicker (UIImageView icon, UIImageView preview_icon, Board board)
+		public ImagePicker (UIImageView icon, UIImageView preview_icon, Board.Schema.Board board)
 		{
 			imagePickerController = new UIImagePickerController();
 

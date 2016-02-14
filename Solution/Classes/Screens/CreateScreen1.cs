@@ -286,7 +286,7 @@ namespace Solution
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					NavigationController.PopViewController(false);
 				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 4) * 3 && nextEnabled){
-					Board newBoard = new Board();
+					Board.Schema.Board newBoard = new Board.Schema.Board();
 					newBoard.Location = resultAddress.formatted_address;
 					newBoard.Name = nameView.Text;
 						
