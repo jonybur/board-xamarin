@@ -326,6 +326,7 @@
     <Compile Include="Classes\Screens\AnnouncementScreen.cs" />
     <Compile Include="Classes\Schema\ServerResponses\TokenResponse.cs" />
     <Compile Include="Classes\Screens\PageSelectorScreen.cs" />
+    <Compile Include="Classes\Schema\ServerResponses\BoardResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

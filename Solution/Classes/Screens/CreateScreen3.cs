@@ -62,7 +62,17 @@ namespace Solution
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					NavigationController.PopViewController(false);
 				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 4) * 3 && nextEnabled){
+
+					string json = "{ \"name\": \"" + board.Name + "\", " +
+						"\"address\": \"" + board.Location  + "\", " +
+						"\"logoURL\": \"" + "http://www.getonboard.us/wp-content/uploads/2016/02/orange_60.png" + "\", " +
+						"\"mainColorCode\": \"" + CommonUtils.UIColorToHex(board.MainColor)  + "\", " +
+						"\"secondaryColorCode\": \"" + CommonUtils.UIColorToHex(board.SecondaryColor)   +"\" }";
+
+					string result = CommonUtils.JsonPOSTRequest ("http://192.168.1.101:5000/api/board?authToken=" + AppDelegate.EncodedBoardToken, json);
+
 					AppDelegate.ListNewBoards.Add(board);
+
 					NavigationController.PopToViewController(NavigationController.ViewControllers[NavigationController.ViewControllers.Length - 4], false);
 				}
 			});

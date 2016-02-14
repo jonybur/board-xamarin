@@ -65,7 +65,33 @@ namespace Solution
 			}
 		}
 
-		public static string JsonRequest(string url, string json)
+		public static string JsonGETRequest(string url)
+		{
+			var httpWebRequest = (HttpWebRequest)WebRequest.Create (url);
+			httpWebRequest.ContentType = "application/json";
+			httpWebRequest.Method = "GET";
+			httpWebRequest.Timeout = 8000;
+
+			try{
+				var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse ();
+				string result = string.Empty;
+				using (var streamReader = new StreamReader (httpResponse.GetResponseStream ())) {
+					result = streamReader.ReadToEnd ();
+				}
+				return result;
+			} catch (WebException e) {
+
+				if (e.Status == WebExceptionStatus.ProtocolError) 
+				{
+					return ((HttpWebResponse)e.Response).StatusCode.ToString();
+				}
+
+				return e.Status.ToString();
+
+			}
+		}
+
+		public static string JsonPOSTRequest(string url, string json)
 		{
 			var httpWebRequest = (HttpWebRequest)WebRequest.Create (url);
 			httpWebRequest.ContentType = "application/json";
@@ -95,6 +121,13 @@ namespace Solution
 				return e.Status.ToString();
 
 			}
+		}
+
+		public static UIImage GetImagefromByteArray (byte[] imageBuffer)
+		{
+			NSData imageData = NSData.FromArray(imageBuffer);
+			UIImage image = UIImage.LoadFromData (imageData);
+			return image;
 		}
 	}
 }

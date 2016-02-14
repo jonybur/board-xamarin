@@ -83,7 +83,7 @@ namespace Solution
 					string json = "{ \"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\", " +
 						"\"accessToken\": \"" + AccessToken.CurrentAccessToken.TokenString + "\" }";
 
-					string result = CommonUtils.JsonRequest ("http://192.168.1.101:5000/api/account/login", json);
+					string result = CommonUtils.JsonPOSTRequest ("http://192.168.1.101:5000/api/account/login", json);
 
 					TokenResponse tk = TokenResponse.Deserialize (result);
 

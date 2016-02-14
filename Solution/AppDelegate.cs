@@ -42,8 +42,10 @@ namespace Solution
 		public static string PhoneVersion;
 
 		public const string FacebookAppId = "793699580736093";
+		public const string GoogleMapsAPIKey = "AIzaSyAUO-UX9QKVWK421yjXqoo02N5TYrG_hY8";
 		public const string FacebookDisplayName = "Board Alpha - Deve­l­o­p­ment";
 		public static string BoardToken;
+		public static string EncodedBoardToken;
 
 		/*
 		public const string FacebookAppId = "761616930611025";
@@ -92,7 +94,6 @@ namespace Solution
 				PhoneVersion = "6";
 			}
 
-
 			UIViewController screen;
 
 			// cxreate a new window instance based on the screen size
@@ -103,12 +104,13 @@ namespace Solution
 					string json = "{ \"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\", " +
 					              "\"accessToken\": \"" + AccessToken.CurrentAccessToken.TokenString + "\" }";
 
-					string result = CommonUtils.JsonRequest ("http://192.168.1.101:5000/api/account/login", json);
+					string result = CommonUtils.JsonPOSTRequest ("http://192.168.1.101:5000/api/account/login", json);
 			
 					TokenResponse tk = TokenResponse.Deserialize (result);
 
 					if (Profile.CurrentProfile != null && result != "InternalServerError" && result != "ConnectFailure" && tk != null && tk.authToken != null & tk.authToken != string.Empty) {
 						BoardToken = tk.authToken;
+						EncodedBoardToken = WebUtility.UrlEncode(AppDelegate.BoardToken);
 						screen = new MainMenuScreen ();
 					} else {
 						screen = new LoginScreen (result);	

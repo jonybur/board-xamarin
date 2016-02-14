@@ -67,23 +67,23 @@ namespace Solution
 		{
 			List<Board> boardList = new List<Board> ();
 
-			boardList.Add(new Board ("American Social", "./logos/americansocial.jpeg", UIColor.FromRGB (67, 15, 0), UIColor.FromRGB (221, 169, 91), "Brickell", Profile.CurrentProfile.UserID));
-			boardList.Add(new Board ("Dog House", "./logos/doghouse.jpeg", UIColor.FromRGB (35, 32, 35), UIColor.FromRGB (220, 31, 24), "Brickell", string.Empty));
-			boardList.Add(new Board ("Dolores Lolita", "./logos/doloreslolita.jpg", UIColor.FromRGB (185, 143, 6), UIColor.FromRGB (2, 0, 6), "Brickell", string.Empty));	
-			boardList.Add(new Board ("Blue Martini", "./logos/bluemartini.png", UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Brickell", string.Empty));	
-			boardList.Add(new Board ("Taverna Opa", "./logos/tavernopa.png", UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Brickell", string.Empty));	
-			boardList.Add(new Board ("Clevelander", "./logos/clevelander.png", UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));
-			boardList.Add(new Board ("Fat Tuesdays", "./logos/fattuesdays.jpg", UIColor.FromRGB (185, 143, 6), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));	
-			boardList.Add(new Board ("LIV", "./logos/liv.jpg", UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));
-			boardList.Add(new Board ("Mangos", "./logos/mangos.png", UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));
-			boardList.Add(new Board ("Mansion", "./logos/mansion.jpg", UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));
-			boardList.Add(new Board ("Nikki Beach", "./logos/nikki.jpg", UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));
-			boardList.Add(new Board ("Wet Willies", "./logos/wetwillies.jpg", UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "South Beach", string.Empty));	
-			boardList.Add(new Board ("Brickhouse", "./logos/brickhouse.png", UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Wynwood", string.Empty));	
-			boardList.Add(new Board ("Coyo", "./logos/coyo.jpeg", UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Wynwood", string.Empty));	
-			boardList.Add(new Board ("Panther Coffee", "./logos/panther.JPG", UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Wynwood", string.Empty));	
-			boardList.Add(new Board ("Wood Tavern", "./logos/wood.jpg", UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Wynwood", string.Empty));	
-			boardList.Add(new Board ("Electric Pickle", "./logos/electricpickle.jpg", UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Wynwood", string.Empty));	
+			boardList.Add(new Board ("American Social", UIImage.FromFile("./logos/americansocial.jpeg"), UIColor.FromRGB (67, 15, 0), UIColor.FromRGB (221, 169, 91), "Brickell", Profile.CurrentProfile.UserID));
+			boardList.Add(new Board ("Dog House", UIImage.FromFile("./logos/doghouse.jpeg"), UIColor.FromRGB (35, 32, 35), UIColor.FromRGB (220, 31, 24), "Brickell", string.Empty));
+			boardList.Add(new Board ("Dolores Lolita", UIImage.FromFile("./logos/doloreslolita.jpg"), UIColor.FromRGB (185, 143, 6), UIColor.FromRGB (2, 0, 6), "Brickell", string.Empty));	
+			boardList.Add(new Board ("Blue Martini", UIImage.FromFile("./logos/bluemartini.png"), UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Brickell", string.Empty));	
+			boardList.Add(new Board ("Taverna Opa", UIImage.FromFile("./logos/tavernopa.png"), UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Brickell", string.Empty));	
+			boardList.Add(new Board ("Clevelander", UIImage.FromFile("./logos/clevelander.png"), UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));
+			boardList.Add(new Board ("Fat Tuesdays", UIImage.FromFile("./logos/fattuesdays.jpg"), UIColor.FromRGB (185, 143, 6), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));	
+			boardList.Add(new Board ("LIV", UIImage.FromFile("./logos/liv.jpg"), UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));
+			boardList.Add(new Board ("Mangos", UIImage.FromFile("./logos/mangos.png"), UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));
+			boardList.Add(new Board ("Mansion", UIImage.FromFile("./logos/mansion.jpg"), UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));
+			boardList.Add(new Board ("Nikki Beach", UIImage.FromFile("./logos/nikki.jpg"), UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));
+			boardList.Add(new Board ("Wet Willies", UIImage.FromFile("./logos/wetwillies.jpg"), UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "South Beach", string.Empty));	
+			boardList.Add(new Board ("Brickhouse", UIImage.FromFile("./logos/brickhouse.png"), UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Wynwood", string.Empty));	
+			boardList.Add(new Board ("Coyo", UIImage.FromFile("./logos/coyo.jpeg"), UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Wynwood", string.Empty));	
+			boardList.Add(new Board ("Panther Coffee", UIImage.FromFile("./logos/panther.JPG"), UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Wynwood", string.Empty));	
+			boardList.Add(new Board ("Wood Tavern", UIImage.FromFile("./logos/wood.jpg"), UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Wynwood", string.Empty));	
+			boardList.Add(new Board ("Electric Pickle", UIImage.FromFile("./logos/electricpickle.jpg"), UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Wynwood", string.Empty));	
 
 			return boardList;
 		}  

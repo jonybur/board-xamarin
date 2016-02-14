@@ -36,8 +36,6 @@ namespace Solution
 
 		bool firstLocationUpdate = false;
 
-		const string APIKey = "AIzaSyAUO-UX9QKVWK421yjXqoo02N5TYrG_hY8";
-
 		public CreateScreen1 () : base ("Board", null){
 
 		}
@@ -120,7 +118,7 @@ namespace Solution
 				marker.Map = map;
 				addressView.Text = string.Empty;
 
-				string jsonobj = JsonHandler.GET("https://maps.googleapis.com/maps/api/geocode/json?address=" + e.Coordinate.Latitude.ToString() + "," + e.Coordinate.Longitude.ToString() + "&key=" + APIKey);
+				string jsonobj = JsonHandler.GET("https://maps.googleapis.com/maps/api/geocode/json?address=" + e.Coordinate.Latitude.ToString() + "," + e.Coordinate.Longitude.ToString() + "&key=" + AppDelegate.GoogleMapsAPIKey);
 				GoogleGeolocatorObject geolocatorObject = JsonHandler.DeserializeObject(jsonobj);
 
 				try{
@@ -228,7 +226,7 @@ namespace Solution
 			}
 			addressToSend = addressToSend.Replace(" ", "+");
 
-			string jsonobj = JsonHandler.GET("https://maps.googleapis.com/maps/api/geocode/json?address=" + addressToSend + "&key=" + APIKey);
+			string jsonobj = JsonHandler.GET("https://maps.googleapis.com/maps/api/geocode/json?address=" + addressToSend + "&key=" + AppDelegate.GoogleMapsAPIKey);
 			GoogleGeolocatorObject geolocatorObject = JsonHandler.DeserializeObject(jsonobj);
 
 			if (geolocatorObject.results.Count == 0 || addressView.Text.Length == 0)

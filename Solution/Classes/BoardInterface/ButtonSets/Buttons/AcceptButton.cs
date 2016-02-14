@@ -67,10 +67,8 @@ namespace Solution
 							{
 								string json = "{ \"text\": \"" + ann.Text + "\", " +
 									"\"socialChannel\": \"" + "0" + "\" }";
-
-								string encodedToken = WebUtility.UrlEncode(AppDelegate.BoardToken);
-
-								string result = CommonUtils.JsonRequest ("http://192.168.1.101:5000/api/publications?authToken=" + encodedToken, json);
+								
+								string result = CommonUtils.JsonPOSTRequest ("http://192.168.1.101:5000/api/publications?authToken=" + AppDelegate.EncodedBoardToken, json);
 
 								Console.WriteLine (result);
 							}

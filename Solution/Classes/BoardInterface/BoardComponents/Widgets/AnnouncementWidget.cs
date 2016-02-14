@@ -89,6 +89,19 @@ namespace Solution
 			textview.Selectable = true;
 			textview.Text = announcement.Text;
 			textview.SizeToFit ();
+
+			if (textview.Frame.Width < 100) {
+				textview.Frame = new CGRect (0, 0, 100, textview.Frame.Height);
+			} else if (textview.Frame.Width > 300) {
+				textview.Frame = new CGRect (0, 0, 300, textview.Frame.Height);
+			}
+
+			if (textview.Frame.Height < 100) {
+				textview.Frame = new CGRect (0, 0, textview.Frame.Width, 100);
+			} else if (textview.Frame.Width > 300) {
+				textview.Frame = new CGRect (0, 0, textview.Frame.Width, 300);
+			}
+
 			return textview;
 		}
 
