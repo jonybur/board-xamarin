@@ -1,24 +1,11 @@
-﻿	using System;
-using System.Drawing;
-using CoreGraphics;
-
-using Foundation;
-using UIKit;
-
-using CoreAnimation;
+﻿using System;
 using AdvancedColorPicker;
-using CoreText;
-
-using System.Net.Http;
-
-using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
-using Facebook.CoreKit;
-using Facebook.LoginKit;
 using Board.Interface;
 using Board.Picker;
 using Board.Utilities;
+using CoreGraphics;
+using Foundation;
+using UIKit;
 
 namespace Board.Screens
 {

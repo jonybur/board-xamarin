@@ -1,26 +1,17 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
+using System.Threading;
+
+using AVFoundation;
+using Board.JsonResponses;
+
+using Board.Utilities;
 using CoreGraphics;
+using CoreMedia;
+using Facebook.CoreKit;
+using Facebook.LoginKit;
 
 using Foundation;
 using UIKit;
-
-using CoreMedia;
-using AVFoundation;
-using CoreAnimation;
-using CoreText;
-
-using System.Net.Http;
-
-using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
-
-using Board.Utilities;
-using Board.JsonResponses;
-
-using Facebook.LoginKit;
-using Facebook.CoreKit;
   
 namespace Board.Screens
 {

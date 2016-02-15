@@ -1,16 +1,5 @@
-using System;
-using Newtonsoft.Json;
-using CoreGraphics;
-
-using Foundation;
-using UIKit;
-
-using CoreAnimation;
-using CoreText;
-using System.Threading.Tasks;
-
-using System.Collections.Generic;
 using Board.JsonResponses;
+using UIKit;
 
 namespace Board.Schema
 {

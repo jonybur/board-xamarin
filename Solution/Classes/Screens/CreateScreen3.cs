@@ -1,17 +1,7 @@
-﻿using System;
-using System.Drawing;
-
-using Foundation;
-using UIKit;
-using Facebook.CoreKit;
-using CoreGraphics;
-
-using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
-
-using Board.Schema;
+﻿using System.Drawing;
 using Board.Utilities;
+using CoreGraphics;
+using UIKit;
 
 namespace Board.Screens
 {

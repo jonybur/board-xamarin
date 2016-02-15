@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Drawing;
-
-using Foundation;
-using UIKit;
 using CoreGraphics;
-
-using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
 using MessageUI;
+using UIKit;
 
 namespace Board.Screens
 {

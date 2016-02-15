@@ -1,19 +1,9 @@
 using System;
 using System.IO;
 using SQLite;
-
 using Foundation;
 using UIKit;
-
-using CoreGraphics;
-using CoreAnimation;
-using CoreText;
-
-using System.Net.Http;
-
 using System.Threading.Tasks;
-using System.Threading;
-
 using System.Collections.Generic;
 using Board.Schema;
 

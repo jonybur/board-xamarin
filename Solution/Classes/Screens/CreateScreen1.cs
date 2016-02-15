@@ -1,23 +1,9 @@
 ﻿using System;
-using System.Drawing;
-using CoreGraphics;
-
-using Foundation;
-using UIKit;
-
-using CoreAnimation;
-using CoreText;
-
-using System.Net.Http;
-using System.Net;
-
-using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
-using Facebook.CoreKit;
-using Facebook.LoginKit;
 using Board.JsonResponses;
+using CoreGraphics;
+using Foundation;
 using Google.Maps;
+using UIKit;
 
 namespace Board.Screens
 {

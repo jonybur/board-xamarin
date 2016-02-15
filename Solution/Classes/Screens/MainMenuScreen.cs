@@ -1,25 +1,13 @@
 using System;
-using System.Drawing;
-using System.Linq;
-
-using CoreGraphics;
-using Foundation;
-using UIKit;
-
-using CoreAnimation;
-using CoreText;
-
-using System.Net.Http;
-
-using System.Threading.Tasks;
-using System.Threading;
 using System.Collections.Generic;
-using Facebook.CoreKit;
-using Facebook.LoginKit;
+using System.Linq;
 using Board.Interface;
 using Board.Utilities;
-
+using CoreGraphics;
+using Facebook.CoreKit;
+using Foundation;
 using Google.Maps;
+using UIKit;
 
 namespace Board.Screens
 {
@@ -38,11 +26,6 @@ namespace Board.Screens
 
 		public MainMenuScreen () : base ("Board", null){
 			
-		}
-
-		public override void DidReceiveMemoryWarning ()
-		{
-			base.DidReceiveMemoryWarning ();
 		}
 
 		public override void ViewDidLoad ()

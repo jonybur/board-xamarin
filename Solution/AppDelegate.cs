@@ -1,17 +1,11 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Collections.Generic;
-using System.Linq;
 
 using Foundation;
 using UIKit;
 using Facebook.CoreKit;
 
 using Google.Maps;
-using System.Net.Http;
-
-using System.Dynamic;
-using Board.Schema;
 using Board.Utilities;
 using Board.JsonResponses;
 
