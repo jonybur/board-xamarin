@@ -19,7 +19,7 @@ using Facebook.LoginKit;
 
 using Google.Maps;
 
-namespace Solution
+namespace Board.Screens
 {
 	public class SettingsScreen : UIViewController
 	{

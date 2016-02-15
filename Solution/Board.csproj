@@ -278,17 +278,13 @@
     <Compile Include="AppDelegate.cs" />
     <Compile Include="Classes\Infrastructure\StorageController.cs" />
     <Compile Include="Classes\Schema\Board.cs" />
-    <Compile Include="Classes\Schema\User.cs" />
-    <Compile Include="Classes\Schema\Like.cs" />
     <Compile Include="Classes\Schema\Content.cs" />
-    <Compile Include="Classes\Schema\Message.cs" />
     <Compile Include="Classes\Screens\LoginScreen.cs" />
     <Compile Include="Classes\Screens\MainMenuScreen.cs" />
     <Compile Include="Classes\Screens\CreateScreen1.cs" />
     <Compile Include="Classes\Screens\CreateScreen2.cs" />
     <Compile Include="Classes\Infrastructure\CommonUtils.cs" />
     <Compile Include="Classes\Screens\BusinessScreen.cs" />
-    <Compile Include="Classes\Schema\GoogleGeolocatorObject.cs" />
     <Compile Include="Classes\Infrastructure\ImagePicker.cs" />
     <Compile Include="Classes\Screens\CreateScreen3.cs" />
     <Compile Include="Classes\Screens\InviteScreen.cs" />
@@ -298,9 +294,7 @@
     <Compile Include="Classes\BoardInterface\BoardComponents\Preview.cs" />
     <Compile Include="Classes\BoardInterface\BoardComponents\Gallery.cs" />
     <Compile Include="Classes\BoardInterface\BoardComponents\LookUp\LookUp.cs" />
-    <Compile Include="Classes\BoardInterface\BoardComponents\LookUp\Labels\LikesLabel.cs" />
     <Compile Include="Classes\BoardInterface\BoardComponents\LookUp\Buttons\ArchiveButton.cs" />
-    <Compile Include="Classes\BoardInterface\BoardComponents\LookUp\Buttons\LikeButton.cs" />
     <Compile Include="Classes\BoardInterface\BoardComponents\LookUp\Buttons\ChatButton.cs" />
     <Compile Include="Classes\BoardInterface\ButtonInterface.cs" />
     <Compile Include="Classes\BoardInterface\ButtonSets\ActionsButtonSet.cs" />
@@ -327,6 +321,7 @@
     <Compile Include="Classes\Schema\ServerResponses\TokenResponse.cs" />
     <Compile Include="Classes\Screens\PageSelectorScreen.cs" />
     <Compile Include="Classes\Schema\ServerResponses\BoardResponse.cs" />
+    <Compile Include="Classes\Schema\ServerResponses\GoogleGeolocatorObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

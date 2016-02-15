@@ -5,7 +5,7 @@ using System.Text;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Solution
+namespace Board.JsonResponses
 {
 
 	public class AddressComponent

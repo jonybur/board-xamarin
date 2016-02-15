@@ -9,9 +9,12 @@ using UIKit;
 using CoreAnimation;
 using CoreText;
 
-using MediaPlayer;
+using Board.Schema;
 
-namespace Solution
+using MediaPlayer;
+using Board.Interface;
+
+namespace Board.Picker
 {
 	public class ImagePicker
 	{

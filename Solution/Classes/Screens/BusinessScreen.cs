@@ -21,10 +21,11 @@ using System.Net;
 using Facebook.LoginKit;
 
 using Board.Interface;
-
+using Board.Utilities;
+using Board.JsonResponses;
 using Google.Maps;
 
-namespace Solution
+namespace Board.Screens
 {
 	public class BusinessScreen : UIViewController
 	{
@@ -65,10 +66,10 @@ namespace Solution
 
 			boardList = new List<Board.Schema.Board> ();
 
-			BoardsResponse response = BoardsResponse.Deserialize (result);
+			BoardResponse response = BoardResponse.Deserialize (result);
 
 			if (response != null) {
-				foreach (BoardsResponse.Datum r in response.data) {
+				foreach (BoardResponse.Datum r in response.data) {
 					// gets image from url
 					UIImage boardImage = await SaveImage (r.logoURL, r.name);
 

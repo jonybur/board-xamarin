@@ -16,8 +16,10 @@ using Board.Interface;
 using System.Collections.Generic;
 
 using Facebook.CoreKit;
+using Board.Schema;
+using Board.Interface.Widgets;
 
-namespace Solution
+namespace Board.Interface
 {
 	public static class Preview
 	{

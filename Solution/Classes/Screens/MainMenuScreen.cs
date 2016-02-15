@@ -17,10 +17,11 @@ using System.Collections.Generic;
 using Facebook.CoreKit;
 using Facebook.LoginKit;
 using Board.Interface;
+using Board.Utilities;
 
 using Google.Maps;
 
-namespace Solution
+namespace Board.Screens
 {
 	public class MainMenuScreen : UIViewController
 	{

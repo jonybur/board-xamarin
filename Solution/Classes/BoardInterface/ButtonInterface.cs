@@ -8,9 +8,8 @@ using UIKit;
 
 using CoreAnimation;
 using CoreText;
-using Board.Interface.Buttons;
 
-namespace Solution
+namespace Board.Interface.Buttons
 {
 	public class ButtonInterface
 	{

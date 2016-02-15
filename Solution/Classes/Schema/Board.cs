@@ -10,7 +10,7 @@ using CoreText;
 using System.Threading.Tasks;
 
 using System.Collections.Generic;
-using Solution;
+using Board.JsonResponses;
 
 namespace Board.Schema
 {

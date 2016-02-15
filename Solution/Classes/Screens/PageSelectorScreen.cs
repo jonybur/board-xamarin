@@ -1,25 +1,16 @@
 ﻿using System;
-using System.Drawing;
-using System.Linq;
 
 using CoreGraphics;
 using Foundation;
 using UIKit;
 
-using CoreAnimation;
-using CoreText;
-
-using System.Net.Http;
-
-using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
 using Facebook.CoreKit;
 using Facebook.LoginKit;
 
-using Google.Maps;
 
-namespace Solution
+namespace Board.Interface
 {
 	public class PageSelectorScreen : UIViewController
 	{
@@ -49,14 +40,14 @@ namespace Solution
 			graph.Start (LoadList);
 		}
 
-		private void LoadList(Facebook.CoreKit.GraphRequestConnection connection, Foundation.NSObject obj, Foundation.NSError err)
+		void LoadList(GraphRequestConnection connection, NSObject obj, NSError err)
 		{
 			scrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 
 			List<string> lstNames = NSObjectToString ("data.name", obj);
 			List<string> lstCategories = NSObjectToString ("data.category", obj);
 
-			scrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, 80 * (int)lstNames.Count + banner.Frame.Height + lstNames.Count + 1);
+			scrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, 80 * lstNames.Count + banner.Frame.Height + lstNames.Count + 1);
 
 			float yPosition = (float)banner.Frame.Height;
 			UIButton nameButton = ProfileButton(yPosition, Profile.CurrentProfile.Name + "'s Profile");
@@ -75,7 +66,7 @@ namespace Solution
 			View.AddSubview (banner);
 		}
 
-		private List<string> NSObjectToString(string fetch, NSObject obj)
+		List<string> NSObjectToString(string fetch, NSObject obj)
 		{
 			NSString nsString = new NSString (fetch);
 

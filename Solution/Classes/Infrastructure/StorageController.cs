@@ -15,36 +15,12 @@ using System.Threading.Tasks;
 using System.Threading;
 
 using System.Collections.Generic;
+using Board.Schema;
 
-
-namespace Solution
+namespace Board.Infrastructure
 {
 	public static class StorageController
 	{
-		[Table("Messages")]
-		public class MessageL {
-			[PrimaryKey, Column("id"), MaxLength(128)]
-			public string Id { get; set; }
-			[MaxLength(128)]
-			public string UserID { get; set; }
-			[Column("contentId")]
-			public string ContentID { get; set; }
-			public string Text { get; set; }
-			[Column("createdAt")]
-			public DateTimeOffset CreatedAt { get; set; }
-
-			public MessageL(Message m)
-			{
-				Id = m.Id;
-				UserID = m.UserId;
-				ContentID = m.ContentId;
-				Text = m.Text;
-				CreatedAt = m.CreatedAt;
-			}
-
-			public MessageL(){}
-		}
-
 		[Table("Pictures")]
 		public class PictureL {
 			[PrimaryKey, MaxLength(128)]
@@ -76,23 +52,6 @@ namespace Solution
 			}
 		}
 
-		[Table("Likes")]
-		public class LikeL {
-			[PrimaryKey, Column("id"), MaxLength(128)]
-			public string Id { get; set; }
-			[Column("userid"), MaxLength(128)]
-			public string UserId { get; set; }
-			[Column("contentid"), MaxLength(128)]
-			public string ContentId { get; set;}
-
-			public LikeL(){}
-
-			public LikeL(string id, string userid, string contentid)
-			{
-				Id = id; UserId = userid; ContentId = contentid;
-			}
-		}
-
 		private static string dbPath;
 
 		private static SQLiteConnection database;
@@ -106,44 +65,11 @@ namespace Solution
 
 			database = new SQLiteConnection (dbPath);
 			database.CreateTable<PictureL> ();
-			database.CreateTable<LikeL> ();
-			database.CreateTable<MessageL> ();
-		}
-
-		public static List<Message> ReturnConversation(string contentId)
-		{
-			List<MessageL> query = database.Query<MessageL> ("SELECT * FROM Messages WHERE contentId = ? ORDER BY createdAt", contentId);
-			List<Message> lstMessages = new List<Message> ();
-
-			foreach (MessageL msgl in query) {
-				Message msg = new Message (msgl.Id, msgl.UserID, msgl.ContentID, msgl.Text, msgl.CreatedAt);
-				lstMessages.Add (msg);
-			}
-
-			return lstMessages;
 		}
 
 		public static async Task UpdateLocalDB()
 		{
 			// downloads new content
-		}
-
-		public static void UpdateLikeTable(IEnumerable<Like> enumLikes)
-		{
-			// TODO: improve the performance of this method
-			database.Query<bool> ("DELETE FROM Likes");
-
-			foreach (Like like in enumLikes) {
-				LikeL likeL = new LikeL (like.Id, like.UserId, like.ContentId);
-				database.Insert (likeL);
-			}
-		}
-
-		public static void InsertMessages(List<Message> msgs)
-		{
-			foreach (Message m in msgs) {
-				InsertMessage (m);
-			}
 		}
 
 		public static void InsertPicture(Picture p)
@@ -169,16 +95,6 @@ namespace Solution
 				return aux [0];
 			} else {
 				return new DateTimeOffset ();
-			}
-		}
-
-		public static void InsertMessage(Message msg)
-		{
-			List<MessageL> aux = database.Query<MessageL> ("SELECT * FROM Messages WHERE id = ?", msg.Id);
-
-			if (aux.Count == 0) {
-				MessageL msgl = new MessageL (msg);
-				database.Insert (msgl);
 			}
 		}
 
@@ -220,21 +136,6 @@ namespace Solution
 			}
 
 			return lstPictures;
-		}
-
-		public static int ReturnNumberOfLikes(string contentid)
-		{
-			try {
-				// TODO: fix, always returns 0
-				// count = database.Query<int> ("SELECT COUNT(*) FROM Likes WHERE contentid = ?", contentid)[0];
-				List<LikeL> lst = database.Query<LikeL> ("SELECT * FROM Likes WHERE contentid = ?", contentid);
-				if (lst != null)
-				{ return lst.Count; }
-				else { return 0; }
-			}
-			catch{
-				return -1;
-			}
 		}
 
 		// returns all pictures discriminating ongallery status
@@ -282,19 +183,6 @@ namespace Solution
 			return lstIDs;
 		}
 
-		// returns all messages's id's from the local storage
-		public static List<string> ReturnAllMessageIDs()
-		{
-			List<string> lstIDs = new List<string> ();
-			List<MessageL> messageTable = database.Query<MessageL> ("SELECT id FROM Messages");
-
-			foreach (MessageL p in messageTable){
-				lstIDs.Add(p.Id);
-			}
-
-			return lstIDs;
-		}
-
 		// returns all picture id's depending on it's gallery status
 		public static List<string> ReturnAllPictureIDs(bool onGallery)
 		{
@@ -306,19 +194,6 @@ namespace Solution
 			}
 
 			return lstIDs;
-		}
-
-		public static Like LookupLike(string userid, string contentid)
-		{
-			Like like; LikeL likeL;
-			try{
-				likeL = database.Query<LikeL> ("SELECT * FROM Likes WHERE userid = ? AND contentid = ?", userid, contentid)[0];
-				like = new Like(likeL.Id, likeL.UserId, likeL.ContentId);
-			}
-			catch{
-				like = new Like ();
-			}
-			return like;
 		}
 	}
 }

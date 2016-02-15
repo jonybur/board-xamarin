@@ -5,7 +5,7 @@ using CoreAnimation;
 using CoreGraphics;
 using CoreText;
 
-namespace Solution
+namespace Board.Schema
 {
 	// The Picture class as it is uploaded on Azure
 	// Board's way of storing its UIImageViews on the DB

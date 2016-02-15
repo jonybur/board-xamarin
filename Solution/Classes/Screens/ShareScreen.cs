@@ -1,29 +1,19 @@
 ﻿using System;
-using System.Drawing;
-using System.Linq;
 
 using CoreGraphics;
-using Foundation;
+
 using UIKit;
-
-using CoreAnimation;
-using CoreText;
-
-using System.Net.Http;
-
-using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
 
 using Facebook.CoreKit;
 using Facebook.LoginKit;
-using Facebook.ShareKit;
 
 using Board.Interface;
+using Board.Interface.Buttons;
+using Board.Schema;
 
-using Google.Maps;
+using Board.Utilities;
 
-namespace Solution
+namespace Board.Interface
 {
 	public class ShareScreen : UIViewController
 	{

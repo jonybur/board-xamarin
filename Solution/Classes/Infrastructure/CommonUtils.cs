@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using Facebook.CoreKit;
 using Facebook.LoginKit;
 
-namespace Solution
+namespace Board.Utilities
 {
 	public static class CommonUtils
 	{

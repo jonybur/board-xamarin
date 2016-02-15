@@ -12,8 +12,12 @@ using System.Net.Http;
 
 using System.Dynamic;
 using Board.Schema;
+using Board.Utilities;
+using Board.JsonResponses;
 
-namespace Solution
+using Board.Screens;
+
+namespace Board
 {
 	// The UIApplicationDelegate for the application. This class is responsible for launching the
 	// User Interface of the application, as well as listening (and optionally responding) to
@@ -61,7 +65,7 @@ namespace Solution
 		//
 		const string MapsApiKey = "AIzaSyAyjPtEvhmhHHa5_aPiZPiPN3GUtIXxO6I";
 
-		const bool ServerActive = true;
+		public const bool ServerActive = false;
 
 
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)

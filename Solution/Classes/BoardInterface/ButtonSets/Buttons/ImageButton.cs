@@ -1,19 +1,10 @@
 using System;
 using CoreGraphics;
 
-using Foundation;
 using UIKit;
 
-using CoreAnimation;
-using CoreText;
+using Board.Picker;
 
-using System.Net.Http;
-
-using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
-
-using Solution;
 
 namespace Board.Interface.Buttons
 {

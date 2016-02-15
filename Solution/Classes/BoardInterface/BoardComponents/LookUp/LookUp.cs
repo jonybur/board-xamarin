@@ -10,7 +10,10 @@ using CoreGraphics;
 
 using System.Threading.Tasks;
 
-namespace Solution
+using Board.Interface.Buttons;
+using Board.Schema;
+
+namespace Board.Interface
 {
 	public class LookUp : UIViewController
 	{

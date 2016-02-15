@@ -1,25 +1,16 @@
 ﻿using System;
-using System.Drawing;
-using System.Linq;
-using Newtonsoft.Json;
 using CoreGraphics;
 
 using Foundation;
 using UIKit;
 
-using CoreAnimation;
-using CoreText;
 using AVFoundation;
 using CoreMedia;
-using AVKit;
-using MediaPlayer;
-
-using System.Threading.Tasks;
 using System.Threading;
-using System.Collections.Generic;
-using System.Net.Http;
+using Board.Utilities;
+using Board.Schema;
 
-namespace Solution
+namespace Board.Interface.Widgets
 {
 	public class VideoWidget
 	{

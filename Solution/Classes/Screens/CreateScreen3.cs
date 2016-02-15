@@ -11,8 +11,9 @@ using System.Threading;
 using System.Collections.Generic;
 
 using Board.Schema;
+using Board.Utilities;
 
-namespace Solution
+namespace Board.Screens
 {
 	public class CreateScreen3 : UIViewController
 	{

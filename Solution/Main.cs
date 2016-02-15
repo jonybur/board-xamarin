@@ -5,7 +5,7 @@ using System.Linq;
 using Foundation;
 using UIKit;
 
-namespace Solution
+namespace Board
 {
 	public class Application
 	{

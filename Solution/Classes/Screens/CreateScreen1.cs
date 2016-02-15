@@ -16,10 +16,10 @@ using System.Threading;
 using System.Collections.Generic;
 using Facebook.CoreKit;
 using Facebook.LoginKit;
-
+using Board.JsonResponses;
 using Google.Maps;
 
-namespace Solution
+namespace Board.Screens
 {
 	public class CreateScreen1 : UIViewController
 	{

@@ -17,8 +17,10 @@ using System.Collections.Generic;
 using Facebook.CoreKit;
 using Facebook.LoginKit;
 using Board.Interface;
+using Board.Picker;
+using Board.Utilities;
 
-namespace Solution
+namespace Board.Screens
 {
 	public class CreateScreen2 : UIViewController
 	{

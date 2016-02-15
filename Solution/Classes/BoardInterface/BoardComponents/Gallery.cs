@@ -8,7 +8,9 @@ using UIKit;
 using CoreAnimation;
 using CoreText;
 
-namespace Solution
+using Board.Schema;
+
+namespace Board.Interface
 {
 	public class Gallery
 	{

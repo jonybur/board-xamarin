@@ -1,15 +1,11 @@
 using System;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using CoreGraphics;
-
-using Foundation;
-using UIKit;
-
-using CoreAnimation;
-using CoreText;
-using Solution;
+using Board.Infrastructure;
 using Board.Interface.Buttons;
+
+using Board.Schema;
+
+using CoreGraphics;
+using UIKit;
 
 namespace Board.Lookup.Buttons
 {

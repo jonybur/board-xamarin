@@ -9,7 +9,8 @@ using UIKit;
 
 using CoreAnimation;
 using CoreText;
-using Solution;
+using Board.Schema;
+using Board.Utilities;
 
 namespace Board.Interface.Buttons
 {

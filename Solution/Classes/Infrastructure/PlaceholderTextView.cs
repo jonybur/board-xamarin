@@ -18,7 +18,7 @@ using CoreGraphics;
 using Foundation;
 using UIKit;
 
-namespace Solution
+namespace Board.Utilities
 {
 	/// <summary>
 	/// A quick subclass of UITextView to enable placeholder text

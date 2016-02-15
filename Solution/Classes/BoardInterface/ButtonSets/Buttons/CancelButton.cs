@@ -1,14 +1,7 @@
 using System;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using CoreGraphics;
 
-using Foundation;
 using UIKit;
-
-using CoreAnimation;
-using CoreText;
-using Solution;
 
 namespace Board.Interface.Buttons
 {

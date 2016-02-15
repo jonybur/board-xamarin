@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Solution
+namespace Board.Schema
 {
 	public class Content
 	{

@@ -16,10 +16,13 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
 
+using Board.Utilities;
+using Board.JsonResponses;
+
 using Facebook.LoginKit;
 using Facebook.CoreKit;
   
-namespace Solution
+namespace Board.Screens
 {
 	public class LoginScreen : UIViewController
 	{
@@ -80,22 +83,29 @@ namespace Solution
 				}
 
 				if (AccessToken.CurrentAccessToken != null) {
-					string json = "{ \"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\", " +
-						"\"accessToken\": \"" + AccessToken.CurrentAccessToken.TokenString + "\" }";
 
-					string result = CommonUtils.JsonPOSTRequest ("http://192.168.1.101:5000/api/account/login", json);
+					if (AppDelegate.ServerActive)
+					{
+						string json = "{ \"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\", " +
+							"\"accessToken\": \"" + AccessToken.CurrentAccessToken.TokenString + "\" }";
 
-					TokenResponse tk = TokenResponse.Deserialize (result);
+						string result = CommonUtils.JsonPOSTRequest ("http://192.168.1.101:5000/api/account/login", json);
 
-					if (result != "InternalServerError" && result != "ConnectFailure" && tk != null && tk.authToken != null & tk.authToken != string.Empty) {
-						AppDelegate.BoardToken = tk.authToken;
+						TokenResponse tk = TokenResponse.Deserialize (result);
+
+						if (result != "InternalServerError" && result != "ConnectFailure" && tk != null && tk.authToken != null & tk.authToken != string.Empty) {
+							AppDelegate.BoardToken = tk.authToken;
+							MainMenuScreen screen = new MainMenuScreen ();
+							NavigationController.PushViewController(screen, true);
+						} else {
+							responseError = result;
+							UIAlertController alert = UIAlertController.Create(responseError, null, UIAlertControllerStyle.Alert);
+							alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+							NavigationController.PresentViewController (alert, true, null);
+						}
+					} else {
 						MainMenuScreen screen = new MainMenuScreen ();
 						NavigationController.PushViewController(screen, true);
-					} else {
-						responseError = result;
-						UIAlertController alert = UIAlertController.Create(responseError, null, UIAlertControllerStyle.Alert);
-						alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
-						NavigationController.PresentViewController (alert, true, null);
 					}
 				}
 			};

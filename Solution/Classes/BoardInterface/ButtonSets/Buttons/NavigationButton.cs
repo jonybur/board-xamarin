@@ -1,18 +1,13 @@
-using System;
-using System.Timers;
+
 using System.Drawing;
 
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using CoreGraphics;
 
 using Foundation;
 using UIKit;
 
-using CoreAnimation;
-using CoreText;
-
-using Solution;
+using Board.Interface.Widgets;
+using Board.Schema;
 
 namespace Board.Interface.Buttons
 {

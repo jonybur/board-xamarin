@@ -1,21 +1,11 @@
-﻿using System;
-using System.Drawing;
-using System.Linq;
-using Newtonsoft.Json;
-using CoreGraphics;
+﻿using CoreGraphics;
 
-using Foundation;
 using UIKit;
 
-using CoreAnimation;
-using CoreText;
+using Board.Utilities;
+using Board.Schema;
 
-using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
-using System.Net.Http;
-
-namespace Solution
+namespace Board.Interface.Widgets
 {
 	public class PictureWidget
 	{

@@ -10,7 +10,7 @@ using System.Threading;
 using System.Collections.Generic;
 using MessageUI;
 
-namespace Solution
+namespace Board.Screens
 {
 	public class SupportScreen : UIViewController
 	{

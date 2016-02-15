@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace Solution
+namespace Board.JsonResponses
 {
 	public class TokenResponse
 	{

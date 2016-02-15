@@ -8,7 +8,7 @@ using UIKit;
 using CoreAnimation;
 using CoreText;
 
-namespace Solution
+namespace Board.Schema
 {
 	public class Picture : Content
 	{

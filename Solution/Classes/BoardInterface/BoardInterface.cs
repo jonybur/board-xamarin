@@ -20,7 +20,9 @@ using MediaPlayer;
 
 using Facebook.CoreKit;
 using Board.Interface.Buttons;
-using Solution;
+using Board.Interface.Widgets;
+using Board.Interface;
+using Board.Schema;
 
 namespace Board.Interface
 {

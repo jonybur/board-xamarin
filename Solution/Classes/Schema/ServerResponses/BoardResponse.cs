@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Solution
+
+namespace Board.JsonResponses
 {
-	public class BoardsResponse
+	public class BoardResponse
 	{
-		public static BoardsResponse Deserialize (string json)
+		public static BoardResponse Deserialize (string json)
 		{
 			try {
-				return JsonConvert.DeserializeObject<BoardsResponse>(json);
+				return JsonConvert.DeserializeObject<BoardResponse>(json);
 			}catch{
 				return null;
 			}
