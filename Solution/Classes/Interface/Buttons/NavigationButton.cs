@@ -99,6 +99,12 @@ namespace Board.Interface.Buttons
 
 				BoardInterface.scrollView.SetContentOffset (position, true);
 				highlitedContent++;
+
+				if (highlitedContent >= BoardInterface.ListAnnouncementWidgets.Count && cycle == 2)
+				{
+					highlitedContent = 0;
+					cycle = 0;
+				}
 			});
 
 			UILongPressGestureRecognizer longPressGesture = new UILongPressGestureRecognizer ((tg) => {

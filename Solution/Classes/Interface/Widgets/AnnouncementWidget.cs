@@ -59,6 +59,7 @@ namespace Board.Interface.Widgets
 
 			// eye
 			eye = CreateEye (mounting.Frame);
+
 			uiView.AddSubview (eye);
 
 			uiView.Frame = new CGRect (ann.ImgX, ann.ImgY, mounting.Frame.Width, mounting.Frame.Height);
@@ -70,24 +71,25 @@ namespace Board.Interface.Widgets
 		private UITextView CreateText()
 		{
 			UIFont font = UIFont.SystemFontOfSize (20);
-			UITextView textview = new UITextView (new CGRect(0, 0, 250, 100));
+			UITextView textview = new UITextView (new CGRect(10, 10, 250, 100));
 			textview.Font = font;
+			textview.BackgroundColor = UIColor.White;
 			textview.TextColor = AppDelegate.BoardBlue;
 			textview.Editable = false;
 			textview.Selectable = true;
 			textview.Text = announcement.Text;
 			textview.SizeToFit ();
 
-			if (textview.Frame.Width < 100) {
-				textview.Frame = new CGRect (0, 0, 100, textview.Frame.Height);
+			if (textview.Frame.Width < 150) {
+				textview.Frame = new CGRect (10, 10, 150, textview.Frame.Height);
 			} else if (textview.Frame.Width > 300) {
-				textview.Frame = new CGRect (0, 0, 300, textview.Frame.Height);
+				textview.Frame = new CGRect (10, 10, 330, textview.Frame.Height);
 			}
 
 			if (textview.Frame.Height < 100) {
-				textview.Frame = new CGRect (0, 0, textview.Frame.Width, 100);
-			} else if (textview.Frame.Width > 300) {
-				textview.Frame = new CGRect (0, 0, textview.Frame.Width, 300);
+				textview.Frame = new CGRect (10, 10, textview.Frame.Width, 80);
+			} else if (textview.Frame.Height > 300) {
+				textview.Frame = new CGRect (10, 10, textview.Frame.Width, 300);
 			}
 
 			return textview;

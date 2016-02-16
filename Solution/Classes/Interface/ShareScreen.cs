@@ -1,17 +1,18 @@
 ﻿using System;
 
-using Board.Interface;
-
-using Board.Interface.Buttons;
-
-using Board.Schema;
-using Board.Utilities;
-
 using CoreGraphics;
+using Foundation;
+using UIKit;
+
+using System.Collections.Generic;
+
 using Facebook.CoreKit;
 using Facebook.LoginKit;
 
-using UIKit;
+using Board.Interface;
+using Board.Interface.Buttons;
+using Board.Utilities;
+using Board.Schema;
 
 namespace Board.Interface
 {
@@ -21,7 +22,9 @@ namespace Board.Interface
 		UIImageView nextbutton;
 		UIScrollView scrollView;
 		PlaceholderTextView textview;
+		UILabel instructionsLabel;
 		UIImage image;
+		List<UIButton> fbPageButtons;
 		float buttonY = 230;
 		Content content;
 
@@ -30,7 +33,11 @@ namespace Board.Interface
 		bool FBActive;
 		bool RSSActive;
 
+		float listStartPositionY;
+		float positionY;
+
 		string [] publishPermissions = new [] { "publish_actions" };
+		string [] readPermissions = new [] { "pages_show_list" };
 
 		public ShareScreen (UIImage _image, Content _content){
 			image = _image; content = _content;
@@ -51,18 +58,108 @@ namespace Board.Interface
 			InitializeInterface ();
 		}
 
-		private void InitializeInterface()
+		private async void InitializeInterface()
 		{
 			LoadContent ();
 			LoadBanner ();
 			LoadNextButton ();
 			LoadTextView ();
+
+			positionY = 230;
+
 			LoadFacebookButton ();
 			LoadInstagramButton ();
+
+			positionY += 50;
+
 			LoadTwitterButton ();
 			LoadRSSButton ();
+
+			positionY += 145;
+			listStartPositionY = positionY;
 		}
 
+		private async System.Threading.Tasks.Task CheckPageReadPermissions()
+		{
+			if (!AccessToken.CurrentAccessToken.HasGranted(readPermissions[0]))
+			{
+				// lo pido
+				LoginManager manager = new LoginManager ();
+				await manager.LogInWithReadPermissionsAsync (readPermissions, this);
+			}
+
+			Facebook.CoreKit.GraphRequest graph = new GraphRequest ("me/accounts", null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
+			graph.Start (LoadList);
+		}
+
+		private void LoadList(Facebook.CoreKit.GraphRequestConnection connection, Foundation.NSObject obj, Foundation.NSError err)
+		{
+			List<string> lstNames = NSObjectToString ("data.name", obj);
+			List<string> lstCategories = NSObjectToString ("data.category", obj);
+
+			scrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, 60 * ((int)lstNames.Count + 1) + banner.Frame.Height + nextbutton.Frame.Height + lstNames.Count + positionY + 1);
+
+			UIFont font = UIFont.FromName ("narwhal-bold", 20);
+			instructionsLabel = new UILabel (new CGRect (20, positionY, AppDelegate.ScreenWidth - 40, 20));
+			instructionsLabel.Text = "SELECT FACEBOOK PAGES";
+			instructionsLabel.Font = font;
+			instructionsLabel.TextColor = AppDelegate.BoardOrange;
+			instructionsLabel.AdjustsFontSizeToFitWidth = true;
+			scrollView.AddSubview (instructionsLabel);
+
+			positionY += (float)instructionsLabel.Frame.Height + 10;
+			fbPageButtons = new List<UIButton> ();
+
+			UIButton nameButton = ProfileButton (positionY, Profile.CurrentProfile.Name + "'s Profile");
+			fbPageButtons.Add (nameButton);
+			scrollView.AddSubview (nameButton);
+			positionY += (float)nameButton.Frame.Height + 1;
+			int i = 0;
+			foreach (string name in lstNames) {
+				UIButton pageButton = PageButton (positionY, name, lstCategories [i]);
+				fbPageButtons.Add (pageButton);
+				i++;
+				positionY += (float)pageButton.Frame.Height + 1;
+				scrollView.AddSubview (pageButton);
+			}
+		}
+
+
+		private UIButton ProfileButton(float yPosition, string name)
+		{
+			UIButton pageButton = new UIButton (new CGRect (0, yPosition, AppDelegate.ScreenWidth, 60));
+			pageButton.BackgroundColor = UIColor.White;	
+
+			UIFont nameFont = UIFont.SystemFontOfSize (20);
+			UILabel nameLabel = new UILabel (new CGRect (40, 20, AppDelegate.ScreenWidth - 50, 20));
+			nameLabel.Font = nameFont;
+			nameLabel.Text = name;
+			nameLabel.AdjustsFontSizeToFitWidth = true;
+			nameLabel.TextColor = AppDelegate.BoardBlue;
+
+			bool pressed = false;
+
+			pageButton.TouchUpInside += (object sender, EventArgs e) => {
+				if (!pressed)
+				{
+					pressed = true;
+					pageButton.BackgroundColor = AppDelegate.BoardLightBlue;
+					nameLabel.TextColor = UIColor.White;
+
+					/*Thread thread = new Thread(new ThreadStart(PopOut));
+					thread.Start();*/
+				} else {
+					pressed = false;
+					pageButton.BackgroundColor = UIColor.White;
+					nameLabel.TextColor = AppDelegate.BoardBlue;
+				}				
+			};
+
+			pageButton.UserInteractionEnabled = true;
+			pageButton.AddSubviews (nameLabel);
+
+			return pageButton;
+		}
 
 		private void LoadFacebookButton()
 		{
@@ -80,7 +177,7 @@ namespace Board.Interface
 			label.TextColor = UIColor.FromRGB(34, 36, 39);
 			label.TextAlignment = UITextAlignment.Center;
 
-			UIButton composite = new UIButton (new CGRect(0, buttonY, AppDelegate.ScreenWidth / 2, 50));
+			UIButton composite = new UIButton (new CGRect(0, positionY, AppDelegate.ScreenWidth / 2, 50));
 			composite.AddSubviews (logoView, label);
 			composite.BackgroundColor = UIColor.FromRGB(255,255,255);
 
@@ -104,135 +201,90 @@ namespace Board.Interface
 						label.TextColor = UIColor.FromRGB(59, 89, 152);
 						logoView.TintColor = UIColor.FromRGB(59, 89, 152);
 						FBActive = true;
+
+						// obtengo lista de paginas
+						await CheckPageReadPermissions();
 					}
 				}else{
+					// desactivo FB y la lista
+
 					label.TextColor = UIColor.FromRGB(34, 36, 39);
 					logoView.TintColor = UIColor.FromRGB(165, 167, 169);
 					FBActive = false;
+					instructionsLabel.RemoveFromSuperview();
+
+					foreach(UIButton uib in fbPageButtons)
+					{
+						uib.RemoveFromSuperview();
+						positionY = listStartPositionY;
+						scrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, banner.Frame.Height + positionY);
+					}
 				}
 			};
 
 			scrollView.AddSubview(composite);
 		}
 
-
-		private void LoadInstagramButton()
+		private UIButton PageButton(float yPosition, string name, string category)
 		{
-			string text = "Instagram";
-			UIImage image = UIImage.FromFile ("./screens/share/instagram/logo.png");
-			image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+			UIButton pageButton = new UIButton (new CGRect (0, yPosition, AppDelegate.ScreenWidth, 60));
+			pageButton.BackgroundColor = UIColor.White;
 
-			UIImageView logoView = new UIImageView (new CGRect (10, 10, 30, 30));
-			logoView.Image = image;
-			logoView.TintColor = UIColor.FromRGB(165, 167, 169);
+			UIFont nameFont = UIFont.SystemFontOfSize (20);
+			UILabel nameLabel = new UILabel (new CGRect (40, 10, AppDelegate.ScreenWidth - 50, 20));
+			nameLabel.Font = nameFont;
+			nameLabel.Text = name;
+			nameLabel.AdjustsFontSizeToFitWidth = true;
+			nameLabel.TextColor = AppDelegate.BoardBlue;
 
-			UILabel label = new UILabel (new CGRect (logoView.Frame.Right, 0, AppDelegate.ScreenWidth / 2 - logoView.Frame.Right, 50));
-			label.Text = text;
-			label.Font = UIFont.SystemFontOfSize (20);
-			label.TextColor = UIColor.FromRGB(34, 36, 39);
-			label.TextAlignment = UITextAlignment.Center;
+			UIFont categoryFont = UIFont.SystemFontOfSize(14);
+			UILabel categoryLabel = new UILabel (new CGRect (40, nameLabel.Frame.Bottom + 5, AppDelegate.ScreenWidth - 50, 16));
+			categoryLabel.Font = categoryFont;
+			categoryLabel.Text = category;
+			categoryLabel.AdjustsFontSizeToFitWidth = true;
+			categoryLabel.TextColor = AppDelegate.BoardBlue;
 
-			UIButton composite = new UIButton (new CGRect(AppDelegate.ScreenWidth / 2, buttonY, AppDelegate.ScreenWidth / 2, 50));
-			composite.AddSubviews (logoView, label);
-			composite.BackgroundColor = UIColor.FromRGB(255,255,255);
+			bool pressed = false;
 
-			IGActive = false;
-
-			composite.TouchUpInside += (object sender, EventArgs e) => {
-				
-				if (!IGActive)
+			pageButton.TouchUpInside += (object sender, EventArgs e) => {
+				if (!pressed)
 				{
-					label.TextColor = UIColor.FromRGB(80, 127, 166);
-					logoView.TintColor = UIColor.FromRGB(80, 127, 166);
-					IGActive = true;
-				}else{
-					label.TextColor = UIColor.FromRGB(34, 36, 39);
-					logoView.TintColor = UIColor.FromRGB(165, 167, 169);
-					IGActive = false;
-				}
+					pressed = true;
+					pageButton.BackgroundColor = AppDelegate.BoardLightBlue;
+					nameLabel.TextColor = UIColor.White;
+					categoryLabel.TextColor = UIColor.White;
+
+					/*Thread thread = new Thread(new ThreadStart(PopOut));
+					thread.Start();*/
+				} else {
+					pressed = false;
+					pageButton.BackgroundColor = UIColor.White;
+					nameLabel.TextColor = AppDelegate.BoardBlue;
+					categoryLabel.TextColor = AppDelegate.BoardBlue;
+				}				
 			};
 
-			scrollView.AddSubview(composite);
+			pageButton.UserInteractionEnabled = true;
+			pageButton.AddSubviews (nameLabel, categoryLabel);
+
+			return pageButton;
 		}
 
-		private void LoadTwitterButton()
+		private List<string> NSObjectToString(string fetch, NSObject obj)
 		{
-			string text = "Twitter";
-			UIImage image = UIImage.FromFile ("./screens/share/twitter/logo.png");
-			image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+			NSString nsString = new NSString (fetch);
 
-			UIImageView logoView = new UIImageView (new CGRect (10, 10, 30, 30));
-			logoView.Image = image;
-			logoView.TintColor = UIColor.FromRGB(165, 167, 169);
+			NSArray array = (NSArray)obj.ValueForKeyPath (nsString);
+			List<string> list = new List<string> ();
 
-			UILabel label = new UILabel (new CGRect (logoView.Frame.Right, 0, AppDelegate.ScreenWidth / 2 - logoView.Frame.Right, 50));
-			label.Text = text;
-			label.Font = UIFont.SystemFontOfSize (20);
-			label.TextColor = UIColor.FromRGB(34, 36, 39);
-			label.TextAlignment = UITextAlignment.Center;
+			for (int i = 0; i < (int)array.Count; i++) {
+				var item = array.GetItem<NSObject> ((nuint)i);
+				list.Add(item.ToString());
+			}
 
-			UIButton composite = new UIButton (new CGRect(0, buttonY + 50, AppDelegate.ScreenWidth / 2, 50));
-			composite.AddSubviews (logoView, label);
-			composite.BackgroundColor = UIColor.FromRGB(255,255,255);
-
-			TWActive = false;
-
-			composite.TouchUpInside += (object sender, EventArgs e) => {
-
-				if (!TWActive)
-				{
-					label.TextColor = UIColor.FromRGB(75, 170, 244);
-					logoView.TintColor = UIColor.FromRGB(75, 170, 244);
-					TWActive = true;
-				}else{
-					label.TextColor = UIColor.FromRGB(34, 36, 39);
-					logoView.TintColor = UIColor.FromRGB(165, 167, 169);
-					TWActive = false;
-				}
-			};
-
-			scrollView.ScrollEnabled = false;
-			scrollView.AddSubview(composite);
+			return list;
 		}
 
-		private void LoadRSSButton()
-		{
-			string text = "RSS Feed";
-			UIImage image = UIImage.FromFile ("./screens/share/rss/logo.png");
-			image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-
-			UIImageView logoView = new UIImageView (new CGRect (10, 10, 30, 30));
-			logoView.Image = image;
-			logoView.TintColor = UIColor.FromRGB(165, 167, 169);
-
-			UILabel label = new UILabel (new CGRect (logoView.Frame.Right, 0, AppDelegate.ScreenWidth / 2 - logoView.Frame.Right, 50));
-			label.Text = text;
-			label.Font = UIFont.SystemFontOfSize (20);
-			label.TextColor = UIColor.FromRGB(34, 36, 39);
-			label.TextAlignment = UITextAlignment.Center;
-
-			UIButton composite = new UIButton (new CGRect(AppDelegate.ScreenWidth / 2, buttonY + 50, AppDelegate.ScreenWidth / 2, 50));
-			composite.AddSubviews (logoView, label);
-			composite.BackgroundColor = UIColor.FromRGB(255,255,255);
-
-			RSSActive = false;
-
-			composite.TouchUpInside += (object sender, EventArgs e) => {
-
-				if (!RSSActive)
-				{
-					label.TextColor = UIColor.FromRGB(255, 112, 0);
-					logoView.TintColor = UIColor.FromRGB(255, 112, 0);
-					RSSActive = true;
-				}else{
-					label.TextColor = UIColor.FromRGB(34, 36, 39);
-					logoView.TintColor = UIColor.FromRGB(165, 167, 169);
-					RSSActive = false;
-				}
-			};
-
-			scrollView.AddSubview(composite);
-		}
 
 		private void LoadContent()
 		{
@@ -268,7 +320,6 @@ namespace Board.Interface
 			banner.Alpha = .95f;
 			View.AddSubview (banner);
 		}
-
 
 		private void LoadNextButton()
 		{
@@ -356,5 +407,124 @@ namespace Board.Interface
 			return uiv;
 		}
 
+
+		private void LoadInstagramButton()
+		{
+			string text = "Instagram";
+			UIImage image = UIImage.FromFile ("./screens/share/instagram/logo.png");
+			image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+
+			UIImageView logoView = new UIImageView (new CGRect (10, 10, 30, 30));
+			logoView.Image = image;
+			logoView.TintColor = UIColor.FromRGB(165, 167, 169);
+
+			UILabel label = new UILabel (new CGRect (logoView.Frame.Right, 0, AppDelegate.ScreenWidth / 2 - logoView.Frame.Right, 50));
+			label.Text = text;
+			label.Font = UIFont.SystemFontOfSize (20);
+			label.TextColor = UIColor.FromRGB(34, 36, 39);
+			label.TextAlignment = UITextAlignment.Center;
+
+			UIButton composite = new UIButton (new CGRect(AppDelegate.ScreenWidth / 2, positionY, AppDelegate.ScreenWidth / 2, 50));
+			composite.AddSubviews (logoView, label);
+			composite.BackgroundColor = UIColor.FromRGB(255,255,255);
+
+			IGActive = false;
+
+			composite.TouchUpInside += (object sender, EventArgs e) => {
+
+				if (!IGActive)
+				{
+					label.TextColor = UIColor.FromRGB(80, 127, 166);
+					logoView.TintColor = UIColor.FromRGB(80, 127, 166);
+					IGActive = true;
+				}else{
+					label.TextColor = UIColor.FromRGB(34, 36, 39);
+					logoView.TintColor = UIColor.FromRGB(165, 167, 169);
+					IGActive = false;
+				}
+			};
+
+			scrollView.AddSubview(composite);
+		}
+
+
+
+		private void LoadTwitterButton()
+		{
+			string text = "Twitter";
+			UIImage image = UIImage.FromFile ("./screens/share/twitter/logo.png");
+			image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+
+			UIImageView logoView = new UIImageView (new CGRect (10, 10, 30, 30));
+			logoView.Image = image;
+			logoView.TintColor = UIColor.FromRGB(165, 167, 169);
+
+			UILabel label = new UILabel (new CGRect (logoView.Frame.Right, 0, AppDelegate.ScreenWidth / 2 - logoView.Frame.Right, 50));
+			label.Text = text;
+			label.Font = UIFont.SystemFontOfSize (20);
+			label.TextColor = UIColor.FromRGB(34, 36, 39);
+			label.TextAlignment = UITextAlignment.Center;
+
+			UIButton composite = new UIButton (new CGRect(0, positionY, AppDelegate.ScreenWidth / 2, 50));
+			composite.AddSubviews (logoView, label);
+			composite.BackgroundColor = UIColor.FromRGB(255,255,255);
+
+			TWActive = false;
+
+			composite.TouchUpInside += (object sender, EventArgs e) => {
+
+				if (!TWActive)
+				{
+					label.TextColor = UIColor.FromRGB(75, 170, 244);
+					logoView.TintColor = UIColor.FromRGB(75, 170, 244);
+					TWActive = true;
+				}else{
+					label.TextColor = UIColor.FromRGB(34, 36, 39);
+					logoView.TintColor = UIColor.FromRGB(165, 167, 169);
+					TWActive = false;
+				}
+			};
+
+			scrollView.AddSubview(composite);
+		}
+
+		private void LoadRSSButton()
+		{
+			string text = "RSS Feed";
+			UIImage image = UIImage.FromFile ("./screens/share/rss/logo.png");
+			image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+
+			UIImageView logoView = new UIImageView (new CGRect (10, 10, 30, 30));
+			logoView.Image = image;
+			logoView.TintColor = UIColor.FromRGB(165, 167, 169);
+
+			UILabel label = new UILabel (new CGRect (logoView.Frame.Right, 0, AppDelegate.ScreenWidth / 2 - logoView.Frame.Right, 50));
+			label.Text = text;
+			label.Font = UIFont.SystemFontOfSize (20);
+			label.TextColor = UIColor.FromRGB(34, 36, 39);
+			label.TextAlignment = UITextAlignment.Center;
+
+			UIButton composite = new UIButton (new CGRect(AppDelegate.ScreenWidth / 2, positionY, AppDelegate.ScreenWidth / 2, 50));
+			composite.AddSubviews (logoView, label);
+			composite.BackgroundColor = UIColor.FromRGB(255,255,255);
+
+			RSSActive = false;
+
+			composite.TouchUpInside += (object sender, EventArgs e) => {
+
+				if (!RSSActive)
+				{
+					label.TextColor = UIColor.FromRGB(255, 112, 0);
+					logoView.TintColor = UIColor.FromRGB(255, 112, 0);
+					RSSActive = true;
+				}else{
+					label.TextColor = UIColor.FromRGB(34, 36, 39);
+					logoView.TintColor = UIColor.FromRGB(165, 167, 169);
+					RSSActive = false;
+				}
+			};
+
+			scrollView.AddSubview(composite);
+		}
 	}
 }

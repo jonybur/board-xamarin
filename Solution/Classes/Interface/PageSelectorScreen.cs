@@ -61,7 +61,6 @@ namespace Board.Interface
 			}
 
 			View.AddSubview (scrollView);
-
 			View.AddSubview (banner);
 		}
 

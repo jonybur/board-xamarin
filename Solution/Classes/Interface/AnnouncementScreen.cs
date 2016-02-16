@@ -30,6 +30,7 @@ namespace Board.Interface
 		bool RSSActive;
 		bool TWActive;
 
+		float listStartPositionY;
 		float positionY;
 
 		string [] publishPermissions = new [] { "publish_actions" };
@@ -68,8 +69,6 @@ namespace Board.Interface
 			positionY += 145;
 			listStartPositionY = positionY;
 		}
-
-		float listStartPositionY;
 
 		private async System.Threading.Tasks.Task CheckPageReadPermissions()
 		{
