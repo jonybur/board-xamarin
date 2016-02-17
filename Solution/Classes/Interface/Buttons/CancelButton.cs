@@ -10,7 +10,7 @@ namespace Board.Interface.Buttons
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			UIImage image = UIImage.FromFile ("./boardscreen/buttons/cancel3.png");
+			UIImage image = UIImage.FromFile ("./boardinterface/buttons/cancel3.png");
 			uiButton = new UIButton (UIButtonType.Custom);
 			uiButton.SetImage (image, UIControlState.Normal);
 

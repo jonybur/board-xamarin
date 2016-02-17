@@ -487,7 +487,7 @@ namespace Board.Interface
 
 				ann.Text = textview.Text;
 
-				Preview.Initialize(ann, NavigationController);
+				Preview.Initialize(ann);
 
 				// shows the image preview so that the user can position the image
 				BoardInterface.scrollView.AddSubview(Preview.View);

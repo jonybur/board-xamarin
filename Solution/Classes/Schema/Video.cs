@@ -11,22 +11,14 @@ namespace Board.Schema
 
 		public UIImage Thumbnail { get; set; }
 
-		public float Rotation { get; set; }
-
-		public CGRect GetRectangleF()
-		{
-			return new CGRect (ImgX, ImgY, ImgW, ImgH);
-		}
-
 		public Video() {}
 
-		public Video(string url, UIImage thumbnail, float rotation, CGRect position, string userid)
+		public Video(string url, UIImage thumbnail, float rotation, CGRect frame, string userid)
 		{
 			Url = url;
 			Thumbnail = thumbnail;
 			Rotation = rotation;
-			ImgX = (float)(position.X); ImgY = (float)(position.Y);
-			ImgH = (float)(position.Height); ImgW = (float)(position.Width);
+			Frame = frame;
 			UserId = userid;
 		}
 	}

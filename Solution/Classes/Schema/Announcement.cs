@@ -12,19 +12,13 @@ namespace Board.Schema
 
 		public float Rotation { get; set; }
 
-		public CGRect GetRectangleF()
-		{
-			return new CGRect (ImgX, ImgY, ImgW, ImgH);
-		}
-
 		public Announcement() {}
 
-		public Announcement(string text, float rotation, CGRect position, string userid)
+		public Announcement(string text, float rotation, CGRect frame, string userid)
 		{
 			Text = text;
 			Rotation = rotation;
-			ImgX = (float)(position.X); ImgY = (float)(position.Y);
-			ImgH = (float)(position.Height); ImgW = (float)(position.Width);
+			Frame = frame;
 			UserId = userid;
 		}
 	}

@@ -66,7 +66,7 @@ namespace Board.Screens
 
 		private UIImageView GeneratePreviewBoard()
 		{
-			UIImage pattern = UIImage.FromFile ("./boardscreen/backgrounds/branco.jpg");
+			UIImage pattern = UIImage.FromFile ("./boardinterface/backgrounds/branco.jpg");
 
 			boardHeight = (float)((AppDelegate.ScreenWidth * AppDelegate.ScreenHeight) / BoardInterface.ScrollViewWidthSize);
 			topBarHeight = (float)((50 * boardHeight) / AppDelegate.ScreenHeight);
@@ -90,7 +90,7 @@ namespace Board.Screens
 			preview_mainLogo = GenerateBoardThumb (board.Image, new CGPoint (AppDelegate.ScreenWidth / 2, (boardView.Frame.Height / 2) - 5 - pushDown), false);
 			boardView.AddSubview (preview_mainLogo);
 
-			UIImage contentdemo = UIImage.FromFile ("./boardscreen/backgrounds/contentdemo2.png");
+			UIImage contentdemo = UIImage.FromFile ("./boardinterface/backgrounds/contentdemo2.png");
 			UIImageView contentDemo = new UIImageView (contentdemo);
 			contentDemo.Frame = new CGRect(0, 0, boardView.Frame.Width, boardView.Frame.Height - 25);
 

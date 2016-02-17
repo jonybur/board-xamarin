@@ -1,7 +1,5 @@
 ﻿using Board.Schema;
-
 using CoreGraphics;
-
 using UIKit;
 
 namespace Board.Interface.Widgets
@@ -62,7 +60,7 @@ namespace Board.Interface.Widgets
 
 			uiView.AddSubview (eye);
 
-			uiView.Frame = new CGRect (ann.ImgX, ann.ImgY, mounting.Frame.Width, mounting.Frame.Height);
+			uiView.Frame = new CGRect (ann.Frame.X, ann.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
 			uiView.Transform = CGAffineTransform.MakeRotation(ann.Rotation);
 
 			eyeOpen = false;
@@ -91,6 +89,9 @@ namespace Board.Interface.Widgets
 			} else if (textview.Frame.Height > 300) {
 				textview.Frame = new CGRect (10, 10, textview.Frame.Width, 300);
 			}
+
+			font = UIFont.SystemFontOfSize ((textview.Frame.Width * 20 / AppDelegate.ScreenWidth));
+			textview.Font = font;
 
 			return textview;
 		}
@@ -131,8 +132,8 @@ namespace Board.Interface.Widgets
 			CGSize iconSize = new CGSize (30, 30);
 
 			UIImageView eyeView = new UIImageView(new CGRect (frame.X + 10, frame.Height - iconSize.Height - 5, iconSize.Width, iconSize.Height));
-			closedEyeImage = UIImage.FromFile ("./boardscreen/closedeye.png");
-			openEyeImage = UIImage.FromFile ("./boardscreen/openeye3.png");
+			closedEyeImage = UIImage.FromFile ("./boardinterface/closedeye.png");
+			openEyeImage = UIImage.FromFile ("./boardinterface/openeye3.png");
 			closedEyeImage = closedEyeImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			openEyeImage = openEyeImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			eyeView.Image = closedEyeImage;
@@ -147,7 +148,7 @@ namespace Board.Interface.Widgets
 
 			UIImageView likeView = new UIImageView(new CGRect (frame.Width - iconSize.Width - 10,
 				frame.Height - iconSize.Height - 5, iconSize.Width, iconSize.Height));
-			likeView.Image = UIImage.FromFile ("./boardscreen/like.png");
+			likeView.Image = UIImage.FromFile ("./boardinterface/like.png");
 			likeView.Image = likeView.Image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			likeView.TintColor = UIColor.FromRGB(140,140,140);
 

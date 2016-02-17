@@ -1,20 +1,17 @@
+using CoreGraphics;
 using System.Collections.Generic;
 
 namespace Board.Schema
 {
 	public class Content
 	{
-		public float ImgX { get; set; }
-
-		public float ImgY { get; set; }
-
-		public float ImgW { get; set; }
-
-		public float ImgH { get; set; }
+		public CGRect Frame { get; set; }
 
 		public string UserId { get; set; }
 
 		public List<int> SocialChannel { get; set; }
+
+		public float Rotation { get; set; }
 	}
 }
 

@@ -48,20 +48,17 @@ namespace Board.Interface
 		public static List<Picture> ListPictures;
 		public static List<Announcement> ListAnnouncements;
 		public static List<Video> ListVideos;
+		public static List<BoardEvent> ListEvents;
 
 		public static List<PictureWidget> ListPictureWidgets;
 		public static List<AnnouncementWidget> ListAnnouncementWidgets;
 		public static List<VideoWidget> ListVideoWidgets;
+		public static List<EventWidget> ListEventWidgets;
 
 
 		public BoardInterface (Board.Schema.Board _board, bool _testMode) : base ("Board", null){
 			board = _board;
 			TestMode = _testMode;
-		}
-
-		public override void DidReceiveMemoryWarning ()
-		{
-			base.DidReceiveMemoryWarning ();
 		}
 
 		public override void ViewDidLoad ()
@@ -75,6 +72,10 @@ namespace Board.Interface
 			ListPictures = new List<Picture> ();
 			ListVideos = new List<Video> ();
 			ListAnnouncements = new List<Announcement> ();
+			ListEvents = new List<BoardEvent> ();
+
+			BoardEvent bevent = new BoardEvent ("La Roxtar", new DateTime(2016, 11, 10),0, new CGRect (100, 100, 0, 0), null);
+			ListEvents.Add (bevent);
 
 			//StorageController.Initialize ();
 
@@ -96,14 +97,6 @@ namespace Board.Interface
 
 			// initializes the gallery
 			//InitializeGallery ();
-
-			/*TextBox tb = new TextBox (CloudController.BoardUser.Id, "Hello, world!");
-			
-			TextBoxComponent tbc = new TextBoxComponent (tb, NavigationController.PushViewController);
-
-			await tbc.LoadTextBoxComponent ();
-
-			View.AddSubview (tbc.GetUIView ());*/
 
 		}
 
@@ -300,7 +293,7 @@ namespace Board.Interface
 
 		private void LoadButtons()
 		{
-			buttonInterface = new ButtonInterface (RefreshContent, scrollView, NavigationController, board.SecondaryColor);
+			buttonInterface = new ButtonInterface (RefreshContent, board.SecondaryColor);
 
 			if (Profile.CurrentProfile.UserID == board.CreatorId) {
 				this.View.AddSubviews (buttonInterface.GetCreatorButtons());
@@ -328,6 +321,7 @@ namespace Board.Interface
 			ListPictureWidgets = new List<PictureWidget> ();
 			ListVideoWidgets = new List<VideoWidget> ();
 			ListAnnouncementWidgets = new List<AnnouncementWidget> ();
+			ListEventWidgets = new List<EventWidget> ();
 
 			foreach (Picture p in ListPictures) {
 				DrawPictureWidget (p);
@@ -341,27 +335,31 @@ namespace Board.Interface
 				DrawAnnouncementWidget (a);
 			}
 
+			foreach (BoardEvent e in ListEvents) {
+				DrawEventWidget (e);
+			}
+
 			ListPictureWidgets = ListPictureWidgets.OrderBy(o=>o.View.Frame.X).ToList();
 			ListVideoWidgets = ListVideoWidgets.OrderBy(o=>o.View.Frame.X).ToList();
 			ListAnnouncementWidgets = ListAnnouncementWidgets.OrderBy(o=>o.View.Frame.X).ToList();
+			ListEventWidgets = ListEventWidgets.OrderBy(o=>o.View.Frame.X).ToList();
 		}
 
 		private void GenerateTestPictures()
 		{
-			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/0.jpg"), 40, 40, -.03f);
-			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/3.jpg"), 330, 280, -.04f);
-			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/2.jpg"), 290, 20, 0f);
-			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/4.jpg"), 710, 50, .05f);
-			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/1.jpg"), 25, 330, -.1f);
-			AddTestPicture (UIImage.FromFile ("./boardscreen/testpictures/5.jpg"), 650, 310, -.02f);
+			AddTestPicture (UIImage.FromFile ("./boardinterface/testpictures/0.jpg"), 40, 40, -.03f);
+			AddTestPicture (UIImage.FromFile ("./boardinterface/testpictures/3.jpg"), 330, 280, -.04f);
+			AddTestPicture (UIImage.FromFile ("./boardinterface/testpictures/2.jpg"), 290, 20, 0f);
+			AddTestPicture (UIImage.FromFile ("./boardinterface/testpictures/4.jpg"), 710, 50, .05f);
+			AddTestPicture (UIImage.FromFile ("./boardinterface/testpictures/1.jpg"), 25, 330, -.1f);
+			AddTestPicture (UIImage.FromFile ("./boardinterface/testpictures/5.jpg"), 650, 310, -.02f);
 		}
 
 		private void AddTestPicture(UIImage image, float imgx, float imgy, float rotation)
 		{
 			Picture pic = new Picture ();
 			pic.Image = image;
-			pic.ImgX = imgx;
-			pic.ImgY = imgy;
+			pic.Frame = new CGRect(imgx, imgy, 0, 0);
 			pic.Rotation = rotation;
 			ListPictures.Add (pic);
 		}
@@ -410,6 +408,24 @@ namespace Board.Interface
 		}
 
 
+		private void DrawEventWidget(BoardEvent boardEvent)
+		{
+			EventWidget component = new EventWidget (boardEvent);
+
+			UIView componentView = component.View;
+
+			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+				if (Preview.View != null) { return; }
+			});
+
+			componentView.AddGestureRecognizer (tap);
+			componentView.UserInteractionEnabled = true;
+
+			scrollView.AddSubview (component.View);
+			ListEventWidgets.Add (component);
+		}
+
+
 		private void DrawAnnouncementWidget(Announcement ann)
 		{
 			AnnouncementWidget announcementWidget = new AnnouncementWidget (ann);
@@ -421,7 +437,7 @@ namespace Board.Interface
 
 		private void LoadBackground()
 		{	
-			UIImage pattern = UIImage.FromFile ("./boardscreen/backgrounds/branco.jpg");
+			UIImage pattern = UIImage.FromFile ("./boardinterface/backgrounds/branco.jpg");
 
 			UIImageView boardView = new UIImageView (pattern);
 			boardView.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
@@ -457,7 +473,7 @@ namespace Board.Interface
 			scrollView.AddSubview (mainLogo);
 
 			if (TestMode) {
-				UIImageView democontent = new UIImageView (UIImage.FromFile ("./boardscreen/backgrounds/contentdemo2.png"));
+				UIImageView democontent = new UIImageView (UIImage.FromFile ("./boardinterface/backgrounds/contentdemo2.png"));
 				democontent.Frame = boardView.Frame;
 				scrollView.AddSubview (democontent);
 			}

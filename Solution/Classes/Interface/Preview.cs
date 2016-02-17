@@ -29,7 +29,7 @@ namespace Board.Interface
 		public enum Type {Picture = 1, Video, Announcement};
 		public static int TypeOfPreview;
 
-		public static void Initialize (Announcement ann, UINavigationController navigationController)
+		public static void Initialize (Announcement ann)
 		{
 			TypeOfPreview = (int)Type.Announcement;
 
@@ -46,7 +46,7 @@ namespace Board.Interface
 			uiView.AddSubviews(announcementWidget.View);
 		}
 
-		public static Picture Initialize (UIImage image, UINavigationController navigationController)
+		public static Picture Initialize (UIImage image)
 		{
 			TypeOfPreview = (int)Type.Picture;
 
@@ -68,7 +68,7 @@ namespace Board.Interface
 			return picture;
 		}
 
-		public static Video Initialize (string Url, UINavigationController navigationController)
+		public static Video Initialize (string Url)
 		{
 			TypeOfPreview = (int)Type.Video;
 

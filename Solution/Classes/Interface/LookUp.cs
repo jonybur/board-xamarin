@@ -115,7 +115,7 @@ namespace Board.Interface
 
 		private UIImageView CreateBackButton()
 		{
-			UIImage doneBut = UIImage.FromFile ("./boardscreen/lookup/done.png");
+			UIImage doneBut = UIImage.FromFile ("./boardinterface/lookup/done.png");
 			UIImageView uiv = new UIImageView(new CGRect(0,0,doneBut.Size.Width/2,doneBut.Size.Height/2));
 			uiv.Image = doneBut;
 			uiv.UserInteractionEnabled = true;

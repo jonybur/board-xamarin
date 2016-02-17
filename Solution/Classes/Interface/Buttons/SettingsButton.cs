@@ -1,26 +1,27 @@
-using System;
+﻿using System;
 using Board.Picker;
 using CoreGraphics;
 using UIKit;
 
 namespace Board.Interface.Buttons
 {
-	public class ImageButton : Button
+	public class SettingsButton : Button
 	{
-		public ImageButton ()
+		public SettingsButton ()
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			UIImage uiImage = UIImage.FromFile ("./boardinterface/buttons/picture6.png");
+			UIImage uiImage = UIImage.FromFile ("./boardinterface/buttons/cog.png");
 
 			uiButton = new UIButton (UIButtonType.Custom);
 			uiButton.SetImage (uiImage, UIControlState.Normal);
 
 			uiButton.Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
-			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth - ButtonSize) / 8 * 3 - 5, AppDelegate.ScreenHeight - ButtonSize / 2 - 10);
+			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth + ButtonSize) / 2 + 
+				(AppDelegate.ScreenWidth - ButtonSize) / 8 * 3, AppDelegate.ScreenHeight - ButtonSize / 2 - 10);
 
 			uiButton.TouchUpInside += (object sender, EventArgs e) => {
-
+				
 			};
 		}
 	}

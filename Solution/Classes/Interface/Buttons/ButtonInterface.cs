@@ -14,10 +14,9 @@ namespace Board.Interface.Buttons
 		static ConfirmationButtonSet confirmationButtonSet;
 		static NavigationButton navigationButton;
 
-		public ButtonInterface(Action refreshContent, 
-			UIScrollView scrollView, UINavigationController navigationController, UIColor color)
+		public ButtonInterface(Action refreshContent, UIColor color)
 		{
-			actionsButtonSet = new ActionsButtonSet (navigationController, scrollView, refreshContent);
+			actionsButtonSet = new ActionsButtonSet ();
 			confirmationButtonSet = new ConfirmationButtonSet (refreshContent);
 			navigationButton = new NavigationButton (color);
 		}

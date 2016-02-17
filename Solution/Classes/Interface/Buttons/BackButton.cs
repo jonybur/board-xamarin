@@ -10,7 +10,7 @@ namespace Board.Interface.Buttons
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			UIImage uiImage = UIImage.FromFile ("./boardscreen/buttons/back5.png");
+			UIImage uiImage = UIImage.FromFile ("./boardinterface/buttons/back5.png");
 
 			uiButton.SetImage (uiImage, UIControlState.Normal);
 			uiButton.Frame = new CGRect (0,0, ButtonSize, ButtonSize);

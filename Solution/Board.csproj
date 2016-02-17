@@ -145,21 +145,9 @@
   <ItemGroup>
     <BundleResource Include="Resources\Icon%402x.png" />
     <BundleResource Include="Resources\Icon-60%402x.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\text.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\picture.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\alert.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\accept.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\cancel.png" />
-    <BundleResource Include="Resources\boardscreen\lookup\done.png" />
-    <BundleResource Include="Resources\boardscreen\lookup\archive.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\gallery.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\back2.png" />
-    <BundleResource Include="Resources\boardscreen\lookup\like.png" />
-    <BundleResource Include="Resources\boardscreen\lookup\unlike.png" />
     <BundleResource Include="Resources\fonts\congress-font-medium.ttf" />
     <BundleResource Include="Resources\fonts\roboto-medium.ttf" />
     <BundleResource Include="Resources\fonts\roboto-regular.ttf" />
-    <BundleResource Include="Resources\boardscreen\buttons\chat.png" />
     <BundleResource Include="Resources\fonts\roboto-bold.ttf" />
     <BundleResource Include="Resources\timelapse.mp4" />
     <BundleResource Include="Resources\fonts\Narwhal_bold.ttf" />
@@ -168,7 +156,6 @@
     <BundleResource Include="Resources\Default.png" />
     <BundleResource Include="Resources\Default%402x.png" />
     <BundleResource Include="Resources\Default-568h%402x.png" />
-    <BundleResource Include="Resources\boardscreen\backgrounds\branco.jpg" />
     <BundleResource Include="Resources\logos\clevelander.png" />
     <BundleResource Include="Resources\logos\mansion.jpg" />
     <BundleResource Include="Resources\logos\liv.jpg" />
@@ -178,22 +165,6 @@
     <BundleResource Include="Resources\logos\doloreslolita.jpg" />
     <BundleResource Include="Resources\logos\mrmoes.jpg" />
     <BundleResource Include="Resources\logos\tavernopa.png" />
-    <BundleResource Include="Resources\boardscreen\backgrounds\contentdemo2.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\back3.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\back4.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\navigationback.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\navigationfront.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\camera1.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\camera2.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\back5.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\camera3.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\picture2.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\picture3.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\plus.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\plus2.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\plus3.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\card.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\picture6.png" />
     <BundleResource Include="Resources\screens\business\banner\6.jpg" />
     <BundleResource Include="Resources\screens\invite\banner\6.jpg" />
     <BundleResource Include="Resources\screens\invite\banner\6plus.jpg" />
@@ -221,19 +192,6 @@
     <BundleResource Include="Resources\screens\create\1\banner\6plus.jpg" />
     <BundleResource Include="Resources\screens\create\1\content\6plus.jpg" />
     <BundleResource Include="Resources\screens\create\3\lock.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\accept2.png" />
-    <BundleResource Include="Resources\boardscreen\buttons\cancel3.png" />
-    <BundleResource Include="Resources\boardscreen\like.png" />
-    <BundleResource Include="Resources\boardscreen\closedeye.png" />
-    <BundleResource Include="Resources\boardscreen\openeye3.png" />
-    <BundleResource Include="Resources\boardscreen\testpictures\0.jpg" />
-    <BundleResource Include="Resources\boardscreen\testpictures\1.jpg" />
-    <BundleResource Include="Resources\boardscreen\testpictures\2.jpg" />
-    <BundleResource Include="Resources\boardscreen\testpictures\3.jpg" />
-    <BundleResource Include="Resources\boardscreen\testpictures\4.jpg" />
-    <BundleResource Include="Resources\boardscreen\testpictures\5.jpg" />
-    <BundleResource Include="Resources\boardscreen\testpictures\6.png" />
-    <BundleResource Include="Resources\boardscreen\testpictures\7.jpg" />
     <BundleResource Include="Resources\screens\home\banner\6.jpg" />
     <BundleResource Include="Resources\screens\home\banner\6plus.jpg" />
     <BundleResource Include="Resources\screens\business\empty\6.jpg" />
@@ -254,7 +212,6 @@
     <BundleResource Include="Resources\logos\bluemartini.png" />
     <BundleResource Include="Resources\logos\nikki.jpg" />
     <BundleResource Include="Resources\logos\electricpickle.jpg" />
-    <BundleResource Include="Resources\boardscreen\playbutton.png" />
     <BundleResource Include="Resources\screens\share\banner\6.jpg" />
     <BundleResource Include="Resources\screens\share\next\6.jpg" />
     <BundleResource Include="Resources\screens\share\banner\6plus.jpg" />
@@ -267,6 +224,37 @@
     <BundleResource Include="Resources\screens\announcement\banner\6plus.jpg" />
     <BundleResource Include="Resources\screens\pageselector\banner\6.jpg" />
     <BundleResource Include="Resources\screens\pageselector\banner\6plus.jpg" />
+    <BundleResource Include="Resources\boardinterface\buttons\text.png" />
+    <BundleResource Include="Resources\boardinterface\lookup\done.png" />
+    <BundleResource Include="Resources\boardinterface\lookup\archive.png" />
+    <BundleResource Include="Resources\boardinterface\buttons\gallery.png" />
+    <BundleResource Include="Resources\boardinterface\lookup\like.png" />
+    <BundleResource Include="Resources\boardinterface\lookup\unlike.png" />
+    <BundleResource Include="Resources\boardinterface\buttons\chat.png" />
+    <BundleResource Include="Resources\boardinterface\backgrounds\branco.jpg" />
+    <BundleResource Include="Resources\boardinterface\backgrounds\contentdemo2.png" />
+    <BundleResource Include="Resources\boardinterface\buttons\navigationback.png" />
+    <BundleResource Include="Resources\boardinterface\buttons\navigationfront.png" />
+    <BundleResource Include="Resources\boardinterface\buttons\back5.png" />
+    <BundleResource Include="Resources\boardinterface\buttons\camera3.png" />
+    <BundleResource Include="Resources\boardinterface\buttons\plus3.png" />
+    <BundleResource Include="Resources\boardinterface\buttons\card.png" />
+    <BundleResource Include="Resources\boardinterface\buttons\picture6.png" />
+    <BundleResource Include="Resources\boardinterface\buttons\accept2.png" />
+    <BundleResource Include="Resources\boardinterface\buttons\cancel3.png" />
+    <BundleResource Include="Resources\boardinterface\like.png" />
+    <BundleResource Include="Resources\boardinterface\closedeye.png" />
+    <BundleResource Include="Resources\boardinterface\openeye3.png" />
+    <BundleResource Include="Resources\boardinterface\testpictures\0.jpg" />
+    <BundleResource Include="Resources\boardinterface\testpictures\1.jpg" />
+    <BundleResource Include="Resources\boardinterface\testpictures\2.jpg" />
+    <BundleResource Include="Resources\boardinterface\testpictures\3.jpg" />
+    <BundleResource Include="Resources\boardinterface\testpictures\4.jpg" />
+    <BundleResource Include="Resources\boardinterface\testpictures\5.jpg" />
+    <BundleResource Include="Resources\boardinterface\testpictures\6.png" />
+    <BundleResource Include="Resources\boardinterface\testpictures\7.jpg" />
+    <BundleResource Include="Resources\boardinterface\playbutton.png" />
+    <BundleResource Include="Resources\boardinterface\buttons\cog.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -322,6 +310,9 @@
     <Compile Include="Classes\Utilities\PlaceholderTextView.cs" />
     <Compile Include="Classes\Utilities\CommonUtils.cs" />
     <Compile Include="Classes\Picker\ImagePicker.cs" />
+    <Compile Include="Classes\Interface\Widgets\EventWidget.cs" />
+    <Compile Include="Classes\Schema\BoardEvent.cs" />
+    <Compile Include="Classes\Interface\Buttons\SettingsButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -331,9 +322,6 @@
     <Folder Include="Classes\" />
     <Folder Include="Classes\Infrastructure\" />
     <Folder Include="Classes\Schema\" />
-    <Folder Include="Resources\boardscreen\" />
-    <Folder Include="Resources\boardscreen\lookup\" />
-    <Folder Include="Resources\boardscreen\backgrounds\" />
     <Folder Include="Resources\fonts\" />
     <Folder Include="Classes\Screens\" />
     <Folder Include="Resources\logos\" />
@@ -362,8 +350,6 @@
     <Folder Include="Resources\screens\create\3\banner\" />
     <Folder Include="Resources\screens\create\2\content\" />
     <Folder Include="Resources\screens\create\1\content\" />
-    <Folder Include="Resources\boardscreen\testpictures\" />
-    <Folder Include="Resources\boardscreen\backgrounds\New Folder\" />
     <Folder Include="Resources\screens\login\" />
     <Folder Include="Resources\screens\share\" />
     <Folder Include="Resources\screens\share\banner\" />
@@ -383,6 +369,10 @@
     <Folder Include="Classes\Interface\Lookup\" />
     <Folder Include="Classes\Utilities\" />
     <Folder Include="Classes\Picker\" />
+    <Folder Include="Resources\boardinterface\" />
+    <Folder Include="Resources\boardinterface\lookup\" />
+    <Folder Include="Resources\boardinterface\backgrounds\" />
+    <Folder Include="Resources\boardinterface\testpictures\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

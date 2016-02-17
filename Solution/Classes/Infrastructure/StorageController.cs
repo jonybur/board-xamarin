@@ -4,6 +4,7 @@ using SQLite;
 using Foundation;
 using UIKit;
 using System.Threading.Tasks;
+using CoreGraphics;
 using System.Collections.Generic;
 using Board.Schema;
 
@@ -33,10 +34,9 @@ namespace Board.Infrastructure
 			{
 				Id = p.Id;
 				UserID = p.UserId;
-				ImgX = p.ImgX;
-				ImgY = p.ImgY;
-				ImgW = p.ImgW;
-				ImgH = p.ImgH;
+
+				p.Frame = new CGRect(ImgX, ImgY, ImgW, ImgH);
+
 				Rotation = p.Rotation;
 				OnGallery = ongallery;
 			}
@@ -108,10 +108,7 @@ namespace Board.Infrastructure
 
 				Picture aux = new Picture ();
 				aux.Id = p.Id;
-				aux.ImgH = p.ImgH;
-				aux.ImgW = p.ImgW;
-				aux.ImgX = p.ImgX;
-				aux.ImgY = p.ImgY;
+				aux.Frame = new CGRect (p.ImgX, p.ImgY, p.ImgW, p.ImgH);
 				aux.Rotation = p.Rotation;
 				aux.UserId = p.UserID;
 
@@ -137,10 +134,7 @@ namespace Board.Infrastructure
 
 				Picture aux = new Picture ();
 				aux.Id = p.Id;
-				aux.ImgH = p.ImgH;
-				aux.ImgW = p.ImgW;
-				aux.ImgX = p.ImgX;
-				aux.ImgY = p.ImgY;
+				aux.Frame = new CGRect (p.ImgX, p.ImgY, p.ImgW, p.ImgH);
 				aux.Rotation = p.Rotation;
 				aux.UserId = p.UserID;
 

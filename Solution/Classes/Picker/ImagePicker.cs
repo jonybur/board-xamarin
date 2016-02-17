@@ -22,7 +22,7 @@ namespace Board.Picker
 			} 
 		}
 
-		public ImagePicker (UIScrollView scrollView, UIImagePickerControllerSourceType sourceType, UINavigationController navigationController)
+		public ImagePicker (UIImagePickerControllerSourceType sourceType)
 		{
 			imagePickerController = new UIImagePickerController();
 
@@ -44,7 +44,7 @@ namespace Board.Picker
 					UIImage originalImage = e.Info[UIImagePickerController.OriginalImage] as UIImage;
 					if(originalImage != null) {
 						// call addimage
-						LaunchPicturePreview (originalImage, navigationController);
+						LaunchPicturePreview (originalImage);
 					}
 				} else { // if it's a video
 					// get video url
@@ -52,7 +52,7 @@ namespace Board.Picker
 
 					if(mediaURL != null) {
 						// launch video
-						LaunchVideoPreview(mediaURL, navigationController);
+						LaunchVideoPreview(mediaURL);
 					}
 				}          
 				// dismiss the picker
@@ -77,9 +77,6 @@ namespace Board.Picker
 				{
 					isImage = true;
 				}
-
-				// get common info (shared between images and video)
-				NSUrl referenceURL = e.Info[new NSString("UIImagePickerControllerReferenceUrl")] as NSUrl;
 
 				// if it was an image, get the other image info
 				if(isImage) {
@@ -122,9 +119,9 @@ namespace Board.Picker
 			imagePickerController.Canceled += OnCancelation;
 		}
 
-		private void LaunchVideoPreview(NSUrl url, UINavigationController navigationController)
+		private void LaunchVideoPreview(NSUrl url)
 		{
-			Video video = Preview.Initialize (url.ToString(), navigationController);
+			Video video = Preview.Initialize (url.ToString());
 
 			MPMoviePlayerController moviePlayer = new MPMoviePlayerController (url);
 
@@ -133,20 +130,20 @@ namespace Board.Picker
 			moviePlayer.Pause ();
 			moviePlayer.Dispose ();
 
-			navigationController.DismissViewController(false, null);
+			AppDelegate.NavigationController.DismissViewController(false, null);
 
-			navigationController.PushViewController(shareScreen, false);
+			AppDelegate.NavigationController.PushViewController(shareScreen, false);
 		}
 
-		private void LaunchPicturePreview(UIImage image, UINavigationController navigationController)
+		private void LaunchPicturePreview(UIImage image)
 		{		
-			Picture picture = Preview.Initialize(image, navigationController);
+			Picture picture = Preview.Initialize(image);
 
 			ShareScreen shareScreen = new ShareScreen(image, picture);
 
-			navigationController.DismissViewController(false, null);
+			AppDelegate.NavigationController.DismissViewController(false, null);
 
-			navigationController.PushViewController(shareScreen, false);
+			AppDelegate.NavigationController.PushViewController(shareScreen, false);
 		}
 
 

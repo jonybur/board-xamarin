@@ -9,11 +9,11 @@ namespace Board.Interface.Lookup
 {
 	public class ChatButton : Button
 	{
-		public ChatButton (string contentId, UINavigationController navigationController)
+		public ChatButton (string contentId)
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			UIImage chatImage = UIImage.FromFile ("./boardscreen/buttons/chat.png");
+			UIImage chatImage = UIImage.FromFile ("./boardinterface/buttons/chat.png");
 
 			uiButton.Frame = new CGRect (0,0, ButtonSize, ButtonSize);
 

@@ -21,19 +21,17 @@ namespace Board.Interface.Buttons
 			contentToSee = 0;
 
 			alertStroke = new UIImageView (new CGRect (0, 0, ButtonSize, ButtonSize));
-			UIImage stroke = UIImage.FromFile ("./boardscreen/buttons/navigationfront.png");
+			UIImage stroke = UIImage.FromFile ("./boardinterface/buttons/navigationfront.png");
 			alertStroke.Image = stroke.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			alertStroke.TintColor = color;
 
 			uiButton = new UIButton (UIButtonType.Custom);
-			UIImage image = UIImage.FromFile ("./boardscreen/buttons/navigationback.png");
+			UIImage image = UIImage.FromFile ("./boardinterface/buttons/navigationback.png");
 			uiButton.SetImage (image, UIControlState.Normal);
 			uiButton.Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
 			uiButton.Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - ButtonSize / 2 - 10);
 
 			uiButton.AddSubview (alertStroke);
-
-			float i = 0;
 
 			UITapGestureRecognizer doubletap = new UITapGestureRecognizer ((tg) => {
 				tg.NumberOfTapsRequired = 2;

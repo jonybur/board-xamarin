@@ -85,7 +85,7 @@ namespace Board.Interface.Widgets
 			eye = CreateEye (mounting.Frame);
 			uiView.AddSubview (eye);
 
-			uiView.Frame = new CGRect (vid.ImgX, vid.ImgY, mounting.Frame.Width, mounting.Frame.Height);
+			uiView.Frame = new CGRect (vid.Frame.X, vid.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
 			uiView.Transform = CGAffineTransform.MakeRotation(vid.Rotation);
 
 			eyeOpen = false;
@@ -109,7 +109,7 @@ namespace Board.Interface.Widgets
 
 		private UIImageView CreatePlayButton(CGRect frame)
 		{
-			UIImage playButtonImage = UIImage.FromFile ("./boardscreen/playbutton.png");
+			UIImage playButtonImage = UIImage.FromFile ("./boardinterface/playbutton.png");
 			CGSize imageSize = new CGSize (playButtonImage.Size.Width / 2, playButtonImage.Size.Height / 2);
 
 
@@ -140,8 +140,8 @@ namespace Board.Interface.Widgets
 			CGSize iconSize = new CGSize (30, 30);
 
 			UIImageView eyeView = new UIImageView(new CGRect (frame.X + 10, frame.Height - iconSize.Height - 5, iconSize.Width, iconSize.Height));
-			closedEyeImage = UIImage.FromFile ("./boardscreen/closedeye.png");
-			openEyeImage = UIImage.FromFile ("./boardscreen/openeye3.png");
+			closedEyeImage = UIImage.FromFile ("./boardinterface/closedeye.png");
+			openEyeImage = UIImage.FromFile ("./boardinterface/openeye3.png");
 			closedEyeImage = closedEyeImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			openEyeImage = openEyeImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			eyeView.Image = closedEyeImage;
@@ -156,7 +156,7 @@ namespace Board.Interface.Widgets
 
 			UIImageView likeView = new UIImageView(new CGRect (frame.Width - iconSize.Width - 10,
 				frame.Height - iconSize.Height - 5, iconSize.Width, iconSize.Height));
-			likeView.Image = UIImage.FromFile ("./boardscreen/like.png");
+			likeView.Image = UIImage.FromFile ("./boardinterface/like.png");
 			likeView.Image = likeView.Image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			likeView.TintColor = UIColor.FromRGB(140,140,140);
 
@@ -203,7 +203,7 @@ namespace Board.Interface.Widgets
 
 			vid.Thumbnail = CommonUtils.ResizeImage (vid.Thumbnail, new CGSize (imgw, imgh));
 
-			CGRect frame = new CGRect (vid.ImgX, vid.ImgY, imgw, imgh);
+			CGRect frame = new CGRect (vid.Frame.X, vid.Frame.Y, imgw, imgh);
 
 			return frame;
 		}

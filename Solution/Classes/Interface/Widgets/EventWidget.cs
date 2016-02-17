@@ -1,13 +1,12 @@
 ﻿using Board.Schema;
 
-using Board.Utilities;
-
 using CoreGraphics;
+
 using UIKit;
 
 namespace Board.Interface.Widgets
 {
-	public class PictureWidget
+	public class EventWidget
 	{
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
@@ -17,7 +16,7 @@ namespace Board.Interface.Widgets
 			get { return uiView; }
 		}
 
-		private Picture picture;
+		private BoardEvent boardEvent;
 
 		UIImageView eye;
 		UIImage closedEyeImage;
@@ -28,37 +27,28 @@ namespace Board.Interface.Widgets
 			get { return eyeOpen; }
 		}
 
-		public Picture Picture
+		public BoardEvent BoardEvent
 		{
-			get { return picture; }
+			get { return boardEvent; }
 		}
 
-		public PictureWidget()
+		public EventWidget()
 		{
 
 		}
 
-		public PictureWidget(Picture pic)
+		public EventWidget(BoardEvent ev)
 		{
-			picture = pic;
+			boardEvent = ev;
 
-			CGRect frame = GetFrame (pic);
+			UIImageView insideText = CreateCalendarBox();
 
 			// mounting
-
-			UIImageView mounting = CreateMounting (frame);
+			UIImageView mounting = CreateMounting (insideText.Frame);
 			uiView = new UIView(mounting.Frame);
-			uiView.AddSubview (mounting);
-
-			// picture
-
-			CGRect pictureFrame = new CGRect (mounting.Frame.X + 10, 10, frame.Width, frame.Height);
-			UIImageView uiv = new UIImageView (pictureFrame);
-			uiv.Image = picture.Thumbnail;
-			uiView.AddSubview (uiv);
+			uiView.AddSubviews (mounting, insideText);
 
 			// like
-
 			UIImageView like = CreateLike (mounting.Frame);
 			uiView.AddSubview (like);
 
@@ -68,14 +58,28 @@ namespace Board.Interface.Widgets
 			uiView.AddSubview (likeLabel);
 
 			// eye
-
 			eye = CreateEye (mounting.Frame);
+
 			uiView.AddSubview (eye);
 
-			uiView.Frame = new CGRect (pic.Frame.X, pic.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
-			uiView.Transform = CGAffineTransform.MakeRotation(pic.Rotation);
+			uiView.Frame = new CGRect (boardEvent.Frame.X, boardEvent.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
+			uiView.Transform = CGAffineTransform.MakeRotation(boardEvent.Rotation);
 
 			eyeOpen = false;
+		}
+
+		private UIImageView CreateCalendarBox()
+		{
+			UIImageView box = new UIImageView (new CGRect(0, 0, 100, 100));
+			UILabel day = new UILabel (new CGRect (0, 30, 100, 40));
+			day.Font = UIFont.SystemFontOfSize (36);
+			day.Text = boardEvent.Date.Day.ToString();
+			day.TextAlignment = UITextAlignment.Center;
+			day.BackgroundColor = AppDelegate.BoardOrange;
+
+			box.AddSubviews (day);
+
+			return box;
 		}
 
 		public void OpenEye()
@@ -150,35 +154,6 @@ namespace Board.Interface.Widgets
 			uiv.Frame = frame;
 
 			return uiv;
-		}
-
-		private CGRect GetFrame(Picture picture)
-		{
-			float imgw, imgh;
-			float autosize = 150;
-
-			float scale = (float)(picture.Image.Size.Width/picture.Image.Size.Height);
-
-			if (scale >= 1) {
-				imgw = autosize * scale;
-				imgh = autosize;
-
-				if (imgw > AppDelegate.ScreenWidth) {
-					scale = (float)(picture.Image.Size.Height/picture.Image.Size.Width);
-					imgw = AppDelegate.ScreenWidth;
-					imgh = imgw * scale;
-				}
-			} else {
-				scale = (float)(picture.Image.Size.Height / picture.Image.Size.Width);
-				imgw = autosize;
-				imgh = autosize * scale;
-			}
-
-			picture.Thumbnail = CommonUtils.ResizeImage (picture.Image, new CGSize (imgw, imgh));
-
-			CGRect frame = new CGRect (picture.Frame.X, picture.Frame.Y, imgw, imgh);
-
-			return frame;
 		}
 
 		public void SetFrame(CGRect frame)
