@@ -16,7 +16,7 @@ namespace Board.Interface.Buttons
 
 		public ButtonInterface(Action refreshContent, UIColor color)
 		{
-			actionsButtonSet = new ActionsButtonSet ();
+			actionsButtonSet = new ActionsButtonSet (color);
 			confirmationButtonSet = new ConfirmationButtonSet (refreshContent);
 			navigationButton = new NavigationButton (color);
 		}

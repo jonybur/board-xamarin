@@ -1,5 +1,5 @@
 ﻿using Board.Schema;
-
+using System.Globalization;
 using CoreGraphics;
 
 using UIKit;
@@ -41,12 +41,15 @@ namespace Board.Interface.Widgets
 		{
 			boardEvent = ev;
 
-			UIImageView insideText = CreateCalendarBox();
+			UIImageView calendarBox = CreateCalendarBox();
+			UIImageView pictureBox = CreatePictureBox (calendarBox.Frame);
+
+			CGRect totalRect = new CGRect (calendarBox.Frame.X, calendarBox.Frame.Y, calendarBox.Frame.Width + pictureBox.Frame.Width + 10, calendarBox.Frame.Height);
 
 			// mounting
-			UIImageView mounting = CreateMounting (insideText.Frame);
+			UIImageView mounting = CreateMounting (totalRect);
 			uiView = new UIView(mounting.Frame);
-			uiView.AddSubviews (mounting, insideText);
+			uiView.AddSubviews (mounting, calendarBox, pictureBox);
 
 			// like
 			UIImageView like = CreateLike (mounting.Frame);
@@ -70,14 +73,67 @@ namespace Board.Interface.Widgets
 
 		private UIImageView CreateCalendarBox()
 		{
-			UIImageView box = new UIImageView (new CGRect(0, 0, 100, 100));
-			UILabel day = new UILabel (new CGRect (0, 30, 100, 40));
-			day.Font = UIFont.SystemFontOfSize (36);
-			day.Text = boardEvent.Date.Day.ToString();
-			day.TextAlignment = UITextAlignment.Center;
-			day.BackgroundColor = AppDelegate.BoardOrange;
+			UIImageView box = new UIImageView (new CGRect(10, 10, 100, 140));
 
-			box.AddSubviews (day);
+			// empieza en 0 termina en 24
+			UILabel dayName = new UILabel (new CGRect (10, 0, 80, 30));
+			dayName.Font = UIFont.SystemFontOfSize (24);
+			dayName.Text = boardEvent.Date.DayOfWeek.ToString();
+			dayName.TextAlignment = UITextAlignment.Center;
+			dayName.TextColor = AppDelegate.BoardOrange;
+			dayName.AdjustsFontSizeToFitWidth = true;
+
+			// empieza en 40 termina en 100 y
+			UILabel dayNumber = new UILabel (new CGRect (0, 40, 100, 60));
+			dayNumber.Font = UIFont.SystemFontOfSize (60);
+			dayNumber.Text = boardEvent.Date.Day.ToString();
+			dayNumber.AdjustsFontSizeToFitWidth = true;
+			dayNumber.TextAlignment = UITextAlignment.Center;
+			dayNumber.TextColor = AppDelegate.BoardOrange;
+
+			// empieza en 105 termina en 135
+			UILabel monthName = new UILabel (new CGRect (10, 105, 80, 30));
+			monthName.Font = UIFont.SystemFontOfSize (24);
+			int monthNumber = boardEvent.Date.Month;
+			monthName.Text = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNumber).ToUpper();
+			monthName.TextAlignment = UITextAlignment.Center;
+			monthName.TextColor = AppDelegate.BoardOrange;
+			monthName.AdjustsFontSizeToFitWidth = true;
+
+			box.AddSubviews (dayName, dayNumber, monthName);
+
+			return box;
+		}
+
+		private UIImageView CreatePictureBox(CGRect calendarBoxFrame)
+		{
+			UIImageView box = new UIImageView (new CGRect (calendarBoxFrame.Right + 10, calendarBoxFrame.Top, 100, calendarBoxFrame.Height));
+
+			float imgw, imgh;
+			float autosize = (float)calendarBoxFrame.Width;
+
+			float scale = (float)(boardEvent.Image.Size.Width/boardEvent.Image.Size.Height);
+
+			if (scale >= 1) {
+				imgw = autosize * scale;
+				imgh = autosize;
+
+				if (imgw > AppDelegate.ScreenWidth) {
+					scale = (float)(boardEvent.Image.Size.Height/boardEvent.Image.Size.Width);
+					imgw = AppDelegate.ScreenWidth;
+					imgh = imgw * scale;
+				}
+			} else {
+				scale = (float)(boardEvent.Image.Size.Height/boardEvent.Image.Size.Width);
+				imgw = autosize;
+				imgh = autosize * scale;
+			}
+
+			UIImageView eventPoster = new UIImageView (new CGRect(0, 0, imgw, imgh));
+			eventPoster.Image = boardEvent.Image;
+			eventPoster.Center = new CGPoint (calendarBoxFrame.Width / 2, calendarBoxFrame.Height / 2);
+
+			box.AddSubview (eventPoster);
 
 			return box;
 		}
@@ -93,7 +149,7 @@ namespace Board.Interface.Widgets
 		{
 			CGRect mountingFrame = new CGRect (0, 0, frame.Width + 20, frame.Height + 50);
 
-			UIImageView mountingView = CreateColorView (mountingFrame, UIColor.White.CGColor);
+			UIImageView mountingView = CreateColorView (mountingFrame, UIColor.FromRGB(250,250,250).CGColor);
 
 			return mountingView;
 		}

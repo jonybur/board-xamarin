@@ -8,7 +8,7 @@ namespace Board.Interface.Buttons
 		public UIButton uiButton;
 
 		// TODO: this value must be variable depending on the screen
-		public const float ButtonSize = 64;
+		public const float ButtonSize = 45;
 
 		public Button()
 		{

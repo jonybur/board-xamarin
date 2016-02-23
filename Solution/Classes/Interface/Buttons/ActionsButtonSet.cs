@@ -7,7 +7,7 @@ namespace Board.Interface.Buttons
 	{
 		public static int CantButtons = 4;
 
-		public ActionsButtonSet ()
+		public ActionsButtonSet (UIColor color)
 		{
 			arrayButtons = new Button[CantButtons];
 

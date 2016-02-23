@@ -9,38 +9,40 @@ namespace Board.Interface.Buttons
 {
 	public class NavigationButton : Button
 	{
-		public static UIImageView NavigationText;
-		private static UIImageView alertStroke;
-		private int cycle;
-		private int highlitedContent, contentToSee;
+		private static UILabel numberLabel;
+
+		private void SetImage (string buttonName)
+		{
+			UIImage image = UIImage.FromFile ("./boardinterface/strokebuttons/" + buttonName + ".png");
+			uiButton.SetImage (image, UIControlState.Normal);
+		}
 
 		public NavigationButton (UIColor color)
 		{
-			cycle = 0;
-			highlitedContent = 0;
-			contentToSee = 0;
-
-			alertStroke = new UIImageView (new CGRect (0, 0, ButtonSize, ButtonSize));
-			UIImage stroke = UIImage.FromFile ("./boardinterface/buttons/navigationfront.png");
-			alertStroke.Image = stroke.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-			alertStroke.TintColor = color;
+			int content = 3;
+			int highlitedContent = 0, cycle = 0;
 
 			uiButton = new UIButton (UIButtonType.Custom);
-			UIImage image = UIImage.FromFile ("./boardinterface/buttons/navigationback.png");
-			uiButton.SetImage (image, UIControlState.Normal);
+
+			SetImage ("closedeye");
+
 			uiButton.Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
-			uiButton.Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - ButtonSize / 2 - 10);
+			uiButton.Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - ButtonSize / 2);
+			RefreshNavigationButtonText(content);
 
-			uiButton.AddSubview (alertStroke);
-
+			// deprecated, not used
 			UITapGestureRecognizer doubletap = new UITapGestureRecognizer ((tg) => {
 				tg.NumberOfTapsRequired = 2;
 
 				BoardInterface.scrollView.SetContentOffset(new CGPoint(BoardInterface.ScrollViewWidthSize / 2 - AppDelegate.ScreenWidth / 2, 0), true);
 			});
 
-			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer  ((tg) => {
-				
+			// TODO: moves from content to content, improve code
+			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer  (tg => {
+
+				content--;
+				RefreshNavigationButtonText(content);	
+
 				if (BoardInterface.zoomingScrollView.ZoomScale < 1)
 				{
 					BoardInterface.ZoomScrollview();
@@ -72,16 +74,18 @@ namespace Board.Interface.Buttons
 					cycle = 0;
 				}
 
-				Content content;
 				PointF position = new PointF(0,0);
 				UIView uivComponent;
 
 				switch (cycle)
 				{
 				case 0:
-					PictureWidget pictureWidget = BoardInterface.ListPictureWidgets[highlitedContent];
-					uivComponent = pictureWidget.View;
-					position = new PointF ((float)(uivComponent.Frame.X - AppDelegate.ScreenWidth/2 + uivComponent.Frame.Width/2), 0f);
+					if (highlitedContent < BoardInterface.ListPictureWidgets.Count)
+					{
+						PictureWidget pictureWidget = BoardInterface.ListPictureWidgets[highlitedContent];
+						uivComponent = pictureWidget.View;
+						position = new PointF ((float)(uivComponent.Frame.X - AppDelegate.ScreenWidth/2 + uivComponent.Frame.Width/2), 0f);
+					}
 					break;
 				case 1:
 					VideoWidget videoWidget = BoardInterface.ListVideoWidgets[highlitedContent];
@@ -105,6 +109,7 @@ namespace Board.Interface.Buttons
 				}
 			});
 
+			// unzooms
 			UILongPressGestureRecognizer longPressGesture = new UILongPressGestureRecognizer ((tg) => {
 				if (tg.State == UIGestureRecognizerState.Began)
 				{
@@ -116,71 +121,36 @@ namespace Board.Interface.Buttons
 				}
 			});
 
-
 			uiButton.UserInteractionEnabled = true;
 			uiButton.AddGestureRecognizer (tapGesture);
-			//uiButton.AddGestureRecognizer (doubletap);
 			uiButton.AddGestureRecognizer (longPressGesture);
 		}
 
-		public override void DisableButton()
-		{
-			base.DisableButton ();
-
-			if (NavigationText != null) {
-				NavigationText.Alpha = 0f;
-			}
-		}
-
-		public override void EnableButton()
-		{
-			base.EnableButton ();
-
-			if (NavigationText != null) {
-				NavigationText.Alpha = 1f;
-			}
-		}
-
-		public void SetColor(UIColor color)
-		{
-			alertStroke.TintColor = color;
-		}
-
-		// changes the number on the navigation button
-		// remember to add subview after refreshing value
-		public bool RefreshNavigationButtonText(int content)
+		public void RefreshNavigationButtonText(int content)
 		{
 			// kills the current navText
-			if (NavigationText != null) {
-				NavigationText.RemoveFromSuperview ();
-				NavigationText.Dispose ();
+			if (numberLabel != null) {
+				numberLabel.RemoveFromSuperview ();
+				numberLabel.Dispose ();
 			}	
 
-			// if content is 0 then do not draw anything
+			// if content is 0 then open eye
 			if (content <= 0) {
-				return false;
+				SetImage ("openeye");
+				return;
 			}
 
 			// otherwise, instanciate new text
 
-			UIGraphics.BeginImageContextWithOptions (new CGSize(AppDelegate.ScreenWidth, AppDelegate.ScreenHeight), false, 0);
-			CGContext context = UIGraphics.GetCurrentContext ();
-			string contentString = content.ToString();
+			UIFont font = UIFont.SystemFontOfSize (12);
 
-			NSString contentNSString = new NSString (contentString);
-			UIFont font = UIFont.SystemFontOfSize (18);
-			CGSize contentSize = contentNSString.StringSize (font);
+			numberLabel = new UILabel (new CGRect (0, ButtonSize / 2 - 14, ButtonSize, 14));
+			numberLabel.Font = font;
+			numberLabel.TextAlignment = UITextAlignment.Center;
+			numberLabel.Text = content.ToString ();
+			numberLabel.TextColor = UIColor.Black;
 
-			//TODO: get x and y from navigation button
-			CGRect rect = new CGRect (AppDelegate.ScreenWidth/2-32, ((64 - contentSize.Height) / 2) + 
-				AppDelegate.ScreenHeight-64, 64, contentSize.Height);
-
-			context.SetFillColor (UIColor.Black.CGColor);
-			new NSString (contentString).DrawString (rect, font, UILineBreakMode.WordWrap, UITextAlignment.Center);
-
-			NavigationText = new UIImageView (UIGraphics.GetImageFromCurrentImageContext ());
-
-			return true;
+			uiButton.AddSubview (numberLabel);
 		}
 	}
 }

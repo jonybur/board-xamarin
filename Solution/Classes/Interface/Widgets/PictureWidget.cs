@@ -75,6 +75,8 @@ namespace Board.Interface.Widgets
 			uiView.Frame = new CGRect (pic.Frame.X, pic.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
 			uiView.Transform = CGAffineTransform.MakeRotation(pic.Rotation);
 
+			uiView.BackgroundColor = UIColor.FromRGB (250, 250, 250);
+
 			eyeOpen = false;
 		}
 
@@ -89,7 +91,7 @@ namespace Board.Interface.Widgets
 		{
 			CGRect mountingFrame = new CGRect (0, 0, frame.Width + 20, frame.Height + 50);
 
-			UIImageView mountingView = CreateColorView (mountingFrame, UIColor.White.CGColor);
+			UIImageView mountingView = CreateColorView (mountingFrame, UIColor.FromRGB(250,250,250).CGColor);
 
 			return mountingView;
 		}

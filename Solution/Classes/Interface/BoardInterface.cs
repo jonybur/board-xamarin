@@ -24,8 +24,7 @@ namespace Board.Interface
 	{
 		private Gallery gallery;
 
-		const float primaryBar = Board.Interface.Buttons.Button.ButtonSize + 20;
-		const float secondaryBar = primaryBar / 2;
+		const float buttonBar = 90;
 
 		public static UIImageView CenterLogo;
 		Board.Schema.Board board;
@@ -74,7 +73,7 @@ namespace Board.Interface
 			ListAnnouncements = new List<Announcement> ();
 			ListEvents = new List<BoardEvent> ();
 
-			BoardEvent bevent = new BoardEvent ("La Roxtar", new DateTime(2016, 11, 10),0, new CGRect (100, 100, 0, 0), null);
+			BoardEvent bevent = new BoardEvent ("La Roxtar", UIImage.FromFile("./demo/eventflyer.jpg"), new DateTime(2016, 11, 10),0, new CGRect (100, 100, 0, 0), null);
 			ListEvents.Add (bevent);
 
 			//StorageController.Initialize ();
@@ -100,23 +99,20 @@ namespace Board.Interface
 
 		}
 
-		private static UIImageView CreateColorSquare(CGSize size, CGPoint center, CGColor startcolor)
+		private UIImageView CreateColorView(CGRect frame, CGColor color)
 		{
-			CGRect frame = new CGRect (0, 0, size.Width, size.Height);
-
 			UIGraphics.BeginImageContext (new CGSize(frame.Size.Width, frame.Size.Height));
 			CGContext context = UIGraphics.GetCurrentContext ();
 
-			context.SetFillColor(startcolor);
+			context.SetFillColor(color);
 			context.FillRect(frame);
 
 			UIImage orange = UIGraphics.GetImageFromCurrentImageContext ();
 			UIImageView uiv = new UIImageView (orange);
-			uiv.Center = center;
+			uiv.Frame = frame;
 
 			return uiv;
 		}
-
 
 		private void GetFromLocalDB()
 		{
@@ -293,7 +289,12 @@ namespace Board.Interface
 
 		private void LoadButtons()
 		{
-			buttonInterface = new ButtonInterface (RefreshContent, board.SecondaryColor);
+			buttonInterface = new ButtonInterface (RefreshContent, board.MainColor);
+
+			UIImageView buttonBackground = CreateColorView (new CGRect (0, 0, AppDelegate.ScreenWidth, 45), UIColor.FromRGB(250,250,250).CGColor);
+			buttonBackground.Alpha = .9f;
+			buttonBackground.Frame = new CGRect (0, AppDelegate.ScreenHeight - 45, AppDelegate.ScreenWidth, 45);
+			this.View.AddSubview (buttonBackground);
 
 			if (Profile.CurrentProfile.UserID == board.CreatorId) {
 				this.View.AddSubviews (buttonInterface.GetCreatorButtons());
@@ -437,11 +438,29 @@ namespace Board.Interface
 
 		private void LoadBackground()
 		{	
-			UIImage pattern = UIImage.FromFile ("./boardinterface/backgrounds/branco.jpg");
+			scrollView.BackgroundColor = UIColor.White;
 
-			UIImageView boardView = new UIImageView (pattern);
-			boardView.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
-			boardView.Tag = (int)Tags.Background;
+			UIImage logo = board.Image;
+			UIImageView mainLogo = LoadMainLogo (logo, new CGPoint(ScrollViewWidthSize/2, 0));
+			scrollView.AddSubview (mainLogo);
+
+			UIImage circle1 = UIImage.FromFile ("./boardinterface/backgrounds/intern.png");
+			UIImage circle2 = UIImage.FromFile ("./boardinterface/backgrounds/outer.png");
+
+			circle1 = circle1.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+			circle2 = circle2.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+
+			UIImageView circleTop = new UIImageView (circle1);
+			circleTop.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
+			circleTop.Tag = (int)Tags.Background;
+
+			UIImageView circleLower = new UIImageView (circle2);
+			circleLower.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
+			circleLower.Tag = (int)Tags.Background;
+
+			circleTop.TintColor = board.MainColor;
+			circleLower.TintColor = board.SecondaryColor;
+
 			this.AutomaticallyAdjustsScrollViewInsets = false;
 
 			// this limits the size of the scrollview
@@ -449,34 +468,16 @@ namespace Board.Interface
 			// sets the scrollview on the middle of the view
 			scrollView.SetContentOffset (new CGPoint(ScrollViewWidthSize/2 - AppDelegate.ScreenWidth/2, 0), false);
 			// adds the background
-			scrollView.AddSubview (boardView);
+			scrollView.AddSubviews (circleTop, circleLower);
 
 			zoomingScrollView.MaximumZoomScale = 1f;
 			zoomingScrollView.MinimumZoomScale = .15f;
 
-			zoomingScrollView.ViewForZoomingInScrollView += (UIScrollView sv) => {
-				return zoomingScrollView.Subviews[0];
+			zoomingScrollView.ViewForZoomingInScrollView += sv => {
+				return zoomingScrollView.Subviews [0];
 			};
 
 			zoomingScrollView.RemoveGestureRecognizer (zoomingScrollView.PinchGestureRecognizer);
-
-			UIImageView secondary = CreateColorSquare(new CGSize(ScrollViewWidthSize,secondaryBar), new CGPoint(ScrollViewWidthSize/2,AppDelegate.ScreenHeight - primaryBar - secondaryBar / 2), board.SecondaryColor.CGColor);
-			secondary.Tag = (int)Tags.Background;
-			scrollView.AddSubview (secondary);
-
-			UIImageView primary = CreateColorSquare(new CGSize(ScrollViewWidthSize,primaryBar), new CGPoint(ScrollViewWidthSize/2, AppDelegate.ScreenHeight - primaryBar / 2), board.MainColor.CGColor);
-			primary.Tag = (int)Tags.Background;
-			scrollView.AddSubview (primary);
-
-			UIImage logo = board.Image;
-			UIImageView mainLogo = LoadMainLogo (logo, new CGPoint(ScrollViewWidthSize/2,-20));
-			scrollView.AddSubview (mainLogo);
-
-			if (TestMode) {
-				UIImageView democontent = new UIImageView (UIImage.FromFile ("./boardinterface/backgrounds/contentdemo2.png"));
-				democontent.Frame = boardView.Frame;
-				scrollView.AddSubview (democontent);
-			}
 		}
 
 		private UIImageView LoadMainLogo(UIImage image, CGPoint ContentOffset)
@@ -504,7 +505,7 @@ namespace Board.Interface
 			}
 
 			imgx = (float)(ContentOffset.X - imgw / 2);
-			imgy = (float)(ContentOffset.Y + AppDelegate.ScreenHeight / 2 - imgh / 2 - Board.Interface.Buttons.Button.ButtonSize / 2);
+			imgy = (float)(ContentOffset.Y + AppDelegate.ScreenHeight / 2 - imgh / 2);
 
 			// launches the image preview
 

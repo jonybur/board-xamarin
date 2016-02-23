@@ -17,7 +17,7 @@ namespace Board.Interface.Buttons
 
 			uiButton.Frame = new CGRect (0,0, ButtonSize, ButtonSize);
 			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth + ButtonSize) / 2 +
-				(AppDelegate.ScreenWidth - ButtonSize) / 4, AppDelegate.ScreenHeight - ButtonSize / 2 - 10);
+				(AppDelegate.ScreenWidth - ButtonSize) / 4, AppDelegate.ScreenHeight - ButtonSize / 2);
 
 			uiButton.TouchUpInside +=  (object sender, EventArgs e) => {
 				// remove interaction capabilities from the preview

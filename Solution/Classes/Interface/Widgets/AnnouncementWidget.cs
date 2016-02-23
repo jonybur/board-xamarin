@@ -71,7 +71,7 @@ namespace Board.Interface.Widgets
 			UIFont font = UIFont.SystemFontOfSize (20);
 			UITextView textview = new UITextView (new CGRect(10, 10, 250, 100));
 			textview.Font = font;
-			textview.BackgroundColor = UIColor.White;
+			textview.BackgroundColor = UIColor.FromRGB(250,250,250);
 			textview.TextColor = AppDelegate.BoardBlue;
 			textview.Editable = false;
 			textview.Selectable = true;
@@ -108,7 +108,7 @@ namespace Board.Interface.Widgets
 		{
 			CGRect mountingFrame = new CGRect (0, 0, frame.Width + 20, frame.Height + 50);
 
-			UIImageView mountingView = CreateColorView (mountingFrame, UIColor.White.CGColor);
+			UIImageView mountingView = CreateColorView (mountingFrame, UIColor.FromRGB(250,250,250).CGColor);
 
 			return mountingView;
 		}

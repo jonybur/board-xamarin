@@ -40,15 +40,23 @@ namespace Board.Screens
 
 		public override void ViewDidAppear(bool animated)
 		{
-			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
+			if (map != null)
+			{
+				map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
+			}
 		}
 
 		private void InitializeInterface()
 		{
 			LoadContent ();
 			LoadBanner ();
-			LoadMapButton ();
-			LoadMap ();
+
+			try{
+				LoadMapButton ();
+				LoadMap ();
+			}catch{
+			}
+
 			LoadSideMenu ();
 		}
 
@@ -128,7 +136,10 @@ namespace Board.Screens
 				{sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return;}
 
 				BoardInterface boardInterface = new BoardInterface(board, false);
-				map.RemoveObserver (this, new NSString ("myLocation"));
+				if (map != null)
+				{
+					map.RemoveObserver (this, new NSString ("myLocation"));
+				}
 				NavigationController.PushViewController(boardInterface, true);
 			});
 
@@ -220,22 +231,34 @@ namespace Board.Screens
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).Y > buttonLocations[0]-35 && tg.LocationInView(this.View).Y < buttonLocations[0]+35 ){
 					BusinessScreen screen = new BusinessScreen();
-					map.RemoveObserver (this, new NSString ("myLocation"));
+					if (map != null)
+					{
+						map.RemoveObserver (this, new NSString ("myLocation"));
+					}
 					NavigationController.PushViewController(screen, false);
 				}
 				else if (tg.LocationInView(this.View).Y > buttonLocations[1]-35 && tg.LocationInView(this.View).Y < buttonLocations[1]+35){
 					SettingsScreen screen = new SettingsScreen();
-					map.RemoveObserver (this, new NSString ("myLocation"));
+					if (map != null)
+					{
+						map.RemoveObserver (this, new NSString ("myLocation"));
+					}
 					NavigationController.PushViewController(screen, false);
 				}
 				else if (tg.LocationInView(this.View).Y > buttonLocations[2]-35 && tg.LocationInView(this.View).Y < buttonLocations[2]+35){
 					SupportScreen screen = new SupportScreen();
-					map.RemoveObserver (this, new NSString ("myLocation"));
+					if (map != null)
+					{
+						map.RemoveObserver (this, new NSString ("myLocation"));
+					}
 					NavigationController.PushViewController(screen, false);
 				}
 				else if (tg.LocationInView(this.View).Y > buttonLocations[3]-35 && tg.LocationInView(this.View).Y < buttonLocations[3]+35){
 					InviteScreen screen = new InviteScreen();
-					map.RemoveObserver (this, new NSString ("myLocation"));
+					if (map != null)
+					{
+						map.RemoveObserver (this, new NSString ("myLocation"));
+					}
 					NavigationController.PushViewController(screen, false);
 				}
 				HideSideMenu();

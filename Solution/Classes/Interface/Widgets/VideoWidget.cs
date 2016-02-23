@@ -102,7 +102,7 @@ namespace Board.Interface.Widgets
 		{
 			CGRect mountingFrame = new CGRect (0, 0, frame.Width + 20, frame.Height + 50);
 
-			UIImageView mountingView = CreateColorView (mountingFrame, UIColor.White.CGColor);
+			UIImageView mountingView = CreateColorView (mountingFrame, UIColor.FromRGB(250,250,250).CGColor);
 
 			return mountingView;
 		}

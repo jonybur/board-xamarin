@@ -1,4 +1,5 @@
 ﻿using System;
+using UIKit;
 using CoreGraphics;
 
 namespace Board.Schema
@@ -7,16 +8,19 @@ namespace Board.Schema
 	// Board's way of storing its UIImageViews on the DB
 	public class BoardEvent : Content
 	{
-		public string Id { get; set; }
-
 		public string Name { get; set; }
 	
+		public UIImage Image { get; set; }
+
+		public UIImage Thumbnail { get; set; }
+
 		public DateTime Date { get; set; }
 
 		public BoardEvent() {}
 
-		public BoardEvent(string name, DateTime date, float rotation, CGRect frame, string userid)
+		public BoardEvent(string name, UIImage image, DateTime date, float rotation, CGRect frame, string userid)
 		{
+			Image = image;
 			Name = name;
 			Date = date;
 			Rotation = rotation;

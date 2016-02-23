@@ -231,12 +231,9 @@
     <BundleResource Include="Resources\boardinterface\lookup\like.png" />
     <BundleResource Include="Resources\boardinterface\lookup\unlike.png" />
     <BundleResource Include="Resources\boardinterface\buttons\chat.png" />
-    <BundleResource Include="Resources\boardinterface\backgrounds\branco.jpg" />
-    <BundleResource Include="Resources\boardinterface\backgrounds\contentdemo2.png" />
     <BundleResource Include="Resources\boardinterface\buttons\navigationback.png" />
     <BundleResource Include="Resources\boardinterface\buttons\navigationfront.png" />
     <BundleResource Include="Resources\boardinterface\buttons\back5.png" />
-    <BundleResource Include="Resources\boardinterface\buttons\camera3.png" />
     <BundleResource Include="Resources\boardinterface\buttons\plus3.png" />
     <BundleResource Include="Resources\boardinterface\buttons\card.png" />
     <BundleResource Include="Resources\boardinterface\buttons\picture6.png" />
@@ -255,6 +252,25 @@
     <BundleResource Include="Resources\boardinterface\testpictures\7.jpg" />
     <BundleResource Include="Resources\boardinterface\playbutton.png" />
     <BundleResource Include="Resources\boardinterface\buttons\cog.png" />
+    <BundleResource Include="Resources\demo\eventflyer.jpg" />
+    <BundleResource Include="Resources\boardinterface\buttons\cogstroke.png" />
+    <BundleResource Include="Resources\boardinterface\buttons\backstroke.png" />
+    <BundleResource Include="Resources\boardinterface\buttons\camerastroke.png" />
+    <BundleResource Include="Resources\boardinterface\buttons\cardstroke.png" />
+    <BundleResource Include="Resources\boardinterface\buttons\camerastroke_filled.png" />
+    <BundleResource Include="Resources\boardinterface\buttons\camera.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\back.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\camera.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\card.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\cog.png" />
+    <BundleResource Include="Resources\boardinterface\buttons90\back.png" />
+    <BundleResource Include="Resources\boardinterface\buttons90\camera.png" />
+    <BundleResource Include="Resources\boardinterface\buttons90\card.png" />
+    <BundleResource Include="Resources\boardinterface\buttons90\cog.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\closedeye.png" />
+    <BundleResource Include="Resources\boardinterface\backgrounds\intern.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\openeye.png" />
+    <BundleResource Include="Resources\boardinterface\backgrounds\outer.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -373,6 +389,9 @@
     <Folder Include="Resources\boardinterface\lookup\" />
     <Folder Include="Resources\boardinterface\backgrounds\" />
     <Folder Include="Resources\boardinterface\testpictures\" />
+    <Folder Include="Resources\demo\" />
+    <Folder Include="Resources\boardinterface\strokebuttons\" />
+    <Folder Include="Resources\boardinterface\buttons90\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">
