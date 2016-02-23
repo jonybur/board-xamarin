@@ -291,8 +291,8 @@ namespace Board.Interface
 		{
 			buttonInterface = new ButtonInterface (RefreshContent, board.MainColor);
 
-			UIImageView buttonBackground = CreateColorView (new CGRect (0, 0, AppDelegate.ScreenWidth, 45), UIColor.FromRGB(250,250,250).CGColor);
-			buttonBackground.Alpha = .9f;
+			UIImageView buttonBackground = CreateColorView (new CGRect (0, 0, AppDelegate.ScreenWidth, 45), UIColor.White.CGColor);
+			buttonBackground.Alpha = .95f;
 			buttonBackground.Frame = new CGRect (0, AppDelegate.ScreenHeight - 45, AppDelegate.ScreenWidth, 45);
 			this.View.AddSubview (buttonBackground);
 
@@ -438,11 +438,10 @@ namespace Board.Interface
 
 		private void LoadBackground()
 		{	
-			scrollView.BackgroundColor = UIColor.White;
-
 			UIImage logo = board.Image;
-			UIImageView mainLogo = LoadMainLogo (logo, new CGPoint(ScrollViewWidthSize/2, 0));
-			scrollView.AddSubview (mainLogo);
+			LoadMainLogo (logo, new CGPoint(ScrollViewWidthSize/2, 0));
+
+			scrollView.BackgroundColor = board.MainColor;
 
 			UIImage circle1 = UIImage.FromFile ("./boardinterface/backgrounds/intern.png");
 			UIImage circle2 = UIImage.FromFile ("./boardinterface/backgrounds/outer.png");
@@ -480,7 +479,7 @@ namespace Board.Interface
 			zoomingScrollView.RemoveGestureRecognizer (zoomingScrollView.PinchGestureRecognizer);
 		}
 
-		private UIImageView LoadMainLogo(UIImage image, CGPoint ContentOffset)
+		private void LoadMainLogo(UIImage image, CGPoint ContentOffset)
 		{
 			// the image is uploadable
 			// so now launch image preview to choose position in the board
@@ -507,20 +506,17 @@ namespace Board.Interface
 			imgx = (float)(ContentOffset.X - imgw / 2);
 			imgy = (float)(ContentOffset.Y + AppDelegate.ScreenHeight / 2 - imgh / 2);
 
-			// launches the image preview
 
-			CGRect frame = new CGRect (imgx, imgy, imgw, imgh);
-			UIImageView mainLogo = new UIImageView(frame);
+			UIImage circle3 = UIImage.FromFile ("./boardinterface/backgrounds/logobackground.png");
+			UIImageView circleBackground = new UIImageView (circle3);
+			circleBackground.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
+			circleBackground.Tag = (int)Tags.Background;
 
-			UIImageView uiImageView =  new UIImageView (new CGRect(0,0,frame.Width, frame.Height));
-
-			UIImage thumbImg = image.Scale (new CGSize (imgw, imgh));
-			uiImageView.Image = thumbImg;
-
+			UIImageView mainLogo = new UIImageView(new CGRect (imgx, imgy, imgw, imgh));
+			mainLogo.Image = image.Scale (new CGSize (imgw, imgh));
 			mainLogo.Tag = (int)Tags.Background;
-			mainLogo.AddSubviews(uiImageView);
 
-			return mainLogo;
+			scrollView.AddSubviews (circleBackground, mainLogo);
 		}
 	}
 }

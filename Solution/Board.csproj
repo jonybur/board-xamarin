@@ -259,10 +259,6 @@
     <BundleResource Include="Resources\boardinterface\buttons\cardstroke.png" />
     <BundleResource Include="Resources\boardinterface\buttons\camerastroke_filled.png" />
     <BundleResource Include="Resources\boardinterface\buttons\camera.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\back.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\camera.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\card.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\cog.png" />
     <BundleResource Include="Resources\boardinterface\buttons90\back.png" />
     <BundleResource Include="Resources\boardinterface\buttons90\camera.png" />
     <BundleResource Include="Resources\boardinterface\buttons90\card.png" />
@@ -271,6 +267,16 @@
     <BundleResource Include="Resources\boardinterface\backgrounds\intern.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\openeye.png" />
     <BundleResource Include="Resources\boardinterface\backgrounds\outer.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\back_2px.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\back_3px.png" />
+    <BundleResource Include="Resources\boardinterface\backgrounds\logobackground.png" />
+    <BundleResource Include="Resources\boardinterface\backgrounds\logobackground_2.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\camera_2px.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\card_2px.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\cog_2px.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\camera_3px.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\card_3px.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\cog_3px.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

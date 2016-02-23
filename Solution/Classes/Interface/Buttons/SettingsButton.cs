@@ -11,7 +11,7 @@ namespace Board.Interface.Buttons
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			UIImage uiImage = UIImage.FromFile ("./boardinterface/strokebuttons/cog.png");
+			UIImage uiImage = UIImage.FromFile ("./boardinterface/strokebuttons/cog_3px.png");
 
 			uiButton = new UIButton (UIButtonType.Custom);
 			uiButton.SetImage (uiImage, UIControlState.Normal);
