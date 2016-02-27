@@ -16,13 +16,18 @@ namespace Board.Screens
 		UIImageView banner;
 		UIImageView sidemenu;
 		UIImageView map_button;
-		bool sideMenuIsUp;
+
 		ProfilePictureView profileView;
+
 		UIScrollView content;
-		UIImage circleImage;
-		float thumbSize;
+
 		MapView map;
-		bool firstLocationUpdate = false;
+
+		float thumbSize;
+
+		bool sideMenuIsUp;
+		bool firstLocationUpdate;
+		bool blockTap;
 
 		public MainMenuScreen () : base ("Board", null){
 			
@@ -40,26 +45,18 @@ namespace Board.Screens
 
 		public override void ViewDidAppear(bool animated)
 		{
-			if (map != null)
-			{
-				map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
-			}
+			blockTap = false;
+			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
 		}
 
 		private void InitializeInterface()
 		{
 			LoadContent ();
 			LoadBanner ();
-
-			try{
-				LoadMapButton ();
-				LoadMap ();
-			}catch{
-			}
-
+			LoadMapButton ();
+			LoadMap ();
 			LoadSideMenu ();
 		}
-
 
 		private List<Board.Schema.Board> GenerateBoardList()
 		{
@@ -68,20 +65,20 @@ namespace Board.Screens
 			boardList.Add(new Board.Schema.Board ("American Social", UIImage.FromFile("./logos/americansocial.jpeg"), UIColor.FromRGB (67, 15, 0), UIColor.FromRGB (221, 169, 91), "Brickell", Profile.CurrentProfile.UserID));
 			boardList.Add(new Board.Schema.Board ("Dog House", UIImage.FromFile("./logos/doghouse.jpeg"), UIColor.FromRGB (35, 32, 35), UIColor.FromRGB (220, 31, 24), "Brickell", string.Empty));
 			boardList.Add(new Board.Schema.Board ("Dolores Lolita", UIImage.FromFile("./logos/doloreslolita.jpg"), UIColor.FromRGB (185, 143, 6), UIColor.FromRGB (2, 0, 6), "Brickell", string.Empty));	
-			boardList.Add(new Board.Schema.Board ("Blue Martini", UIImage.FromFile("./logos/bluemartini.png"), UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Brickell", string.Empty));	
+			boardList.Add(new Board.Schema.Board ("Blue Martini", UIImage.FromFile("./logos/bluemartini.png"), UIColor.FromRGB (0, 0, 0), UIColor.FromRGB (0, 165, 216), "Brickell", string.Empty));
 			boardList.Add(new Board.Schema.Board ("Taverna Opa", UIImage.FromFile("./logos/tavernopa.png"), UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Brickell", string.Empty));	
-			boardList.Add(new Board.Schema.Board ("Clevelander", UIImage.FromFile("./logos/clevelander.png"), UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));
-			boardList.Add(new Board.Schema.Board ("Fat Tuesdays", UIImage.FromFile("./logos/fattuesdays.jpg"), UIColor.FromRGB (185, 143, 6), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));	
-			boardList.Add(new Board.Schema.Board ("LIV", UIImage.FromFile("./logos/liv.jpg"), UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));
-			boardList.Add(new Board.Schema.Board ("Mangos", UIImage.FromFile("./logos/mangos.png"), UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));
-			boardList.Add(new Board.Schema.Board ("Mansion", UIImage.FromFile("./logos/mansion.jpg"), UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));
-			boardList.Add(new Board.Schema.Board ("Nikki Beach", UIImage.FromFile("./logos/nikki.jpg"), UIColor.FromRGB (195, 27, 29), UIColor.FromRGB (2, 0, 6), "South Beach", string.Empty));
-			boardList.Add(new Board.Schema.Board ("Wet Willies", UIImage.FromFile("./logos/wetwillies.jpg"), UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "South Beach", string.Empty));	
-			boardList.Add(new Board.Schema.Board ("Brickhouse", UIImage.FromFile("./logos/brickhouse.png"), UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Wynwood", string.Empty));	
-			boardList.Add(new Board.Schema.Board ("Coyo", UIImage.FromFile("./logos/coyo.jpeg"), UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Wynwood", string.Empty));	
-			boardList.Add(new Board.Schema.Board ("Panther Coffee", UIImage.FromFile("./logos/panther.JPG"), UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Wynwood", string.Empty));	
-			boardList.Add(new Board.Schema.Board ("Wood Tavern", UIImage.FromFile("./logos/wood.jpg"), UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Wynwood", string.Empty));	
-			boardList.Add(new Board.Schema.Board ("Electric Pickle", UIImage.FromFile("./logos/electricpickle.jpg"), UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Wynwood", string.Empty));	
+			boardList.Add(new Board.Schema.Board ("Clevelander", UIImage.FromFile("./logos/clevelander.png"), UIColor.FromRGB (0, 158, 216), UIColor.FromRGB (158, 208, 96), "South Beach", string.Empty));
+			boardList.Add(new Board.Schema.Board ("Fat Tuesdays", UIImage.FromFile("./logos/fattuesdays.jpg"), UIColor.FromRGB (52, 59, 155), UIColor.FromRGB (201, 30, 67), "South Beach", string.Empty));	
+			boardList.Add(new Board.Schema.Board ("LIV", UIImage.FromFile("./logos/liv.jpg"), UIColor.Black, UIColor.FromRGB (20,20,20), "South Beach", string.Empty));
+			boardList.Add(new Board.Schema.Board ("Mangos", UIImage.FromFile("./logos/mangos.png"), UIColor.FromRGB (240, 35, 0), UIColor.FromRGB (0, 168, 67), "South Beach", string.Empty));
+			boardList.Add(new Board.Schema.Board ("Coyo", UIImage.FromFile("./logos/coyo.jpeg"), UIColor.FromRGB (33, 58, 171), UIColor.FromRGB (100, 215, 223), "Wynwood", string.Empty));	
+			boardList.Add(new Board.Schema.Board ("Mansion", UIImage.FromFile("./logos/mansion.jpg"), UIColor.Black, UIColor.FromRGB (20,20,20), "South Beach", string.Empty));
+			boardList.Add(new Board.Schema.Board ("Nikki Beach", UIImage.FromFile("./logos/nikki.jpg"), UIColor.FromRGB (1, 73, 159), UIColor.White, "South Beach", string.Empty));
+			boardList.Add(new Board.Schema.Board ("Wet Willies", UIImage.FromFile("./logos/wetwillies.jpg"), UIColor.Black, UIColor.White, "South Beach", string.Empty));	
+			boardList.Add(new Board.Schema.Board ("Brickhouse", UIImage.FromFile("./logos/brickhouse.png"), UIColor.FromRGB(35, 30, 32), UIColor.Black, "Wynwood", string.Empty));	
+			boardList.Add(new Board.Schema.Board ("Panther Coffee", UIImage.FromFile("./logos/panther.JPG"), UIColor.Black, UIColor.FromRGB (20,20,20), "Wynwood", string.Empty));	
+			boardList.Add(new Board.Schema.Board ("Wood Tavern", UIImage.FromFile("./logos/wood.jpg"), UIColor.Black, UIColor.FromRGB (20,20,20), "Wynwood", string.Empty));	
+			boardList.Add(new Board.Schema.Board ("Electric Pickle", UIImage.FromFile("./logos/electricpickle.jpg"), UIColor.Black, UIColor.FromRGB (20,20,20), "Wynwood", string.Empty));	
 
 			return boardList;
 		}  
@@ -125,22 +122,19 @@ namespace Board.Screens
 
 			boardIcon.AddSubview (boardImage);
 
-			UIImageView circle = new UIImageView (new CGRect(0,0,autosize,autosize));
-			circle.Center = new CGPoint(autosize/2, autosize/2);
-			circle.Image = circleImage;
-
 			//boardIcon.AddSubview (circle);
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (sideMenuIsUp)
 				{sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return;}
 
-				BoardInterface boardInterface = new BoardInterface(board, false);
-				if (map != null)
+				if (!blockTap)
 				{
+					blockTap = true;
+					AppDelegate.boardInterface = new BoardInterface(board, false);
+					NavigationController.PushViewController(AppDelegate.boardInterface, true);
 					map.RemoveObserver (this, new NSString ("myLocation"));
 				}
-				NavigationController.PushViewController(boardInterface, true);
 			});
 
 			boardIcon.AddGestureRecognizer (tap);
@@ -152,7 +146,6 @@ namespace Board.Screens
 		private void LoadContent()
 		{
 			thumbSize = AppDelegate.ScreenWidth / 4;
-			circleImage = UIImage.FromFile ("./screems/home/circle.png");
 			content = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			List<Board.Schema.Board> boardList = GenerateBoardList ();
 			boardList = boardList.OrderBy(o=>o.Location).ToList();
@@ -231,34 +224,22 @@ namespace Board.Screens
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).Y > buttonLocations[0]-35 && tg.LocationInView(this.View).Y < buttonLocations[0]+35 ){
 					BusinessScreen screen = new BusinessScreen();
-					if (map != null)
-					{
-						map.RemoveObserver (this, new NSString ("myLocation"));
-					}
+					map.RemoveObserver (this, new NSString ("myLocation"));
 					NavigationController.PushViewController(screen, false);
 				}
 				else if (tg.LocationInView(this.View).Y > buttonLocations[1]-35 && tg.LocationInView(this.View).Y < buttonLocations[1]+35){
 					SettingsScreen screen = new SettingsScreen();
-					if (map != null)
-					{
-						map.RemoveObserver (this, new NSString ("myLocation"));
-					}
+					map.RemoveObserver (this, new NSString ("myLocation"));
 					NavigationController.PushViewController(screen, false);
 				}
 				else if (tg.LocationInView(this.View).Y > buttonLocations[2]-35 && tg.LocationInView(this.View).Y < buttonLocations[2]+35){
 					SupportScreen screen = new SupportScreen();
-					if (map != null)
-					{
-						map.RemoveObserver (this, new NSString ("myLocation"));
-					}
+					map.RemoveObserver (this, new NSString ("myLocation"));
 					NavigationController.PushViewController(screen, false);
 				}
 				else if (tg.LocationInView(this.View).Y > buttonLocations[3]-35 && tg.LocationInView(this.View).Y < buttonLocations[3]+35){
 					InviteScreen screen = new InviteScreen();
-					if (map != null)
-					{
-						map.RemoveObserver (this, new NSString ("myLocation"));
-					}
+					map.RemoveObserver (this, new NSString ("myLocation"));
 					NavigationController.PushViewController(screen, false);
 				}
 				HideSideMenu();

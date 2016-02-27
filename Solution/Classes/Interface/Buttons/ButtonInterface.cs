@@ -4,7 +4,7 @@ using UIKit;
 
 namespace Board.Interface.Buttons
 {
-	public class ButtonInterface
+	public static class ButtonInterface
 	{
 		// buttons are square-shaped and must be the same height all-around
 		// its height is hardcoded
@@ -12,16 +12,16 @@ namespace Board.Interface.Buttons
 
 		static ActionsButtonSet actionsButtonSet;
 		static ConfirmationButtonSet confirmationButtonSet;
-		static NavigationButton navigationButton;
+		public static NavigationButton navigationButton;
 
-		public ButtonInterface(Action refreshContent, UIColor color)
+		public static void Initialize(Action refreshContent, UIColor color)
 		{
 			actionsButtonSet = new ActionsButtonSet (color);
 			confirmationButtonSet = new ConfirmationButtonSet (refreshContent);
-			navigationButton = new NavigationButton (color);
+			navigationButton = new NavigationButton (color);			
 		}
 
-		public UIView[] GetUserButtons()
+		public static UIView[] GetUserButtons()
 		{
 			int cantViews = 2;
 			UIView[] views = new UIView[cantViews];
@@ -31,7 +31,7 @@ namespace Board.Interface.Buttons
 			return views;
 		}
 
-		public UIView[] GetCreatorButtons()
+		public static UIView[] GetCreatorButtons()
 		{
 			int cantViews = 1 + ActionsButtonSet.CantButtons + ConfirmationButtonSet.CantButtons;
 			UIView[] views = new UIView[cantViews];

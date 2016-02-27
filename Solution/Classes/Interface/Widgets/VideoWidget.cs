@@ -94,7 +94,7 @@ namespace Board.Interface.Widgets
 		public void OpenEye()
 		{
 			eye.Image = openEyeImage;
-			eye.TintColor = AppDelegate.BoardOrange;
+			eye.TintColor = BoardInterface.board.MainColor;
 			eyeOpen = true;
 		}
 
@@ -112,7 +112,6 @@ namespace Board.Interface.Widgets
 			UIImage playButtonImage = UIImage.FromFile ("./boardinterface/playbutton.png");
 			CGSize imageSize = new CGSize (playButtonImage.Size.Width / 2, playButtonImage.Size.Height / 2);
 
-
 			UIImageView playButton = new UIImageView(new CGRect (frame.Width / 2 - imageSize.Width / 4, frame.Height / 2 - imageSize.Height / 4, imageSize.Width, imageSize.Height));
 
 			playButton.Image = playButtonImage;
@@ -124,10 +123,11 @@ namespace Board.Interface.Widgets
 		private UILabel CreateLikeLabel(CGRect frame)
 		{
 			UIFont likeFont = UIFont.SystemFontOfSize (20);
-			string likeText = "0";
+			Random rand = new Random ();
+			string likeText = rand.Next(16, 98).ToString();
 			CGSize likeLabelSize = likeText.StringSize (likeFont);
 			UILabel likeLabel = new UILabel(new CGRect(frame.X - likeLabelSize.Width - 4, frame.Y + 4, likeLabelSize.Width, likeLabelSize.Height));
-			likeLabel.TextColor = AppDelegate.BoardOrange;
+			likeLabel.TextColor = BoardInterface.board.MainColor;
 			likeLabel.Font = likeFont;
 			likeLabel.Text = likeText;
 			likeLabel.TextAlignment = UITextAlignment.Right;
@@ -140,8 +140,8 @@ namespace Board.Interface.Widgets
 			CGSize iconSize = new CGSize (30, 30);
 
 			UIImageView eyeView = new UIImageView(new CGRect (frame.X + 10, frame.Height - iconSize.Height - 5, iconSize.Width, iconSize.Height));
-			closedEyeImage = UIImage.FromFile ("./boardinterface/closedeye.png");
-			openEyeImage = UIImage.FromFile ("./boardinterface/openeye3.png");
+			closedEyeImage = UIImage.FromFile ("./boardinterface/widget/closedeye.png");
+			openEyeImage = UIImage.FromFile ("./boardinterface/widget/openeye.png");
 			closedEyeImage = closedEyeImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			openEyeImage = openEyeImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			eyeView.Image = closedEyeImage;
@@ -156,7 +156,7 @@ namespace Board.Interface.Widgets
 
 			UIImageView likeView = new UIImageView(new CGRect (frame.Width - iconSize.Width - 10,
 				frame.Height - iconSize.Height - 5, iconSize.Width, iconSize.Height));
-			likeView.Image = UIImage.FromFile ("./boardinterface/like.png");
+			likeView.Image = UIImage.FromFile ("./boardinterface/widget/like.png");
 			likeView.Image = likeView.Image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			likeView.TintColor = UIColor.FromRGB(140,140,140);
 
@@ -243,7 +243,7 @@ namespace Board.Interface.Widgets
 			AVPlayerItem _playerItem;
 			AVPlayerLayer _playerLayer;
 
-			_asset = AVAsset.FromUrl (NSUrl.FromString (video.Url));
+			_asset = AVAsset.FromUrl (NSUrl.FromFilename (video.Url));
 			_playerItem = new AVPlayerItem (_asset);
 			_playerItem.AudioMix = new AVAudioMix ();
 			_player = new AVPlayer (_playerItem);

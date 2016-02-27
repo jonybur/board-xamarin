@@ -19,7 +19,7 @@ namespace Board.Interface.Buttons
 
 
 			uiButton.TouchUpInside += (object sender, EventArgs e) => {
-
+				AppDelegate.boardInterface.Dispose();
 				AppDelegate.NavigationController.PopViewController (true);
 			};
 

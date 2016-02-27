@@ -8,7 +8,7 @@ using Facebook.CoreKit;
 using Google.Maps;
 using Board.Utilities;
 using Board.JsonResponses;
-
+using Board.Interface;
 using Board.Screens;
 
 namespace Board
@@ -34,6 +34,8 @@ namespace Board
 		public static UIColor BoardOrange;
 		public static UIColor BoardBlue;
 		public static UIColor BoardLightBlue;
+
+		public static BoardInterface boardInterface;
 
 		public static double Latitude;
 		public static double Longitude;

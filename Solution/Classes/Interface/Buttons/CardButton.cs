@@ -16,7 +16,7 @@ namespace Board.Interface.Buttons
 			uiButton.Frame = new CGRect (0,0, ButtonSize, ButtonSize);
 
 			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth + ButtonSize) / 2 +
-				(AppDelegate.ScreenWidth - ButtonSize) / 8 + 5, AppDelegate.ScreenHeight - ButtonSize / 2);
+				(AppDelegate.ScreenWidth - ButtonSize) / 8 + 10, AppDelegate.ScreenHeight - ButtonSize / 2);
 			
 			uiButton.TouchUpInside += (object sender, EventArgs e) => {
 				UIAlertController alert = UIAlertController.Create(null, "Select the type of component", UIAlertControllerStyle.ActionSheet);

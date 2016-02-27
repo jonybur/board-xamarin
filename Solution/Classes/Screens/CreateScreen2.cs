@@ -90,19 +90,13 @@ namespace Board.Screens
 			preview_mainLogo = GenerateBoardThumb (board.Image, new CGPoint (AppDelegate.ScreenWidth / 2, (boardView.Frame.Height / 2) - 5 - pushDown), false);
 			boardView.AddSubview (preview_mainLogo);
 
-			UIImage contentdemo = UIImage.FromFile ("./boardinterface/backgrounds/contentdemo2.png");
-			UIImageView contentDemo = new UIImageView (contentdemo);
-			contentDemo.Frame = new CGRect(0, 0, boardView.Frame.Width, boardView.Frame.Height - 25);
-
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				BoardInterface boardInterface = new BoardInterface(board, true);
-				NavigationController.PushViewController(boardInterface, true);
+				AppDelegate.boardInterface = new BoardInterface(board, true);
+				NavigationController.PushViewController(AppDelegate.boardInterface, true);
 			});
 
 			boardView.AddGestureRecognizer (tap);
 			boardView.UserInteractionEnabled = true;
-
-			boardView.AddSubview (contentDemo);
 
 			return boardView;
 		}

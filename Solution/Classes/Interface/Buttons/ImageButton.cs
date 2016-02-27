@@ -1,5 +1,4 @@
 using System;
-using Board.Picker;
 using CoreGraphics;
 using UIKit;
 
@@ -11,7 +10,7 @@ namespace Board.Interface.Buttons
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			UIImage uiImage = UIImage.FromFile ("./boardinterface/buttons/picture6.png");
+			UIImage uiImage = UIImage.FromFile ("./boardinterface/buttons/picture.png");
 
 			uiButton = new UIButton (UIButtonType.Custom);
 			uiButton.SetImage (uiImage, UIControlState.Normal);

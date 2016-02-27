@@ -10,6 +10,7 @@ namespace Board.Interface.Buttons
 	public class NavigationButton : Button
 	{
 		private static UILabel numberLabel;
+		private static int contentAmmount;
 
 		private void SetImage (string buttonName)
 		{
@@ -19,7 +20,7 @@ namespace Board.Interface.Buttons
 
 		public NavigationButton (UIColor color)
 		{
-			int content = 3;
+			int content = 1;
 			int highlitedContent = 0, cycle = 0;
 
 			uiButton = new UIButton (UIButtonType.Custom);
@@ -39,10 +40,6 @@ namespace Board.Interface.Buttons
 
 			// TODO: moves from content to content, improve code
 			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer  (tg => {
-
-				content--;
-				RefreshNavigationButtonText(content);	
-
 				if (BoardInterface.zoomingScrollView.ZoomScale < 1)
 				{
 					BoardInterface.ZoomScrollview();
@@ -126,6 +123,33 @@ namespace Board.Interface.Buttons
 			uiButton.AddGestureRecognizer (longPressGesture);
 		}
 
+		public void RefreshNavigationButtonText()
+		{
+			// kills the current navText
+			if (numberLabel != null) {
+				numberLabel.RemoveFromSuperview ();
+				numberLabel.Dispose ();
+			}	
+
+			// if content is 0 then open eye
+			if (contentAmmount <= 0) {
+				SetImage ("openeye");
+				return;
+			}
+
+			// otherwise, instanciate new text
+
+			UIFont font = UIFont.SystemFontOfSize (12);
+			contentAmmount--;
+			numberLabel = new UILabel (new CGRect (0, ButtonSize / 2 - 14, ButtonSize, 14));
+			numberLabel.Font = font;
+			numberLabel.TextAlignment = UITextAlignment.Center;
+			numberLabel.Text = contentAmmount.ToString ();
+			numberLabel.TextColor = UIColor.Black;
+
+			uiButton.AddSubview (numberLabel);
+		}
+
 		public void RefreshNavigationButtonText(int content)
 		{
 			// kills the current navText
@@ -143,7 +167,7 @@ namespace Board.Interface.Buttons
 			// otherwise, instanciate new text
 
 			UIFont font = UIFont.SystemFontOfSize (12);
-
+			contentAmmount = content;
 			numberLabel = new UILabel (new CGRect (0, ButtonSize / 2 - 14, ButtonSize, 14));
 			numberLabel.Font = font;
 			numberLabel.TextAlignment = UITextAlignment.Center;

@@ -10,12 +10,12 @@ namespace Board.Interface.Buttons
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			UIImage image = UIImage.FromFile ("./boardinterface/buttons/cancel3.png");
+			UIImage image = UIImage.FromFile ("./boardinterface/strokebuttons/cancel_3px.png");
 			uiButton = new UIButton (UIButtonType.Custom);
 			uiButton.SetImage (image, UIControlState.Normal);
 
 			uiButton.Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
-			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth - ButtonSize) / 4, AppDelegate.ScreenHeight - ButtonSize /2 - 10);
+			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth - ButtonSize) / 4, AppDelegate.ScreenHeight - ButtonSize / 2);
 
 
 			uiButton.TouchUpInside += (object sender, EventArgs e) => {
