@@ -10,17 +10,6 @@ namespace Board.Utilities
 {
 	public static class CommonUtils
 	{
-		public static UIImage ResizeImage(UIImage imageToResize, CGSize desiredSize)
-		{
-			float scale = (float)(desiredSize.Width / imageToResize.Size.Width) + .1f ;
-
-			UIImageView imageView = new UIImageView (imageToResize);
-			UIGraphics.BeginImageContextWithOptions (imageView.Frame.Size, false, scale);
-			imageView.DrawRect (new CGRect (0, 0, imageView.Frame.Width, imageView.Frame.Height), new UIViewPrintFormatter());
-			UIImage image = UIGraphics.GetImageFromCurrentImageContext ();
-			return image;
-		}
-
 		public static string UIColorToHex(UIColor color)
 		{
 			nfloat red; nfloat green; nfloat blue; nfloat alpha; 
@@ -32,6 +21,16 @@ namespace Board.Utilities
 
 			string hex = ired.ToString("x2") + igreen.ToString("x2") + iblue.ToString("x2");
 			return hex;
+		}
+
+		// resize the image (without trying to maintain aspect ratio)
+		public static UIImage ResizeImage(UIImage sourceImage, CGSize newSize)
+		{
+			UIGraphics.BeginImageContext(newSize);
+			sourceImage.Draw(new CGRect(0, 0, newSize.Width, newSize.Height));
+			var resultImage = UIGraphics.GetImageFromCurrentImageContext();
+			UIGraphics.EndImageContext();
+			return resultImage;
 		}
 
 		public static UIColor HexToUIColor(string hex)

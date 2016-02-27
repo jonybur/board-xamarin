@@ -19,7 +19,7 @@ namespace Board.Interface.Buttons
 			uiButton.Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
 			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth - ButtonSize) / 8 * 3 - 10, AppDelegate.ScreenHeight - ButtonSize / 2);
 
-			uiButton.TouchUpInside += (sender, e) => {
+			eventHandlers.Add ((sender, e) => {
 				UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
 
 				alert.AddAction (UIAlertAction.Create ("Photo Library", UIAlertActionStyle.Default, OpenPhotoGallery));
@@ -27,7 +27,7 @@ namespace Board.Interface.Buttons
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 
 				AppDelegate.NavigationController.PresentViewController (alert, true, null);
-			};
+			});
 		}
 
 		private void OpenPhotoGallery(UIAlertAction action)

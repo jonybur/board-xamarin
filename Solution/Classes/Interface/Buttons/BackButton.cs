@@ -1,4 +1,3 @@
-using System;
 using CoreGraphics;
 using UIKit;
 
@@ -16,12 +15,12 @@ namespace Board.Interface.Buttons
 			uiButton.Frame = new CGRect (0,0, ButtonSize, ButtonSize);
 			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth - ButtonSize) / 8,
 				AppDelegate.ScreenHeight - ButtonSize / 2);
-
-
-			uiButton.TouchUpInside += (object sender, EventArgs e) => {
+			
+			eventHandlers.Add ((sender, e) => {
+				ButtonInterface.DisableAllLayouts();
 				AppDelegate.boardInterface.Dispose();
 				AppDelegate.NavigationController.PopViewController (true);
-			};
+			});
 
 		}
 	}

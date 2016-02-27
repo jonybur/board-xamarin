@@ -23,9 +23,8 @@ namespace Board.Interface.Buttons
 
 		public static UIView[] GetUserButtons()
 		{
-			int cantViews = 2;
+			const int cantViews = 2;
 			UIView[] views = new UIView[cantViews];
-			CGRect frame = new CGRect (0, AppDelegate.ScreenHeight - Button.ButtonSize, AppDelegate.ScreenWidth, Button.ButtonSize);
 			views [0] = actionsButtonSet.arrayButtons [0].uiButton;
 			views [1] = navigationButton.uiButton;
 			return views;
@@ -35,7 +34,6 @@ namespace Board.Interface.Buttons
 		{
 			int cantViews = 1 + ActionsButtonSet.CantButtons + ConfirmationButtonSet.CantButtons;
 			UIView[] views = new UIView[cantViews];
-			CGRect frame = new CGRect (0, AppDelegate.ScreenHeight - Button.ButtonSize, AppDelegate.ScreenWidth, Button.ButtonSize);
 			views [0] = actionsButtonSet.arrayButtons [0].uiButton;
 			views [1] = actionsButtonSet.arrayButtons [1].uiButton;
 			views [2] = actionsButtonSet.arrayButtons [2].uiButton;
@@ -46,17 +44,17 @@ namespace Board.Interface.Buttons
 			return views;
 		}
 
-		private static void DisableAllLayouts()
+		public static void DisableAllLayouts()
 		{
 			actionsButtonSet.DisableAllButtons ();
 			confirmationButtonSet.DisableAllButtons ();
 		}
 
-		public static void SwitchButtonLayout(int NewLayout)
+		public static void SwitchButtonLayout(int newLayout)
 		{
 			DisableAllLayouts ();
 
-			switch (NewLayout) {
+			switch (newLayout) {
 			case (int)ButtonLayout.ConfirmationBar:
 					confirmationButtonSet.EnableAllButtons ();
 					break;

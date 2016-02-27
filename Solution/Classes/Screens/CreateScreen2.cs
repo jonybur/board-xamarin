@@ -38,9 +38,15 @@ namespace Board.Screens
 			board = _board;
 		}
 
-		public override void DidReceiveMemoryWarning ()
+		public override void ViewDidAppear(bool animated)
 		{
-			base.DidReceiveMemoryWarning ();
+			// Keyboard popup
+			NSNotificationCenter.DefaultCenter.AddObserver
+			(UIKeyboard.DidShowNotification,KeyBoardUpNotification);
+
+			// Keyboard Down
+			NSNotificationCenter.DefaultCenter.AddObserver
+			(UIKeyboard.WillHideNotification,KeyBoardDownNotification);
 		}
 
 		public override void ViewDidLoad ()
@@ -54,14 +60,6 @@ namespace Board.Screens
 			ColorSquarePosition2 = new CGPoint (145, 461);
 
 			InitializeInterface ();
-
-			// Keyboard popup
-			NSNotificationCenter.DefaultCenter.AddObserver
-			(UIKeyboard.DidShowNotification,KeyBoardUpNotification);
-
-			// Keyboard Down
-			NSNotificationCenter.DefaultCenter.AddObserver
-			(UIKeyboard.WillHideNotification,KeyBoardDownNotification);
 		}
 
 		private UIImageView GeneratePreviewBoard()
@@ -347,13 +345,36 @@ namespace Board.Screens
 			banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
 			banner.Image = bannerImage;
 
+
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
+					
 					NavigationController.PopViewController(false);
+
+
+					// Keyboard popup
+					NSNotificationCenter.DefaultCenter.RemoveObserver
+					(UIKeyboard.DidShowNotification);
+
+					// Keyboard Down
+					NSNotificationCenter.DefaultCenter.RemoveObserver
+					(UIKeyboard.WillHideNotification);
+
 				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 4) * 3){
+					
 					CreateScreen3 createScreen3 = new CreateScreen3(board);
 					NavigationController.PushViewController(createScreen3, false);
+
+
+					// Keyboard popup
+					NSNotificationCenter.DefaultCenter.RemoveObserver
+					(UIKeyboard.DidShowNotification);
+
+					// Keyboard Down
+					NSNotificationCenter.DefaultCenter.RemoveObserver
+					(UIKeyboard.WillHideNotification);
+
 				} 
 			});
 

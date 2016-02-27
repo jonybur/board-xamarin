@@ -26,9 +26,9 @@ namespace Board.Screens
 
 		}
 
-		public override void DidReceiveMemoryWarning ()
+		public override void ViewDidAppear (bool animated)
 		{
-			base.DidReceiveMemoryWarning ();
+			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
 		}
 
 		public override void ViewDidLoad ()
@@ -92,8 +92,6 @@ namespace Board.Screens
 			}
 
 			map = MapView.FromCamera (new CGRect (0, AppDelegate.ScreenHeight - mapSize, AppDelegate.ScreenWidth, mapSize), camera);
-
-			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
 
 			map.Settings.CompassButton = true;
 			map.Settings.MyLocationButton = true;
@@ -271,6 +269,8 @@ namespace Board.Screens
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					NavigationController.PopViewController(false);
+
+					map.RemoveObserver (this, new NSString ("myLocation"));
 				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 4) * 3 && nextEnabled){
 					Board.Schema.Board newBoard = new Board.Schema.Board();
 					newBoard.Location = resultAddress.formatted_address;
@@ -278,6 +278,8 @@ namespace Board.Screens
 						
 					CreateScreen2 createScreen2 = new CreateScreen2(newBoard);
 					NavigationController.PushViewController(createScreen2, false);
+
+					map.RemoveObserver (this, new NSString ("myLocation"));
 				}
 			});
 

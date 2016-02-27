@@ -61,8 +61,6 @@ namespace Board.Interface
 
 		public override void ViewDidAppear(bool animated)
 		{
-			InitializeInterface ();
-
 			RefreshContent();
 		}
 
@@ -81,6 +79,8 @@ namespace Board.Interface
 
 			BoardEvent bevent = new BoardEvent ("La Roxtar", UIImage.FromFile("./demo/events/0.jpg"), new DateTime(2016, 11, 10),0, new CGRect (1500, 70, 0, 0), null);
 			ListEvents.Add (bevent);
+
+			InitializeInterface ();
 
 			//StorageController.Initialize ();
 
@@ -329,6 +329,8 @@ namespace Board.Interface
 			} else {
 				this.View.AddSubviews (ButtonInterface.GetUserButtons ());
 			}
+
+			ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.NavigationBar);
 		}
 
 		public void RemoveAllContent()

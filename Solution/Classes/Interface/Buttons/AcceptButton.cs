@@ -8,8 +8,6 @@ namespace Board.Interface.Buttons
 {
 	public class AcceptButton : Button
 	{
-		private EventHandler touchUpInside;
-
 		public AcceptButton (Action refreshPictures)
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
@@ -21,7 +19,7 @@ namespace Board.Interface.Buttons
 			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth + ButtonSize) / 2 +
 				(AppDelegate.ScreenWidth - ButtonSize) / 4, AppDelegate.ScreenHeight - ButtonSize / 2);
 			
-			touchUpInside = (sender, e) => {
+			eventHandlers.Add ((sender, e) => {
 				
 				// remove interaction capabilities from the preview
 				Preview.RemoveUserInteraction ();
@@ -67,21 +65,9 @@ namespace Board.Interface.Buttons
 				Preview.RemoveFromSuperview ();
 				// refreshes the scrollview
 				refreshPictures ();
-			};
+			});
 
 			uiButton.Alpha = 0f;
-
-			SuscribeToEvent ();
-		}
-
-		private void SuscribeToEvent ()
-		{
-			uiButton.TouchUpInside += touchUpInside;
-		}
-
-		private void UnsuscribeToEvent()
-		{
-			uiButton.TouchUpInside -= touchUpInside;
 		}
 	}
 }

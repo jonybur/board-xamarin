@@ -18,7 +18,7 @@ namespace Board.Interface.Buttons
 			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth + ButtonSize) / 2 +
 				(AppDelegate.ScreenWidth - ButtonSize) / 8 + 10, AppDelegate.ScreenHeight - ButtonSize / 2);
 			
-			uiButton.TouchUpInside += (object sender, EventArgs e) => {
+			eventHandlers.Add ((sender, e) => {
 				UIAlertController alert = UIAlertController.Create(null, "Select the type of component", UIAlertControllerStyle.ActionSheet);
 
 				alert.AddAction (UIAlertAction.Create ("Announcement", UIAlertActionStyle.Default, CreateAnnouncement));
@@ -27,7 +27,7 @@ namespace Board.Interface.Buttons
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 
 				AppDelegate.NavigationController.PresentViewController (alert, true, null);
-			};
+			});
 		}
 
 		private void CreateAnnouncement(UIAlertAction act)

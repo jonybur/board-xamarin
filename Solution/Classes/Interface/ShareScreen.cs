@@ -19,7 +19,7 @@ namespace Board.Interface
 	public class ShareScreen : UIViewController
 	{
 		UIImageView banner;
-		UIImageView nextbutton;
+		UIButton nextbutton;
 		UIScrollView scrollView;
 		PlaceholderTextView textview;
 		UILabel instructionsLabel;
@@ -58,7 +58,7 @@ namespace Board.Interface
 			InitializeInterface ();
 		}
 
-		private async void InitializeInterface()
+		private void InitializeInterface()
 		{
 			LoadContent ();
 			LoadBanner ();
@@ -325,11 +325,11 @@ namespace Board.Interface
 		{
 			UIImage mapImage = UIImage.FromFile ("./screens/share/next/" + AppDelegate.PhoneVersion + ".jpg");;
 
-			nextbutton = new UIImageView(new CGRect(0,AppDelegate.ScreenHeight - (mapImage.Size.Height / 2),
+			nextbutton = new UIButton(new CGRect(0,AppDelegate.ScreenHeight - (mapImage.Size.Height / 2),
 				mapImage.Size.Width / 2, mapImage.Size.Height / 2));
-			nextbutton.Image = mapImage;
+			nextbutton.SetImage(mapImage, UIControlState.Normal);
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+			nextbutton.TouchUpInside += (sender, e) => {
 				NavigationController.PopViewController(false);
 
 				if (FBActive)
@@ -354,10 +354,8 @@ namespace Board.Interface
 
 				// switches to confbar
 				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
-			});
+			};
 
-			nextbutton.UserInteractionEnabled = true;
-			nextbutton.AddGestureRecognizer (tap);
 			nextbutton.Alpha = .95f;
 			View.AddSubview (nextbutton);
 		}

@@ -17,9 +17,9 @@ namespace Board.Interface.Buttons
 			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth + ButtonSize) / 2 + 
 				(AppDelegate.ScreenWidth - ButtonSize) / 8 * 3 - 5, AppDelegate.ScreenHeight - ButtonSize / 2 - 10);
 			
-			uiButton.TouchUpInside += (object sender, EventArgs e) => {
+			eventHandlers.Add ((sender, e) => {
 				
-			};
+			});
 		}
 	}
 }

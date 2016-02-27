@@ -51,6 +51,7 @@ namespace Board.Interface
 			TypeOfPreview = (int)Type.Picture;
 
 			Picture picture = new Picture ();
+
 			picture.Image = image;
 
 			pictureWidget = new PictureWidget (picture);
