@@ -6,26 +6,11 @@ using UIKit;
 
 namespace Board.Interface.Widgets
 {
-	public class EventWidget
+	public class EventWidget : Widget
 	{
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
-		private UIView uiView;
-		public UIView View
-		{
-			get { return uiView; }
-		}
-
 		private BoardEvent boardEvent;
-
-		UIImageView eye;
-		UIImage closedEyeImage;
-		UIImage openEyeImage;
-
-		private bool eyeOpen;
-		public bool EyeOpen{
-			get { return eyeOpen; }
-		}
 
 		public BoardEvent BoardEvent
 		{
@@ -48,25 +33,25 @@ namespace Board.Interface.Widgets
 
 			// mounting
 			UIImageView mounting = CreateMounting (totalRect);
-			uiView = new UIView(mounting.Frame);
-			uiView.AddSubviews (mounting, calendarBox, pictureBox);
+			View = new UIView(mounting.Frame);
+			View.AddSubviews (mounting, calendarBox, pictureBox);
 
 			// like
 			UIImageView like = CreateLike (mounting.Frame);
-			uiView.AddSubview (like);
+			View.AddSubview (like);
 
 			// like label
 
 			UILabel likeLabel = CreateLikeLabel (like.Frame);
-			uiView.AddSubview (likeLabel);
+			View.AddSubview (likeLabel);
 
 			// eye
 			eye = CreateEye (mounting.Frame);
 
-			uiView.AddSubview (eye);
+			View.AddSubview (eye);
 
-			uiView.Frame = new CGRect (boardEvent.Frame.X, boardEvent.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
-			uiView.Transform = CGAffineTransform.MakeRotation(boardEvent.Rotation);
+			View.Frame = new CGRect (boardEvent.Frame.X, boardEvent.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
+			View.Transform = CGAffineTransform.MakeRotation(boardEvent.Rotation);
 
 			eyeOpen = false;
 		}
@@ -138,13 +123,6 @@ namespace Board.Interface.Widgets
 			return box;
 		}
 
-		public void OpenEye()
-		{
-			eye.Image = openEyeImage;
-			eye.TintColor = BoardInterface.board.MainColor;
-			eyeOpen = true;
-		}
-
 		private UIImageView CreateMounting(CGRect frame)
 		{
 			CGRect mountingFrame = new CGRect (0, 0, frame.Width + 20, frame.Height + 50);
@@ -174,11 +152,7 @@ namespace Board.Interface.Widgets
 			CGSize iconSize = new CGSize (30, 30);
 
 			UIImageView eyeView = new UIImageView(new CGRect (frame.X + 10, frame.Height - iconSize.Height - 5, iconSize.Width, iconSize.Height));
-			closedEyeImage = UIImage.FromFile ("./boardinterface/widget/closedeye.png");
-			openEyeImage = UIImage.FromFile ("./boardinterface/widget/openeye.png");
-			closedEyeImage = closedEyeImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-			openEyeImage = openEyeImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-			eyeView.Image = closedEyeImage;
+			eyeView.Image = Widget.ClosedEyeImage;
 			eyeView.TintColor = UIColor.FromRGB(140,140,140);
 
 			return eyeView;
@@ -215,7 +189,7 @@ namespace Board.Interface.Widgets
 
 		public void SetFrame(CGRect frame)
 		{
-			uiView.Frame = frame;
+			View.Frame = frame;
 		}
 
 	}

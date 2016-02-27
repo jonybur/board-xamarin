@@ -48,11 +48,7 @@ namespace Board.Interface
 		public static List<Video> ListVideos;
 		public static List<BoardEvent> ListEvents;
 
-		public static List<PictureWidget> ListPictureWidgets;
-		public static List<AnnouncementWidget> ListAnnouncementWidgets;
-		public static List<VideoWidget> ListVideoWidgets;
-		public static List<EventWidget> ListEventWidgets;
-
+		public static List<Widget> ListWidgets;
 
 		public BoardInterface (Board.Schema.Board _board, bool _testMode) : base ("Board", null){
 			board = _board;
@@ -207,57 +203,18 @@ namespace Board.Interface
 		{
 			scrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 
-			scrollView.Scrolled += (object sender, EventArgs e) => {
+			scrollView.Scrolled += (sender, e) => {
 				// call from here "open eye" function
 
-				if (!(ListPictureWidgets == null || ListPictureWidgets.Count == 0))
+				if (!(ListWidgets == null || ListWidgets.Count == 0))
 				{
-					PictureWidget pic = ListPictureWidgets.Find(item => (item.View.Frame.X + item.View.Frame.Width) > scrollView.ContentOffset.X &&
+					Widget wid = ListWidgets.Find(item => (item.View.Frame.X + item.View.Frame.Width) > scrollView.ContentOffset.X &&
 												(item.View.Frame.X + item.View.Frame.Width) < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth) &&
 												!item.EyeOpen);
 
-					if (pic != null)
+					if (wid != null)
 					{
-						Thread thread = new Thread(() => OpenEye(pic));
-						thread.Start();
-					}
-				}
-
-				if (!(ListVideoWidgets == null || ListVideoWidgets.Count == 0))
-				{
-					VideoWidget vid = ListVideoWidgets.Find(item => (item.View.Frame.X + item.View.Frame.Width) > scrollView.ContentOffset.X &&
-						(item.View.Frame.X + item.View.Frame.Width) < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth) &&
-						!item.EyeOpen);
-
-					if (vid != null)
-					{
-						Thread thread = new Thread(() => OpenEye(vid));
-						thread.Start();
-					}
-				}
-
-				if (!(ListAnnouncementWidgets == null || ListAnnouncementWidgets.Count == 0))
-				{
-					AnnouncementWidget ann = ListAnnouncementWidgets.Find(item => (item.View.Frame.X + item.View.Frame.Width) > scrollView.ContentOffset.X &&
-						(item.View.Frame.X + item.View.Frame.Width) < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth) &&
-						!item.EyeOpen);
-
-					if (ann != null)
-					{
-						Thread thread = new Thread(() => OpenEye(ann));
-						thread.Start();
-					}
-				}
-
-				if (!(ListEventWidgets == null || ListEventWidgets.Count == 0))
-				{
-					EventWidget ev = ListEventWidgets.Find(item => (item.View.Frame.X + item.View.Frame.Width) > scrollView.ContentOffset.X &&
-						(item.View.Frame.X + item.View.Frame.Width) < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth) &&
-						!item.EyeOpen);
-
-					if (ev != null)
-					{
-						Thread thread = new Thread(() => OpenEye(ev));
+						Thread thread = new Thread(() => OpenEye(wid));
 						thread.Start();
 					}
 				}
@@ -270,31 +227,11 @@ namespace Board.Interface
 			View.AddSubview (zoomingScrollView);
 		}
 
-		private void OpenEye(PictureWidget picWidget)
-		{
-			Thread.Sleep (750);
-			InvokeOnMainThread(picWidget.OpenEye);
-			InvokeOnMainThread(ButtonInterface.navigationButton.RefreshNavigationButtonText);
-		}
 
-		private void OpenEye(VideoWidget vidWidget)
+		private void OpenEye(Widget widget)
 		{
 			Thread.Sleep (750);
-			InvokeOnMainThread(vidWidget.OpenEye);
-			InvokeOnMainThread(ButtonInterface.navigationButton.RefreshNavigationButtonText);
-		}
-
-		private void OpenEye(AnnouncementWidget annWidget)
-		{
-			Thread.Sleep (750);
-			InvokeOnMainThread(annWidget.OpenEye);
-			InvokeOnMainThread(ButtonInterface.navigationButton.RefreshNavigationButtonText);
-		}
-
-		private void OpenEye(EventWidget evWidget)
-		{
-			Thread.Sleep (750);
-			InvokeOnMainThread(evWidget.OpenEye);
+			InvokeOnMainThread(widget.OpenEye);
 			InvokeOnMainThread(ButtonInterface.navigationButton.RefreshNavigationButtonText);
 		}
 
@@ -349,10 +286,7 @@ namespace Board.Interface
 
 			GenerateTestPictures ();
 
-			ListPictureWidgets = new List<PictureWidget> ();
-			ListVideoWidgets = new List<VideoWidget> ();
-			ListAnnouncementWidgets = new List<AnnouncementWidget> ();
-			ListEventWidgets = new List<EventWidget> ();
+			ListWidgets = new List<Widget> ();
 
 			foreach (Picture p in ListPictures) {
 				DrawPictureWidget (p);
@@ -370,10 +304,7 @@ namespace Board.Interface
 				DrawEventWidget (e);
 			}
 
-			ListPictureWidgets = ListPictureWidgets.OrderBy(o=>o.View.Frame.X).ToList();
-			ListVideoWidgets = ListVideoWidgets.OrderBy(o=>o.View.Frame.X).ToList();
-			ListAnnouncementWidgets = ListAnnouncementWidgets.OrderBy(o=>o.View.Frame.X).ToList();
-			ListEventWidgets = ListEventWidgets.OrderBy(o=>o.View.Frame.X).ToList();
+			ListWidgets = ListWidgets.OrderBy(o=>o.View.Frame.X).ToList();
 		}
 
 		private void GenerateTestPictures()
@@ -387,10 +318,8 @@ namespace Board.Interface
 			AddTestVideo ("./demo/videos/1.mp4", 580, 25, -.02f);
 			AddTestPicture (UIImage.FromFile ("./demo/pictures/3.jpg"), 610, 250, .05f);
 
-
 			//AddTestPicture (UIImage.FromFile ("./demo/pictures/5.jpg"), , -.02f);
 			//AddTestPicture (UIImage.FromFile ("./demo/pictures/4.jpg"), 25, 270, -.1f);
-
 
 			//AddTestPicture (UIImage.FromFile ("./demo/pictures/6.jpg"), 25, 330, -.1f);
 			//AddTestPicture (UIImage.FromFile ("./demo/pictures/7.jpg"), 650, 310, -.02f);
@@ -440,29 +369,17 @@ namespace Board.Interface
 			componentView.UserInteractionEnabled = true;
 
 			scrollView.AddSubview (component.View);
-			ListVideoWidgets.Add (component);
+			ListWidgets.Add (component);
 		}
 
 		private void DrawPictureWidget(Picture picture)
 		{
-			PictureWidget component = new PictureWidget (picture);
+			PictureWidget widget = new PictureWidget (picture);
 
-			UIView componentView = component.View;
+			scrollView.AddSubview (widget.View);
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				if (Preview.View != null) { return; }
-
-				LookUp lookUp = new LookUp(picture);
-				NavigationController.PushViewController(lookUp, true);
-			});
-
-			componentView.AddGestureRecognizer (tap);
-			componentView.UserInteractionEnabled = true;
-
-			scrollView.AddSubview (component.View);
-			ListPictureWidgets.Add (component);
+			ListWidgets.Add (widget);
 		}
-
 
 		private void DrawEventWidget(BoardEvent boardEvent)
 		{
@@ -478,7 +395,7 @@ namespace Board.Interface
 			componentView.UserInteractionEnabled = true;
 
 			scrollView.AddSubview (component.View);
-			ListEventWidgets.Add (component);
+			ListWidgets.Add (component);
 		}
 
 
@@ -488,7 +405,7 @@ namespace Board.Interface
 
 			scrollView.AddSubview (announcementWidget.View);
 
-			ListAnnouncementWidgets.Add (announcementWidget);
+			ListWidgets.Add (announcementWidget);
 		}
 
 		private void LoadBackground()

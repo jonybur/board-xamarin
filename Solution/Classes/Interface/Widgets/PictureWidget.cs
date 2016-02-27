@@ -6,26 +6,12 @@ using UIKit;
 
 namespace Board.Interface.Widgets
 {
-	public class PictureWidget
+	public class PictureWidget : Widget
 	{
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
-		private UIView uiView;
-		public UIView View
-		{
-			get { return uiView; }
-		}
 
 		private Picture picture;
-
-		UIImageView eye;
-		UIImage closedEyeImage;
-		UIImage openEyeImage;
-
-		private bool eyeOpen;
-		public bool EyeOpen{
-			get { return eyeOpen; }
-		}
 
 		public Picture Picture
 		{
@@ -46,44 +32,47 @@ namespace Board.Interface.Widgets
 			// mounting
 
 			UIImageView mounting = CreateMounting (frame);
-			uiView = new UIView(mounting.Frame);
-			uiView.AddSubview (mounting);
+			View = new UIView(mounting.Frame);
+			View.AddSubview (mounting);
 
 			// picture
 
 			CGRect pictureFrame = new CGRect (mounting.Frame.X + 10, 10, frame.Width, frame.Height);
 			UIImageView uiv = new UIImageView (pictureFrame);
 			uiv.Image = picture.Thumbnail;
-			uiView.AddSubview (uiv);
+			View.AddSubview (uiv);
 
 			// like
 
 			UIImageView like = CreateLike (mounting.Frame);
-			uiView.AddSubview (like);
+			View.AddSubview (like);
 
 			// like label
 
 			UILabel likeLabel = CreateLikeLabel (like.Frame);
-			uiView.AddSubview (likeLabel);
+			View.AddSubview (likeLabel);
 
 			// eye
 
 			eye = CreateEye (mounting.Frame);
-			uiView.AddSubview (eye);
+			View.AddSubview (eye);
 
-			uiView.Frame = new CGRect (pic.Frame.X, pic.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
-			uiView.Transform = CGAffineTransform.MakeRotation(pic.Rotation);
+			View.Frame = new CGRect (pic.Frame.X, pic.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
+			View.Transform = CGAffineTransform.MakeRotation(pic.Rotation);
 
-			uiView.BackgroundColor = UIColor.FromRGB (250, 250, 250);
+			View.BackgroundColor = UIColor.FromRGB (250, 250, 250);
 
 			eyeOpen = false;
-		}
 
-		public void OpenEye()
-		{
-			eye.Image = openEyeImage;
-			eye.TintColor = BoardInterface.board.MainColor;
-			eyeOpen = true;
+			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+				if (Preview.View != null) { return; }
+
+				LookUp lookUp = new LookUp(picture);
+				AppDelegate.NavigationController.PushViewController(lookUp, true);
+			});
+
+			gestureRecognizers.Add (tap);
+
 		}
 
 		private UIImageView CreateMounting(CGRect frame)
@@ -115,11 +104,7 @@ namespace Board.Interface.Widgets
 			CGSize iconSize = new CGSize (30, 30);
 
 			UIImageView eyeView = new UIImageView(new CGRect (frame.X + 10, frame.Height - iconSize.Height - 5, iconSize.Width, iconSize.Height));
-			closedEyeImage = UIImage.FromFile ("./boardinterface/widget/closedeye.png");
-			openEyeImage = UIImage.FromFile ("./boardinterface/widget/openeye.png");
-			closedEyeImage = closedEyeImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-			openEyeImage = openEyeImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-			eyeView.Image = closedEyeImage;
+			eyeView.Image = Widget.ClosedEyeImage;
 			eyeView.TintColor = UIColor.FromRGB(140,140,140);
 
 			return eyeView;
@@ -185,7 +170,7 @@ namespace Board.Interface.Widgets
 
 		public void SetFrame(CGRect frame)
 		{
-			uiView.Frame = frame;
+			View.Frame = frame;
 		}
 
 	}

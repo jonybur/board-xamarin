@@ -48,6 +48,7 @@ namespace Board.Interface.Buttons
 		{
 			actionsButtonSet.DisableAllButtons ();
 			confirmationButtonSet.DisableAllButtons ();
+			navigationButton.DisableButton ();
 		}
 
 		public static void SwitchButtonLayout(int newLayout)
@@ -63,6 +64,8 @@ namespace Board.Interface.Buttons
 					actionsButtonSet.EnableAllButtons ();
 					break;
 			}
+
+			navigationButton.EnableButton ();
 		}
 
 	}

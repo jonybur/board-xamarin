@@ -9,6 +9,7 @@ namespace Board.Interface.Buttons
 	{
 		public UIButton uiButton;
 		public List<EventHandler> eventHandlers;
+		public List<UIGestureRecognizer> gestureRecognizers;
 
 		// TODO: this value must be variable depending on the screen
 		public const float ButtonSize = 45;
@@ -17,6 +18,7 @@ namespace Board.Interface.Buttons
 		{
 			uiButton = new UIButton ();
 			eventHandlers = new List<EventHandler> ();
+			gestureRecognizers = new List<UIGestureRecognizer> ();
 		}
 
 		public virtual void DisableButton()
@@ -38,12 +40,18 @@ namespace Board.Interface.Buttons
 			foreach (EventHandler e in eventHandlers) {
 				uiButton.TouchUpInside += e;
 			}
+			foreach (UIGestureRecognizer gr in gestureRecognizers) {
+				uiButton.AddGestureRecognizer(gr);
+			}
 		}
 
 		public void UnsuscribeToEvents()
 		{
 			foreach (EventHandler e in eventHandlers) {
 				uiButton.TouchUpInside -= e;
+			}
+			foreach (UIGestureRecognizer gr in gestureRecognizers) {
+				uiButton.RemoveGestureRecognizer(gr);
 			}
 		}
 	}

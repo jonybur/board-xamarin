@@ -12,26 +12,12 @@ using UIKit;
 
 namespace Board.Interface.Widgets
 {
-	public class VideoWidget
+	public class VideoWidget : Widget
 	{
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
-		private UIView uiView;
-		public UIView View
-		{
-			get { return uiView; }
-		}
 
 		private Video video;
-
-		UIImageView eye;
-		UIImage closedEyeImage;
-		UIImage openEyeImage;
-
-		private bool eyeOpen;
-		public bool EyeOpen{
-			get { return eyeOpen; }
-		}
 
 		public Video Video
 		{
@@ -52,50 +38,43 @@ namespace Board.Interface.Widgets
 			// mounting
 
 			UIImageView mounting = CreateMounting (frame);
-			uiView = new UIView(mounting.Frame);
-			uiView.AddSubview (mounting);
+			View = new UIView(mounting.Frame);
+			View.AddSubview (mounting);
 
 			// picture
 			CGRect pictureFrame = new CGRect (mounting.Frame.X + 10, 10, frame.Width, frame.Height);
 			AVPlayerLayer videoLayer = LoadVideoThumbnail (pictureFrame);
-			uiView.Layer.AddSublayer (videoLayer);
+			View.Layer.AddSublayer (videoLayer);
 
 			/*
 			UIImageView uiv = new UIImageView (pictureFrame);
 			uiv.Image = vid.Thumbnail;
-			uiView.AddSubview (uiv);
+			View.AddSubview (uiv);
 
 			// play button
 			//UIImageView playButton = CreatePlayButton (pictureFrame);
-			//uiView.AddSubview (playButton);
+			//View.AddSubview (playButton);
 			*/
 
 			// like
 
 			UIImageView like = CreateLike (mounting.Frame);
-			uiView.AddSubview (like);
+			View.AddSubview (like);
 
 			// like label
 
 			UILabel likeLabel = CreateLikeLabel (like.Frame);
-			uiView.AddSubview (likeLabel);
+			View.AddSubview (likeLabel);
 
 			// eye
 
 			eye = CreateEye (mounting.Frame);
-			uiView.AddSubview (eye);
+			View.AddSubview (eye);
 
-			uiView.Frame = new CGRect (vid.Frame.X, vid.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
-			uiView.Transform = CGAffineTransform.MakeRotation(vid.Rotation);
+			View.Frame = new CGRect (vid.Frame.X, vid.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
+			View.Transform = CGAffineTransform.MakeRotation(vid.Rotation);
 
 			eyeOpen = false;
-		}
-
-		public void OpenEye()
-		{
-			eye.Image = openEyeImage;
-			eye.TintColor = BoardInterface.board.MainColor;
-			eyeOpen = true;
 		}
 
 		private UIImageView CreateMounting(CGRect frame)
@@ -140,11 +119,7 @@ namespace Board.Interface.Widgets
 			CGSize iconSize = new CGSize (30, 30);
 
 			UIImageView eyeView = new UIImageView(new CGRect (frame.X + 10, frame.Height - iconSize.Height - 5, iconSize.Width, iconSize.Height));
-			closedEyeImage = UIImage.FromFile ("./boardinterface/widget/closedeye.png");
-			openEyeImage = UIImage.FromFile ("./boardinterface/widget/openeye.png");
-			closedEyeImage = closedEyeImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-			openEyeImage = openEyeImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-			eyeView.Image = closedEyeImage;
+			eyeView.Image = Widget.ClosedEyeImage;
 			eyeView.TintColor = UIColor.FromRGB(140,140,140);
 
 			return eyeView;
@@ -210,7 +185,7 @@ namespace Board.Interface.Widgets
 
 		public void SetFrame(CGRect frame)
 		{
-			uiView.Frame = frame;
+			View.Frame = frame;
 		}
 
 		const int NSEC_PER_SEC = 1000000000;
@@ -226,7 +201,7 @@ namespace Board.Interface.Widgets
 					time++;
 				}
 
-				uiView.InvokeOnMainThread (() => {
+				View.InvokeOnMainThread (() => {
 					_player.Seek (new CMTime (0, NSEC_PER_SEC));
 				});
 			}
