@@ -62,7 +62,7 @@ namespace Board.Interface.Widgets
 
 			View.BackgroundColor = UIColor.FromRGB (250, 250, 250);
 
-			eyeOpen = false;
+			EyeOpen = false;
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (Preview.View != null) { return; }

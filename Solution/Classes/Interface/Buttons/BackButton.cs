@@ -17,9 +17,8 @@ namespace Board.Interface.Buttons
 				AppDelegate.ScreenHeight - ButtonSize / 2);
 			
 			eventHandlers.Add ((sender, e) => {
-				ButtonInterface.DisableAllLayouts();
-				AppDelegate.boardInterface.Dispose();
 				AppDelegate.NavigationController.PopViewController (true);
+				AppDelegate.ExitBoardInterface();
 			});
 
 		}

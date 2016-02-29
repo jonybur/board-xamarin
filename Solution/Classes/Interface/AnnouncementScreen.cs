@@ -36,9 +36,6 @@ namespace Board.Interface
 		string [] publishPermissions = new [] { "publish_actions" };
 		string [] readPermissions = new [] { "pages_show_list" };
 
-		public AnnouncementScreen (){
-		}
-
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
@@ -49,7 +46,7 @@ namespace Board.Interface
 			InitializeInterface ();
 		}
 
-		private async void InitializeInterface()
+		private void InitializeInterface()
 		{
 			LoadContent ();
 			LoadBanner ();
@@ -79,7 +76,7 @@ namespace Board.Interface
 				await manager.LogInWithReadPermissionsAsync (readPermissions, this);
 			}
 
-			Facebook.CoreKit.GraphRequest graph = new GraphRequest ("me/accounts", null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
+			GraphRequest graph = new GraphRequest ("me/accounts", null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
 			graph.Start (LoadList);
 		}
 

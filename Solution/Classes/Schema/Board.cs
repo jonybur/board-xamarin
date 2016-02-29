@@ -5,7 +5,7 @@ namespace Board.Schema
 {
 	public class Board
 	{
-		public UIImage Image;
+		public UIImageView ImageView;
 		public UIColor MainColor;
 		public UIColor SecondaryColor;
 		public GoogleGeolocatorObject GeolocatorObject;
@@ -19,7 +19,7 @@ namespace Board.Schema
 
 		public Board (string name, UIImage image, UIColor mainColor, UIColor secondaryColor, string location, string creatorId)
 		{
-			Image = image;
+			ImageView = new UIImageView(image);
 			MainColor = mainColor;
 			SecondaryColor = secondaryColor;
 			Location = location;

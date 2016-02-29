@@ -6,7 +6,6 @@ using Foundation;
 using UIKit;
 
 using System.Collections.Generic;
-using System.Threading;
 
 using MediaPlayer;
 
@@ -23,13 +22,13 @@ namespace Board.Interface
 	public class BoardInterface : UIViewController
 	{
 		private Gallery gallery;
+		private NSObject orientationObserver;
 
 		const float buttonBar = 90;
 
 		public static UIImageView CenterLogo;
 		public static Board.Schema.Board board;
 
-		private NSObject orientationObserver;
 		public static UIScrollView zoomingScrollView;
 		public static UIScrollView scrollView;
 		static float TempContentOffset;
@@ -50,14 +49,19 @@ namespace Board.Interface
 
 		public static List<Widget> ListWidgets;
 
+		EventHandler scrolledEvent;
+
+		bool firstLoad;
+
 		public BoardInterface (Board.Schema.Board _board, bool _testMode) : base ("Board", null){
 			board = _board;
 			TestMode = _testMode;
+			firstLoad = true;
 		}
 
-		public override void ViewDidAppear(bool animated)
+		public override void DidReceiveMemoryWarning ()
 		{
-			RefreshContent();
+			GC.Collect ();
 		}
 
 		public override void ViewDidLoad ()
@@ -68,36 +72,44 @@ namespace Board.Interface
 			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
 			NavigationController.NavigationBarHidden = true;
 
+			InitializeLists ();
+
+			InitializeInterface ();
+		}
+
+		private void InitializeLists()
+		{
 			ListPictures = new List<Picture> ();
 			ListVideos = new List<Video> ();
 			ListAnnouncements = new List<Announcement> ();
 			ListEvents = new List<BoardEvent> ();
+			ListWidgets = new List<Widget> ();
+		}
 
-			BoardEvent bevent = new BoardEvent ("La Roxtar", UIImage.FromFile("./demo/events/0.jpg"), new DateTime(2016, 11, 10),0, new CGRect (1500, 70, 0, 0), null);
-			ListEvents.Add (bevent);
+		public override void ViewDidAppear(bool animated)
+		{
+			if (firstLoad) {
+				RefreshContent ();
 
-			InitializeInterface ();
+				SuscribeToEvents ();
 
-			//StorageController.Initialize ();
+				firstLoad = false;
+			}
+		}
 
-			//GetFromLocalDB ();
+		public void ExitBoard()
+		{
+			foreach (Widget widget in ListWidgets) {
+				if (widget is VideoWidget) {
+					(widget as VideoWidget).KillLooper ();
+				}
 
-			// updates the board
-			//RefreshContent ();
-
-			// initialices interface and place the local pictures on board
-
-			// updates the board
-			//RefreshContent ();
-
-
-			// downloads new Board content into the local DB
-			//await StorageController.UpdateLocalDB ();
-
-
-			// initializes the gallery
-			//InitializeGallery ();
-
+				widget.UnsuscribeToEvents ();
+				widget.View.RemoveFromSuperview ();
+			}
+			ListWidgets = new List<Widget> ();
+			ButtonInterface.DisableAllLayouts();
+			UnsuscribeToEvents ();
 		}
 
 		private UIImageView CreateColorView(CGRect frame, CGColor color)
@@ -115,12 +127,7 @@ namespace Board.Interface
 			return uiv;
 		}
 
-		private void GetFromLocalDB()
-		{
-			//ListPictures = StorageController.ReturnAllStoredPictures (false);
-			//ListTextboxes = StorageController.ReturnAllStoredTextboxes (false);
-		}
-
+		// deprecated for now
 		private void InitializeGallery() {
 			UIDevice.CurrentDevice.BeginGeneratingDeviceOrientationNotifications();
 
@@ -167,12 +174,8 @@ namespace Board.Interface
 
 		private void BoardEnabled(bool enabled)
 		{
-			float alpha;
-			if (enabled) {
-				alpha = 1f;
-			} else {
-				alpha = 0f;
-			}
+			float alpha = enabled ? 1f : 0f;
+
 			scrollView.Alpha = alpha;
 			zoomingScrollView.Alpha = alpha;
 
@@ -203,19 +206,18 @@ namespace Board.Interface
 		{
 			scrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 
-			scrollView.Scrolled += (sender, e) => {
+			scrolledEvent = (sender, e) => {
 				// call from here "open eye" function
 
 				if (!(ListWidgets == null || ListWidgets.Count == 0))
 				{
-					Widget wid = ListWidgets.Find(item => (item.View.Frame.X + item.View.Frame.Width) > scrollView.ContentOffset.X &&
-												(item.View.Frame.X + item.View.Frame.Width) < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth) &&
-												!item.EyeOpen);
+					Widget wid = ListWidgets.Find(item => ((item.View.Frame.X + item.View.Frame.Width) > scrollView.ContentOffset.X) &&
+						((item.View.Frame.X + item.View.Frame.Width) < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth)) &&
+						!item.EyeOpen);
 
 					if (wid != null)
 					{
-						Thread thread = new Thread(() => OpenEye(wid));
-						thread.Start();
+						OpenEye(wid);
 					}
 				}
 
@@ -230,9 +232,8 @@ namespace Board.Interface
 
 		private void OpenEye(Widget widget)
 		{
-			Thread.Sleep (750);
-			InvokeOnMainThread(widget.OpenEye);
-			InvokeOnMainThread(ButtonInterface.navigationButton.RefreshNavigationButtonText);
+			widget.OpenEye();
+			ButtonInterface.navigationButton.SubtractNavigationButtonText();
 		}
 
 		public static void ZoomScrollview()
@@ -254,7 +255,9 @@ namespace Board.Interface
 
 		private void LoadButtons()
 		{
-			ButtonInterface.Initialize (RefreshContent, board.MainColor);
+			ButtonInterface.Initialize (delegate {
+											RefreshContent ();
+										});
 
 			UIImageView buttonBackground = CreateColorView (new CGRect (0, 0, AppDelegate.ScreenWidth, 45), UIColor.White.CGColor);
 			buttonBackground.Alpha = .95f;
@@ -272,12 +275,12 @@ namespace Board.Interface
 
 		public void RemoveAllContent()
 		{
-			foreach (UIView iv in scrollView) { 
-				if (iv.Tag != (int)Tags.Background) {
-					iv.RemoveFromSuperview ();
-					iv.Dispose ();
-				}
+			foreach (Widget widget in ListWidgets) {
+				widget.UnsuscribeToEvents ();
+				widget.View.RemoveFromSuperview ();
 			}
+
+			ListWidgets = new List<Widget> ();
 		}
 
 		public void RefreshContent()
@@ -285,8 +288,6 @@ namespace Board.Interface
 			RemoveAllContent ();
 
 			GenerateTestPictures ();
-
-			ListWidgets = new List<Widget> ();
 
 			foreach (Picture p in ListPictures) {
 				DrawPictureWidget (p);
@@ -305,18 +306,36 @@ namespace Board.Interface
 			}
 
 			ListWidgets = ListWidgets.OrderBy(o=>o.View.Frame.X).ToList();
+
+			ButtonInterface.navigationButton.RefreshNavigationButtonText (ListWidgets.Count);
 		}
 
 		private void GenerateTestPictures()
 		{
-			AddTestPicture (UIImage.FromFile ("./demo/pictures/0.jpg"), 40, 20, -.03f);
+			using (UIImage img = UIImage.FromFile ("./demo/pictures/0.jpg")) {
+				AddTestPicture (img, 40, 20, -.03f);
+			}
+
 			AddTestVideo ("./demo/videos/0.mp4", 15, 245, -.01f);
 
-			AddTestPicture (UIImage.FromFile ("./demo/pictures/2.jpg"), 310, 20, 0f);
-			AddTestPicture (UIImage.FromFile ("./demo/pictures/1.jpg"), 330, 245, -.04f);
-
+			using (UIImage img = UIImage.FromFile ("./demo/pictures/2.jpg")) {
+				AddTestPicture (img, 310, 20, 0f);
+			}
+			using (UIImage img = UIImage.FromFile ("./demo/pictures/1.jpg")) {
+				AddTestPicture (img, 330, 245, -.04f);
+			}
+		
 			AddTestVideo ("./demo/videos/1.mp4", 580, 25, -.02f);
-			AddTestPicture (UIImage.FromFile ("./demo/pictures/3.jpg"), 610, 250, .05f);
+
+			using (UIImage img = UIImage.FromFile ("./demo/pictures/3.jpg")) {
+				AddTestPicture (img, 610, 250, .05f);
+			}
+
+			BoardEvent bevent;
+			using (UIImage img = UIImage.FromFile ("./demo/events/0.jpg")) {
+				bevent = new BoardEvent ("La Roxtar", img, new DateTime (2016, 11, 10), 0, new CGRect (1500, 70, 0, 0), null);
+			}
+			ListEvents.Add (bevent);
 
 			//AddTestPicture (UIImage.FromFile ("./demo/pictures/5.jpg"), , -.02f);
 			//AddTestPicture (UIImage.FromFile ("./demo/pictures/4.jpg"), 25, 270, -.1f);
@@ -351,25 +370,13 @@ namespace Board.Interface
 
 		private void DrawVideoWidget(Video video)
 		{
-			VideoWidget component = new VideoWidget (video);
+			VideoWidget widget = new VideoWidget (video);
 
-			UIView componentView = component.View;
+			scrollView.AddSubview (widget.View);
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				if (Preview.View != null) { return; }
+			widget.SuscribeToEvents ();
 
-				MPMoviePlayerController moviePlayer = new MPMoviePlayerController (NSUrl.FromFilename (video.Url));
-
-				View.AddSubview (moviePlayer.View);
-				moviePlayer.SetFullscreen (true, false);
-				moviePlayer.Play ();
-			});
-
-			componentView.AddGestureRecognizer (tap);
-			componentView.UserInteractionEnabled = true;
-
-			scrollView.AddSubview (component.View);
-			ListWidgets.Add (component);
+			ListWidgets.Add (widget);
 		}
 
 		private void DrawPictureWidget(Picture picture)
@@ -377,6 +384,8 @@ namespace Board.Interface
 			PictureWidget widget = new PictureWidget (picture);
 
 			scrollView.AddSubview (widget.View);
+
+			widget.SuscribeToEvents ();
 
 			ListWidgets.Add (widget);
 		}
@@ -410,7 +419,7 @@ namespace Board.Interface
 
 		private void LoadBackground()
 		{	
-			UIImage logo = board.Image;
+			UIImage logo = board.ImageView.Image;
 			LoadMainLogo (logo, new CGPoint(ScrollViewWidthSize/2, 0));
 
 			scrollView.BackgroundColor = board.MainColor;
@@ -444,11 +453,19 @@ namespace Board.Interface
 			zoomingScrollView.MaximumZoomScale = 1f;
 			zoomingScrollView.MinimumZoomScale = .15f;
 
-			zoomingScrollView.ViewForZoomingInScrollView += sv => {
-				return zoomingScrollView.Subviews [0];
-			};
-
 			zoomingScrollView.RemoveGestureRecognizer (zoomingScrollView.PinchGestureRecognizer);
+		}
+
+		private void SuscribeToEvents()
+		{
+			scrollView.Scrolled += scrolledEvent;
+			zoomingScrollView.ViewForZoomingInScrollView += sv => zoomingScrollView.Subviews [0];
+		}
+
+		private void UnsuscribeToEvents()
+		{
+			scrollView.Scrolled -= scrolledEvent;
+			zoomingScrollView.ViewForZoomingInScrollView -= sv => zoomingScrollView.Subviews [0];
 		}
 
 		private void LoadMainLogo(UIImage image, CGPoint ContentOffset)

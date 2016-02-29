@@ -53,7 +53,7 @@ namespace Board.Interface.Widgets
 			View.Frame = new CGRect (boardEvent.Frame.X, boardEvent.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
 			View.Transform = CGAffineTransform.MakeRotation(boardEvent.Rotation);
 
-			eyeOpen = false;
+			EyeOpen = false;
 		}
 
 		private UIImageView CreateCalendarBox()

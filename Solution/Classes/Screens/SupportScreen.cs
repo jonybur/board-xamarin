@@ -30,10 +30,14 @@ namespace Board.Screens
 
 
 		private void LoadContent()
-		{
-			UIImage mailicon = UIImage.FromFile("./screens/support/icon.png");
-			UIImageView uivmailicon = new UIImageView (mailicon);
-			uivmailicon.Frame = new CGRect (0, 0, mailicon.Size.Width / 2, mailicon.Size.Height / 2);
+		{	
+			UIImageView uivmailicon;
+
+			using (UIImage mailicon = UIImage.FromFile ("./screens/support/icon.png")) {
+				uivmailicon = new UIImageView (mailicon);
+				uivmailicon.Frame = new CGRect (0, 0, mailicon.Size.Width / 2, mailicon.Size.Height / 2);
+			}
+
 			uivmailicon.Center = new CGPoint (AppDelegate.ScreenWidth / 2, yposition);
 
 			yposition += (float)(uivmailicon.Frame.Height / 2) + 40;
@@ -120,10 +124,10 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./screens/support/banner/"+ AppDelegate.PhoneVersion +".jpg");
-
-			banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-			banner.Image = bannerImage;
+			using (UIImage bannerImage = UIImage.FromFile ("./screens/support/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
+				banner = new UIImageView (new CGRect (0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
+				banner.Image = bannerImage;
+			}
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){

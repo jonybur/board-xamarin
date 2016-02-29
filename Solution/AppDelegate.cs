@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Collections.Generic;
 
 using Foundation;
@@ -137,6 +138,14 @@ namespace Board
 
 			window.MakeKeyAndVisible ();
 
+			/*new System.Threading.Thread (() => 
+				{
+					while (true) {
+						System.Threading.Thread.Sleep (1000);
+						GC.Collect ();
+					}
+				}).Start ();*/
+
 			return true;
 		}
 
@@ -146,6 +155,12 @@ namespace Board
 			return ApplicationDelegate.SharedInstance.OpenUrl (application, url, sourceApplication, annotation);
 		}
 
+		public static void ExitBoardInterface()
+		{
+			boardInterface.ExitBoard ();
+			boardInterface.Dispose ();
+			boardInterface = null;
+		}
 
 	}
 }

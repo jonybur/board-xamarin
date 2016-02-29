@@ -14,11 +14,8 @@ namespace Board.Interface.Widgets
 		public List<UIGestureRecognizer> gestureRecognizers;
 
 		protected UIImageView eye;
-		protected bool eyeOpen;
 
-		public bool EyeOpen{
-			get { return eyeOpen; }
-		}
+		public bool EyeOpen;
 
 		public Widget()
 		{
@@ -49,7 +46,7 @@ namespace Board.Interface.Widgets
 		{
 			eye.Image = OpenEyeImage;
 			eye.TintColor = BoardInterface.board.MainColor;
-			eyeOpen = true;
+			EyeOpen = true;
 		}
 	}
 }

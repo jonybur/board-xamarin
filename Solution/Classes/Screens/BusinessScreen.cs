@@ -24,15 +24,6 @@ namespace Board.Screens
 		float thumbSize;
 		bool sideMenuIsUp;
 
-		public BusinessScreen () : base ("Board", null){
-
-		}
-
-		public override void DidReceiveMemoryWarning ()
-		{
-			base.DidReceiveMemoryWarning ();
-		}
-
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
@@ -49,26 +40,28 @@ namespace Board.Screens
 
 		public override async void ViewDidAppear(bool animated)
 		{
-			string result = CommonUtils.JsonGETRequest ("http://192.168.1.101:5000/api/user/boards?authToken="+ AppDelegate.EncodedBoardToken);
-
 			boardList = new List<Board.Schema.Board> ();
 
-			BoardResponse response = BoardResponse.Deserialize (result);
+			if (AppDelegate.ServerActive) {
+				string result = CommonUtils.JsonGETRequest ("http://192.168.1.101:5000/api/user/boards?authToken=" + AppDelegate.EncodedBoardToken);
 
-			if (response != null) {
-				foreach (BoardResponse.Datum r in response.data) {
-					// gets image from url
-					UIImage boardImage = await SaveImage (r.logoURL, r.name);
+				BoardResponse response = BoardResponse.Deserialize (result);
 
-					// gets address
-					string jsonobj = JsonHandler.GET("https://maps.googleapis.com/maps/api/geocode/json?address=" + r.address + "&key=" + AppDelegate.GoogleMapsAPIKey);
-					GoogleGeolocatorObject geolocatorObject = JsonHandler.DeserializeObject(jsonobj);
+				if (response != null) {
+					foreach (BoardResponse.Datum r in response.data) {
+						// gets image from url
+						UIImage boardImage = await SaveImage (r.logoURL, r.name);
 
-					// compiles the board, adds the geolocator object for further reference
-					Board.Schema.Board board = new Board.Schema.Board (r.name, boardImage, CommonUtils.HexToUIColor (r.mainColorCode), CommonUtils.HexToUIColor (r.secondaryColorCode), r.address, null);
-					board.GeolocatorObject = geolocatorObject;
+						// gets address
+						string jsonobj = JsonHandler.GET ("https://maps.googleapis.com/maps/api/geocode/json?address=" + r.address + "&key=" + AppDelegate.GoogleMapsAPIKey);
+						GoogleGeolocatorObject geolocatorObject = JsonHandler.DeserializeObject (jsonobj);
 
-					boardList.Add (board);
+						// compiles the board, adds the geolocator object for further reference
+						Board.Schema.Board board = new Board.Schema.Board (r.name, boardImage, CommonUtils.HexToUIColor (r.mainColorCode), CommonUtils.HexToUIColor (r.secondaryColorCode), r.address, null);
+						board.GeolocatorObject = geolocatorObject;
+
+						boardList.Add (board);
+					}
 				}
 			}
 
@@ -77,6 +70,7 @@ namespace Board.Screens
 			banner.RemoveFromSuperview ();
 			sidemenu.RemoveFromSuperview ();
 			profileView.RemoveFromSuperview ();
+
 			LoadBanner ();
 			LoadSideMenu ();
 		}
@@ -174,10 +168,10 @@ namespace Board.Screens
 			float imgx, imgy, imgw, imgh;
 
 			float autosize = thumbSize;
-			float scale = (float)(board.Image.Size.Height/board.Image.Size.Width);
+			float scale = (float)(board.ImageView.Frame.Height/board.ImageView.Frame.Width);
 
 			if (scale > 1) {
-				scale = (float)(board.Image.Size.Width/board.Image.Size.Height);
+				scale = (float)(board.ImageView.Frame.Width/board.ImageView.Frame.Height);
 				imgh = autosize;
 				imgw = autosize * scale;
 			}
@@ -203,7 +197,7 @@ namespace Board.Screens
 
 			UIImageView boardImage = new UIImageView(new CGRect (0, 0, imgw* .8f, imgh* .8f));
 			boardImage.Center = new CGPoint (autosize/2, autosize/2);
-			UIImage img = CommonUtils.ResizeImage (board.Image, boardIcon.Frame.Size);
+			UIImage img = CommonUtils.ResizeImage (board.ImageView.Image, boardIcon.Frame.Size);
 			boardImage.Image = img;
 
 			boardIcon.AddSubview (boardImage);

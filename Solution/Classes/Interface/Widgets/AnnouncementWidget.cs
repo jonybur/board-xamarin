@@ -49,7 +49,7 @@ namespace Board.Interface.Widgets
 			View.Frame = new CGRect (ann.Frame.X, ann.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
 			View.Transform = CGAffineTransform.MakeRotation(ann.Rotation);
 
-			eyeOpen = false;
+			EyeOpen = false;
 		}
 
 		private UITextView CreateText()

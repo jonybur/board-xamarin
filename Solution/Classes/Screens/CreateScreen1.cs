@@ -22,10 +22,6 @@ namespace Board.Screens
 
 		bool firstLocationUpdate = false;
 
-		public CreateScreen1 () : base ("Board", null){
-
-		}
-
 		public override void ViewDidAppear (bool animated)
 		{
 			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);

@@ -18,10 +18,9 @@ namespace Board.Interface.Buttons
 			uiButton.SetImage (image, UIControlState.Normal);
 		}
 
-		public NavigationButton (UIColor color)
+		public NavigationButton ()
 		{
-			int content = 1;
-			int highlitedContent = 0, cycle = 0;
+			int highlitedContent = 0;
 
 			uiButton = new UIButton (UIButtonType.Custom);
 
@@ -29,7 +28,6 @@ namespace Board.Interface.Buttons
 
 			uiButton.Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
 			uiButton.Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - ButtonSize / 2);
-			RefreshNavigationButtonText(content);
 
 			// deprecated, not used
 			UITapGestureRecognizer doubletap = new UITapGestureRecognizer ((tg) => {
@@ -84,13 +82,15 @@ namespace Board.Interface.Buttons
 			uiButton.UserInteractionEnabled = true;
 		}
 
-		public void RefreshNavigationButtonText()
+		public void SubtractNavigationButtonText()
 		{
 			// kills the current navText
 			if (numberLabel != null) {
 				numberLabel.RemoveFromSuperview ();
 				numberLabel.Dispose ();
 			}	
+
+			contentAmmount--;
 
 			// if content is 0 then open eye
 			if (contentAmmount <= 0) {
@@ -101,7 +101,6 @@ namespace Board.Interface.Buttons
 			// otherwise, instanciate new text
 
 			UIFont font = UIFont.SystemFontOfSize (12);
-			contentAmmount--;
 			numberLabel = new UILabel (new CGRect (0, ButtonSize / 2 - 14, ButtonSize, 14));
 			numberLabel.Font = font;
 			numberLabel.TextAlignment = UITextAlignment.Center;

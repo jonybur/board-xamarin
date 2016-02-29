@@ -314,6 +314,7 @@
     <Compile Include="Classes\Schema\BoardEvent.cs" />
     <Compile Include="Classes\Interface\Buttons\SettingsButton.cs" />
     <Compile Include="Classes\Interface\Widgets\Widget.cs" />
+    <Compile Include="Classes\Screens\Menu\BoardThumb.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -381,6 +382,7 @@
     <Folder Include="Resources\demo\events\" />
     <Folder Include="Resources\boardinterface\widget\" />
     <Folder Include="Resources\boardinterface\buttons\" />
+    <Folder Include="Classes\Screens\Menu\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

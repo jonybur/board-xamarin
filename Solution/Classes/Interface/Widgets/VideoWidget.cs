@@ -6,6 +6,7 @@ using Board.Schema;
 
 using Board.Utilities;
 using CoreGraphics;
+using MediaPlayer;
 using CoreMedia;
 using Foundation;
 using UIKit;
@@ -74,7 +75,21 @@ namespace Board.Interface.Widgets
 			View.Frame = new CGRect (vid.Frame.X, vid.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
 			View.Transform = CGAffineTransform.MakeRotation(vid.Rotation);
 
-			eyeOpen = false;
+			EyeOpen = false;
+
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
+				if (Preview.View != null) { return; }
+
+				MPMoviePlayerController moviePlayer = new MPMoviePlayerController (NSUrl.FromFilename (video.Url));
+
+				View.Superview.Superview.AddSubview(moviePlayer.View);
+
+				moviePlayer.SetFullscreen (true, false);
+				moviePlayer.Play ();
+
+			});
+
+			gestureRecognizers.Add (tap);
 		}
 
 		private UIImageView CreateMounting(CGRect frame)
@@ -188,26 +203,22 @@ namespace Board.Interface.Widgets
 			View.Frame = frame;
 		}
 
-		const int NSEC_PER_SEC = 1000000000;
-
 		private void LooperMethod()
 		{
-			while (keepLooping) {
+			while (loop) {
 
 				int time = 0;
 
 				while (time < videoDuration) {
-					System.Threading.Thread.Sleep (1000);
+					Thread.Sleep (1000);
 					time++;
 				}
 
-				View.InvokeOnMainThread (() => {
-					_player.Seek (new CMTime (0, NSEC_PER_SEC));
-				});
+				View.InvokeOnMainThread (() => _player.Seek (new CMTime (0, 1000000000)));
 			}
 		}
 
-		bool keepLooping = true;
+		bool loop;
 		Thread looper;
 		AVPlayer _player;
 		double videoDuration;
@@ -224,17 +235,27 @@ namespace Board.Interface.Widgets
 			_player = new AVPlayer (_playerItem);
 			_playerLayer = AVPlayerLayer.FromPlayer (_player);
 			_playerLayer.Frame = frame;
-			_player.Seek (new CMTime (0, NSEC_PER_SEC));
+			_player.Seek (new CMTime (0, 1000000000));
 			_player.Play ();
 			_player.Muted = true;
 			_player.Volume = 0;
 
 			videoDuration = Math.Floor(_player.CurrentItem.Asset.Duration.Seconds);
 
+			if (videoDuration > 5) {
+				videoDuration = 5;
+			}
+
+			loop = true;
 			looper = new Thread (new ThreadStart (LooperMethod));
 			looper.Start ();
 
 			return _playerLayer;
+		}
+
+		public void KillLooper()
+		{
+			loop = false;
 		}
 
 	}

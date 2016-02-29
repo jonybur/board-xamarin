@@ -85,7 +85,7 @@ namespace Board.Screens
 			preview_primaryBar = CreateColorSquare(new CGSize(boardView.Frame.Width, bottomBarHeight), new CGPoint(AppDelegate.ScreenWidth/2, (boardHeight * 630) / AppDelegate.ScreenHeight), board.MainColor.CGColor);
 			boardView.AddSubview (preview_primaryBar);
 
-			preview_mainLogo = GenerateBoardThumb (board.Image, new CGPoint (AppDelegate.ScreenWidth / 2, (boardView.Frame.Height / 2) - 5 - pushDown), false);
+			preview_mainLogo = GenerateBoardThumb (board.ImageView.Image, new CGPoint (AppDelegate.ScreenWidth / 2, (boardView.Frame.Height / 2) - 5 - pushDown), false);
 			boardView.AddSubview (preview_mainLogo);
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
@@ -130,7 +130,7 @@ namespace Board.Screens
 			boardThumb.AddGestureRecognizer (tap);
 			boardThumb.UserInteractionEnabled = true;
 
-			board.Image = UIImage.FromFile ("./screens/create/2/icon.png");
+			board.ImageView = new UIImageView(UIImage.FromFile ("./screens/create/2/icon.png"));
 			scrollView.AddSubview (boardThumb);
 
 			// color selectors + hex

@@ -107,7 +107,7 @@ namespace Board.Picker
 						(preview_icon.Subviews[0] as UIImageView).Center = new CGPoint(preview_icon.Frame.Width / 2, preview_icon.Frame.Height / 2);
 						(preview_icon.Subviews[0] as UIImageView).Image = image;
 
-						board.Image = image;
+						board.ImageView = new UIImageView(image);
 
 					}
 				}

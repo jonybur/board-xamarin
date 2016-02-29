@@ -14,11 +14,11 @@ namespace Board.Interface.Buttons
 		static ConfirmationButtonSet confirmationButtonSet;
 		public static NavigationButton navigationButton;
 
-		public static void Initialize(Action refreshContent, UIColor color)
+		public static void Initialize(Action refreshContent)
 		{
-			actionsButtonSet = new ActionsButtonSet (color);
+			actionsButtonSet = new ActionsButtonSet ();
 			confirmationButtonSet = new ConfirmationButtonSet (refreshContent);
-			navigationButton = new NavigationButton (color);			
+			navigationButton = new NavigationButton ();			
 		}
 
 		public static UIView[] GetUserButtons()
