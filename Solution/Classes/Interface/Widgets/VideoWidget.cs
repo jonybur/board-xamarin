@@ -78,15 +78,17 @@ namespace Board.Interface.Widgets
 			EyeOpen = false;
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
-				if (Preview.View != null) { return; }
+				if (Preview.View != null) {
+					return;
+				}
 
 				MPMoviePlayerController moviePlayer = new MPMoviePlayerController (NSUrl.FromFilename (video.Url));
-				View.Superview.Superview.AddSubview(moviePlayer.View);
+				View.Superview.Superview.AddSubview (moviePlayer.View);
 				moviePlayer.SetFullscreen (true, false);
 				moviePlayer.Play ();
 			});
-
 			gestureRecognizers.Add (tap);
+
 		}
 
 		private UIImageView CreateMounting(CGRect frame)
@@ -175,7 +177,7 @@ namespace Board.Interface.Widgets
 		private CGRect GetFrame(Video vid)
 		{
 			float imgw, imgh;
-			float autosize = 150;
+			float autosize = AppDelegate.Autosize;
 
 			float scale = (float)(vid.Thumbnail.Size.Width/vid.Thumbnail.Size.Height);
 

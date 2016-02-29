@@ -161,72 +161,6 @@ namespace Board.Interface
 			return pageButton;
 		}
 
-		private void LoadFacebookButton()
-		{
-			string text = "Facebook";
-
-			UIImageView logoView = new UIImageView (new CGRect (10, 10, 30, 30));
-
-			using (UIImage image = UIImage.FromFile ("./screens/share/facebook/logo.png")) {
-				logoView.Image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-			}
-
-			logoView.TintColor = UIColor.FromRGB(165, 167, 169);
-
-			UILabel label = new UILabel (new CGRect (logoView.Frame.Right, 0, AppDelegate.ScreenWidth / 2 - logoView.Frame.Right, 50));
-			label.Text = text;
-			label.Font = UIFont.SystemFontOfSize (20);
-			label.TextColor = UIColor.FromRGB(34, 36, 39);
-			label.TextAlignment = UITextAlignment.Center;
-
-			UIButton composite = new UIButton (new CGRect(0, positionY, AppDelegate.ScreenWidth / 2, 50));
-			composite.AddSubviews (logoView, label);
-			composite.BackgroundColor = UIColor.FromRGB(255,255,255);
-
-			FBActive = false;
-
-			composite.TouchUpInside += async (object sender, EventArgs e) => {
-				// si no tengo permiso
-				if (!AccessToken.CurrentAccessToken.HasGranted("publish_actions"))
-				{
-					// lo pido
-					LoginManager manager = new LoginManager ();
-					await manager.LogInWithPublishPermissionsAsync (publishPermissions, this);
-				}
-
-				if (!FBActive)
-				{
-					// si no esta activo y tengo los permisos
-					if (AccessToken.CurrentAccessToken.HasGranted("publish_actions"))
-					{
-						// lo prendo
-						label.TextColor = UIColor.FromRGB(59, 89, 152);
-						logoView.TintColor = UIColor.FromRGB(59, 89, 152);
-						FBActive = true;
-
-						// obtengo lista de paginas
-						await CheckPageReadPermissions();
-					}
-				}else{
-					// desactivo FB y la lista
-
-					label.TextColor = UIColor.FromRGB(34, 36, 39);
-					logoView.TintColor = UIColor.FromRGB(165, 167, 169);
-					FBActive = false;
-					instructionsLabel.RemoveFromSuperview();
-
-					foreach(UIButton uib in fbPageButtons)
-					{
-						uib.RemoveFromSuperview();
-						positionY = listStartPositionY;
-						scrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, banner.Frame.Height + positionY);
-					}
-				}
-			};
-
-			scrollView.AddSubview(composite);
-		}
-
 		private UIButton PageButton(float yPosition, string name, string category)
 		{
 			UIButton pageButton = new UIButton (new CGRect (0, yPosition, AppDelegate.ScreenWidth, 60));
@@ -408,6 +342,71 @@ namespace Board.Interface
 			return uiv;
 		}
 
+		private void LoadFacebookButton()
+		{
+			string text = "Facebook";
+
+			UIImageView logoView = new UIImageView (new CGRect (10, 10, 30, 30));
+
+			using (UIImage img = UIImage.FromFile ("./screens/share/facebook/logo.png")) {
+				logoView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+			}
+
+			logoView.TintColor = UIColor.FromRGB(165, 167, 169);
+
+			UILabel label = new UILabel (new CGRect (logoView.Frame.Right, 0, AppDelegate.ScreenWidth / 2 - logoView.Frame.Right, 50));
+			label.Text = text;
+			label.Font = UIFont.SystemFontOfSize (20);
+			label.TextColor = UIColor.FromRGB(34, 36, 39);
+			label.TextAlignment = UITextAlignment.Center;
+
+			UIButton composite = new UIButton (new CGRect(0, positionY, AppDelegate.ScreenWidth / 2, 50));
+			composite.AddSubviews (logoView, label);
+			composite.BackgroundColor = UIColor.FromRGB(255,255,255);
+
+			FBActive = false;
+
+			composite.TouchUpInside += async (object sender, EventArgs e) => {
+				// si no tengo permiso
+				if (!AccessToken.CurrentAccessToken.HasGranted("publish_actions"))
+				{
+					// lo pido
+					LoginManager manager = new LoginManager ();
+					await manager.LogInWithPublishPermissionsAsync (publishPermissions, this);
+				}
+
+				if (!FBActive)
+				{
+					// si no esta activo y tengo los permisos
+					if (AccessToken.CurrentAccessToken.HasGranted("publish_actions"))
+					{
+						// lo prendo
+						label.TextColor = UIColor.FromRGB(59, 89, 152);
+						logoView.TintColor = UIColor.FromRGB(59, 89, 152);
+						FBActive = true;
+
+						// obtengo lista de paginas
+						await CheckPageReadPermissions();
+					}
+				}else{
+					// desactivo FB y la lista
+
+					label.TextColor = UIColor.FromRGB(34, 36, 39);
+					logoView.TintColor = UIColor.FromRGB(165, 167, 169);
+					FBActive = false;
+					instructionsLabel.RemoveFromSuperview();
+
+					foreach(UIButton uib in fbPageButtons)
+					{
+						uib.RemoveFromSuperview();
+						positionY = listStartPositionY;
+						scrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, banner.Frame.Height + positionY);
+					}
+				}
+			};
+
+			scrollView.AddSubview(composite);
+		}
 
 		private void LoadInstagramButton()
 		{
@@ -415,8 +414,8 @@ namespace Board.Interface
 
 			UIImageView logoView = new UIImageView (new CGRect (10, 10, 30, 30));
 
-			using (UIImage image = UIImage.FromFile ("./screens/share/instagram/logo.png")) {
-				logoView.Image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+			using (UIImage img = UIImage.FromFile ("./screens/share/instagram/logo.png")) {
+				logoView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			}
 
 			logoView.TintColor = UIColor.FromRGB(165, 167, 169);
@@ -458,8 +457,8 @@ namespace Board.Interface
 
 			UIImageView logoView = new UIImageView (new CGRect (10, 10, 30, 30));
 
-			using (UIImage image = UIImage.FromFile ("./screens/share/twitter/logo.png")) {
-				logoView.Image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+			using (UIImage img = UIImage.FromFile ("./screens/share/twitter/logo.png")) {
+				logoView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			}
 
 			logoView.TintColor = UIColor.FromRGB(165, 167, 169);
@@ -499,11 +498,10 @@ namespace Board.Interface
 
 			UIImageView logoView = new UIImageView (new CGRect (10, 10, 30, 30));
 
-			using (UIImage image = UIImage.FromFile ("./screens/share/rss/logo.png")) {
-				logoView.Image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+			using (UIImage img = UIImage.FromFile ("./screens/share/rss/logo.png")) {
+				logoView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			}
 
-			logoView.Image = image;
 			logoView.TintColor = UIColor.FromRGB(165, 167, 169);
 
 			UILabel label = new UILabel (new CGRect (logoView.Frame.Right, 0, AppDelegate.ScreenWidth / 2 - logoView.Frame.Right, 50));

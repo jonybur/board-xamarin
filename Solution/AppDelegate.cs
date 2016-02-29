@@ -49,6 +49,8 @@ namespace Board
 		public static string BoardToken;
 		public static string EncodedBoardToken;
 
+		public static int Autosize = 140;
+
 		/*
 		public const string FacebookAppId = "761616930611025";
 		public const string FacebookDisplayName = "Board";
@@ -138,13 +140,15 @@ namespace Board
 
 			window.MakeKeyAndVisible ();
 
-			/*new System.Threading.Thread (() => 
+			/*
+			new System.Threading.Thread (() => 
 				{
 					while (true) {
 						System.Threading.Thread.Sleep (1000);
 						GC.Collect ();
 					}
-				}).Start ();*/
+				}).Start ();
+			*/
 
 			return true;
 		}
@@ -160,6 +164,7 @@ namespace Board
 			boardInterface.ExitBoard ();
 			boardInterface.Dispose ();
 			boardInterface = null;
+			GC.Collect ();
 		}
 
 	}

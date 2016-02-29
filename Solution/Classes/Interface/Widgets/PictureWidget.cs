@@ -145,7 +145,7 @@ namespace Board.Interface.Widgets
 		private CGRect GetFrame(Picture picture)
 		{
 			float imgw, imgh;
-			float autosize = 150;
+			float autosize = AppDelegate.Autosize;
 
 			float scale = (float)(picture.ImageView.Frame.Width/picture.ImageView.Frame.Height);
 

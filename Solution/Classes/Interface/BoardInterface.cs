@@ -61,7 +61,7 @@ namespace Board.Interface
 
 		public override void DidReceiveMemoryWarning ()
 		{
-			GC.Collect ();
+			AppDelegate.ExitBoardInterface ();
 		}
 
 		public override void ViewDidLoad ()
@@ -106,8 +106,9 @@ namespace Board.Interface
 
 				widget.UnsuscribeToEvents ();
 				widget.View.RemoveFromSuperview ();
+
 			}
-			ListWidgets = new List<Widget> ();
+			ListWidgets = null;
 			ButtonInterface.DisableAllLayouts();
 			UnsuscribeToEvents ();
 		}
@@ -201,7 +202,6 @@ namespace Board.Interface
 			LoadButtons ();
 		}
 
-		// TODO: improve this method
 		private void GenerateScrollViews()
 		{
 			scrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
@@ -211,7 +211,8 @@ namespace Board.Interface
 
 				if (!(ListWidgets == null || ListWidgets.Count == 0))
 				{
-					Widget wid = ListWidgets.Find(item => ((item.View.Frame.X + item.View.Frame.Width) > scrollView.ContentOffset.X) &&
+					// the ones at the left ;; the ones at the right ;; if it doesnt have an open eye
+					Widget wid = ListWidgets.Find(item => ((item.View.Frame.X) > scrollView.ContentOffset.X) &&
 						((item.View.Frame.X + item.View.Frame.Width) < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth)) &&
 						!item.EyeOpen);
 
@@ -313,29 +314,37 @@ namespace Board.Interface
 		private void GenerateTestPictures()
 		{
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/0.jpg")) {
-				AddTestPicture (img, 40, 20, -.03f);
+				AddTestPicture (img, 70, 20, -.03f);
 			}
 
-			AddTestVideo ("./demo/videos/0.mp4", 15, 245, -.01f);
+			AddTestVideo ("./demo/videos/0.mp4", 45, 220, -.01f);
 
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/2.jpg")) {
-				AddTestPicture (img, 310, 20, 0f);
+				AddTestPicture (img, 340, 20, 0f);
 			}
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/1.jpg")) {
-				AddTestPicture (img, 330, 245, -.04f);
+				AddTestPicture (img, 360, 220, -.04f);
 			}
 		
-			AddTestVideo ("./demo/videos/1.mp4", 580, 25, -.02f);
+			AddTestVideo ("./demo/videos/1.mp4", 610, 25, -.02f);
 
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/3.jpg")) {
-				AddTestPicture (img, 610, 250, .05f);
+				AddTestPicture (img, 655, 225, .01f);
 			}
 
 			BoardEvent bevent;
 			using (UIImage img = UIImage.FromFile ("./demo/events/0.jpg")) {
-				bevent = new BoardEvent ("La Roxtar", img, new DateTime (2016, 11, 10), 0, new CGRect (1500, 70, 0, 0), null);
+				bevent = new BoardEvent ("La Roxtar", img, new DateTime (2016, 11, 10), 0, new CGRect (1600, 20, 0, 0), null);
 			}
 			ListEvents.Add (bevent);
+
+			using (UIImage img = UIImage.FromFile ("./demo/pictures/4.jpg")) {
+				AddTestPicture (img, 50, 420, .03f);
+			}
+
+			AddTestVideo ("./demo/videos/2.mp4", 330, 415, -.02f);
+
+			AddTestVideo ("./demo/videos/3.mp4", 635, 420, .0f);
 		}
 
 		private void AddTestPicture(UIImage image, float imgx, float imgy, float rotation)
@@ -360,6 +369,7 @@ namespace Board.Interface
 			vid.Url = url;
 			vid.Frame = new CGRect(imgx, imgy, 0, 0);
 			vid.Rotation = rotation;
+
 			ListVideos.Add (vid);
 		}
 
