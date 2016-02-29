@@ -10,8 +10,9 @@ namespace Board.Interface.Buttons
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			UIImage uiImage = UIImage.FromFile ("./boardinterface/buttons/gallery.png");
-			uiButton.SetImage (uiImage, UIControlState.Normal);
+			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/buttons/gallery.png")) {
+				uiButton.SetImage (uiImage, UIControlState.Normal);
+			}
 
 			uiButton.Frame = new CGRect (0,0, ButtonSize, ButtonSize);
 			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth + ButtonSize) / 2 + 

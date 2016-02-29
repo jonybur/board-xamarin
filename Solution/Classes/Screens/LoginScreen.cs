@@ -157,9 +157,11 @@ namespace Board.Screens
 			looper = new Thread (new ThreadStart (LooperMethod));
 			looper.Start ();
 
-			UIImage logo = UIImage.FromFile ("./screens/login/logo.png");
-			UIImageView logoView = new UIImageView (logo);
-			logoView.Frame = new RectangleF (0, 0, (float)(logo.Size.Width/2), (float)(logo.Size.Height/2));
+			UIImageView logoView;
+			using (UIImage logo = UIImage.FromFile ("./screens/login/logo.png")) {
+				logoView = new UIImageView (logo);
+				logoView.Frame = new RectangleF (0, 0, (float)(logo.Size.Width/2), (float)(logo.Size.Height/2));
+			}
 			logoView.Center = new PointF (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight/6);
 
 			View.Layer.AddSublayer (_playerLayer);

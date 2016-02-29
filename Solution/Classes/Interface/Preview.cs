@@ -52,7 +52,7 @@ namespace Board.Interface
 
 			Picture picture = new Picture ();
 
-			picture.Image = image;
+			picture.ImageView = new UIImageView(image);
 
 			pictureWidget = new PictureWidget (picture);
 
@@ -163,7 +163,7 @@ namespace Board.Interface
 		public static Picture GetPicture()
 		{
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
-			Picture p = new Picture (pictureWidget.Picture.Image, pictureWidget.Picture.Thumbnail, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
+			Picture p = new Picture (pictureWidget.Picture.ImageView.Image, pictureWidget.Picture.ThumbnailView.Image, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
 			return p;
 		}
 

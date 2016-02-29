@@ -97,25 +97,25 @@ namespace Board.Interface.Widgets
 			float imgw, imgh;
 			float autosize = (float)calendarBoxFrame.Width;
 
-			float scale = (float)(boardEvent.Image.Size.Width/boardEvent.Image.Size.Height);
+			float scale = (float)(boardEvent.ImageView.Frame.Width/boardEvent.ImageView.Frame.Height);
 
 			if (scale >= 1) {
 				imgw = autosize * scale;
 				imgh = autosize;
 
 				if (imgw > AppDelegate.ScreenWidth) {
-					scale = (float)(boardEvent.Image.Size.Height/boardEvent.Image.Size.Width);
+					scale = (float)(boardEvent.ImageView.Frame.Height/boardEvent.ImageView.Frame.Width);
 					imgw = AppDelegate.ScreenWidth;
 					imgh = imgw * scale;
 				}
 			} else {
-				scale = (float)(boardEvent.Image.Size.Height/boardEvent.Image.Size.Width);
+				scale = (float)(boardEvent.ImageView.Frame.Height/boardEvent.ImageView.Frame.Width);
 				imgw = autosize;
 				imgh = autosize * scale;
 			}
 
 			UIImageView eventPoster = new UIImageView (new CGRect(0, 0, imgw, imgh));
-			eventPoster.Image = boardEvent.Image;
+			eventPoster.Image = boardEvent.ImageView.Image;
 			eventPoster.Center = new CGPoint (calendarBoxFrame.Width / 2, calendarBoxFrame.Height / 2);
 
 			box.AddSubview (eventPoster);

@@ -64,8 +64,6 @@ namespace Board.Screens
 
 		private UIImageView GeneratePreviewBoard()
 		{
-			UIImage pattern = UIImage.FromFile ("./boardinterface/backgrounds/branco.jpg");
-
 			boardHeight = (float)((AppDelegate.ScreenWidth * AppDelegate.ScreenHeight) / BoardInterface.ScrollViewWidthSize);
 			topBarHeight = (float)((50 * boardHeight) / AppDelegate.ScreenHeight);
 			bottomBarHeight = (float)((100 * boardHeight) / AppDelegate.ScreenHeight);
@@ -77,7 +75,6 @@ namespace Board.Screens
 			}
 
 			boardView = new UIImageView (new CGRect(0, AppDelegate.ScreenHeight - boardHeight + pushDown, AppDelegate.ScreenWidth, boardHeight + pushDown));
-			boardView.Image = pattern;
 
 			preview_secondaryBar = CreateColorSquare(new CGSize(boardView.Frame.Width, topBarHeight), new CGPoint(AppDelegate.ScreenWidth/2, (boardHeight * 560) / AppDelegate.ScreenHeight), board.SecondaryColor.CGColor);
 			boardView.AddSubview (preview_secondaryBar);
@@ -112,9 +109,11 @@ namespace Board.Screens
 
 		private void LoadContent()
 		{
-			UIImage contentImage = UIImage.FromFile ("./screens/create/2/content/"+AppDelegate.PhoneVersion+".jpg");
-			UIImageView contentImageView = new UIImageView (new CGRect(0, banner.Frame.Bottom, contentImage.Size.Width / 2, contentImage.Size.Height / 2));
-			contentImageView.Image = contentImage;
+			UIImageView contentImageView;
+			using (UIImage contentImage = UIImage.FromFile ("./screens/create/2/content/" + AppDelegate.PhoneVersion + ".jpg")) {
+				contentImageView = new UIImageView (new CGRect(0, banner.Frame.Bottom, contentImage.Size.Width / 2, contentImage.Size.Height / 2));
+				contentImageView.Image = contentImage;
+			}
 			scrollView.AddSubviews (contentImageView);
 
 			// top image

@@ -336,18 +336,12 @@ namespace Board.Interface
 				bevent = new BoardEvent ("La Roxtar", img, new DateTime (2016, 11, 10), 0, new CGRect (1500, 70, 0, 0), null);
 			}
 			ListEvents.Add (bevent);
-
-			//AddTestPicture (UIImage.FromFile ("./demo/pictures/5.jpg"), , -.02f);
-			//AddTestPicture (UIImage.FromFile ("./demo/pictures/4.jpg"), 25, 270, -.1f);
-
-			//AddTestPicture (UIImage.FromFile ("./demo/pictures/6.jpg"), 25, 330, -.1f);
-			//AddTestPicture (UIImage.FromFile ("./demo/pictures/7.jpg"), 650, 310, -.02f);
 		}
 
 		private void AddTestPicture(UIImage image, float imgx, float imgy, float rotation)
 		{
 			Picture pic = new Picture ();
-			pic.Image = image;
+			pic.ImageView = new UIImageView(image);
 			pic.Frame = new CGRect(imgx, imgy, 0, 0);
 			pic.Rotation = rotation;
 			ListPictures.Add (pic);
@@ -424,17 +418,25 @@ namespace Board.Interface
 
 			scrollView.BackgroundColor = board.MainColor;
 
-			UIImage circle1 = UIImage.FromFile ("./boardinterface/backgrounds/intern.png");
-			UIImage circle2 = UIImage.FromFile ("./boardinterface/backgrounds/outer.png");
 
-			circle1 = circle1.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-			circle2 = circle2.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+			UIImageView circleTop, circleLower;
 
-			UIImageView circleTop = new UIImageView (circle1);
+			using (UIImage img = UIImage.FromFile ("./boardinterface/backgrounds/intern.png")){
+				UIImage circle1 = img;
+				circle1 = circle1.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				circleTop = new UIImageView (circle1);
+			}
+
+			using (UIImage img = UIImage.FromFile ("./boardinterface/backgrounds/outer.png")) {
+				UIImage circle2 = img;
+				circle2 = circle2.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				circleLower = new UIImageView (circle2);
+			}
+
+
 			circleTop.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
 			circleTop.Tag = (int)Tags.Background;
 
-			UIImageView circleLower = new UIImageView (circle2);
 			circleLower.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
 			circleLower.Tag = (int)Tags.Background;
 
@@ -495,9 +497,13 @@ namespace Board.Interface
 			imgx = (float)(ContentOffset.X - imgw / 2);
 			imgy = (float)(ContentOffset.Y + AppDelegate.ScreenHeight / 2 - imgh / 2);
 
+			UIImageView circleBackground;
+			using (UIImage img =UIImage.FromFile ("./boardinterface/backgrounds/logobackground.png"))
+			{
+				UIImage circle3 = img;
+				circleBackground = new UIImageView (circle3);
+			}
 
-			UIImage circle3 = UIImage.FromFile ("./boardinterface/backgrounds/logobackground.png");
-			UIImageView circleBackground = new UIImageView (circle3);
 			circleBackground.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
 			circleBackground.Tag = (int)Tags.Background;
 

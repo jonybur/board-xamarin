@@ -5,18 +5,18 @@ namespace Board.Schema
 {
 	public class Picture : Content
 	{
-		public string Id { get; set; }
+		public string Id;
 
-		public UIImage Image { get; set; }
+		public UIImageView ImageView;
 
-		public UIImage Thumbnail { get; set; }
+		public UIImageView ThumbnailView;
 
 		public Picture() {}
 
 		public Picture(UIImage image, UIImage thumbnail, float rotation, CGRect frame, string userid)
 		{
-			Image = image;
-			Thumbnail = thumbnail;
+			ImageView = new UIImageView(image);
+			ThumbnailView = new UIImageView(thumbnail);
 			Rotation = rotation;
 			Frame = frame;
 			UserId = userid;

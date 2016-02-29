@@ -30,7 +30,7 @@ namespace Board.Interface
 
 			uiView.BackgroundColor = UIColor.Black;
 
-			UIImageView lookUpImage = CreateImageFrame (picture.Image);
+			UIImageView lookUpImage = CreateImageFrame (picture.ImageView.Image);
 			scrollView.AddSubview (lookUpImage);
 			scrollView.MaximumZoomScale = 4f;
 			scrollView.MinimumZoomScale = 1f;

@@ -195,10 +195,10 @@ namespace Board.Screens
 
 		private void LoadSideMenu()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./screens/home/sidemenu/" + AppDelegate.PhoneVersion + ".png");
-
-			sidemenu = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-			sidemenu.Image = bannerImage;
+			using (UIImage bannerImage = UIImage.FromFile ("./screens/home/sidemenu/" + AppDelegate.PhoneVersion + ".png")) {
+				sidemenu = new UIImageView (new CGRect (0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
+				sidemenu.Image = bannerImage;
+			}
 
 			float[] buttonLocations = new float[4];
 			if (AppDelegate.PhoneVersion == "6") {
@@ -266,10 +266,10 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./screens/home/banner/" + AppDelegate.PhoneVersion + ".jpg");
-
-			banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-			banner.Image = bannerImage;
+			using (UIImage bannerImage = UIImage.FromFile ("./screens/home/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
+				banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
+				banner.Image = bannerImage;
+			}
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (sideMenuIsUp)
@@ -324,12 +324,11 @@ namespace Board.Screens
 
 		private void LoadMapButton()
 		{
-			UIImage mapImage = UIImage.FromFile ("./screens/home/map/" + AppDelegate.PhoneVersion + ".jpg");
-			UIImage listImage = UIImage.FromFile ("./screens/home/list/" + AppDelegate.PhoneVersion + ".jpg");
-
-			map_button = new UIButton(new CGRect(0,AppDelegate.ScreenHeight - (mapImage.Size.Height / 2),
-				mapImage.Size.Width / 2, mapImage.Size.Height / 2));
-			map_button.SetImage(mapImage, UIControlState.Normal);
+			using (UIImage mapImage = UIImage.FromFile ("./screens/home/map/" + AppDelegate.PhoneVersion + ".jpg")) {
+				map_button = new UIButton(new CGRect(0,AppDelegate.ScreenHeight - (mapImage.Size.Height / 2),
+					mapImage.Size.Width / 2, mapImage.Size.Height / 2));
+				map_button.SetImage(mapImage, UIControlState.Normal);
+			}
 
 			MapButtonEvent = (sender, e) => {
 				if (sideMenuIsUp)
@@ -338,10 +337,16 @@ namespace Board.Screens
 				if (map.Alpha == 0f)
 				{ 
 					map.Alpha = 1f; 
-					map_button.SetImage(listImage, UIControlState.Normal);
+
+					using (UIImage listImage = UIImage.FromFile ("./screens/home/list/" + AppDelegate.PhoneVersion + ".jpg")) {
+						map_button.SetImage(listImage, UIControlState.Normal);
+					}
 				} else {
 					map.Alpha = 0f;
-					map_button.SetImage(mapImage, UIControlState.Normal);
+
+					using (UIImage mapImage = UIImage.FromFile ("./screens/home/map/" + AppDelegate.PhoneVersion + ".jpg")) {
+						map_button.SetImage(mapImage, UIControlState.Normal);
+					}
 				} 
 			};
 

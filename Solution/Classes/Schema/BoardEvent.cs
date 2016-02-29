@@ -8,19 +8,19 @@ namespace Board.Schema
 	// Board's way of storing its UIImageViews on the DB
 	public class BoardEvent : Content
 	{
-		public string Name { get; set; }
+		public string Name;
 	
-		public UIImage Image { get; set; }
+		public UIImageView ImageView;
 
-		public UIImage Thumbnail { get; set; }
+		public UIImageView Thumbnail;
 
-		public DateTime Date { get; set; }
+		public DateTime Date;
 
 		public BoardEvent() {}
 
 		public BoardEvent(string name, UIImage image, DateTime date, float rotation, CGRect frame, string userid)
 		{
-			Image = image;
+			ImageView = new UIImageView(image);
 			Name = name;
 			Date = date;
 			Rotation = rotation;

@@ -169,10 +169,10 @@ namespace Board.Interface
 
 		private void LoadBanner()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./screens/pageselector/banner/" + AppDelegate.PhoneVersion + ".jpg");
-
-			banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-			banner.Image = bannerImage;
+			using (UIImage bannerImage = UIImage.FromFile ("./screens/pageselector/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
+				banner = new UIImageView (new CGRect (0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
+				banner.Image = bannerImage;
+			}
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){

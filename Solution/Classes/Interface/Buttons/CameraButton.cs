@@ -11,10 +11,11 @@ namespace Board.Interface.Buttons
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			UIImage uiImage = UIImage.FromFile ("./boardinterface/strokebuttons/camera_3px.png");
+			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/strokebuttons/camera_3px.png")) {
+				uiButton = new UIButton (UIButtonType.Custom);
+				uiButton.SetImage (uiImage, UIControlState.Normal);
+			}
 
-			uiButton = new UIButton (UIButtonType.Custom);
-			uiButton.SetImage (uiImage, UIControlState.Normal);
 
 			uiButton.Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
 			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth - ButtonSize) / 8 * 3 - 10, AppDelegate.ScreenHeight - ButtonSize / 2);

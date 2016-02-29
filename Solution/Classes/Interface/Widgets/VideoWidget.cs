@@ -103,12 +103,15 @@ namespace Board.Interface.Widgets
 
 		private UIImageView CreatePlayButton(CGRect frame)
 		{
-			UIImage playButtonImage = UIImage.FromFile ("./boardinterface/playbutton.png");
-			CGSize imageSize = new CGSize (playButtonImage.Size.Width / 2, playButtonImage.Size.Height / 2);
+			UIImageView playButton;
 
-			UIImageView playButton = new UIImageView(new CGRect (frame.Width / 2 - imageSize.Width / 4, frame.Height / 2 - imageSize.Height / 4, imageSize.Width, imageSize.Height));
+			using (UIImage playButtonImage = UIImage.FromFile ("./boardinterface/playbutton.png")) {
+				CGSize imageSize = new CGSize (playButtonImage.Size.Width / 2, playButtonImage.Size.Height / 2);
+			
+				playButton = new UIImageView (new CGRect (frame.Width / 2 - imageSize.Width / 4, frame.Height / 2 - imageSize.Height / 4, imageSize.Width, imageSize.Height));
 
-			playButton.Image = playButtonImage;
+				playButton.Image = playButtonImage;
+			}
 			playButton.Alpha = .95f;
 
 			return playButton;
@@ -146,7 +149,10 @@ namespace Board.Interface.Widgets
 
 			UIImageView likeView = new UIImageView(new CGRect (frame.Width - iconSize.Width - 10,
 				frame.Height - iconSize.Height - 5, iconSize.Width, iconSize.Height));
-			likeView.Image = UIImage.FromFile ("./boardinterface/widget/like.png");
+			using (UIImage img = UIImage.FromFile ("./boardinterface/widget/like.png"))
+			{
+				likeView.Image = img;
+			}
 			likeView.Image = likeView.Image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			likeView.TintColor = UIColor.FromRGB(140,140,140);
 

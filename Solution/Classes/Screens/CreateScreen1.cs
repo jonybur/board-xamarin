@@ -240,9 +240,12 @@ namespace Board.Screens
 
 		private void LoadContent()
 		{
-			UIImage contentImage = UIImage.FromFile ("./screens/create/1/content/"+AppDelegate.PhoneVersion+".jpg");
-			UIImageView contentImageView = new UIImageView (new CGRect(0, banner.Frame.Bottom, contentImage.Size.Width / 2, contentImage.Size.Height / 2));
-			contentImageView.Image = contentImage;
+			UIImageView contentImageView;
+			using (UIImage contentImage = UIImage.FromFile ("./screens/create/1/content/" + AppDelegate.PhoneVersion + ".jpg")) {
+				contentImageView = new UIImageView (new CGRect(0, banner.Frame.Bottom, contentImage.Size.Width / 2, contentImage.Size.Height / 2));
+				contentImageView.Image = contentImage;
+			}
+
 			View.AddSubview (contentImageView);
 			LoadNameView ();
 			LoadAddressView ();
@@ -257,10 +260,10 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./screens/create/1/banner/"+AppDelegate.PhoneVersion+".jpg");
-
-			banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-			banner.Image = bannerImage;
+			using (UIImage bannerImage = UIImage.FromFile ("./screens/create/1/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
+				banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
+				banner.Image = bannerImage;
+			}
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){

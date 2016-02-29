@@ -39,7 +39,7 @@ namespace Board.Interface.Widgets
 
 			CGRect pictureFrame = new CGRect (mounting.Frame.X + 10, 10, frame.Width, frame.Height);
 			UIImageView uiv = new UIImageView (pictureFrame);
-			uiv.Image = picture.Thumbnail;
+			uiv.Image = picture.ThumbnailView.Image;
 			View.AddSubview (uiv);
 
 			// like
@@ -144,24 +144,24 @@ namespace Board.Interface.Widgets
 			float imgw, imgh;
 			float autosize = 150;
 
-			float scale = (float)(picture.Image.Size.Width/picture.Image.Size.Height);
+			float scale = (float)(picture.ImageView.Frame.Width/picture.ImageView.Frame.Height);
 
 			if (scale >= 1) {
 				imgw = autosize * scale;
 				imgh = autosize;
 
 				if (imgw > AppDelegate.ScreenWidth) {
-					scale = (float)(picture.Image.Size.Height/picture.Image.Size.Width);
+					scale = (float)(picture.ImageView.Frame.Height/picture.ImageView.Frame.Width);
 					imgw = AppDelegate.ScreenWidth;
 					imgh = imgw * scale;
 				}
 			} else {
-				scale = (float)(picture.Image.Size.Height / picture.Image.Size.Width);
+				scale = (float)(picture.ImageView.Frame.Height / picture.ImageView.Frame.Width);
 				imgw = autosize;
 				imgh = autosize * scale;
 			}
 
-			picture.Thumbnail = CommonUtils.ResizeImage (picture.Image, new CGSize (imgw, imgh));
+			picture.ThumbnailView = new UIImageView(CommonUtils.ResizeImage (picture.ImageView.Image, new CGSize (imgw, imgh)));
 
 			CGRect frame = new CGRect (picture.Frame.X, picture.Frame.Y, imgw, imgh);
 

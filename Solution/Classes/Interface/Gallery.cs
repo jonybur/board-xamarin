@@ -72,7 +72,7 @@ namespace Board.Interface
 		private void GenerateThumbnails(List<Picture> thumbnails)
 		{
 			foreach (Picture p in thumbnails) {
-				UIImage image = p.Thumbnail;
+				UIImage image = p.ThumbnailView.Image;
 				UIImageView thumb = CreateImageFrame (image);
 
 				scrollView.AddSubview (thumb);

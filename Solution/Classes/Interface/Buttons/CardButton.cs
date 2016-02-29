@@ -10,9 +10,10 @@ namespace Board.Interface.Buttons
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			UIImage uiImage = UIImage.FromFile ("./boardinterface/strokebuttons/card_3px.png");
+			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/strokebuttons/card_3px.png")) {
+				uiButton.SetImage (uiImage, UIControlState.Normal);
+			}
 
-			uiButton.SetImage (uiImage, UIControlState.Normal);
 			uiButton.Frame = new CGRect (0,0, ButtonSize, ButtonSize);
 
 			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth + ButtonSize) / 2 +

@@ -73,7 +73,7 @@ namespace Board.Infrastructure
 				           NSSearchPathDomain.User) [0]).Path;
 			string imgFilename = System.IO.Path.Combine (docs, p.Id + ".jpg"); 
 			string thumbFilename = System.IO.Path.Combine (docs, p.Id + "-thumb.jpg");
-			UIImage imgData = p.Image;
+			UIImage imgData = p.ImageView.Image;
 			database.Insert (picL);
 		}
 
@@ -117,7 +117,7 @@ namespace Board.Infrastructure
 					NSSearchPathDomain.User) [0]).Path;
 				string jpgFilename = System.IO.Path.Combine (docs, p.Id + ".jpg"); 
 
-				aux.Image = UIImage.FromBundle (jpgFilename);
+				aux.ImageView = new UIImageView(UIImage.FromBundle (jpgFilename));
 
 				lstPictures.Add (aux);
 			}
@@ -143,10 +143,10 @@ namespace Board.Infrastructure
 					NSSearchPathDomain.User) [0]).Path;
 				string imgFilename = System.IO.Path.Combine (docs, p.Id + ".jpg"); 
 
-				aux.Image = UIImage.FromBundle (imgFilename);
+				aux.ImageView = new UIImageView(UIImage.FromBundle (imgFilename));
 
 				string thumbFilename = System.IO.Path.Combine (docs, p.Id + "-thumb.jpg"); 
-				aux.Thumbnail = UIImage.FromBundle (thumbFilename);
+				aux.ThumbnailView = new UIImageView (UIImage.FromBundle (thumbFilename));
 
 				lstPictures.Add (aux);
 			}
