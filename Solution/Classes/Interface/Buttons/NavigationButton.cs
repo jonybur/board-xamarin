@@ -1,8 +1,9 @@
 using System.Drawing;
 using Board.Interface.Widgets;
-using Board.Schema;
 using CoreGraphics;
-using Foundation;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 using UIKit;
 
 namespace Board.Interface.Buttons
@@ -45,19 +46,31 @@ namespace Board.Interface.Buttons
 				}
 
 				if (BoardInterface.ListWidgets == null)
-					return;
+				{ return; }
 
 				if (BoardInterface.ListWidgets.Count == 0)
-					return;
+				{ return; }
+
 
 				if (highlitedContent >= BoardInterface.ListWidgets.Count) {
+					highlitedContent = 0;
+				}
+
+				List<Widget> NavigationList = BoardInterface.ListWidgets.OrderBy(o=>o.EyeOpen).ToList();
+				if(!NavigationList[0].EyeOpen)
+				{
 					highlitedContent = 0;
 				}
 
 				PointF position = new PointF(0,0);
 				UIView uivComponent;
 
-				Widget widget = BoardInterface.ListWidgets[highlitedContent];
+				Widget widget = NavigationList[highlitedContent];
+				if (!widget.EyeOpen)
+				{
+					widget.OpenEye();
+					SubtractNavigationButtonText();
+				}
 				uivComponent = widget.View;
 				position = new PointF ((float)(uivComponent.Frame.X - AppDelegate.ScreenWidth/2 + uivComponent.Frame.Width/2), 0f);
 

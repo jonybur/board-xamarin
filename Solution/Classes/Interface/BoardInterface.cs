@@ -62,6 +62,7 @@ namespace Board.Interface
 		public override void DidReceiveMemoryWarning ()
 		{
 			AppDelegate.ExitBoardInterface ();
+			AppDelegate.NavigationController.PopViewController (true);
 		}
 
 		public override void ViewDidLoad ()
@@ -208,6 +209,7 @@ namespace Board.Interface
 
 			scrolledEvent = (sender, e) => {
 				// call from here "open eye" function
+				if (!scrollView.Dragging) { return; } 
 
 				if (!(ListWidgets == null || ListWidgets.Count == 0))
 				{
