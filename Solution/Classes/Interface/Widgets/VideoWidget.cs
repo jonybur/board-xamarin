@@ -81,12 +81,9 @@ namespace Board.Interface.Widgets
 				if (Preview.View != null) { return; }
 
 				MPMoviePlayerController moviePlayer = new MPMoviePlayerController (NSUrl.FromFilename (video.Url));
-
 				View.Superview.Superview.AddSubview(moviePlayer.View);
-
 				moviePlayer.SetFullscreen (true, false);
 				moviePlayer.Play ();
-
 			});
 
 			gestureRecognizers.Add (tap);
@@ -231,12 +228,13 @@ namespace Board.Interface.Widgets
 
 		private AVPlayerLayer LoadVideoThumbnail(CGRect frame)
 		{	
-			AVAsset _asset;
 			AVPlayerItem _playerItem;
 			AVPlayerLayer _playerLayer;
 
-			_asset = AVAsset.FromUrl (NSUrl.FromFilename (video.Url));
-			_playerItem = new AVPlayerItem (_asset);
+			using (AVAsset _asset = AVAsset.FromUrl (NSUrl.FromFilename (video.Url)))
+			{
+				_playerItem = new AVPlayerItem (_asset);
+			}
 			_playerItem.AudioMix = new AVAudioMix ();
 			_player = new AVPlayer (_playerItem);
 			_playerLayer = AVPlayerLayer.FromPlayer (_player);

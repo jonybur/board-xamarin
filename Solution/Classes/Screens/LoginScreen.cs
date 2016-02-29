@@ -143,9 +143,10 @@ namespace Board.Screens
 		private void LoadBackground()
 		{
 			this.AutomaticallyAdjustsScrollViewInsets = false;
-
-			AVAsset _asset = AVAsset.FromUrl (NSUrl.FromFilename ("./timelapse.mp4"));
-			AVPlayerItem _playerItem = new AVPlayerItem (_asset);
+			AVPlayerItem _playerItem;
+			using (AVAsset _asset = AVAsset.FromUrl (NSUrl.FromFilename ("./timelapse.mp4"))) {
+				_playerItem = new AVPlayerItem (_asset);
+			}
 			_player = new AVPlayer (_playerItem);
 			AVPlayerLayer _playerLayer = AVPlayerLayer.FromPlayer (_player);
 			_playerLayer.Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);

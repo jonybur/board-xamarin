@@ -351,10 +351,11 @@ namespace Board.Interface
 		{
 			Video vid = new Video ();
 
-			MPMoviePlayerController moviePlayer = new MPMoviePlayerController (NSUrl.FromFilename(url));
-			vid.Thumbnail = moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact);
-			moviePlayer.Pause ();
-			moviePlayer.Dispose ();
+			using (MPMoviePlayerController moviePlayer = new MPMoviePlayerController (NSUrl.FromFilename (url))) {
+				vid.Thumbnail = moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact);
+				moviePlayer.Pause ();
+				moviePlayer.Dispose ();	
+			}
 
 			vid.Url = url;
 			vid.Frame = new CGRect(imgx, imgy, 0, 0);
