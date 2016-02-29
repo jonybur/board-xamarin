@@ -117,8 +117,11 @@ namespace Board.Screens
 			scrollView.AddSubviews (contentImageView);
 
 			// top image
-
-			UIImageView boardThumb = GenerateBoardThumb (UIImage.FromFile  ("./screens/create/2/icon.png"), new CGPoint (AppDelegate.ScreenWidth / 2, 220), true);
+			UIImageView boardThumb;
+			using (UIImage image = UIImage.FromFile  ("./screens/create/2/icon.png"))
+			{
+				boardThumb = GenerateBoardThumb (image, new CGPoint (AppDelegate.ScreenWidth / 2, 220), true);
+			}
 	
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				ImagePicker ip = new ImagePicker (boardThumb.Subviews[0] as UIImageView, preview_mainLogo, board);
@@ -129,7 +132,10 @@ namespace Board.Screens
 			boardThumb.AddGestureRecognizer (tap);
 			boardThumb.UserInteractionEnabled = true;
 
-			board.ImageView = new UIImageView(UIImage.FromFile ("./screens/create/2/icon.png"));
+			using (UIImage image = UIImage.FromFile ("./screens/create/2/icon.png")) {
+				board.ImageView = new UIImageView (image);
+			}
+
 			scrollView.AddSubview (boardThumb);
 
 			// color selectors + hex
@@ -339,11 +345,10 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./screens/create/2/banner/"+AppDelegate.PhoneVersion+".jpg");
-
-			banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-			banner.Image = bannerImage;
-
+			using (UIImage bannerImage = UIImage.FromFile ("./screens/create/2/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
+				banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
+				banner.Image = bannerImage;
+			}
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				
@@ -432,7 +437,11 @@ namespace Board.Screens
 
 			UIImageView circle = new UIImageView (new CGRect(0,0,autosize,autosize));
 			circle.Center = new CGPoint(autosize/2, autosize/2);
-			circle.Image = UIImage.FromFile ("./mainmenu/circle.png");
+
+			using (UIImage circleimg = UIImage.FromFile ("./mainmenu/circle.png"))
+			{
+				circle.Image = circleimg;
+			}
 
 			//boardIcon.AddSubview (circle);
 

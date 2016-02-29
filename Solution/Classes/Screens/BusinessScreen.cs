@@ -225,7 +225,10 @@ namespace Board.Screens
 			content = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 
 			UIImageView imgv = new UIImageView (new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
-			imgv.Image = UIImage.FromFile ("./screens/business/empty/" + AppDelegate.PhoneVersion + ".jpg");;
+
+			using (UIImage image = UIImage.FromFile ("./screens/business/empty/" + AppDelegate.PhoneVersion + ".jpg")) {
+				imgv.Image = image;
+			}
 
 			content.AddSubview (imgv);
 			content.ScrollEnabled = true;
@@ -243,10 +246,10 @@ namespace Board.Screens
 
 		private void LoadSideMenu()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./screens/business/sidemenu/" + AppDelegate.PhoneVersion + ".png");
-
-			sidemenu = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-			sidemenu.Image = bannerImage;
+			using (UIImage image = UIImage.FromFile ("./screens/business/sidemenu/" + AppDelegate.PhoneVersion + ".png")) {
+				sidemenu = new UIImageView(new CGRect(0,0, image.Size.Width / 2, image.Size.Height / 2));
+				sidemenu.Image = image;	
+			}
 
 			float[] buttonLocations = new float[4];
 			if (AppDelegate.PhoneVersion == "6") {
@@ -320,10 +323,10 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./screens/business/banner/" + AppDelegate.PhoneVersion + ".jpg");
-
-			banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-			banner.Image = bannerImage;
+			using (UIImage bannerImage = UIImage.FromFile ("./screens/business/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
+				banner = new UIImageView (new CGRect (0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
+				banner.Image = bannerImage;
+			}
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (sideMenuIsUp)

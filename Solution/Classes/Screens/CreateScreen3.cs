@@ -45,10 +45,10 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./screens/create/3/banner/"+AppDelegate.PhoneVersion+".jpg");
-
-			banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-			banner.Image = bannerImage;
+			using (UIImage bannerImage = UIImage.FromFile ("./screens/create/3/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
+				banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
+				banner.Image = bannerImage;
+			}
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 
@@ -136,12 +136,17 @@ namespace Board.Screens
 					break;	
 				case 1:
 					but = CreateSuscriptionButton (i, "Premium", "· Target to a specific audience\n· Get daily analytics\n· Broaden your Board’s\narea range", "TBA", frame);
-					but.AddSubview(CreateTopLayer (but.Frame, UIColor.Black.CGColor, UIImage.FromFile("./screens/create/3/lock.png")));
+					using (UIImage lockImage = UIImage.FromFile("./screens/create/3/lock.png"))
+					{
+						but.AddSubview(CreateTopLayer (but.Frame, UIColor.Black.CGColor, lockImage));
+					}
 					but.Enabled = false;
 					break;
 				case 2:
 					but = CreateSuscriptionButton (i, string.Empty, string.Empty, string.Empty, frame);
-					but.AddSubview(CreateTopLayer (but.Frame, UIColor.Black.CGColor, UIImage.FromFile("./screens/create/3/lock.png")));
+					using (UIImage lockImage = UIImage.FromFile ("./screens/create/3/lock.png")) {
+						but.AddSubview (CreateTopLayer (but.Frame, UIColor.Black.CGColor, lockImage));
+					}
 					but.Enabled = false;
 					break;
 				default:
