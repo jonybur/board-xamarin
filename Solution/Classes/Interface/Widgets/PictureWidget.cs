@@ -104,7 +104,7 @@ namespace Board.Interface.Widgets
 			CGSize iconSize = new CGSize (30, 30);
 
 			UIImageView eyeView = new UIImageView(new CGRect (frame.X + 10, frame.Height - iconSize.Height - 5, iconSize.Width, iconSize.Height));
-			eyeView.Image = Widget.ClosedEyeImage;
+			eyeView.Image = Widget.ClosedEyeImageView.Image;
 			eyeView.TintColor = UIColor.FromRGB(140,140,140);
 
 			return eyeView;
@@ -116,7 +116,10 @@ namespace Board.Interface.Widgets
 
 			UIImageView likeView = new UIImageView(new CGRect (frame.Width - iconSize.Width - 10,
 				frame.Height - iconSize.Height - 5, iconSize.Width, iconSize.Height));
-			likeView.Image = UIImage.FromFile ("./boardinterface/widget/like.png");
+
+			using (UIImage image = UIImage.FromFile ("./boardinterface/widget/like.png")){
+				likeView.Image = image;
+			}
 			likeView.Image = likeView.Image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			likeView.TintColor = UIColor.FromRGB(140,140,140);
 

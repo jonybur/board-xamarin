@@ -7,8 +7,8 @@ namespace Board.Interface.Widgets
 	// father class to all buttons
 	public class Widget
 	{
-		public static UIImage ClosedEyeImage;
-		public static UIImage OpenEyeImage;
+		public static UIImageView ClosedEyeImageView;
+		public static UIImageView OpenEyeImageView;
 
 		public UIView View;
 		public List<UIGestureRecognizer> gestureRecognizers;
@@ -19,11 +19,14 @@ namespace Board.Interface.Widgets
 
 		public Widget()
 		{
-			ClosedEyeImage = UIImage.FromFile ("./boardinterface/widget/closedeye.png");
-			OpenEyeImage = UIImage.FromFile ("./boardinterface/widget/openeye.png");
-			ClosedEyeImage = ClosedEyeImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-			OpenEyeImage = OpenEyeImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+			using (UIImage image = UIImage.FromFile ("./boardinterface/widget/closedeye.png")) {
+				ClosedEyeImageView = new UIImageView(image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate));
+			}
 
+			using (UIImage image = UIImage.FromFile ("./boardinterface/widget/openeye.png")) {
+				OpenEyeImageView = new UIImageView(image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate));
+			}
+			
 			View = new UIButton ();
 			gestureRecognizers = new List<UIGestureRecognizer> ();
 		}
@@ -44,7 +47,7 @@ namespace Board.Interface.Widgets
 
 		public void OpenEye()
 		{
-			eye.Image = OpenEyeImage;
+			eye.Image = OpenEyeImageView.Image;
 			eye.TintColor = BoardInterface.board.MainColor;
 			EyeOpen = true;
 		}

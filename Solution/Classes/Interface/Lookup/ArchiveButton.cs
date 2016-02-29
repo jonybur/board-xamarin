@@ -15,8 +15,9 @@ namespace Board.Interface.Lookup
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			UIImage uiImage = UIImage.FromFile ("./boardinterface/lookup/archive.png");
-			uiButton.SetImage (uiImage, UIControlState.Normal);
+			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/lookup/archive.png")) {
+				uiButton.SetImage (uiImage, UIControlState.Normal);
+			}
 
 			uiButton.Frame = new CGRect (0,0, ButtonSize, ButtonSize);
 			uiButton.Center = new CGPoint (ButtonSize/2 + ButtonSize * 2 + 10, ButtonSize/2 + 15);

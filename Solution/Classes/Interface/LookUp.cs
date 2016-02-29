@@ -115,12 +115,16 @@ namespace Board.Interface
 
 		private UIImageView CreateBackButton()
 		{
-			UIImage doneBut = UIImage.FromFile ("./boardinterface/lookup/done.png");
-			UIImageView uiv = new UIImageView(new CGRect(0,0,doneBut.Size.Width/2,doneBut.Size.Height/2));
-			uiv.Image = doneBut;
+			UIImageView uiv;
+
+			using (UIImage doneBut = UIImage.FromFile ("./boardinterface/lookup/done.png")) {
+				uiv = new UIImageView(new CGRect(0,0,doneBut.Size.Width/2,doneBut.Size.Height/2));
+				uiv.Image = doneBut;
+				uiv.Center = new CGPoint (AppDelegate.ScreenWidth - doneBut.Size.Width / 2 + 15, 45);
+			}
+		
 			uiv.UserInteractionEnabled = true;
 			// hardcoded to be set in correct location
-			uiv.Center = new CGPoint (AppDelegate.ScreenWidth - doneBut.Size.Width / 2 + 15, 45);
 
 			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer  ((tg) => {
 				// user tapped on "Done" button

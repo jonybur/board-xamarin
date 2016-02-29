@@ -164,11 +164,13 @@ namespace Board.Interface
 		private void LoadFacebookButton()
 		{
 			string text = "Facebook";
-			UIImage image = UIImage.FromFile ("./screens/share/facebook/logo.png");
-			image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 
 			UIImageView logoView = new UIImageView (new CGRect (10, 10, 30, 30));
-			logoView.Image = image;
+
+			using (UIImage image = UIImage.FromFile ("./screens/share/facebook/logo.png")) {
+				logoView.Image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+			}
+
 			logoView.TintColor = UIColor.FromRGB(165, 167, 169);
 
 			UILabel label = new UILabel (new CGRect (logoView.Frame.Right, 0, AppDelegate.ScreenWidth / 2 - logoView.Frame.Right, 50));
@@ -304,10 +306,11 @@ namespace Board.Interface
 
 		private void LoadBanner()
 		{
-			UIImage bannerImage = UIImage.FromFile ("./screens/share/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			using (UIImage bannerImage = UIImage.FromFile ("./screens/share/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
+				banner = new UIImageView(new CGRect(0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
+				banner.Image = bannerImage;	
+			}
 
-			banner = new UIImageView(new CGRect(0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-			banner.Image = bannerImage;
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
@@ -323,11 +326,11 @@ namespace Board.Interface
 
 		private void LoadNextButton()
 		{
-			UIImage mapImage = UIImage.FromFile ("./screens/share/next/" + AppDelegate.PhoneVersion + ".jpg");;
-
-			nextbutton = new UIButton(new CGRect(0,AppDelegate.ScreenHeight - (mapImage.Size.Height / 2),
-				mapImage.Size.Width / 2, mapImage.Size.Height / 2));
-			nextbutton.SetImage(mapImage, UIControlState.Normal);
+			using (UIImage mapImage = UIImage.FromFile ("./screens/share/next/" + AppDelegate.PhoneVersion + ".jpg")) {
+				nextbutton = new UIButton(new CGRect(0,AppDelegate.ScreenHeight - (mapImage.Size.Height / 2),
+					mapImage.Size.Width / 2, mapImage.Size.Height / 2));
+				nextbutton.SetImage(mapImage, UIControlState.Normal);	
+			}
 
 			nextbutton.TouchUpInside += (sender, e) => {
 				NavigationController.PopViewController(false);
@@ -409,11 +412,13 @@ namespace Board.Interface
 		private void LoadInstagramButton()
 		{
 			string text = "Instagram";
-			UIImage image = UIImage.FromFile ("./screens/share/instagram/logo.png");
-			image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 
 			UIImageView logoView = new UIImageView (new CGRect (10, 10, 30, 30));
-			logoView.Image = image;
+
+			using (UIImage image = UIImage.FromFile ("./screens/share/instagram/logo.png")) {
+				logoView.Image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+			}
+
 			logoView.TintColor = UIColor.FromRGB(165, 167, 169);
 
 			UILabel label = new UILabel (new CGRect (logoView.Frame.Right, 0, AppDelegate.ScreenWidth / 2 - logoView.Frame.Right, 50));
@@ -450,11 +455,13 @@ namespace Board.Interface
 		private void LoadTwitterButton()
 		{
 			string text = "Twitter";
-			UIImage image = UIImage.FromFile ("./screens/share/twitter/logo.png");
-			image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 
 			UIImageView logoView = new UIImageView (new CGRect (10, 10, 30, 30));
-			logoView.Image = image;
+
+			using (UIImage image = UIImage.FromFile ("./screens/share/twitter/logo.png")) {
+				logoView.Image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+			}
+
 			logoView.TintColor = UIColor.FromRGB(165, 167, 169);
 
 			UILabel label = new UILabel (new CGRect (logoView.Frame.Right, 0, AppDelegate.ScreenWidth / 2 - logoView.Frame.Right, 50));
@@ -489,10 +496,13 @@ namespace Board.Interface
 		private void LoadRSSButton()
 		{
 			string text = "RSS Feed";
-			UIImage image = UIImage.FromFile ("./screens/share/rss/logo.png");
-			image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 
 			UIImageView logoView = new UIImageView (new CGRect (10, 10, 30, 30));
+
+			using (UIImage image = UIImage.FromFile ("./screens/share/rss/logo.png")) {
+				logoView.Image = image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+			}
+
 			logoView.Image = image;
 			logoView.TintColor = UIColor.FromRGB(165, 167, 169);
 

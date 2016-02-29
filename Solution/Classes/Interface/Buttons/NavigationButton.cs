@@ -14,8 +14,9 @@ namespace Board.Interface.Buttons
 
 		private void SetImage (string buttonName)
 		{
-			UIImage image = UIImage.FromFile ("./boardinterface/strokebuttons/" + buttonName + ".png");
-			uiButton.SetImage (image, UIControlState.Normal);
+			using (UIImage image = UIImage.FromFile ("./boardinterface/strokebuttons/" + buttonName + ".png")) {
+				uiButton.SetImage (image, UIControlState.Normal);
+			}
 		}
 
 		public NavigationButton ()
