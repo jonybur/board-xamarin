@@ -15,6 +15,8 @@ using Board.Interface.Widgets;
 using Board.Interface;
 using Board.Schema;
 
+using BigTed;
+
 namespace Board.Interface
 {
 	// user interface - connects to the board controller
@@ -66,24 +68,19 @@ namespace Board.Interface
 			// if it reaches this section, user has been logged in and authorized
 			base.ViewDidLoad ();
 
-			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
-			NavigationController.NavigationBarHidden = true;
+			BTProgressHUD.Show();
 
 			InitializeLists ();
 
-			GenerateTestPictures ();
-
 			InitializeInterface ();
+
+			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
+			NavigationController.NavigationBarHidden = true;
+
 		}
 
 		private void InitializeLists()
 		{
-			/*
-			ListPictures = new List<Picture> ();
-			ListVideos = new List<Video> ();
-			ListAnnouncements = new List<Announcement> ();
-			ListEvents = new List<BoardEvent> ();
-			*/
 			DictionaryContent = new Dictionary<string, Content> ();
 			DictionaryWidgets = new Dictionary<string, Widget> ();
 		}
@@ -91,11 +88,16 @@ namespace Board.Interface
 		public override void ViewDidAppear(bool animated)
 		{
 			if (firstLoad) {
+				
+				GenerateTestPictures ();
+
 				RefreshContent ();
 
 				SuscribeToEvents ();
 
 				firstLoad = false;
+
+				BTProgressHUD.Dismiss ();
 			}
 		}
 
@@ -405,7 +407,6 @@ namespace Board.Interface
 
 			scrollView.BackgroundColor = board.MainColor;
 
-
 			UIImageView circleTop, circleLower;
 
 			using (UIImage img = UIImage.FromFile ("./boardinterface/backgrounds/intern.png")){
@@ -424,7 +425,7 @@ namespace Board.Interface
 			circleTop.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
 			circleTop.Tag = (int)Tags.Background;
 
-			circleLower.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
+			circleLower.Frame = circleTop.Frame;
 			circleLower.Tag = (int)Tags.Background;
 
 			circleTop.TintColor = board.MainColor;
