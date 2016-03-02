@@ -216,20 +216,27 @@ namespace Board.Interface.Widgets
 
 				time = 0;
 
-				while (time < videoDuration) {
-					Thread.Sleep (1000);
-					time++;
-				}
+				if (playing) {
+					while (time < videoDuration) {
+						Thread.Sleep (1000);
+						time++;
+					}
 
-				View.InvokeOnMainThread (() => _player.Seek (new CMTime (0, 1000000000)));
+					if (_player != null) {
+						Console.WriteLine ("backsup");
+						View.InvokeOnMainThread (() => _player.Seek (new CMTime (0, 1000000000)));
+					}
+				}
 			}
 		}
 
-		bool loop;
 		Thread looper;
 		AVPlayer _player;
+
 		double videoDuration;
+		bool loop;
 		int time;
+		bool playing;
 
 		private AVPlayerLayer LoadVideoThumbnail(CGRect frame)
 		{	
@@ -245,9 +252,10 @@ namespace Board.Interface.Widgets
 			_playerLayer = AVPlayerLayer.FromPlayer (_player);
 			_playerLayer.Frame = frame;
 			_player.Seek (new CMTime (0, 1000000000));
-			_player.Play ();
 			_player.Muted = true;
 			_player.Volume = 0;
+			_player.Play ();
+			playing = true;
 
 			videoDuration = Math.Floor(_player.CurrentItem.Asset.Duration.Seconds);
 
@@ -262,8 +270,19 @@ namespace Board.Interface.Widgets
 			return _playerLayer;
 		}
 
-		public void KillLooper()
+		public void PauseVideo()
 		{
+			if (playing) {
+				Console.WriteLine ("pauses");
+				playing = false;
+				_player.Pause ();
+			}
+		}
+
+		public void KillVideo()
+		{
+			PauseVideo ();
+			_player = null;
 			loop = false;
 			time = (int)videoDuration;
 		}

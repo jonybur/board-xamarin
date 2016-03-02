@@ -119,7 +119,7 @@ namespace Board.Interface
 			foreach(KeyValuePair<string, Widget> widget in DictionaryWidgets)
 			{
 				if (widget.Value is VideoWidget) {
-					(widget.Value as VideoWidget).KillLooper ();
+					(widget.Value as VideoWidget).KillVideo ();
 				}
 
 				widget.Value.UnsuscribeToEvents ();
@@ -234,7 +234,7 @@ namespace Board.Interface
 					Widget wid = DictionaryWidgets.Values.ToList().Find(item => ((item.View.Frame.X) > scrollView.ContentOffset.X) &&
 						((item.View.Frame.X + item.View.Frame.Width) < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth)) &&
 						!item.EyeOpen);
-
+					
 					if (wid != null)
 					{
 						OpenEye(wid);
