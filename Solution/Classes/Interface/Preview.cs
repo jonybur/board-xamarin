@@ -24,7 +24,7 @@ namespace Board.Interface
 		public static UIView View{
 			get { return uiView; }
 		}
-		private static float Rotation = 0;
+		private static float Rotation;
 
 		public enum Type {Picture = 1, Video, Announcement};
 		public static int TypeOfPreview;
@@ -34,6 +34,8 @@ namespace Board.Interface
 			TypeOfPreview = (int)Type.Announcement;
 
 			announcementWidget = new AnnouncementWidget (ann);
+
+			announcementWidget.ScrollEnabled (false);
 
 			CGRect frame = announcementWidget.View.Frame;
 
@@ -80,7 +82,7 @@ namespace Board.Interface
 			moviePlayer.Pause ();
 			moviePlayer.Dispose ();
 
-			video.Url = Url;
+			video.Url = NSUrl.FromString (Url);
 
 			videoWidget = new VideoWidget (video);
 

@@ -370,7 +370,7 @@ namespace Board.Interface
 				moviePlayer.Dispose ();	
 			}
 
-			vid.Url = url;
+			vid.Url = NSUrl.FromFilename (url);
 			vid.Frame = new CGRect(imgx, imgy, 0, 0);
 			vid.Rotation = rotation;
 

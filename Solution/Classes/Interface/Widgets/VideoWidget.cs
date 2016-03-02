@@ -82,7 +82,7 @@ namespace Board.Interface.Widgets
 					return;
 				}
 
-				MPMoviePlayerController moviePlayer = new MPMoviePlayerController (NSUrl.FromFilename (video.Url));
+				MPMoviePlayerController moviePlayer = new MPMoviePlayerController (video.Url);
 				View.Superview.Superview.AddSubview (moviePlayer.View);
 				moviePlayer.SetFullscreen (true, false);
 				moviePlayer.Play ();
@@ -243,8 +243,7 @@ namespace Board.Interface.Widgets
 			AVPlayerItem _playerItem;
 			AVPlayerLayer _playerLayer;
 
-			using (AVAsset _asset = AVAsset.FromUrl (NSUrl.FromFilename (video.Url)))
-			{
+			using (AVAsset _asset = AVAsset.FromUrl (video.Url)) {
 				_playerItem = new AVPlayerItem (_asset);
 			}
 			_playerItem.AudioMix = new AVAudioMix ();

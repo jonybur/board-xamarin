@@ -10,6 +10,7 @@ namespace Board.Interface.Widgets
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
 		private Announcement announcement;
+		private UITextView textview;
 
 		public Announcement Announcement
 		{
@@ -52,29 +53,33 @@ namespace Board.Interface.Widgets
 			EyeOpen = false;
 		}
 
+		public void ScrollEnabled(bool value)
+		{
+			textview.ScrollEnabled = value;
+		}
+
 		private UITextView CreateText()
 		{
 			UIFont font = UIFont.SystemFontOfSize (20);
 
-			float texth = 120;
-
-			UITextView textview = new UITextView ();
+			textview = new UITextView ();
 			textview.BackgroundColor = UIColor.FromRGB(250,250,250);
 			textview.Editable = false;
 			textview.Selectable = true;
+			textview.ScrollEnabled = true;
 			textview.AttributedText = announcement.Text;
 			textview.SizeToFit ();
 
 			if (textview.Frame.Width < 160) {
-				textview.Frame = new CGRect (10, 10, 160, texth);
+				textview.Frame = new CGRect (10, 10, 160, textview.Frame.Height);
 			} else if (textview.Frame.Width > 250) {
-				textview.Frame = new CGRect (10, 10, 250, texth);
+				textview.Frame = new CGRect (10, 10, 250, textview.Frame.Height);
 			}
 
 			if (textview.Frame.Height < 120) {
 				textview.Frame = new CGRect (10, 10, textview.Frame.Width, 120);
-			} else if (textview.Frame.Height > 200) {
-				textview.Frame = new CGRect (10, 10, textview.Frame.Width, 200);
+			} else if (textview.Frame.Height > 180) {
+				textview.Frame = new CGRect (10, 10, textview.Frame.Width, 180);
 			}
 
 			return textview;

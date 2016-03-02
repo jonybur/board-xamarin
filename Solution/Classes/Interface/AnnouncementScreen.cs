@@ -19,11 +19,14 @@ namespace Board.Interface
 	public class AnnouncementScreen : UIViewController
 	{
 		UIImageView banner;
-		UIImageView nextbutton;
+		UIButton nextbutton;
 		UIScrollView content;
 		UILabel instructionsLabel;
 		PlaceholderTextView textview;
 		List<UIButton> fbPageButtons;
+
+		UITapGestureRecognizer bannerEvents, resignKeyboard;
+		EventHandler nextButtonTouch;
 
 		bool FBActive;
 		bool IGActive;
@@ -44,6 +47,16 @@ namespace Board.Interface
 			NavigationController.NavigationBarHidden = true;
 
 			InitializeInterface ();
+		}
+
+		public override void ViewDidAppear(bool animated)
+		{
+			SuscribeToEvents ();
+		}
+
+		public override void ViewDidDisappear(bool animated)
+		{
+			UnsuscribeToEvents ();
 		}
 
 		private void InitializeInterface()
@@ -147,9 +160,6 @@ namespace Board.Interface
 					pressed = true;
 					pageButton.BackgroundColor = AppDelegate.BoardLightBlue;
 					nameLabel.TextColor = UIColor.White;
-
-					/*Thread thread = new Thread(new ThreadStart(PopOut));
-					thread.Start();*/
 				} else {
 					pressed = false;
 					pageButton.BackgroundColor = UIColor.White;
@@ -184,16 +194,13 @@ namespace Board.Interface
 
 			bool pressed = false;
 
-			pageButton.TouchUpInside += (object sender, EventArgs e) => {
+			pageButton.TouchUpInside += (sender, e) => {
 				if (!pressed)
 				{
 					pressed = true;
 					pageButton.BackgroundColor = AppDelegate.BoardLightBlue;
 					nameLabel.TextColor = UIColor.White;
 					categoryLabel.TextColor = UIColor.White;
-
-					/*Thread thread = new Thread(new ThreadStart(PopOut));
-					thread.Start();*/
 				} else {
 					pressed = false;
 					pageButton.BackgroundColor = UIColor.White;
@@ -298,7 +305,7 @@ namespace Board.Interface
 
 			IGActive = false;
 
-			composite.TouchUpInside += (object sender, EventArgs e) => {
+			composite.TouchUpInside += (sender, e) => {
 
 				if (!IGActive)
 				{
@@ -339,7 +346,7 @@ namespace Board.Interface
 
 			TWActive = false;
 
-			composite.TouchUpInside += (object sender, EventArgs e) => {
+			composite.TouchUpInside += (sender, e) => {
 
 				if (!TWActive)
 				{
@@ -401,12 +408,11 @@ namespace Board.Interface
 			content = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			content.BackgroundColor = UIColor.FromRGB(249, 250, 249);
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer (obj => {
+			resignKeyboard = new UITapGestureRecognizer (obj => {
 				textview.ResignFirstResponder();
 			});
 
 			content.UserInteractionEnabled = true;
-			content.AddGestureRecognizer (tap);
 
 			View.AddSubview (content);
 		}
@@ -418,7 +424,7 @@ namespace Board.Interface
 				banner.Image = bannerImage;
 			}
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+			bannerEvents = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 
 					if (textview.Text.Length > 0 && !textview.IsPlaceHolder)
@@ -441,22 +447,35 @@ namespace Board.Interface
 			});
 
 			banner.UserInteractionEnabled = true;
-			banner.AddGestureRecognizer (tap);
 			banner.Alpha = .95f;
 			View.AddSubview (banner);
+		}
+
+		private void SuscribeToEvents()
+		{
+			banner.AddGestureRecognizer (bannerEvents);
+			content.AddGestureRecognizer (resignKeyboard);
+			nextbutton.TouchUpInside += nextButtonTouch;
+		}
+
+		private void UnsuscribeToEvents()
+		{
+			banner.RemoveGestureRecognizer (bannerEvents);
+			content.RemoveGestureRecognizer (resignKeyboard);
+			nextbutton.TouchUpInside -= nextButtonTouch;
 		}
 
 
 		private void LoadNextButton()
 		{
 			using (UIImage mapImage = UIImage.FromFile ("./screens/share/next/" + AppDelegate.PhoneVersion + ".jpg")) {
-				nextbutton = new UIImageView(new CGRect(0,AppDelegate.ScreenHeight - (mapImage.Size.Height / 2),
+				nextbutton = new UIButton(new CGRect(0,AppDelegate.ScreenHeight - (mapImage.Size.Height / 2),
 					mapImage.Size.Width / 2, mapImage.Size.Height / 2));
-				nextbutton.Image = mapImage;
+				nextbutton.SetImage(mapImage, UIControlState.Normal);
 			}
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
-				
+			nextButtonTouch += (sender, e) => {
+
 				if (textview.IsPlaceHolder || textview.Text.Length == 0)
 				{
 					UIAlertController alert = UIAlertController.Create("Can't create announcement", "Please write a caption", UIAlertControllerStyle.Alert);
@@ -500,10 +519,9 @@ namespace Board.Interface
 				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
 
 				NavigationController.PopViewController(false);
-			});
+			};
 
 			nextbutton.UserInteractionEnabled = true;
-			nextbutton.AddGestureRecognizer (tap);
 			nextbutton.Alpha = .95f;
 			View.AddSubview (nextbutton);
 		}
@@ -523,8 +541,6 @@ namespace Board.Interface
 			textview.BackgroundColor = UIColor.White;
 			textview.TextColor = AppDelegate.BoardBlue;
 			textview.Font = UIFont.SystemFontOfSize (20);
-
-
 
 			UIImageView colorWhite = CreateColorView (new CGRect (0, 0, AppDelegate.ScreenWidth, frame.Bottom), UIColor.White.CGColor);
 

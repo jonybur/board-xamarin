@@ -1,12 +1,13 @@
 ﻿using CoreGraphics;
 using UIKit;
 using Board.Utilities;
+using Foundation;
 
 namespace Board.Schema
 {
 	public class Video : Content
 	{
-		public string Url { get; set; }
+		public NSUrl Url { get; set; }
 
 		public UIImageView ThumbnailView { get; set; }
 
@@ -14,7 +15,7 @@ namespace Board.Schema
 			Id = CommonUtils.GenerateId ();
 		}
 
-		public Video(string url, UIImageView thumbnailView, float rotation, CGRect frame, string userid)
+		public Video(NSUrl url, UIImageView thumbnailView, float rotation, CGRect frame, string userid)
 		{
 			Id = CommonUtils.GenerateId ();
 			Url = url;

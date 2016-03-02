@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 namespace Board.Interface.Widgets
 {
-	// father class to all buttons
 	public class Widget
 	{
 		public static UIImageView ClosedEyeImageView;
