@@ -20,16 +20,23 @@ namespace Board.Screens
 
 		bool nextEnabled;
 
-		bool firstLocationUpdate = false;
+		bool firstLocationUpdate;
 
 		public override void ViewDidAppear (bool animated)
 		{
 			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
 		}
 
+		public override void ViewDidDisappear(bool animated)
+		{
+			map.RemoveObserver (this, new NSString ("myLocation"));
+		}
+
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
+
+			View.BackgroundColor = UIColor.White;
 
 			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
 			NavigationController.NavigationBarHidden = true;
@@ -56,13 +63,16 @@ namespace Board.Screens
 			nameView.ReturnKeyType = UIReturnKeyType.Done;
 			nameView.EnablesReturnKeyAutomatically = true;
 
-			nameView.ShouldReturn += (textField) => {
+			nameView.ShouldReturn += textField => {
 				textField.ResignFirstResponder();
 				return true;
 			};
 
 			nameView.ShouldChangeCharacters = (textField, range, replacementString) => {
 				var newLength = textField.Text.Length + replacementString.Length - range.Length;
+
+				NextButtonEnabled(true);
+
 				return newLength <= 30;
 			};
 
@@ -133,6 +143,14 @@ namespace Board.Screens
 
 		private void NextButtonEnabled(bool enabled)
 		{
+			if (nameView != null) {
+				if (nameView.Text.Length < 5) {
+					nextEnabled = false;
+					orangeRectangle.Alpha = .5f;
+					return;
+				}
+			}
+
 			nextEnabled = enabled;
 
 			if (nextEnabled) {
@@ -167,7 +185,7 @@ namespace Board.Screens
 				firstLocationUpdate = true; 
 
 				var location = change.ObjectForKey (NSValue.ChangeNewKey) as CoreLocation.CLLocation;
-				map.Camera = CameraPosition.FromCamera (location.Coordinate, 16);
+				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
 			}
 		}
 
@@ -253,13 +271,6 @@ namespace Board.Screens
 			LoadAddressView ();
 		}
 
-		// deprecated method
-		void HandleReverseGeocodeCallback (ReverseGeocodeResponse response, NSError error)
-		{
-			Address ad = response.FirstResult;
-			addressView.Text = ad.Thoroughfare;
-		}
-
 		private void LoadBanner()
 		{
 			using (UIImage bannerImage = UIImage.FromFile ("./screens/create/1/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
@@ -271,7 +282,6 @@ namespace Board.Screens
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					NavigationController.PopViewController(false);
 
-					map.RemoveObserver (this, new NSString ("myLocation"));
 				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 4) * 3 && nextEnabled){
 					Board.Schema.Board newBoard = new Board.Schema.Board();
 					newBoard.Location = resultAddress.formatted_address;
@@ -279,8 +289,6 @@ namespace Board.Screens
 						
 					CreateScreen2 createScreen2 = new CreateScreen2(newBoard);
 					NavigationController.PushViewController(createScreen2, false);
-
-					map.RemoveObserver (this, new NSString ("myLocation"));
 				}
 			});
 

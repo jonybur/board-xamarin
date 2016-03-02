@@ -33,8 +33,8 @@ namespace Board.Interface
 		float listStartPositionY;
 		float positionY;
 
-		string [] publishPermissions = new [] { "publish_actions" };
-		string [] readPermissions = new [] { "pages_show_list" };
+		string [] publishPermissions = { "publish_actions" };
+		string [] readPermissions = { "pages_show_list" };
 
 		public override void ViewDidLoad ()
 		{
@@ -80,7 +80,7 @@ namespace Board.Interface
 			graph.Start (LoadList);
 		}
 
-		private void LoadList(Facebook.CoreKit.GraphRequestConnection connection, Foundation.NSObject obj, Foundation.NSError err)
+		private void LoadList(GraphRequestConnection connection, NSObject obj, NSError err)
 		{
 			List<string> lstNames = NSObjectToString ("data.name", obj);
 			List<string> lstCategories = NSObjectToString ("data.category", obj);
@@ -380,8 +380,7 @@ namespace Board.Interface
 
 			RSSActive = false;
 
-			composite.TouchUpInside += (object sender, EventArgs e) => {
-
+			composite.TouchUpInside += (sender, e) => {
 				if (!RSSActive)
 				{
 					label.TextColor = UIColor.FromRGB(255, 112, 0);
@@ -402,7 +401,7 @@ namespace Board.Interface
 			content = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			content.BackgroundColor = UIColor.FromRGB(249, 250, 249);
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((UITapGestureRecognizer obj) => {
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (obj => {
 				textview.ResignFirstResponder();
 			});
 

@@ -62,14 +62,30 @@ namespace Board.Interface.Widgets
 
 			// empieza en 0 termina en 24
 			UILabel dayName = new UILabel (new CGRect (10, 0, 80, 30));
-			dayName.Font = UIFont.SystemFontOfSize (24);
+			dayName.Font = UIFont.SystemFontOfSize (18);
 			dayName.Text = boardEvent.Date.DayOfWeek.ToString();
 			dayName.TextAlignment = UITextAlignment.Center;
 			dayName.TextColor = BoardInterface.board.MainColor;
 			dayName.AdjustsFontSizeToFitWidth = true;
 
-			// empieza en 40 termina en 100 y
-			UILabel dayNumber = new UILabel (new CGRect (0, 40, 100, 60));
+			// empieza en 26 termina en 56
+			UILabel timeLabel = new UILabel (new CGRect (25, 32, 80, 30));
+			timeLabel.Font = UIFont.SystemFontOfSize (14);
+			timeLabel.Text = boardEvent.Date.ToString("hh:mm tt");
+			timeLabel.TextAlignment = UITextAlignment.Center;
+			timeLabel.SizeToFit ();
+			timeLabel.TextColor = BoardInterface.board.MainColor;
+			timeLabel.AdjustsFontSizeToFitWidth = true;
+
+			UIImageView timeView = new UIImageView (new CGRect (0, 0, 10, 10));
+			using (UIImage img = UIImage.FromFile ("./boardinterface/widget/time.png")) {
+				timeView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				timeView.TintColor = BoardInterface.board.MainColor;
+				timeView.Center = new CGPoint (timeLabel.Frame.Left - 10, timeLabel.Center.Y);
+			}
+
+			// empieza en 55 termina en 110
+			UILabel dayNumber = new UILabel (new CGRect (0, 55, 100, 55));
 			dayNumber.Font = UIFont.SystemFontOfSize (60);
 			dayNumber.Text = boardEvent.Date.Day.ToString();
 			dayNumber.AdjustsFontSizeToFitWidth = true;
@@ -77,15 +93,15 @@ namespace Board.Interface.Widgets
 			dayNumber.TextAlignment = UITextAlignment.Center;
 
 			// empieza en 105 termina en 135
-			UILabel monthName = new UILabel (new CGRect (10, 105, 80, 30));
-			monthName.Font = UIFont.SystemFontOfSize (24);
+			UILabel monthName = new UILabel (new CGRect (10, 110, 80, 30));
+			monthName.Font = UIFont.SystemFontOfSize (16);
 			int monthNumber = boardEvent.Date.Month;
 			monthName.Text = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNumber).ToUpper();
 			monthName.TextAlignment = UITextAlignment.Center;
 			monthName.TextColor = BoardInterface.board.MainColor;
 			monthName.AdjustsFontSizeToFitWidth = true;
 
-			box.AddSubviews (dayName, dayNumber, monthName);
+			box.AddSubviews (dayName, timeView, timeLabel, dayNumber, monthName);
 
 			return box;
 		}
@@ -95,7 +111,7 @@ namespace Board.Interface.Widgets
 			UIImageView box = new UIImageView (new CGRect (calendarBoxFrame.Right + 10, calendarBoxFrame.Top, 100, calendarBoxFrame.Height));
 
 			float imgw, imgh;
-			float autosize = (float)calendarBoxFrame.Width;
+			float autosize = (float)box.Frame.Width;
 
 			float scale = (float)(boardEvent.ImageView.Frame.Width/boardEvent.ImageView.Frame.Height);
 
@@ -116,6 +132,7 @@ namespace Board.Interface.Widgets
 
 			UIImageView eventPoster = new UIImageView (new CGRect(0, 0, imgw, imgh));
 			eventPoster.Image = boardEvent.ImageView.Image;
+			box.BackgroundColor = UIColor.Black;
 			eventPoster.Center = new CGPoint (calendarBoxFrame.Width / 2, calendarBoxFrame.Height / 2);
 
 			box.AddSubview (eventPoster);

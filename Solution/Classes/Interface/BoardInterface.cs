@@ -275,9 +275,7 @@ namespace Board.Interface
 
 		private void LoadButtons()
 		{
-			ButtonInterface.Initialize (delegate {
-											RefreshContent ();
-										});
+			ButtonInterface.Initialize (RefreshContent);
 
 			UIImageView buttonBackground = CreateColorView (new CGRect (0, 0, AppDelegate.ScreenWidth, 45), UIColor.White.CGColor);
 			buttonBackground.Alpha = .95f;
@@ -339,12 +337,18 @@ namespace Board.Interface
 				AddTestPicture (img, 655, 225, .01f);
 			}
 
-			BoardEvent bevent;
 			using (UIImage img = UIImage.FromFile ("./demo/events/0.jpg")) {
-				bevent = new BoardEvent ("La Roxtar", img, new DateTime (2016, 11, 10), 0, new CGRect (1600, 20, 0, 0), null);
+				AddTestEvent ("La Roxtar", img, new DateTime (2016, 6, 16, 22, 30, 0), new CGRect (1650, 29, 0, 0), -.03f);
 			}
-			DictionaryContent.Add (bevent.Id, bevent);
 
+			using (UIImage img = UIImage.FromFile ("./demo/events/width.jpg")) {
+				AddTestEvent ("RIVERS in the Alley", img, new DateTime (2016, 11, 4, 18, 0, 0), new CGRect (1900, 30, 0, 0), .02f);
+			}
+
+			using (UIImage img = UIImage.FromFile ("./demo/events/height.jpg")) {
+				AddTestEvent ("Retirement Block Party", img, new DateTime (2016, 2, 28, 11, 30, 0), new CGRect (2150, 27, 0, 0), .05f);
+			}
+	
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/4.jpg")) {
 				AddTestPicture (img, 50, 420, .03f);
 			}
@@ -352,6 +356,14 @@ namespace Board.Interface
 			AddTestVideo ("./demo/videos/2.mp4", 330, 415, -.02f);
 
 			AddTestVideo ("./demo/videos/3.mp4", 635, 420, .0f);
+		}
+
+		private void AddTestEvent(string name, UIImage img, DateTime date, CGRect frame, float rotation)
+		{
+			BoardEvent bevent;
+			bevent = new BoardEvent (name, img, date, rotation, frame, null);
+			bevent.Rotation = rotation;
+			DictionaryContent.Add (bevent.Id, bevent);
 		}
 
 		private void AddTestPicture(UIImage image, float imgx, float imgy, float rotation)

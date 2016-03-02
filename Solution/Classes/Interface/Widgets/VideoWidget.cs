@@ -223,7 +223,6 @@ namespace Board.Interface.Widgets
 					}
 
 					if (_player != null) {
-						Console.WriteLine ("backsup");
 						View.InvokeOnMainThread (() => _player.Seek (new CMTime (0, 1000000000)));
 					}
 				}
@@ -235,8 +234,9 @@ namespace Board.Interface.Widgets
 
 		double videoDuration;
 		bool loop;
-		int time;
 		bool playing;
+
+		int time;
 
 		private AVPlayerLayer LoadVideoThumbnail(CGRect frame)
 		{	
@@ -273,7 +273,6 @@ namespace Board.Interface.Widgets
 		public void PauseVideo()
 		{
 			if (playing) {
-				Console.WriteLine ("pauses");
 				playing = false;
 				_player.Pause ();
 			}
