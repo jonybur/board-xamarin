@@ -29,9 +29,7 @@ namespace Board.Screens
 		UIScrollView scrollView;
 
 		// previewboard
-		UIImageView boardView;
-		UIImageView preview_secondaryBar;
-		UIImageView preview_primaryBar;
+		UIImageView boardView, circleTop, circleLower, logoBackground;
 		UIImageView preview_mainLogo;
 
 		public CreateScreen2 (Board.Schema.Board _board) : base ("Board", null){
@@ -40,6 +38,16 @@ namespace Board.Screens
 
 		public override void ViewDidAppear(bool animated)
 		{
+			SuscribeToEvents ();
+		}
+
+		public override void ViewDidDisappear(bool animated)
+		{
+			UnsuscribeToEvents ();
+		}
+
+		private void SuscribeToEvents()
+		{
 			// Keyboard popup
 			NSNotificationCenter.DefaultCenter.AddObserver
 			(UIKeyboard.DidShowNotification,KeyBoardUpNotification);
@@ -47,6 +55,15 @@ namespace Board.Screens
 			// Keyboard Down
 			NSNotificationCenter.DefaultCenter.AddObserver
 			(UIKeyboard.WillHideNotification,KeyBoardDownNotification);
+		}
+
+		private void UnsuscribeToEvents()
+		{
+			// Keyboard popup
+			NSNotificationCenter.DefaultCenter.RemoveObserver (UIKeyboard.DidShowNotification);
+
+			// Keyboard Down
+			NSNotificationCenter.DefaultCenter.RemoveObserver (UIKeyboard.WillHideNotification);
 		}
 
 		public override void ViewDidLoad ()
@@ -64,28 +81,41 @@ namespace Board.Screens
 
 		private UIImageView GeneratePreviewBoard()
 		{
-			boardHeight = (float)((AppDelegate.ScreenWidth * AppDelegate.ScreenHeight) / BoardInterface.ScrollViewWidthSize);
-			topBarHeight = (float)((50 * boardHeight) / AppDelegate.ScreenHeight);
-			bottomBarHeight = (float)((100 * boardHeight) / AppDelegate.ScreenHeight);
+			boardHeight = ((AppDelegate.ScreenWidth * AppDelegate.ScreenHeight) / BoardInterface.ScrollViewWidthSize);
+			topBarHeight = ((50 * boardHeight) / AppDelegate.ScreenHeight);
+			bottomBarHeight = ((100 * boardHeight) / AppDelegate.ScreenHeight);
 
-			float pushDown = 0;
+			boardView = new UIImageView (new CGRect(0, AppDelegate.ScreenHeight - boardHeight, AppDelegate.ScreenWidth, boardHeight));
 
-			if (AppDelegate.PhoneVersion == "6plus") {
-				pushDown = 15;
+			using (UIImage img = UIImage.FromFile ("./boardinterface/backgrounds/intern.png")){
+				UIImage tmp = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				circleTop = new UIImageView (tmp);
 			}
 
-			boardView = new UIImageView (new CGRect(0, AppDelegate.ScreenHeight - boardHeight + pushDown, AppDelegate.ScreenWidth, boardHeight + pushDown));
+			using (UIImage img = UIImage.FromFile ("./boardinterface/backgrounds/outer.png")) {
+				UIImage tmp = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				circleLower = new UIImageView (tmp);
+			}
 
-			preview_secondaryBar = CreateColorSquare(new CGSize(boardView.Frame.Width, topBarHeight), new CGPoint(AppDelegate.ScreenWidth/2, (boardHeight * 560) / AppDelegate.ScreenHeight), board.SecondaryColor.CGColor);
-			boardView.AddSubview (preview_secondaryBar);
+			using (UIImage img = UIImage.FromFile ("./boardinterface/backgrounds/logobackground.png")) {
+				UIImage tmp = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				logoBackground = new UIImageView (tmp);
+			}
 
-			preview_primaryBar = CreateColorSquare(new CGSize(boardView.Frame.Width, bottomBarHeight), new CGPoint(AppDelegate.ScreenWidth/2, (boardHeight * 630) / AppDelegate.ScreenHeight), board.MainColor.CGColor);
-			boardView.AddSubview (preview_primaryBar);
+			circleTop.Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, boardHeight);
+			circleLower.Frame = circleTop.Frame;
+			logoBackground.Frame = circleTop.Frame;
 
-			preview_mainLogo = GenerateBoardThumb (board.ImageView.Image, new CGPoint (AppDelegate.ScreenWidth / 2, (boardView.Frame.Height / 2) - 5 - pushDown), false);
-			boardView.AddSubview (preview_mainLogo);
+			boardView.BackgroundColor = board.MainColor;
+			circleTop.TintColor = board.MainColor;
+			circleLower.TintColor = board.SecondaryColor;
+			logoBackground.TintColor = UIColor.White;
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+			preview_mainLogo = GenerateBoardThumb (board.ImageView.Image, new CGPoint (boardView.Frame.Width / 2, boardView.Frame.Height / 2), false);
+
+			boardView.AddSubviews (logoBackground, preview_mainLogo, circleTop, circleLower);
+
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				AppDelegate.boardInterface = new BoardInterface(board, true);
 				NavigationController.PushViewController(AppDelegate.boardInterface, true);
 			});
@@ -102,6 +132,7 @@ namespace Board.Screens
 
 			// loads center button
 			LoadBanner ();
+
 			LoadContent ();
 
 			View.AddSubview (scrollView);
@@ -200,10 +231,9 @@ namespace Board.Screens
 				scrollView.AddSubview(color1);
 
 				board.MainColor = color;
+				boardView.BackgroundColor = color;
 
-				preview_primaryBar.RemoveFromSuperview();
-				preview_primaryBar = CreateColorSquare(new CGSize(AppDelegate.ScreenWidth, bottomBarHeight), new CGPoint(AppDelegate.ScreenWidth/2, (boardHeight * 620) / AppDelegate.ScreenHeight), board.MainColor.CGColor);
-				boardView.AddSubview(preview_primaryBar);
+				circleTop.TintColor = board.MainColor;
 
 				textField.ResignFirstResponder();
 
@@ -252,9 +282,7 @@ namespace Board.Screens
 
 				board.SecondaryColor = color;
 
-				preview_secondaryBar.RemoveFromSuperview();
-				preview_secondaryBar = CreateColorSquare(new CGSize(AppDelegate.ScreenWidth, topBarHeight), new CGPoint(AppDelegate.ScreenWidth/2, (boardHeight * 550) / AppDelegate.ScreenHeight), board.SecondaryColor.CGColor);
-				boardView.AddSubview(preview_secondaryBar);
+				circleLower.TintColor = board.SecondaryColor;
 
 				textField.ResignFirstResponder();
 
@@ -324,18 +352,15 @@ namespace Board.Screens
 
 					hexView1.Text = CommonUtils.UIColorToHex(color);
 
-					preview_primaryBar.RemoveFromSuperview();
-					preview_primaryBar = CreateColorSquare(new CGSize(AppDelegate.ScreenWidth, bottomBarHeight), new CGPoint(AppDelegate.ScreenWidth/2, (boardHeight * 620) / AppDelegate.ScreenHeight), board.MainColor.CGColor);
-					boardView.AddSubview(preview_primaryBar);
+					boardView.BackgroundColor = board.MainColor;
+					circleTop.TintColor = board.MainColor;
 					break;
 				case 2:
 					board.SecondaryColor = color;
 
 					hexView2.Text = CommonUtils.UIColorToHex(color);
 
-					preview_secondaryBar.RemoveFromSuperview();
-					preview_secondaryBar = CreateColorSquare(new CGSize(AppDelegate.ScreenWidth, topBarHeight), new CGPoint(AppDelegate.ScreenWidth/2, (boardHeight * 550) / AppDelegate.ScreenHeight), board.SecondaryColor.CGColor);
-					boardView.AddSubview(preview_secondaryBar);
+					circleLower.TintColor = board.SecondaryColor;
 					break;
 				}
 
@@ -438,16 +463,6 @@ namespace Board.Screens
 			boardImage.Image = img;
 
 			boardIcon.AddSubview (boardImage);
-
-			UIImageView circle = new UIImageView (new CGRect(0,0,autosize,autosize));
-			circle.Center = new CGPoint(autosize/2, autosize/2);
-
-			using (UIImage circleimg = UIImage.FromFile ("./mainmenu/circle.png"))
-			{
-				circle.Image = circleimg;
-			}
-
-			//boardIcon.AddSubview (circle);
 
 			return boardIcon;
 		}

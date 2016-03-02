@@ -103,12 +103,12 @@ namespace Board.Screens
 			map.Settings.MyLocationButton = true;
 			map.UserInteractionEnabled = true;
 
-			map.CoordinateLongPressed += (object sender, GMSCoordEventArgs e) => {
+			map.CoordinateLongPressed += (sender, e) => {
 				marker.Position = new CoreLocation.CLLocationCoordinate2D (e.Coordinate.Latitude, e.Coordinate.Longitude);
 				marker.Map = map;
 				addressView.Text = string.Empty;
 
-				string jsonobj = JsonHandler.GET("https://maps.googleapis.com/maps/api/geocode/json?address=" + e.Coordinate.Latitude.ToString() + "," + e.Coordinate.Longitude.ToString() + "&key=" + AppDelegate.GoogleMapsAPIKey);
+				string jsonobj = JsonHandler.GET("https://maps.googleapis.com/maps/api/geocode/json?address=" + e.Coordinate.Latitude + "," + e.Coordinate.Longitude + "&key=" + AppDelegate.GoogleMapsAPIKey);
 				GoogleGeolocatorObject geolocatorObject = JsonHandler.DeserializeObject(jsonobj);
 
 				try{
@@ -131,6 +131,9 @@ namespace Board.Screens
 				}
 				catch{
 					Console.WriteLine("Error creating address");
+
+					resultAddress = null;
+
 					addressView.Text = string.Empty;
 				}
 
@@ -149,6 +152,12 @@ namespace Board.Screens
 					orangeRectangle.Alpha = .5f;
 					return;
 				}
+			}
+
+			if (resultAddress == null) {
+				nextEnabled = false;
+				orangeRectangle.Alpha = .5f;
+				return;
 			}
 
 			nextEnabled = enabled;
@@ -236,6 +245,7 @@ namespace Board.Screens
 				addressView.UserInteractionEnabled = false;
 				addressView.Text = string.Empty;
 				marker.Map = null;
+				resultAddress = null;
 				whiteRectangle.Alpha = 1f;
 
 				NextButtonEnabled(false);
