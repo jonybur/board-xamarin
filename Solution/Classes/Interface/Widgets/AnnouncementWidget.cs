@@ -55,29 +55,27 @@ namespace Board.Interface.Widgets
 		private UITextView CreateText()
 		{
 			UIFont font = UIFont.SystemFontOfSize (20);
-			UITextView textview = new UITextView (new CGRect(10, 10, 250, 100));
-			textview.Font = font;
+
+			float texth = 120;
+
+			UITextView textview = new UITextView ();
 			textview.BackgroundColor = UIColor.FromRGB(250,250,250);
-			textview.TextColor = AppDelegate.BoardBlue;
 			textview.Editable = false;
 			textview.Selectable = true;
-			textview.Text = announcement.Text;
+			textview.AttributedText = announcement.Text;
 			textview.SizeToFit ();
 
-			if (textview.Frame.Width < 150) {
-				textview.Frame = new CGRect (10, 10, 150, textview.Frame.Height);
-			} else if (textview.Frame.Width > 300) {
-				textview.Frame = new CGRect (10, 10, 330, textview.Frame.Height);
+			if (textview.Frame.Width < 160) {
+				textview.Frame = new CGRect (10, 10, 160, texth);
+			} else if (textview.Frame.Width > 250) {
+				textview.Frame = new CGRect (10, 10, 250, texth);
 			}
 
-			if (textview.Frame.Height < 100) {
-				textview.Frame = new CGRect (10, 10, textview.Frame.Width, 80);
-			} else if (textview.Frame.Height > 300) {
-				textview.Frame = new CGRect (10, 10, textview.Frame.Width, 300);
+			if (textview.Frame.Height < 120) {
+				textview.Frame = new CGRect (10, 10, textview.Frame.Width, 120);
+			} else if (textview.Frame.Height > 200) {
+				textview.Frame = new CGRect (10, 10, textview.Frame.Width, 200);
 			}
-
-			font = UIFont.SystemFontOfSize ((textview.Frame.Width * 20 / AppDelegate.ScreenWidth));
-			textview.Font = font;
 
 			return textview;
 		}

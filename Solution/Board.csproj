@@ -253,8 +253,6 @@
     <BundleResource Include="Resources\boardinterface\widget\time.png" />
     <BundleResource Include="Resources\demo\events\1.jpg" />
     <BundleResource Include="Resources\demo\events\2.jpg" />
-    <BundleResource Include="Resources\demo\events\height.jpg" />
-    <BundleResource Include="Resources\demo\events\width.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

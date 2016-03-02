@@ -20,7 +20,7 @@ namespace Board.Interface.Buttons
 				(AppDelegate.ScreenWidth - ButtonSize) / 8 + 10, AppDelegate.ScreenHeight - ButtonSize / 2);
 			
 			eventHandlers.Add ((sender, e) => {
-				UIAlertController alert = UIAlertController.Create(null, "Select the type of component", UIAlertControllerStyle.ActionSheet);
+				UIAlertController alert = UIAlertController.Create(null, "Select the type of widget", UIAlertControllerStyle.ActionSheet);
 
 				alert.AddAction (UIAlertAction.Create ("Announcement", UIAlertActionStyle.Default, CreateAnnouncement));
 				alert.AddAction (UIAlertAction.Create ("Event", UIAlertActionStyle.Default, null));

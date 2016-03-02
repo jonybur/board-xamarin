@@ -1,5 +1,6 @@
-﻿using CoreGraphics;
-using Board.Utilities;
+﻿using Board.Utilities;
+using CoreGraphics;
+using Foundation;
 
 namespace Board.Schema
 {
@@ -7,13 +8,13 @@ namespace Board.Schema
 	// Board's way of storing its UIImageViews on the DB
 	public class Announcement : Content
 	{
-		public string Text { get; set; }
+		public NSAttributedString Text { get; set; }
 
 		public Announcement() {
 			Id = CommonUtils.GenerateId ();
 		}
 
-		public Announcement(string text, float rotation, CGRect frame, string userid)
+		public Announcement(NSAttributedString text, float rotation, CGRect frame, string userid)
 		{
 			Id = CommonUtils.GenerateId ();
 			Text = text;

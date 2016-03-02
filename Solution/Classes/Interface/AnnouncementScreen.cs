@@ -455,8 +455,8 @@ namespace Board.Interface
 				nextbutton.Image = mapImage;
 			}
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
+				
 				if (textview.IsPlaceHolder || textview.Text.Length == 0)
 				{
 					UIAlertController alert = UIAlertController.Create("Can't create announcement", "Please write a caption", UIAlertControllerStyle.Alert);
@@ -489,7 +489,7 @@ namespace Board.Interface
 					ann.SocialChannel.Add(3);
 				}
 
-				ann.Text = textview.Text;
+				ann.Text = textview.AttributedText;
 
 				Preview.Initialize(ann);
 
@@ -519,9 +519,12 @@ namespace Board.Interface
 			textview.KeyboardType = UIKeyboardType.Default;
 			textview.ReturnKeyType = UIReturnKeyType.Default;
 			textview.EnablesReturnKeyAutomatically = true;
+			textview.AllowsEditingTextAttributes = true;
 			textview.BackgroundColor = UIColor.White;
 			textview.TextColor = AppDelegate.BoardBlue;
 			textview.Font = UIFont.SystemFontOfSize (20);
+
+
 
 			UIImageView colorWhite = CreateColorView (new CGRect (0, 0, AppDelegate.ScreenWidth, frame.Bottom), UIColor.White.CGColor);
 

@@ -43,14 +43,6 @@ namespace Board.Interface
 		bool TestMode;
 
 		public static Dictionary<string, Content> DictionaryContent;
-
-		/*
-		public static List<Picture> ListPictures;
-		public static List<Announcement> ListAnnouncements;
-		public static List<Video> ListVideos;
-		public static List<BoardEvent> ListEvents;
-		*/
-
 		public static Dictionary<string, Widget> DictionaryWidgets;
 
 		EventHandler scrolledEvent;
@@ -295,19 +287,12 @@ namespace Board.Interface
 		{
 			//RemoveAllContent ();
 
+			// looks for new keys in the DictionaryContent
+			// draws new widget in case new content is found
 
 			foreach (KeyValuePair<string, Content> c in DictionaryContent) {
 				if (!DictionaryWidgets.ContainsKey (c.Key)) {
-					
-					if (c.Value is Picture) {
-						DrawPictureWidget (c.Value as Picture);
-					} else if (c.Value is Video) {
-						DrawVideoWidget (c.Value as Video);
-					} else if (c.Value is Announcement) {
-						DrawAnnouncementWidget (c.Value as Announcement);
-					} else if (c.Value is BoardEvent) {
-						DrawEventWidget (c.Value as BoardEvent);
-					}
+					DrawWidget (c.Value);
 				}
 			}
 
@@ -341,12 +326,12 @@ namespace Board.Interface
 				AddTestEvent ("La Roxtar", img, new DateTime (2016, 6, 16, 22, 30, 0), new CGRect (1650, 29, 0, 0), -.03f);
 			}
 
-			using (UIImage img = UIImage.FromFile ("./demo/events/width.jpg")) {
-				AddTestEvent ("RIVERS in the Alley", img, new DateTime (2016, 11, 4, 18, 0, 0), new CGRect (1900, 30, 0, 0), .02f);
+			using (UIImage img = UIImage.FromFile ("./demo/events/1.jpg")) {
+				AddTestEvent ("RIVERS in the Alley", img, new DateTime (2016, 11, 4, 18, 0, 0), new CGRect (1910, 30, 0, 0), .02f);
 			}
 
-			using (UIImage img = UIImage.FromFile ("./demo/events/height.jpg")) {
-				AddTestEvent ("Retirement Block Party", img, new DateTime (2016, 2, 28, 11, 30, 0), new CGRect (2150, 27, 0, 0), .05f);
+			using (UIImage img = UIImage.FromFile ("./demo/events/2.jpg")) {
+				AddTestEvent ("Retirement Block Party", img, new DateTime (2016, 2, 28, 11, 30, 0), new CGRect (2170, 27, 0, 0), .02f);
 			}
 	
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/4.jpg")) {
@@ -392,53 +377,25 @@ namespace Board.Interface
 			DictionaryContent.Add (vid.Id, vid);
 		}
 
-		private void DrawVideoWidget(Video video)
+		private void DrawWidget(Content content)
 		{
-			VideoWidget widget = new VideoWidget (video);
+			Widget widget;
+
+			if (content is Video) {
+				widget = new VideoWidget (content as Video);
+			} else if (content is Picture) {
+				widget = new PictureWidget (content as Picture);
+			} else if (content is BoardEvent) {
+				widget = new EventWidget (content as BoardEvent);
+			} else if (content is Announcement) {
+				widget = new AnnouncementWidget (content as Announcement);
+			} else {
+				widget = new Widget ();
+			}
 
 			scrollView.AddSubview (widget.View);
-
 			widget.SuscribeToEvents ();
-
-			DictionaryWidgets.Add (video.Id, widget);
-		}
-
-		private void DrawPictureWidget(Picture picture)
-		{
-			PictureWidget widget = new PictureWidget (picture);
-
-			scrollView.AddSubview (widget.View);
-
-			widget.SuscribeToEvents ();
-
-			DictionaryWidgets.Add (picture.Id, widget);
-		}
-
-		private void DrawEventWidget(BoardEvent boardEvent)
-		{
-			EventWidget component = new EventWidget (boardEvent);
-
-			UIView componentView = component.View;
-
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				if (Preview.View != null) { return; }
-			});
-
-			componentView.AddGestureRecognizer (tap);
-			componentView.UserInteractionEnabled = true;
-
-			scrollView.AddSubview (component.View);
-			DictionaryWidgets.Add (boardEvent.Id, component);
-		}
-
-
-		private void DrawAnnouncementWidget(Announcement ann)
-		{
-			AnnouncementWidget announcementWidget = new AnnouncementWidget (ann);
-
-			scrollView.AddSubview (announcementWidget.View);
-
-			DictionaryWidgets.Add (ann.Id, announcementWidget);
+			DictionaryWidgets.Add (content.Id, widget);
 		}
 
 		private void LoadBackground()
