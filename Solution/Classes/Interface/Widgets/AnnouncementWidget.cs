@@ -69,6 +69,7 @@ namespace Board.Interface.Widgets
 			textview.ScrollEnabled = true;
 			textview.AttributedText = announcement.Text;
 			textview.SizeToFit ();
+			textview.TextColor = BoardInterface.board.MainColor;
 
 			if (textview.Frame.Width < 160) {
 				textview.Frame = new CGRect (10, 10, 160, textview.Frame.Height);
@@ -76,8 +77,8 @@ namespace Board.Interface.Widgets
 				textview.Frame = new CGRect (10, 10, 250, textview.Frame.Height);
 			}
 
-			if (textview.Frame.Height < 120) {
-				textview.Frame = new CGRect (10, 10, textview.Frame.Width, 120);
+			if (textview.Frame.Height < 80) {
+				textview.Frame = new CGRect (10, 10, textview.Frame.Width, 80);
 			} else if (textview.Frame.Height > 180) {
 				textview.Frame = new CGRect (10, 10, textview.Frame.Width, 180);
 			}
@@ -101,7 +102,7 @@ namespace Board.Interface.Widgets
 			string likeText = rand.Next(16, 98).ToString();
 			CGSize likeLabelSize = likeText.StringSize (likeFont);
 			UILabel likeLabel = new UILabel(new CGRect(frame.X - likeLabelSize.Width - 4, frame.Y + 4, likeLabelSize.Width, likeLabelSize.Height));
-			likeLabel.TextColor = AppDelegate.BoardOrange;
+			likeLabel.TextColor = BoardInterface.board.MainColor;
 			likeLabel.Font = likeFont;
 			likeLabel.Text = likeText;
 			likeLabel.TextAlignment = UITextAlignment.Right;
