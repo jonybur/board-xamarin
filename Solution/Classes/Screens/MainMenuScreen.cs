@@ -127,7 +127,7 @@ namespace Board.Screens
 			using (UIImage img = UIImage.FromFile ("./logos/panther.JPG")) {
 				boardList.Add (new Board.Schema.Board ("Panther Coffee", img, UIColor.Black, UIColor.FromRGB (20, 20, 20), "Wynwood", string.Empty));	
 			}
-			using (UIImage img = UIImage.FromFile("./logos/wood.jpg")){
+			using (UIImage img = UIImage.FromFile("./logos/wood.png")){
 				boardList.Add (new Board.Schema.Board ("Wood Tavern", img, UIColor.Black, UIColor.FromRGB (20, 20, 20), "Wynwood", string.Empty));
 			}
 			using (UIImage img = UIImage.FromFile ("./logos/electricpickle.jpg")) {

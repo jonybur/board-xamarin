@@ -36,14 +36,14 @@ namespace Board.Interface.Buttons
 						// if the picture is not null...
 						if (p != null) {
 							// uploads
-							BoardInterface.ListPictures.Add (p);
+						BoardInterface.DictionaryContent.Add (p.Id, p);
 						}
 						break;
 
 					case (int)Preview.Type.Video:
 						Video v = Preview.GetVideo ();
 						if (v != null) {
-							BoardInterface.ListVideos.Add (v);
+						BoardInterface.DictionaryContent.Add (v.Id, v);
 						}
 						break;
 
@@ -57,7 +57,7 @@ namespace Board.Interface.Buttons
 									Console.WriteLine (result);
 								}
 							}
-							BoardInterface.ListAnnouncements.Add (ann);
+						BoardInterface.DictionaryContent.Add (ann.Id, ann);
 						}
 						break;
 				}

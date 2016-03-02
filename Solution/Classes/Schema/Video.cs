@@ -1,22 +1,24 @@
 ﻿using CoreGraphics;
 using UIKit;
+using Board.Utilities;
 
 namespace Board.Schema
 {
 	public class Video : Content
 	{
-		public string Id { get; set; }
-
 		public string Url { get; set; }
 
-		public UIImage Thumbnail { get; set; }
+		public UIImageView ThumbnailView { get; set; }
 
-		public Video() {}
+		public Video() {
+			Id = CommonUtils.GenerateId ();
+		}
 
-		public Video(string url, UIImage thumbnail, float rotation, CGRect frame, string userid)
+		public Video(string url, UIImageView thumbnailView, float rotation, CGRect frame, string userid)
 		{
+			Id = CommonUtils.GenerateId ();
 			Url = url;
-			Thumbnail = thumbnail;
+			ThumbnailView = thumbnailView;
 			Rotation = rotation;
 			Frame = frame;
 			UserId = userid;

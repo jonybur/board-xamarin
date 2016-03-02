@@ -1,6 +1,7 @@
 ﻿using System;
 using UIKit;
 using CoreGraphics;
+using Board.Utilities;
 
 namespace Board.Schema
 {
@@ -16,10 +17,13 @@ namespace Board.Schema
 
 		public DateTime Date;
 
-		public BoardEvent() {}
+		public BoardEvent() {
+			Id = CommonUtils.GenerateId ();
+		}
 
 		public BoardEvent(string name, UIImage image, DateTime date, float rotation, CGRect frame, string userid)
 		{
+			Id = CommonUtils.GenerateId ();
 			ImageView = new UIImageView(image);
 			Name = name;
 			Date = date;

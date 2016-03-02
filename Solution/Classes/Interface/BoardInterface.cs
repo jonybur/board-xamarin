@@ -42,12 +42,16 @@ namespace Board.Interface
 
 		bool TestMode;
 
+		public static Dictionary<string, Content> DictionaryContent;
+
+		/*
 		public static List<Picture> ListPictures;
 		public static List<Announcement> ListAnnouncements;
 		public static List<Video> ListVideos;
 		public static List<BoardEvent> ListEvents;
+		*/
 
-		public static List<Widget> ListWidgets;
+		public static Dictionary<string, Widget> DictionaryWidgets;
 
 		EventHandler scrolledEvent;
 
@@ -75,16 +79,21 @@ namespace Board.Interface
 
 			InitializeLists ();
 
+			GenerateTestPictures ();
+
 			InitializeInterface ();
 		}
 
 		private void InitializeLists()
 		{
+			/*
 			ListPictures = new List<Picture> ();
 			ListVideos = new List<Video> ();
 			ListAnnouncements = new List<Announcement> ();
 			ListEvents = new List<BoardEvent> ();
-			ListWidgets = new List<Widget> ();
+			*/
+			DictionaryContent = new Dictionary<string, Content> ();
+			DictionaryWidgets = new Dictionary<string, Widget> ();
 		}
 
 		public override void ViewDidAppear(bool animated)
@@ -100,18 +109,24 @@ namespace Board.Interface
 
 		public void ExitBoard()
 		{
-			foreach (Widget widget in ListWidgets) {
-				if (widget is VideoWidget) {
-					(widget as VideoWidget).KillLooper ();
-				}
-
-				widget.UnsuscribeToEvents ();
-				widget.View.RemoveFromSuperview ();
-
-			}
-			ListWidgets = null;
+			RemoveAllContent ();
 			ButtonInterface.DisableAllLayouts();
 			UnsuscribeToEvents ();
+		}
+
+		public void RemoveAllContent()
+		{
+			foreach(KeyValuePair<string, Widget> widget in DictionaryWidgets)
+			{
+				if (widget.Value is VideoWidget) {
+					(widget.Value as VideoWidget).KillLooper ();
+				}
+
+				widget.Value.UnsuscribeToEvents ();
+				widget.Value.View.RemoveFromSuperview ();
+			}
+
+			DictionaryWidgets = null;
 		}
 
 		private UIImageView CreateColorView(CGRect frame, CGColor color)
@@ -122,8 +137,10 @@ namespace Board.Interface
 			context.SetFillColor(color);
 			context.FillRect(frame);
 
-			UIImage orange = UIGraphics.GetImageFromCurrentImageContext ();
-			UIImageView uiv = new UIImageView (orange);
+			UIImageView uiv;
+			using (UIImage img = UIGraphics.GetImageFromCurrentImageContext ()) {
+				uiv = new UIImageView (img);
+			}
 			uiv.Frame = frame;
 
 			return uiv;
@@ -211,10 +228,10 @@ namespace Board.Interface
 				// call from here "open eye" function
 				if (!scrollView.Dragging) { return; } 
 
-				if (!(ListWidgets == null || ListWidgets.Count == 0))
+				if (!(DictionaryWidgets == null || DictionaryWidgets.Count == 0))
 				{
 					// the ones at the left ;; the ones at the right ;; if it doesnt have an open eye
-					Widget wid = ListWidgets.Find(item => ((item.View.Frame.X) > scrollView.ContentOffset.X) &&
+					Widget wid = DictionaryWidgets.Values.ToList().Find(item => ((item.View.Frame.X) > scrollView.ContentOffset.X) &&
 						((item.View.Frame.X + item.View.Frame.Width) < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth)) &&
 						!item.EyeOpen);
 
@@ -276,41 +293,29 @@ namespace Board.Interface
 			ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.NavigationBar);
 		}
 
-		public void RemoveAllContent()
-		{
-			foreach (Widget widget in ListWidgets) {
-				widget.UnsuscribeToEvents ();
-				widget.View.RemoveFromSuperview ();
-			}
-
-			ListWidgets = new List<Widget> ();
-		}
-
 		public void RefreshContent()
 		{
-			RemoveAllContent ();
+			//RemoveAllContent ();
 
-			GenerateTestPictures ();
 
-			foreach (Picture p in ListPictures) {
-				DrawPictureWidget (p);
+			foreach (KeyValuePair<string, Content> c in DictionaryContent) {
+				if (!DictionaryWidgets.ContainsKey (c.Key)) {
+					
+					if (c.Value is Picture) {
+						DrawPictureWidget (c.Value as Picture);
+					} else if (c.Value is Video) {
+						DrawVideoWidget (c.Value as Video);
+					} else if (c.Value is Announcement) {
+						DrawAnnouncementWidget (c.Value as Announcement);
+					} else if (c.Value is BoardEvent) {
+						DrawEventWidget (c.Value as BoardEvent);
+					}
+				}
 			}
 
-			foreach (Video v in ListVideos) {
-				DrawVideoWidget (v);
-			}
+			//DictionaryWidgets = DictionaryWidgets.OrderBy(o=>o.View.Frame.X).ToList();
 
-			foreach (Announcement a in ListAnnouncements) {
-				DrawAnnouncementWidget (a);
-			}
-
-			foreach (BoardEvent e in ListEvents) {
-				DrawEventWidget (e);
-			}
-
-			ListWidgets = ListWidgets.OrderBy(o=>o.View.Frame.X).ToList();
-
-			ButtonInterface.navigationButton.RefreshNavigationButtonText (ListWidgets.Count);
+			ButtonInterface.navigationButton.RefreshNavigationButtonText (DictionaryWidgets.Count);
 		}
 
 		private void GenerateTestPictures()
@@ -338,7 +343,7 @@ namespace Board.Interface
 			using (UIImage img = UIImage.FromFile ("./demo/events/0.jpg")) {
 				bevent = new BoardEvent ("La Roxtar", img, new DateTime (2016, 11, 10), 0, new CGRect (1600, 20, 0, 0), null);
 			}
-			ListEvents.Add (bevent);
+			DictionaryContent.Add (bevent.Id, bevent);
 
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/4.jpg")) {
 				AddTestPicture (img, 50, 420, .03f);
@@ -355,7 +360,7 @@ namespace Board.Interface
 			pic.ImageView = new UIImageView(image);
 			pic.Frame = new CGRect(imgx, imgy, 0, 0);
 			pic.Rotation = rotation;
-			ListPictures.Add (pic);
+			DictionaryContent.Add (pic.Id, pic);
 		}
 
 		private void AddTestVideo(string url, float imgx, float imgy, float rotation)
@@ -363,7 +368,7 @@ namespace Board.Interface
 			Video vid = new Video ();
 
 			using (MPMoviePlayerController moviePlayer = new MPMoviePlayerController (NSUrl.FromFilename (url))) {
-				vid.Thumbnail = moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact);
+				vid.ThumbnailView = new UIImageView(moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact));
 				moviePlayer.Pause ();
 				moviePlayer.Dispose ();	
 			}
@@ -372,7 +377,7 @@ namespace Board.Interface
 			vid.Frame = new CGRect(imgx, imgy, 0, 0);
 			vid.Rotation = rotation;
 
-			ListVideos.Add (vid);
+			DictionaryContent.Add (vid.Id, vid);
 		}
 
 		private void DrawVideoWidget(Video video)
@@ -383,7 +388,7 @@ namespace Board.Interface
 
 			widget.SuscribeToEvents ();
 
-			ListWidgets.Add (widget);
+			DictionaryWidgets.Add (video.Id, widget);
 		}
 
 		private void DrawPictureWidget(Picture picture)
@@ -394,7 +399,7 @@ namespace Board.Interface
 
 			widget.SuscribeToEvents ();
 
-			ListWidgets.Add (widget);
+			DictionaryWidgets.Add (picture.Id, widget);
 		}
 
 		private void DrawEventWidget(BoardEvent boardEvent)
@@ -411,7 +416,7 @@ namespace Board.Interface
 			componentView.UserInteractionEnabled = true;
 
 			scrollView.AddSubview (component.View);
-			ListWidgets.Add (component);
+			DictionaryWidgets.Add (boardEvent.Id, component);
 		}
 
 
@@ -421,7 +426,7 @@ namespace Board.Interface
 
 			scrollView.AddSubview (announcementWidget.View);
 
-			ListWidgets.Add (announcementWidget);
+			DictionaryWidgets.Add (ann.Id, announcementWidget);
 		}
 
 		private void LoadBackground()

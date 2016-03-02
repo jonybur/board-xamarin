@@ -45,18 +45,18 @@ namespace Board.Interface.Buttons
 					return;
 				}
 
-				if (BoardInterface.ListWidgets == null)
+				if (BoardInterface.DictionaryWidgets == null)
 				{ return; }
 
-				if (BoardInterface.ListWidgets.Count == 0)
+				if (BoardInterface.DictionaryWidgets.Count == 0)
 				{ return; }
 
 
-				if (highlitedContent >= BoardInterface.ListWidgets.Count) {
+				if (highlitedContent >= BoardInterface.DictionaryWidgets.Count) {
 					highlitedContent = 0;
 				}
 
-				List<Widget> NavigationList = BoardInterface.ListWidgets.OrderBy(o=>o.EyeOpen).ToList();
+				List<Widget> NavigationList = BoardInterface.DictionaryWidgets.Values.OrderBy(o=>o.EyeOpen).ToList();
 				if(!NavigationList[0].EyeOpen)
 				{
 					highlitedContent = 0;

@@ -184,8 +184,10 @@ namespace Board.Interface.Widgets
 			context.SetFillColor(color);
 			context.FillRect(frame);
 
-			UIImage orange = UIGraphics.GetImageFromCurrentImageContext ();
-			UIImageView uiv = new UIImageView (orange);
+			UIImageView uiv;
+			using (UIImage img = UIGraphics.GetImageFromCurrentImageContext ()) {
+				uiv = new UIImageView (img);
+			}
 			uiv.Frame = frame;
 
 			return uiv;

@@ -1,20 +1,22 @@
 using CoreGraphics;
 using UIKit;
+using Board.Utilities;
 
 namespace Board.Schema
 {
 	public class Picture : Content
 	{
-		public string Id;
-
 		public UIImageView ImageView;
 
 		public UIImageView ThumbnailView;
 
-		public Picture() {}
+		public Picture() {
+			Id = CommonUtils.GenerateId ();
+		}
 
 		public Picture(UIImage image, UIImage thumbnail, float rotation, CGRect frame, string userid)
 		{
+			Id = CommonUtils.GenerateId ();
 			ImageView = new UIImageView(image);
 			ThumbnailView = new UIImageView(thumbnail);
 			Rotation = rotation;

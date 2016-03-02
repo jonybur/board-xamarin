@@ -105,8 +105,10 @@ namespace Board.Screens
 			context.SetFillColor(startcolor);
 			context.FillRect(frame);
 
-			UIImage orange = UIGraphics.GetImageFromCurrentImageContext ();
-			UIImageView uiv = new UIImageView (orange);
+			UIImageView uiv;
+			using (UIImage img = UIGraphics.GetImageFromCurrentImageContext ()) {
+				uiv = new UIImageView (img);
+			}
 			uiv.Center = center;
 
 			return uiv;
@@ -168,8 +170,10 @@ namespace Board.Screens
 			context.SetFillColor(color);
 			context.FillRect(new RectangleF(0,0,(float)frame.Width, (float)frame.Height));
 
-			UIImage black = UIGraphics.GetImageFromCurrentImageContext ();
-			UIImageView blackLocked = new UIImageView(black);
+			UIImageView blackLocked;
+			using (UIImage img = UIGraphics.GetImageFromCurrentImageContext ()) {
+				blackLocked = new UIImageView(img);
+			}
 			blackLocked.Alpha = .5f;
 
 			UIImage lockImage = image;

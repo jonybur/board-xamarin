@@ -76,7 +76,7 @@ namespace Board.Interface
 			Video video = new Video ();
 
 			MPMoviePlayerController moviePlayer = new MPMoviePlayerController (new NSUrl(Url));
-			video.Thumbnail = moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact);
+			video.ThumbnailView = new UIImageView(moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact));
 			moviePlayer.Pause ();
 			moviePlayer.Dispose ();
 
@@ -170,7 +170,7 @@ namespace Board.Interface
 		public static Video GetVideo()
 		{
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
-			Video v = new Video (videoWidget.Video.Url, videoWidget.Video.Thumbnail, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
+			Video v = new Video (videoWidget.Video.Url, videoWidget.Video.ThumbnailView, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
 			return v;
 		}
 

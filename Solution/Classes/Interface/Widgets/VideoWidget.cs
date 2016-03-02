@@ -167,8 +167,10 @@ namespace Board.Interface.Widgets
 			context.SetFillColor(color);
 			context.FillRect(frame);
 
-			UIImage orange = UIGraphics.GetImageFromCurrentImageContext ();
-			UIImageView uiv = new UIImageView (orange);
+			UIImageView uiv;
+			using (UIImage img = UIGraphics.GetImageFromCurrentImageContext ()) {
+				uiv = new UIImageView (img);
+			}
 			uiv.Frame = frame;
 
 			return uiv;
@@ -179,24 +181,24 @@ namespace Board.Interface.Widgets
 			float imgw, imgh;
 			float autosize = AppDelegate.Autosize;
 
-			float scale = (float)(vid.Thumbnail.Size.Width/vid.Thumbnail.Size.Height);
+			float scale = (float)(vid.ThumbnailView.Frame.Width/vid.ThumbnailView.Frame.Height);
 
 			if (scale >= 1) {
 				imgw = autosize * scale;
 				imgh = autosize;
 
 				if (imgw > AppDelegate.ScreenWidth) {
-					scale = (float)(vid.Thumbnail.Size.Height/vid.Thumbnail.Size.Width);
+					scale = (float)(vid.ThumbnailView.Frame.Height/vid.ThumbnailView.Frame.Width);
 					imgw = AppDelegate.ScreenWidth;
 					imgh = imgw * scale;
 				}
 			} else {
-				scale = (float)(vid.Thumbnail.Size.Height / vid.Thumbnail.Size.Width);
+				scale = (float)(vid.ThumbnailView.Frame.Height / vid.ThumbnailView.Frame.Width);
 				imgw = autosize;
 				imgh = autosize * scale;
 			}
 
-			vid.Thumbnail = CommonUtils.ResizeImage (vid.Thumbnail, new CGSize (imgw, imgh));
+			vid.ThumbnailView = new UIImageView(CommonUtils.ResizeImage (vid.ThumbnailView.Image, new CGSize (imgw, imgh)));
 
 			CGRect frame = new CGRect (vid.Frame.X, vid.Frame.Y, imgw, imgh);
 
@@ -212,7 +214,7 @@ namespace Board.Interface.Widgets
 		{
 			while (loop) {
 
-				int time = 0;
+				time = 0;
 
 				while (time < videoDuration) {
 					Thread.Sleep (1000);
@@ -227,6 +229,7 @@ namespace Board.Interface.Widgets
 		Thread looper;
 		AVPlayer _player;
 		double videoDuration;
+		int time;
 
 		private AVPlayerLayer LoadVideoThumbnail(CGRect frame)
 		{	
@@ -248,9 +251,9 @@ namespace Board.Interface.Widgets
 
 			videoDuration = Math.Floor(_player.CurrentItem.Asset.Duration.Seconds);
 
-			if (videoDuration > 5) {
+			/*if (videoDuration > 5) {
 				videoDuration = 5;
-			}
+			}*/
 
 			loop = true;
 			looper = new Thread (new ThreadStart (LooperMethod));
@@ -262,6 +265,7 @@ namespace Board.Interface.Widgets
 		public void KillLooper()
 		{
 			loop = false;
+			time = (int)videoDuration;
 		}
 
 	}

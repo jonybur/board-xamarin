@@ -152,8 +152,10 @@ namespace Board.Screens
 			context.SetFillColor(startcolor);
 			context.FillRect(frame);
 
-			UIImage orange = UIGraphics.GetImageFromCurrentImageContext ();
-			UIImageView uiv = new UIImageView (orange);
+			UIImageView uiv;
+			using (UIImage img = UIGraphics.GetImageFromCurrentImageContext ()) {
+				uiv = new UIImageView (img);
+			}
 			uiv.Center = center;
 
 			return uiv;

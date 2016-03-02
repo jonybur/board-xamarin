@@ -116,6 +116,12 @@ namespace Board.Utilities
 			UIImage image = UIImage.LoadFromData (imageData);
 			return image;
 		}
+
+		public static string GenerateId()
+		{
+			Guid guid = Guid.NewGuid ();
+			return guid.ToString ();
+		}
 	}
 }
 
