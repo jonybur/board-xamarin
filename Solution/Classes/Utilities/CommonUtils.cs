@@ -1,6 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
+
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+
+using Board.Schema;
 using CoreGraphics;
 
 using Foundation;
@@ -10,20 +16,55 @@ namespace Board.Utilities
 {
 	public static class CommonUtils
 	{
-		public static string UIColorToHex(UIColor color)
+		public static Dictionary<NSRange, NSDictionary> GetFormatDictionaries(NSAttributedString attributedString)
 		{
-			nfloat red; nfloat green; nfloat blue; nfloat alpha; 
-			color.GetRGBA (out red, out green, out blue, out alpha);
+			// seteo un rango inicial
+			NSRange range = new NSRange (0, attributedString.Length);
 
-			int ired = (int)(red * 255);
-			int igreen = (int)(green * 255);
-			int iblue = (int)(blue * 255);
+			// armo el diccionario que va a contener a los diccionarios de formato y a los rangos de c/u
+			Dictionary<NSRange, NSDictionary> dictionaries = new Dictionary<NSRange, NSDictionary> ();
 
-			string hex = ired.ToString("x2") + igreen.ToString("x2") + iblue.ToString("x2");
-			return hex;
+			// recorro al string
+			int i = 0;
+			while (i < attributedString.Length) {
+				// obtengo los atributos, y de out, el rango de ese set de atributos
+				NSDictionary attributeDictionary = attributedString.GetAttributes (i, out range);
+
+				// agrego al diccionario de atributos a mi diccionario total
+				dictionaries.Add (range, attributeDictionary);
+
+				// adelanto al i asi no tengo que iterar por todo el string, voy directo al final de string o al siguiente diccionario
+				i = (int)(range.Location + range.Length);
+			}
+
+			return dictionaries;
 		}
 
-		// resize the image (without trying to maintain aspect ratio)
+		public static NSAttributedString GenerateAttributedString(string text, Dictionary<NSRange, NSDictionary> dictionaries)
+		{
+			NSMutableAttributedString attstring = new NSMutableAttributedString (text);
+
+			// le pongo todos los diccionarios de formato
+			foreach (KeyValuePair<NSRange, NSDictionary> dic in dictionaries) {
+				attstring.SetAttributes (dic.Value, dic.Key);
+			}
+
+			return attstring;
+		}
+
+		public static void BinarySerialize(Content obj){
+			IFormatter formatter = new BinaryFormatter();
+
+			string docs = (NSFileManager.DefaultManager.GetUrls (
+				NSSearchPathDirectory.DocumentDirectory, 
+				NSSearchPathDomain.User) [0]).Path;
+			
+			string filename = Path.Combine (docs, obj.Id + ".bin"); 
+
+			Stream stream = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
+			formatter.Serialize(stream, obj);
+			stream.Close();
+		}
 		public static UIImage ResizeImage(UIImage sourceImage, CGSize newSize)
 		{
 			UIGraphics.BeginImageContext(newSize);
@@ -50,6 +91,19 @@ namespace Board.Utilities
 			catch{
 				return UIColor.White;
 			}
+		}
+
+		public static string UIColorToHex(UIColor color)
+		{
+			nfloat red; nfloat green; nfloat blue; nfloat alpha; 
+			color.GetRGBA (out red, out green, out blue, out alpha);
+
+			int ired = (int)(red * 255);
+			int igreen = (int)(green * 255);
+			int iblue = (int)(blue * 255);
+
+			string hex = ired.ToString("x2") + igreen.ToString("x2") + iblue.ToString("x2");
+			return hex;
 		}
 
 		public static string JsonGETRequest(string url)
@@ -117,7 +171,7 @@ namespace Board.Utilities
 			return image;
 		}
 
-		public static string GenerateId()
+		public static string GenerateGuid()
 		{
 			Guid guid = Guid.NewGuid ();
 			return guid.ToString ();

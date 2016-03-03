@@ -32,7 +32,7 @@ namespace Board.Screens
 		UIImageView boardView, circleTop, circleLower, logoBackground;
 		UIImageView preview_mainLogo;
 
-		public CreateScreen2 (Board.Schema.Board _board) : base ("Board", null){
+		public CreateScreen2 (Board.Schema.Board _board){
 			board = _board;
 		}
 

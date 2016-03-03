@@ -21,7 +21,7 @@ namespace Board.Interface
 {
 	// user interface - connects to the board controller
 	// also called BoardView
-	public class BoardInterface : UIViewController
+	public partial class BoardInterface : UIViewController
 	{
 		private Gallery gallery;
 		private NSObject orientationObserver;
@@ -34,7 +34,7 @@ namespace Board.Interface
 		public static UIScrollView zoomingScrollView;
 		public static UIScrollView scrollView;
 		static float TempContentOffset;
-		bool galleryActive = false;
+		bool galleryActive;
 
 		public enum Tags : byte {Background=1, Content};
 
@@ -51,7 +51,7 @@ namespace Board.Interface
 
 		bool firstLoad;
 
-		public BoardInterface (Board.Schema.Board _board, bool _testMode) : base ("Board", null){
+		public BoardInterface (Board.Schema.Board _board, bool _testMode){
 			board = _board;
 			TestMode = _testMode;
 			firstLoad = true;
@@ -123,6 +123,8 @@ namespace Board.Interface
 			DictionaryWidgets = null;
 		}
 
+		/*
+
 		private UIImageView CreateColorView(CGRect frame, CGColor color)
 		{
 			UIGraphics.BeginImageContext (new CGSize(frame.Size.Width, frame.Size.Height));
@@ -138,7 +140,7 @@ namespace Board.Interface
 			uiv.Frame = frame;
 
 			return uiv;
-		}
+		}*/
 
 		// deprecated for now
 		private void InitializeGallery() {
@@ -271,8 +273,8 @@ namespace Board.Interface
 		{
 			ButtonInterface.Initialize (RefreshContent);
 
-			UIImageView buttonBackground = CreateColorView (new CGRect (0, 0, AppDelegate.ScreenWidth, 45), UIColor.White.CGColor);
-			buttonBackground.Alpha = .95f;
+			UIImageView buttonBackground = new UIImageView (new CGRect (0, 0, AppDelegate.ScreenWidth, 45));
+			buttonBackground.BackgroundColor = UIColor.FromRGBA (255, 255, 255, 240);
 			buttonBackground.Frame = new CGRect (0, AppDelegate.ScreenHeight - 45, AppDelegate.ScreenWidth, 45);
 			this.View.AddSubview (buttonBackground);
 
@@ -301,82 +303,6 @@ namespace Board.Interface
 			//DictionaryWidgets = DictionaryWidgets.OrderBy(o=>o.View.Frame.X).ToList();
 
 			ButtonInterface.navigationButton.RefreshNavigationButtonText (DictionaryWidgets.Count);
-		}
-
-		private void GenerateTestPictures()
-		{
-			using (UIImage img = UIImage.FromFile ("./demo/pictures/0.jpg")) {
-				AddTestPicture (img, 70, 20, -.03f);
-			}
-
-			AddTestVideo ("./demo/videos/0.mp4", 45, 220, -.01f);
-
-			using (UIImage img = UIImage.FromFile ("./demo/pictures/2.jpg")) {
-				AddTestPicture (img, 340, 20, 0f);
-			}
-			using (UIImage img = UIImage.FromFile ("./demo/pictures/1.jpg")) {
-				AddTestPicture (img, 360, 220, -.04f);
-			}
-		
-			AddTestVideo ("./demo/videos/1.mp4", 610, 25, -.02f);
-
-			using (UIImage img = UIImage.FromFile ("./demo/pictures/3.jpg")) {
-				AddTestPicture (img, 655, 225, .01f);
-			}
-
-			using (UIImage img = UIImage.FromFile ("./demo/events/0.jpg")) {
-				AddTestEvent ("La Roxtar", img, new DateTime (2016, 6, 16, 22, 30, 0), new CGRect (1650, 29, 0, 0), -.03f);
-			}
-
-			using (UIImage img = UIImage.FromFile ("./demo/events/1.jpg")) {
-				AddTestEvent ("RIVERS in the Alley", img, new DateTime (2016, 11, 4, 18, 0, 0), new CGRect (1910, 30, 0, 0), .02f);
-			}
-
-			using (UIImage img = UIImage.FromFile ("./demo/events/2.jpg")) {
-				AddTestEvent ("Retirement Block Party", img, new DateTime (2016, 2, 28, 11, 30, 0), new CGRect (2170, 27, 0, 0), .02f);
-			}
-	
-			using (UIImage img = UIImage.FromFile ("./demo/pictures/4.jpg")) {
-				AddTestPicture (img, 50, 420, .03f);
-			}
-
-			AddTestVideo ("./demo/videos/2.mp4", 330, 415, -.02f);
-
-			AddTestVideo ("./demo/videos/3.mp4", 635, 420, .0f);
-		}
-
-		private void AddTestEvent(string name, UIImage img, DateTime date, CGRect frame, float rotation)
-		{
-			BoardEvent bevent;
-			bevent = new BoardEvent (name, img, date, rotation, frame, null);
-			bevent.Rotation = rotation;
-			DictionaryContent.Add (bevent.Id, bevent);
-		}
-
-		private void AddTestPicture(UIImage image, float imgx, float imgy, float rotation)
-		{
-			Picture pic = new Picture ();
-			pic.ImageView = new UIImageView(image);
-			pic.Frame = new CGRect(imgx, imgy, 0, 0);
-			pic.Rotation = rotation;
-			DictionaryContent.Add (pic.Id, pic);
-		}
-
-		private void AddTestVideo(string url, float imgx, float imgy, float rotation)
-		{
-			Video vid = new Video ();
-
-			using (MPMoviePlayerController moviePlayer = new MPMoviePlayerController (NSUrl.FromFilename (url))) {
-				vid.ThumbnailView = new UIImageView(moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact));
-				moviePlayer.Pause ();
-				moviePlayer.Dispose ();	
-			}
-
-			vid.Url = NSUrl.FromFilename (url);
-			vid.Frame = new CGRect(imgx, imgy, 0, 0);
-			vid.Rotation = rotation;
-
-			DictionaryContent.Add (vid.Id, vid);
 		}
 
 		private void DrawWidget(Content content)

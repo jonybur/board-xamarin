@@ -12,12 +12,12 @@ namespace Board.Schema
 		public UIImageView ThumbnailView { get; set; }
 
 		public Video() {
-			Id = CommonUtils.GenerateId ();
+			Id = CommonUtils.GenerateGuid ();
 		}
 
 		public Video(NSUrl url, UIImageView thumbnailView, float rotation, CGRect frame, string userid)
 		{
-			Id = CommonUtils.GenerateId ();
+			Id = CommonUtils.GenerateGuid ();
 			Url = url;
 			ThumbnailView = thumbnailView;
 			Rotation = rotation;

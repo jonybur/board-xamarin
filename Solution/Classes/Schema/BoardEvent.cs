@@ -18,12 +18,12 @@ namespace Board.Schema
 		public DateTime Date;
 
 		public BoardEvent() {
-			Id = CommonUtils.GenerateId ();
+			Id = CommonUtils.GenerateGuid ();
 		}
 
 		public BoardEvent(string name, UIImage image, DateTime date, float rotation, CGRect frame, string userid)
 		{
-			Id = CommonUtils.GenerateId ();
+			Id = CommonUtils.GenerateGuid ();
 			ImageView = new UIImageView(image);
 			Name = name;
 			Date = date;

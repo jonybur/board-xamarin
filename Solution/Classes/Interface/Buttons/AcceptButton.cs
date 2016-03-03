@@ -36,28 +36,32 @@ namespace Board.Interface.Buttons
 						// if the picture is not null...
 						if (p != null) {
 							// uploads
-						BoardInterface.DictionaryContent.Add (p.Id, p);
+
+							BoardInterface.DictionaryContent.Add (p.Id, p);
 						}
 						break;
 
 					case (int)Preview.Type.Video:
 						Video v = Preview.GetVideo ();
 						if (v != null) {
-						BoardInterface.DictionaryContent.Add (v.Id, v);
+						
+							BoardInterface.DictionaryContent.Add (v.Id, v);
 						}
 						break;
 
 					case (int)Preview.Type.Announcement:
 						Announcement ann = Preview.GetAnnouncement ();
 						if (ann != null) {
-							if (ann.SocialChannel != null && ann.SocialChannel.Count > 0) {
+							
+							if (AppDelegate.ServerActive && ann.SocialChannel != null && ann.SocialChannel.Count > 0) {
 								if (ann.SocialChannel.Contains (0)) {
 									string json = "{ \"text\": \"" + ann.Text + "\", " + "\"socialChannel\": \"" + "0" + "\" }";
 									string result = CommonUtils.JsonPOSTRequest ("http://192.168.1.101:5000/api/publications?authToken=" + AppDelegate.EncodedBoardToken, json);
 									Console.WriteLine (result);
 								}
 							}
-						BoardInterface.DictionaryContent.Add (ann.Id, ann);
+
+							BoardInterface.DictionaryContent.Add (ann.Id, ann);
 						}
 						break;
 				}

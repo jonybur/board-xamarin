@@ -11,6 +11,9 @@ using Board.Interface;
 using Facebook.CoreKit;
 using Board.Schema;
 using Board.Interface.Widgets;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+using Board.Utilities;
 
 namespace Board.Interface
 {
@@ -181,6 +184,23 @@ namespace Board.Interface
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
 			Announcement ann = new Announcement (announcementWidget.Announcement.Text, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
 			ann.SocialChannel = announcementWidget.Announcement.SocialChannel;
+		
+			/*
+
+			Dictionary<NSRange, NSDictionary> dic = CommonUtils.GetFormatDictionaries (ann.Text);
+
+			NSError err = new NSError ();
+
+			foreach (var element in dic) {
+				
+				NSData data = NSJsonSerialization.Serialize (element.Value, NSJsonWritingOptions.PrettyPrinted, out err);
+
+				Console.WriteLine (data);
+
+			}
+
+			*/
+			
 			return ann;
 		}
 

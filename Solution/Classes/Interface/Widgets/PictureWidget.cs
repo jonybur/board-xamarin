@@ -3,6 +3,7 @@ using Board.Utilities;
 using System;
 using CoreGraphics;
 using UIKit;
+using Board.Interface.LookUp;
 
 namespace Board.Interface.Widgets
 {
@@ -64,11 +65,11 @@ namespace Board.Interface.Widgets
 
 			EyeOpen = false;
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (Preview.View != null) { return; }
 
-				LookUp lookUp = new LookUp(picture);
-				AppDelegate.NavigationController.PushViewController(lookUp, true);
+				PictureLookUp lookUp = new PictureLookUp(picture);
+				AppDelegate.NavigationController.PresentViewController(lookUp, true, null);
 			});
 
 			gestureRecognizers.Add (tap);

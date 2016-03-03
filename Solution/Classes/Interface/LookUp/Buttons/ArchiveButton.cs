@@ -7,11 +7,11 @@ using Board.Schema;
 using CoreGraphics;
 using UIKit;
 
-namespace Board.Interface.Lookup
+namespace Board.Interface.LookUp
 {
 	public class ArchiveButton : Button
 	{
-		public ArchiveButton (Action<UIViewController, bool> presentViewController, Picture picture, Action refreshPictures)
+		public ArchiveButton (Action<UIViewController, bool> presentViewController)
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
@@ -22,27 +22,16 @@ namespace Board.Interface.Lookup
 			uiButton.Frame = new CGRect (0,0, ButtonSize, ButtonSize);
 			uiButton.Center = new CGPoint (ButtonSize/2 + ButtonSize * 2 + 10, ButtonSize/2 + 15);
 
-			uiButton.TouchUpInside += (object sender, EventArgs e) => {
+			uiButton.TouchUpInside += (sender, e) => {
 				UIAlertController alert = UIAlertController.Create("Are you sure you want to remove this picture from the board?", "The picture will still be visible in the gallery", UIAlertControllerStyle.ActionSheet);
 
-				alert.AddAction (UIAlertAction.Create ("Accept", UIAlertActionStyle.Default, action => ArchivePicture (picture, refreshPictures)));
+				alert.AddAction (UIAlertAction.Create ("Accept", UIAlertActionStyle.Default, null));
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 
 				presentViewController (alert, true);
 			};
 		}
 
-		private async void ArchivePicture(Picture picture, Action refreshPictures)
-		{
-			// first sets the OnGallery status on true for the picture
-			StorageController.SendPictureToGallery (picture.Id);
-			// then removes the picture from the cloud storage
-
-			// refreshes the main view
-			refreshPictures ();
-			// kills this button
-			DisableButton ();
-		}
 	}
 }
 
