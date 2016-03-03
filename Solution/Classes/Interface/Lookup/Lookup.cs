@@ -1,13 +1,16 @@
 ﻿using Board.Interface.Buttons;
-using Board.Schema;
-using System;
 using CoreGraphics;
 using UIKit;
+using Board.Interface.Widgets;
+using System;
+using Board.Schema;
 
 namespace Board.Interface.LookUp
 {
 	public class LookUp : UIViewController
 	{
+		public Content content;
+
 		protected UIScrollView ScrollView;
 
 		UITapGestureRecognizer backTap;
@@ -21,6 +24,8 @@ namespace Board.Interface.LookUp
 		protected UIImageView FacebookButton;
 		protected UIImageView ShareButton;
 		protected UIImageView TrashButton;
+
+		UIWindow window;
 
 		public LookUp()
 		{
@@ -91,22 +96,63 @@ namespace Board.Interface.LookUp
 			TrashButton.UserInteractionEnabled = true;
 
 			trashTap = new UITapGestureRecognizer (tg => {
+
+				UIAlertController alert = UIAlertController.Create("Remove this picture from the Board?", "You can't undo this action", UIAlertControllerStyle.ActionSheet);
+
+				alert.AddAction (UIAlertAction.Create ("Accept", UIAlertActionStyle.Default, RemoveWidget));
+				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, HideWindow));
+
+				window = new UIWindow(new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+				window.RootViewController = new UIViewController();
+				window.WindowLevel = UIWindowLevel.Alert + 1;
+
+				window.MakeKeyAndVisible();
+				window.RootViewController.PresentViewController(alert, true, null);
 			});
+		}
+
+		private void RemoveWidget(UIAlertAction action)
+		{
+			BoardInterface.DictionaryContent.Remove (content.Id);
+
+			Widget widget;
+
+			BoardInterface.DictionaryWidgets.TryGetValue (content.Id, out widget);
+
+			if (widget != null) {
+				widget.View.RemoveFromSuperview ();
+				BoardInterface.DictionaryWidgets.Remove (content.Id);
+			}
+				
+			window.Hidden = true;
+			AppDelegate.NavigationController.DismissViewController (true, null);
+		}
+
+		private void HideWindow(UIAlertAction action)
+		{
+			window.Hidden = true;
 		}
 
 		protected void CreateLikeButton()
 		{
+			UIImageView subView;
+			UILabel lblLikes;
+			int randomLike;
+
 			using (UIImage img = UIImage.FromFile ("./boardinterface/lookup/like.png")) {
-				string text = "145";
+				Random rand = new Random ();
+				randomLike = rand.Next (16, 98);
+				string text = randomLike.ToString();
 				UIFont font = UIFont.SystemFontOfSize (14);
 
 				LikeButton = new UIImageView(new CGRect(0, 0, img.Size.Width + text.StringSize(font).Width + 5, img.Size.Height * 2));
 
-				UIImageView subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
-				subView.Image = img;
+				subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
+				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				subView.TintColor = UIColor.White;
 				subView.Center = new CGPoint (img.Size.Width / 2, BackButton.Frame.Height / 2);
 
-				UILabel lblLikes = new UILabel (new CGRect (0, 0, text.StringSize(font).Width, 14));
+				lblLikes = new UILabel (new CGRect (0, 0, text.StringSize(font).Width, 14));
 				lblLikes.Font = font;
 				lblLikes.Text = text;
 				lblLikes.TextColor = UIColor.White;
@@ -118,15 +164,31 @@ namespace Board.Interface.LookUp
 
 			LikeButton.UserInteractionEnabled = true;
 
+			bool tapped = false;
+
 			likeTap = new UITapGestureRecognizer (tg => {
-				
+				if (!tapped)
+				{
+					randomLike ++;
+					lblLikes.Text = randomLike.ToString();
+					subView.TintColor = AppDelegate.BoardOrange;
+					lblLikes.TextColor = AppDelegate.BoardOrange;
+					tapped = true;
+				}
+				else {
+					randomLike --;
+					lblLikes.Text = randomLike.ToString();
+					subView.TintColor = UIColor.White;
+					lblLikes.TextColor = UIColor.White;
+					tapped = false;
+				}
 			});
 		}
 
 		protected void CreateFacebookButton()
 		{
 			using (UIImage img = UIImage.FromFile ("./boardinterface/lookup/facebook.png")) {
-				string text = "Open on Facebook";
+				const string text = "Open in Facebook";
 				UIFont font = UIFont.SystemFontOfSize (14);
 
 				FacebookButton = new UIImageView(new CGRect(0, 0, img.Size.Width + text.StringSize(font).Width + 5, img.Size.Height * 2));

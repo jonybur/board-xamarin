@@ -91,15 +91,6 @@ namespace Board.Interface.Widgets
 
 		}
 
-		private UIImageView CreateMounting(CGRect frame)
-		{
-			CGRect mountingFrame = new CGRect (0, 0, frame.Width + 20, frame.Height + 50);
-
-			UIImageView mountingView = CreateColorView (mountingFrame, UIColor.FromRGB(250,250,250).CGColor);
-
-			return mountingView;
-		}
-
 		private UIImageView CreatePlayButton(CGRect frame)
 		{
 			UIImageView playButton;
@@ -114,66 +105,6 @@ namespace Board.Interface.Widgets
 			playButton.Alpha = .95f;
 
 			return playButton;
-		}
-
-		private UILabel CreateLikeLabel(CGRect frame)
-		{
-			UIFont likeFont = UIFont.SystemFontOfSize (20);
-			Random rand = new Random ();
-			string likeText = rand.Next(16, 98).ToString();
-			CGSize likeLabelSize = likeText.StringSize (likeFont);
-			UILabel likeLabel = new UILabel(new CGRect(frame.X - likeLabelSize.Width - 4, frame.Y + 4, likeLabelSize.Width, likeLabelSize.Height));
-			likeLabel.TextColor = BoardInterface.board.MainColor;
-			likeLabel.Font = likeFont;
-			likeLabel.Text = likeText;
-			likeLabel.TextAlignment = UITextAlignment.Right;
-
-			return likeLabel;
-		}
-
-		private UIImageView CreateEye(CGRect frame)
-		{
-			CGSize iconSize = new CGSize (30, 30);
-
-			UIImageView eyeView = new UIImageView(new CGRect (frame.X + 10, frame.Height - iconSize.Height - 5, iconSize.Width, iconSize.Height));
-			eyeView.Image = Widget.ClosedEyeImageView.Image;
-			eyeView.TintColor = UIColor.FromRGB(140,140,140);
-
-			return eyeView;
-		}
-
-		private UIImageView CreateLike(CGRect frame)
-		{
-			CGSize iconSize = new CGSize (30, 30);
-
-			UIImageView likeView = new UIImageView(new CGRect (frame.Width - iconSize.Width - 10,
-				frame.Height - iconSize.Height - 5, iconSize.Width, iconSize.Height));
-			using (UIImage img = UIImage.FromFile ("./boardinterface/widget/like.png"))
-			{
-				likeView.Image = img;
-			}
-			likeView.Image = likeView.Image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-			likeView.TintColor = UIColor.FromRGB(140,140,140);
-
-			return likeView;
-		}
-
-
-		private UIImageView CreateColorView(CGRect frame, CGColor color)
-		{
-			UIGraphics.BeginImageContext (new CGSize(frame.Size.Width, frame.Size.Height));
-			CGContext context = UIGraphics.GetCurrentContext ();
-
-			context.SetFillColor(color);
-			context.FillRect(frame);
-
-			UIImageView uiv;
-			using (UIImage img = UIGraphics.GetImageFromCurrentImageContext ()) {
-				uiv = new UIImageView (img);
-			}
-			uiv.Frame = frame;
-
-			return uiv;
 		}
 
 		private CGRect GetFrame(Video vid)

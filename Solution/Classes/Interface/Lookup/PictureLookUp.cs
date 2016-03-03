@@ -3,6 +3,7 @@ using Board.Interface.Buttons;
 using Board.Schema;
 
 using CoreGraphics;
+using Facebook.CoreKit;
 using UIKit;
 
 namespace Board.Interface.LookUp
@@ -14,6 +15,8 @@ namespace Board.Interface.LookUp
 
 		public PictureLookUp(Picture picture)
 		{
+			this.content = picture;
+
 			View.BackgroundColor = UIColor.Black;
 
 			UIImageView lookUpImage = CreateImageFrame (picture.ImageView.Image);
@@ -34,7 +37,11 @@ namespace Board.Interface.LookUp
 
 			ScrollView.UserInteractionEnabled = true;
 
-			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton, TrashButton);
+			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton);
+
+			if (Profile.CurrentProfile.UserID == BoardInterface.board.CreatorId) {
+				View.AddSubview (TrashButton);
+			}
 		}
 
 		private UIImageView CreateImageFrame(UIImage image)

@@ -307,7 +307,6 @@
     <Compile Include="Classes\Interface\BoardInterface_Demo.cs" />
     <Compile Include="Classes\Interface\LookUp\PictureLookUp.cs" />
     <Compile Include="Classes\Interface\LookUp\Lookup.cs" />
-    <Compile Include="Classes\Interface\LookUp\Buttons\ArchiveButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -375,7 +374,6 @@
     <Folder Include="Resources\boardinterface\buttons\" />
     <Folder Include="Classes\Screens\Menu\" />
     <Folder Include="Classes\Interface\LookUp\" />
-    <Folder Include="Classes\Interface\LookUp\Buttons\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">
