@@ -32,7 +32,7 @@ namespace Board.Interface.Buttons
 			uiButton.Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - ButtonSize / 2);
 
 			// deprecated, not used
-			UITapGestureRecognizer doubletap = new UITapGestureRecognizer ((tg) => {
+			UITapGestureRecognizer doubletap = new UITapGestureRecognizer (tg => {
 				tg.NumberOfTapsRequired = 2;
 
 				BoardInterface.scrollView.SetContentOffset(new CGPoint(BoardInterface.ScrollViewWidthSize / 2 - AppDelegate.ScreenWidth / 2, 0), true);
@@ -63,7 +63,6 @@ namespace Board.Interface.Buttons
 				}
 
 				PointF position = new PointF(0,0);
-				UIView uivComponent;
 
 				Widget widget = NavigationList[highlitedContent];
 				if (!widget.EyeOpen)
@@ -71,8 +70,9 @@ namespace Board.Interface.Buttons
 					widget.OpenEye();
 					SubtractNavigationButtonText();
 				}
-				uivComponent = widget.View;
-				position = new PointF ((float)(uivComponent.Frame.X - AppDelegate.ScreenWidth/2 + uivComponent.Frame.Width/2), 0f);
+
+				position = new PointF ((float)(widget.View.Frame.X - AppDelegate.ScreenWidth/2 + widget.View.Frame.Width/2), 0f);
+				widget.Highlight();
 
 				BoardInterface.scrollView.SetContentOffset (position, true);
 				highlitedContent++;

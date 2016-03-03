@@ -32,12 +32,12 @@ namespace Board.Interface.Widgets
 			CGRect totalRect = new CGRect (calendarBox.Frame.X, calendarBox.Frame.Y, calendarBox.Frame.Width + pictureBox.Frame.Width + 10, calendarBox.Frame.Height);
 
 			// mounting
-			UIImageView mounting = CreateMounting (totalRect);
-			View = new UIView(mounting.Frame);
-			View.AddSubviews (mounting, calendarBox, pictureBox);
+			CreateMounting (totalRect);
+			View = new UIView(mountingView.Frame);
+			View.AddSubviews (mountingView, calendarBox, pictureBox);
 
 			// like
-			UIImageView like = CreateLike (mounting.Frame);
+			UIImageView like = CreateLike (mountingView.Frame);
 			View.AddSubview (like);
 
 			// like label
@@ -46,11 +46,11 @@ namespace Board.Interface.Widgets
 			View.AddSubview (likeLabel);
 
 			// eye
-			eye = CreateEye (mounting.Frame);
+			eye = CreateEye (mountingView.Frame);
 
 			View.AddSubview (eye);
 
-			View.Frame = new CGRect (boardEvent.Frame.X, boardEvent.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
+			View.Frame = new CGRect (boardEvent.Frame.X, boardEvent.Frame.Y, mountingView.Frame.Width, mountingView.Frame.Height);
 			View.Transform = CGAffineTransform.MakeRotation(boardEvent.Rotation);
 
 			EyeOpen = false;

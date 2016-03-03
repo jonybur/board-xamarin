@@ -32,20 +32,20 @@ namespace Board.Interface.Widgets
 
 			// mounting
 
-			UIImageView mounting = CreateMounting (frame);
-			View = new UIView(mounting.Frame);
-			View.AddSubview (mounting);
+			CreateMounting (frame);
+			View = new UIView(mountingView.Frame);
+			View.AddSubview (mountingView);
 
 			// picture
 
-			CGRect pictureFrame = new CGRect (mounting.Frame.X + 10, 10, frame.Width, frame.Height);
+			CGRect pictureFrame = new CGRect (mountingView.Frame.X + 10, 10, frame.Width, frame.Height);
 			UIImageView uiv = new UIImageView (pictureFrame);
 			uiv.Image = picture.ThumbnailView.Image;
 			View.AddSubview (uiv);
 
 			// like
 
-			UIImageView like = CreateLike (mounting.Frame);
+			UIImageView like = CreateLike (mountingView.Frame);
 			View.AddSubview (like);
 
 			// like label
@@ -55,10 +55,10 @@ namespace Board.Interface.Widgets
 
 			// eye
 
-			eye = CreateEye (mounting.Frame);
+			eye = CreateEye (mountingView.Frame);
 			View.AddSubview (eye);
 
-			View.Frame = new CGRect (pic.Frame.X, pic.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
+			View.Frame = new CGRect (pic.Frame.X, pic.Frame.Y, mountingView.Frame.Width, mountingView.Frame.Height);
 			View.Transform = CGAffineTransform.MakeRotation(pic.Rotation);
 
 			View.BackgroundColor = UIColor.FromRGB (250, 250, 250);

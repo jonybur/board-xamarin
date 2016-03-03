@@ -29,12 +29,12 @@ namespace Board.Interface.Widgets
 			UITextView insideText = CreateText ();
 
 			// mounting
-			UIImageView mounting = CreateMounting (insideText.Frame);
-			View = new UIView(mounting.Frame);
-			View.AddSubviews (mounting, insideText);
+			CreateMounting (insideText.Frame);
+			View = new UIView(mountingView.Frame);
+			View.AddSubviews (mountingView, insideText);
 
 			// like
-			UIImageView like = CreateLike (mounting.Frame);
+			UIImageView like = CreateLike (mountingView.Frame);
 			View.AddSubview (like);
 
 			// like label
@@ -43,11 +43,11 @@ namespace Board.Interface.Widgets
 			View.AddSubview (likeLabel);
 
 			// eye
-			eye = CreateEye (mounting.Frame);
+			eye = CreateEye (mountingView.Frame);
 
 			View.AddSubview (eye);
 
-			View.Frame = new CGRect (ann.Frame.X, ann.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
+			View.Frame = new CGRect (ann.Frame.X, ann.Frame.Y, mountingView.Frame.Width, mountingView.Frame.Height);
 			View.Transform = CGAffineTransform.MakeRotation(ann.Rotation);
 
 			EyeOpen = false;

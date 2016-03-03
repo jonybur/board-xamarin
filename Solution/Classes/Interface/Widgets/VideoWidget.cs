@@ -38,12 +38,12 @@ namespace Board.Interface.Widgets
 
 			// mounting
 
-			UIImageView mounting = CreateMounting (frame);
-			View = new UIView(mounting.Frame);
-			View.AddSubview (mounting);
+			CreateMounting (frame);
+			View = new UIView(mountingView.Frame);
+			View.AddSubview (mountingView);
 
 			// picture
-			CGRect pictureFrame = new CGRect (mounting.Frame.X + 10, 10, frame.Width, frame.Height);
+			CGRect pictureFrame = new CGRect (mountingView.Frame.X + 10, 10, frame.Width, frame.Height);
 			AVPlayerLayer videoLayer = LoadVideoThumbnail (pictureFrame);
 			View.Layer.AddSublayer (videoLayer);
 
@@ -59,7 +59,7 @@ namespace Board.Interface.Widgets
 
 			// like
 
-			UIImageView like = CreateLike (mounting.Frame);
+			UIImageView like = CreateLike (mountingView.Frame);
 			View.AddSubview (like);
 
 			// like label
@@ -69,10 +69,10 @@ namespace Board.Interface.Widgets
 
 			// eye
 
-			eye = CreateEye (mounting.Frame);
+			eye = CreateEye (mountingView.Frame);
 			View.AddSubview (eye);
 
-			View.Frame = new CGRect (vid.Frame.X, vid.Frame.Y, mounting.Frame.Width, mounting.Frame.Height);
+			View.Frame = new CGRect (vid.Frame.X, vid.Frame.Y, mountingView.Frame.Width, mountingView.Frame.Height);
 			View.Transform = CGAffineTransform.MakeRotation(vid.Rotation);
 
 			EyeOpen = false;
