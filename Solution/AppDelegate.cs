@@ -48,7 +48,7 @@ namespace Board
 		public const string FacebookDisplayName = "Board Alpha - Deve­l­o­p­ment";
 		public static string BoardToken;
 		public static string EncodedBoardToken;
-
+	
 		public static int Autosize = 140;
 
 		/*

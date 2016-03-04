@@ -15,9 +15,11 @@ namespace Board.Interface.LookUp
 
 		public PictureLookUp(Picture picture)
 		{
-			this.content = picture;
+			content = picture;
 
 			View.BackgroundColor = UIColor.Black;
+
+			CreateButtons (UIColor.White);
 
 			UIImageView lookUpImage = CreateImageFrame (picture.ImageView.Image);
 			ScrollView.AddSubview (lookUpImage);
@@ -57,7 +59,8 @@ namespace Board.Interface.LookUp
 			imageView.Image = image;
 			imageView.UserInteractionEnabled = true;
 
-			UIImageView blackTop = CreateColorView(new CGRect(0,0,AppDelegate.ScreenWidth, imageView.Frame.Top), UIColor.Black.CGColor);
+			UIImageView blackTop = new UIImageView (new CGRect (0, 0, AppDelegate.ScreenWidth, imageView.Frame.Top));
+			blackTop.BackgroundColor = UIColor.Black;
 
 			UIImageView composite = new UIImageView(new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 

@@ -2,6 +2,7 @@
 using System;
 using CoreGraphics;
 using UIKit;
+using Board.Interface.LookUp;
 
 namespace Board.Interface.Widgets
 {
@@ -9,12 +10,11 @@ namespace Board.Interface.Widgets
 	{
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
-		private Announcement announcement;
 		private UITextView textview;
 
-		public Announcement Announcement
+		public Announcement announcement
 		{
-			get { return announcement; }
+			get { return (Announcement)content; }
 		}
 
 		public AnnouncementWidget()
@@ -24,33 +24,51 @@ namespace Board.Interface.Widgets
 
 		public AnnouncementWidget(Announcement ann)
 		{
-			announcement = ann;
+			content = ann;
 
 			UITextView insideText = CreateText ();
 
 			// mounting
 			CreateMounting (insideText.Frame);
-			View = new UIView(mountingView.Frame);
-			View.AddSubviews (mountingView, insideText);
+			View = new UIView(MountingView.Frame);
 
-			// like
-			UIImageView like = CreateLike (mountingView.Frame);
-			View.AddSubview (like);
+			View.AddSubviews (MountingView, insideText);
 
-			// like label
-
-			UILabel likeLabel = CreateLikeLabel (like.Frame);
-			View.AddSubview (likeLabel);
-
-			// eye
-			eye = CreateEye (mountingView.Frame);
-
-			View.AddSubview (eye);
-
-			View.Frame = new CGRect (ann.Frame.X, ann.Frame.Y, mountingView.Frame.Width, mountingView.Frame.Height);
+			View.Frame = new CGRect (ann.Frame.X, ann.Frame.Y, MountingView.Frame.Width, MountingView.Frame.Height);
 			View.Transform = CGAffineTransform.MakeRotation(ann.Rotation);
 
 			EyeOpen = false;
+
+			CreateGestures ();
+		}
+
+		private void CreateGestures()
+		{
+			UITapGestureRecognizer doubleTap = CreateDoubleTapToLikeGesture ();
+
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
+				if (Preview.View != null) { return; }
+
+				tg.NumberOfTapsRequired = 1; 
+
+				if (LikeComponent.Frame.Left < tg.LocationInView(this.View).X &&
+					LikeComponent.Frame.Top < tg.LocationInView(this.View).Y)
+				{
+					Like();
+				}
+				else{
+					AnnouncementLookUp lookUp = new AnnouncementLookUp(announcement);
+					AppDelegate.NavigationController.PresentViewController(lookUp, true, null);
+				}
+			});
+
+			tap.DelaysTouchesBegan = true;
+			doubleTap.DelaysTouchesBegan = true;
+
+			tap.RequireGestureRecognizerToFail (doubleTap);
+
+			GestureRecognizers.Add (tap);
+			GestureRecognizers.Add (doubleTap);
 		}
 
 		public void ScrollEnabled(bool value)
@@ -60,13 +78,11 @@ namespace Board.Interface.Widgets
 
 		private UITextView CreateText()
 		{
-			UIFont font = UIFont.SystemFontOfSize (20);
-
 			textview = new UITextView ();
-			textview.BackgroundColor = UIColor.FromRGB(250,250,250);
 			textview.Editable = false;
 			textview.Selectable = true;
 			textview.ScrollEnabled = true;
+			textview.BackgroundColor = UIColor.FromRGBA (250, 250, 250, 0);
 			textview.AttributedText = announcement.Text;
 			textview.SizeToFit ();
 			textview.TextColor = BoardInterface.board.MainColor;

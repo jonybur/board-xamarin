@@ -10,11 +10,10 @@ namespace Board.Interface.Widgets
 	{
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
-		private BoardEvent boardEvent;
 
-		public BoardEvent BoardEvent
+		public BoardEvent boardEvent
 		{
-			get { return boardEvent; }
+			get { return (BoardEvent)content; }
 		}
 
 		public EventWidget()
@@ -24,7 +23,7 @@ namespace Board.Interface.Widgets
 
 		public EventWidget(BoardEvent ev)
 		{
-			boardEvent = ev;
+			content = ev;
 
 			UIImageView calendarBox = CreateCalendarBox();
 			UIImageView pictureBox = CreatePictureBox (calendarBox.Frame);
@@ -33,28 +32,24 @@ namespace Board.Interface.Widgets
 
 			// mounting
 			CreateMounting (totalRect);
-			View = new UIView(mountingView.Frame);
-			View.AddSubviews (mountingView, calendarBox, pictureBox);
+			View = new UIView(MountingView.Frame);
+			View.AddSubviews (MountingView, calendarBox, pictureBox);
 
-			// like
-			UIImageView like = CreateLike (mountingView.Frame);
-			View.AddSubview (like);
-
-			// like label
-
-			UILabel likeLabel = CreateLikeLabel (like.Frame);
-			View.AddSubview (likeLabel);
-
-			// eye
-			eye = CreateEye (mountingView.Frame);
-
-			View.AddSubview (eye);
-
-			View.Frame = new CGRect (boardEvent.Frame.X, boardEvent.Frame.Y, mountingView.Frame.Width, mountingView.Frame.Height);
+			View.Frame = new CGRect (boardEvent.Frame.X, boardEvent.Frame.Y, MountingView.Frame.Width, MountingView.Frame.Height);
 			View.Transform = CGAffineTransform.MakeRotation(boardEvent.Rotation);
 
 			EyeOpen = false;
+
+			CreateGestures ();
 		}
+
+
+		private void CreateGestures()
+		{
+			UITapGestureRecognizer doubleTap = CreateDoubleTapToLikeGesture ();
+			GestureRecognizers.Add (doubleTap);
+		}
+
 
 		private UIImageView CreateCalendarBox()
 		{

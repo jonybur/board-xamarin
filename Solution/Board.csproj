@@ -307,6 +307,9 @@
     <Compile Include="Classes\Interface\BoardInterface_Demo.cs" />
     <Compile Include="Classes\Interface\LookUp\PictureLookUp.cs" />
     <Compile Include="Classes\Interface\LookUp\Lookup.cs" />
+    <Compile Include="Classes\Interface\LookUp\VideoLookUp.cs" />
+    <Compile Include="Classes\Interface\LookUp\AnnouncementLookUp.cs" />
+    <Compile Include="Classes\Interface\LookUp\EventLookUp.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

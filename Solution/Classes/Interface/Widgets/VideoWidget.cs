@@ -8,6 +8,7 @@ using Board.Utilities;
 using CoreGraphics;
 using MediaPlayer;
 using CoreMedia;
+using Board.Interface.LookUp;
 using Foundation;
 using UIKit;
 
@@ -18,11 +19,9 @@ namespace Board.Interface.Widgets
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
 
-		private Video video;
-
-		public Video Video
+		public Video video
 		{
-			get { return video; }
+			get { return (Video)content; }
 		}
 
 		public VideoWidget()
@@ -32,18 +31,18 @@ namespace Board.Interface.Widgets
 
 		public VideoWidget(Video vid)
 		{
-			video = vid;
+			content = vid;
 
 			CGRect frame = GetFrame (vid);
 
 			// mounting
 
 			CreateMounting (frame);
-			View = new UIView(mountingView.Frame);
-			View.AddSubview (mountingView);
+			View = new UIView(MountingView.Frame);
+			View.AddSubview (MountingView);
 
 			// picture
-			CGRect pictureFrame = new CGRect (mountingView.Frame.X + 10, 10, frame.Width, frame.Height);
+			CGRect pictureFrame = new CGRect (MountingView.Frame.X + 10, 10, frame.Width, frame.Height);
 			AVPlayerLayer videoLayer = LoadVideoThumbnail (pictureFrame);
 			View.Layer.AddSublayer (videoLayer);
 
@@ -57,39 +56,50 @@ namespace Board.Interface.Widgets
 			//View.AddSubview (playButton);
 			*/
 
-			// like
-
-			UIImageView like = CreateLike (mountingView.Frame);
-			View.AddSubview (like);
-
-			// like label
-
-			UILabel likeLabel = CreateLikeLabel (like.Frame);
-			View.AddSubview (likeLabel);
-
-			// eye
-
-			eye = CreateEye (mountingView.Frame);
-			View.AddSubview (eye);
-
-			View.Frame = new CGRect (vid.Frame.X, vid.Frame.Y, mountingView.Frame.Width, mountingView.Frame.Height);
+			View.Frame = new CGRect (vid.Frame.X, vid.Frame.Y, MountingView.Frame.Width, MountingView.Frame.Height);
 			View.Transform = CGAffineTransform.MakeRotation(vid.Rotation);
 
 			EyeOpen = false;
+
+			CreateGestures ();
+		}
+
+		private void CreateGestures()
+		{
+			UITapGestureRecognizer doubleTap = CreateDoubleTapToLikeGesture ();
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (Preview.View != null) {
 					return;
 				}
 
-				MPMoviePlayerController moviePlayer = new MPMoviePlayerController (video.Url);
-				View.Superview.Superview.AddSubview (moviePlayer.View);
-				moviePlayer.SetFullscreen (true, false);
-				moviePlayer.Play ();
-			});
-			gestureRecognizers.Add (tap);
+				tg.NumberOfTapsRequired = 1; 
 
+				if (LikeComponent.Frame.Left < tg.LocationInView(this.View).X &&
+					LikeComponent.Frame.Top < tg.LocationInView(this.View).Y)
+				{
+					Like();
+				}
+				else{
+					VideoLookUp lookUp = new VideoLookUp(video);
+					AppDelegate.NavigationController.PresentViewController(lookUp, true, null);
+
+					/*MPMoviePlayerController moviePlayer = new MPMoviePlayerController (video.Url);
+					View.Superview.Superview.AddSubview (moviePlayer.View);
+					moviePlayer.SetFullscreen (true, false);
+					moviePlayer.Play ();*/
+				}
+			});
+
+			tap.DelaysTouchesBegan = true;
+			doubleTap.DelaysTouchesBegan = true;
+
+			tap.RequireGestureRecognizerToFail (doubleTap);
+
+			GestureRecognizers.Add (tap);
+			GestureRecognizers.Add (doubleTap);
 		}
+
 
 		private UIImageView CreatePlayButton(CGRect frame)
 		{

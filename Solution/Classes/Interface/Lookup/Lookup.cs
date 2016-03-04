@@ -32,11 +32,15 @@ namespace Board.Interface.LookUp
 			AutomaticallyAdjustsScrollViewInsets = false;
 			View = new UIView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
-			CreateBackButton ();
-			CreateLikeButton ();
-			CreateFacebookButton ();
-			CreateShareButton ();
-			CreateTrashButton ();
+		}
+
+		public void CreateButtons(UIColor buttonColor)
+		{
+			CreateBackButton (buttonColor);
+			CreateLikeButton (buttonColor);
+			CreateFacebookButton (buttonColor);
+			CreateShareButton (buttonColor);
+			CreateTrashButton (buttonColor);
 		}
 
 		public override void ViewDidAppear(bool animated)
@@ -57,14 +61,15 @@ namespace Board.Interface.LookUp
 			TrashButton.RemoveGestureRecognizer (trashTap);
 		}
 
-		protected void CreateBackButton()
+		protected void CreateBackButton(UIColor buttonColor)
 		{
 			using (UIImage img = UIImage.FromFile ("./boardinterface/lookup/cancel.png")) {
 				BackButton = new UIImageView(new CGRect(0,0,img.Size.Width * 2,img.Size.Height * 2));
 
 				UIImageView subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
-				subView.Image = img;
+				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 				subView.Center = new CGPoint (BackButton.Frame.Width / 2, BackButton.Frame.Height / 2);
+				subView.TintColor = buttonColor;
 
 				BackButton.AddSubview (subView);
 				BackButton.Center = new CGPoint (img.Size.Width / 2 + 10, 35);
@@ -80,14 +85,15 @@ namespace Board.Interface.LookUp
 			});
 		}
 
-		protected void CreateTrashButton()
+		protected void CreateTrashButton(UIColor buttonColor)
 		{
 			using (UIImage img = UIImage.FromFile ("./boardinterface/lookup/trash.png")) {
 				TrashButton = new UIImageView(new CGRect(0,0,img.Size.Width * 2,img.Size.Height * 2));
 
 				UIImageView subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
-				subView.Image = img;
+				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 				subView.Center = new CGPoint (TrashButton.Frame.Width / 2, TrashButton.Frame.Height / 2);
+				subView.TintColor = buttonColor;
 
 				TrashButton.AddSubview (subView);
 				TrashButton.Center = new CGPoint (AppDelegate.ScreenWidth - img.Size.Width / 2 - 10, 35);
@@ -120,6 +126,7 @@ namespace Board.Interface.LookUp
 			BoardInterface.DictionaryWidgets.TryGetValue (content.Id, out widget);
 
 			if (widget != null) {
+				widget.UnsuscribeToEvents ();
 				widget.View.RemoveFromSuperview ();
 				BoardInterface.DictionaryWidgets.Remove (content.Id);
 			}
@@ -133,7 +140,7 @@ namespace Board.Interface.LookUp
 			window.Hidden = true;
 		}
 
-		protected void CreateLikeButton()
+		protected void CreateLikeButton(UIColor buttonColor)
 		{
 			UIImageView subView;
 			UILabel lblLikes;
@@ -149,13 +156,13 @@ namespace Board.Interface.LookUp
 
 				subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
 				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-				subView.TintColor = UIColor.White;
+				subView.TintColor = buttonColor;
 				subView.Center = new CGPoint (img.Size.Width / 2, BackButton.Frame.Height / 2);
 
-				lblLikes = new UILabel (new CGRect (0, 0, text.StringSize(font).Width, 14));
+				lblLikes = new UILabel (new CGRect (0, 0, text.StringSize(font).Width + 10, 14));
 				lblLikes.Font = font;
 				lblLikes.Text = text;
-				lblLikes.TextColor = UIColor.White;
+				lblLikes.TextColor = buttonColor;
 				lblLikes.Center = new CGPoint (subView.Center.X + lblLikes.Frame.Width / 2 + 15, subView.Center.Y);
 
 				LikeButton.AddSubviews(subView, lblLikes);
@@ -164,28 +171,28 @@ namespace Board.Interface.LookUp
 
 			LikeButton.UserInteractionEnabled = true;
 
-			bool tapped = false;
+			bool liked = false;
 
 			likeTap = new UITapGestureRecognizer (tg => {
-				if (!tapped)
+				if (!liked)
 				{
 					randomLike ++;
 					lblLikes.Text = randomLike.ToString();
 					subView.TintColor = AppDelegate.BoardOrange;
 					lblLikes.TextColor = AppDelegate.BoardOrange;
-					tapped = true;
+					liked = true;
 				}
 				else {
 					randomLike --;
 					lblLikes.Text = randomLike.ToString();
-					subView.TintColor = UIColor.White;
-					lblLikes.TextColor = UIColor.White;
-					tapped = false;
+					subView.TintColor = buttonColor;
+					lblLikes.TextColor = buttonColor;
+					liked = false;
 				}
 			});
 		}
 
-		protected void CreateFacebookButton()
+		protected void CreateFacebookButton(UIColor buttonColor)
 		{
 			using (UIImage img = UIImage.FromFile ("./boardinterface/lookup/facebook.png")) {
 				const string text = "Open in Facebook";
@@ -194,13 +201,14 @@ namespace Board.Interface.LookUp
 				FacebookButton = new UIImageView(new CGRect(0, 0, img.Size.Width + text.StringSize(font).Width + 5, img.Size.Height * 2));
 
 				UIImageView subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
-				subView.Image = img;
+				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				subView.TintColor = buttonColor;
 				subView.Center = new CGPoint (img.Size.Width / 2, BackButton.Frame.Height / 2);
 
 				UILabel lblLikes = new UILabel (new CGRect (0, 0, text.StringSize(font).Width, 14));
 				lblLikes.Font = font;
 				lblLikes.Text = text;
-				lblLikes.TextColor = UIColor.White;
+				lblLikes.TextColor = buttonColor;
 				lblLikes.Center = new CGPoint (subView.Center.X + lblLikes.Frame.Width / 2 + 15, subView.Center.Y);
 
 				FacebookButton.AddSubviews(subView, lblLikes);
@@ -214,7 +222,7 @@ namespace Board.Interface.LookUp
 			});
 		}
 
-		protected void CreateShareButton()
+		protected void CreateShareButton(UIColor buttonColor)
 		{
 			using (UIImage img = UIImage.FromFile ("./boardinterface/lookup/share.png")) {
 				string text = "Share";
@@ -223,13 +231,14 @@ namespace Board.Interface.LookUp
 				ShareButton = new UIImageView(new CGRect(0, 0, img.Size.Width + text.StringSize(font).Width + 5, img.Size.Height * 2));
 
 				UIImageView subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
-				subView.Image = img;
+				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				subView.TintColor = buttonColor;
 				subView.Center = new CGPoint (img.Size.Width / 2, BackButton.Frame.Height / 2);
 
 				UILabel lblLikes = new UILabel (new CGRect (0, 0, text.StringSize(font).Width, 14));
 				lblLikes.Font = font;
 				lblLikes.Text = text;
-				lblLikes.TextColor = UIColor.White;
+				lblLikes.TextColor = buttonColor;
 				lblLikes.Center = new CGPoint (subView.Center.X + lblLikes.Frame.Width / 2 + 15, subView.Center.Y);
 
 				ShareButton.AddSubviews(subView, lblLikes);

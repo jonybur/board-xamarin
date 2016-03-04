@@ -168,35 +168,30 @@ namespace Board.Interface
 		public static Picture GetPicture()
 		{
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
-			Picture p = new Picture (pictureWidget.Picture.ImageView.Image, pictureWidget.Picture.ThumbnailView.Image, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
+			Picture p = new Picture (pictureWidget.picture.ImageView.Image, pictureWidget.picture.ThumbnailView.Image, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
 			return p;
 		}
 
 		public static Video GetVideo()
 		{
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
-			Video v = new Video (videoWidget.Video.Url, videoWidget.Video.ThumbnailView, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
+			Video v = new Video (videoWidget.video.Url, videoWidget.video.ThumbnailView, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
 			return v;
 		}
 
 		public static Announcement GetAnnouncement()
 		{
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
-			Announcement ann = new Announcement (announcementWidget.Announcement.Text, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
-			ann.SocialChannel = announcementWidget.Announcement.SocialChannel;
+			Announcement ann = new Announcement (announcementWidget.announcement.Text, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
+			ann.SocialChannel = announcementWidget.announcement.SocialChannel;
 		
 			/*
 
 			Dictionary<NSRange, NSDictionary> dic = CommonUtils.GetFormatDictionaries (ann.Text);
-
 			NSError err = new NSError ();
-
 			foreach (var element in dic) {
-				
 				NSData data = NSJsonSerialization.Serialize (element.Value, NSJsonWritingOptions.PrettyPrinted, out err);
-
 				Console.WriteLine (data);
-
 			}
 
 			*/

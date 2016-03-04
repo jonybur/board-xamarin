@@ -11,6 +11,7 @@ namespace Board.Interface.Buttons
 	public class NavigationButton : Button
 	{
 		private static UILabel numberLabel;
+		private static Widget highLighted;
 		private static int contentAmmount;
 
 		private void SetImage (string buttonName)
@@ -39,6 +40,8 @@ namespace Board.Interface.Buttons
 			});
 
 			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer  (tg => {
+				tg.NumberOfTapsRequired = 1;
+
 				if (BoardInterface.zoomingScrollView.ZoomScale < 1)
 				{
 					BoardInterface.ZoomScrollview();
@@ -72,7 +75,15 @@ namespace Board.Interface.Buttons
 				}
 
 				position = new PointF ((float)(widget.View.Frame.X - AppDelegate.ScreenWidth/2 + widget.View.Frame.Width/2), 0f);
+
+				if (highLighted != null)
+				{
+					highLighted.InstantUnhighlight();
+					highLighted = null;
+				}
+
 				widget.Highlight();
+				highLighted = widget;
 
 				BoardInterface.scrollView.SetContentOffset (position, true);
 				highlitedContent++;

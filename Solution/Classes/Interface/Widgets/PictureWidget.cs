@@ -12,11 +12,9 @@ namespace Board.Interface.Widgets
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
 
-		private Picture picture;
-
-		public Picture Picture
+		public Picture picture
 		{
-			get { return picture; }
+			get { return (Picture)content; }
 		}
 
 		public PictureWidget()
@@ -26,54 +24,60 @@ namespace Board.Interface.Widgets
 
 		public PictureWidget(Picture pic)
 		{
-			picture = pic;
+			content = pic;
 
 			CGRect frame = GetFrame (pic);
 
 			// mounting
 
 			CreateMounting (frame);
-			View = new UIView(mountingView.Frame);
-			View.AddSubview (mountingView);
+			View = new UIView(MountingView.Frame);
+			View.AddSubview (MountingView);
 
 			// picture
 
-			CGRect pictureFrame = new CGRect (mountingView.Frame.X + 10, 10, frame.Width, frame.Height);
+			CGRect pictureFrame = new CGRect (MountingView.Frame.X + 10, 10, frame.Width, frame.Height);
 			UIImageView uiv = new UIImageView (pictureFrame);
 			uiv.Image = picture.ThumbnailView.Image;
 			View.AddSubview (uiv);
 
-			// like
-
-			UIImageView like = CreateLike (mountingView.Frame);
-			View.AddSubview (like);
-
-			// like label
-
-			UILabel likeLabel = CreateLikeLabel (like.Frame);
-			View.AddSubview (likeLabel);
-
-			// eye
-
-			eye = CreateEye (mountingView.Frame);
-			View.AddSubview (eye);
-
-			View.Frame = new CGRect (pic.Frame.X, pic.Frame.Y, mountingView.Frame.Width, mountingView.Frame.Height);
+			View.Frame = new CGRect (pic.Frame.X, pic.Frame.Y, MountingView.Frame.Width, MountingView.Frame.Height);
 			View.Transform = CGAffineTransform.MakeRotation(pic.Rotation);
 
 			View.BackgroundColor = UIColor.FromRGB (250, 250, 250);
-
+		
 			EyeOpen = false;
+
+			CreateGestures ();
+		}
+
+		private void CreateGestures()
+		{
+			UITapGestureRecognizer doubleTap = CreateDoubleTapToLikeGesture ();
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (Preview.View != null) { return; }
 
-				PictureLookUp lookUp = new PictureLookUp(picture);
-				AppDelegate.NavigationController.PresentViewController(lookUp, true, null);
+				tg.NumberOfTapsRequired = 1; 
+
+				if (LikeComponent.Frame.Left < tg.LocationInView(this.View).X &&
+					LikeComponent.Frame.Top < tg.LocationInView(this.View).Y)
+				{
+					Like();
+				}
+				else{
+					PictureLookUp lookUp = new PictureLookUp(picture);
+					AppDelegate.NavigationController.PresentViewController(lookUp, true, null);
+				}
 			});
 
-			gestureRecognizers.Add (tap);
+			tap.DelaysTouchesBegan = true;
+			doubleTap.DelaysTouchesBegan = true;
 
+			tap.RequireGestureRecognizerToFail (doubleTap);
+
+			GestureRecognizers.Add (tap);
+			GestureRecognizers.Add (doubleTap);
 		}
 
 		private CGRect GetFrame(Picture picture)
