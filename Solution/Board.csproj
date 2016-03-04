@@ -268,10 +268,7 @@
     <Compile Include="Classes\Screens\InviteScreen.cs" />
     <Compile Include="Classes\Screens\SettingsScreen.cs" />
     <Compile Include="Classes\Screens\SupportScreen.cs" />
-    <Compile Include="Classes\Interface\PageSelectorScreen.cs" />
     <Compile Include="Classes\Interface\BoardInterface.cs" />
-    <Compile Include="Classes\Interface\AnnouncementScreen.cs" />
-    <Compile Include="Classes\Interface\ShareScreen.cs" />
     <Compile Include="Classes\JsonResponses\BoardResponse.cs" />
     <Compile Include="Classes\JsonResponses\GoogleGeolocatorObject.cs" />
     <Compile Include="Classes\JsonResponses\TokenResponse.cs" />
@@ -292,7 +289,6 @@
     <Compile Include="Classes\Interface\Buttons\ImageButton.cs" />
     <Compile Include="Classes\Interface\Buttons\NavigationButton.cs" />
     <Compile Include="Classes\Interface\Gallery.cs" />
-    <Compile Include="Classes\Interface\Preview.cs" />
     <Compile Include="Classes\Interface\Widgets\AnnouncementWidget.cs" />
     <Compile Include="Classes\Interface\Widgets\PictureWidget.cs" />
     <Compile Include="Classes\Interface\Widgets\VideoWidget.cs" />
@@ -310,6 +306,12 @@
     <Compile Include="Classes\Interface\LookUp\VideoLookUp.cs" />
     <Compile Include="Classes\Interface\LookUp\AnnouncementLookUp.cs" />
     <Compile Include="Classes\Interface\LookUp\EventLookUp.cs" />
+    <Compile Include="Classes\Interface\Widgets\Preview.cs" />
+    <Compile Include="Classes\Interface\CreateScreens\CreateAnnouncementScreen.cs" />
+    <Compile Include="Classes\Interface\SettingsScreen\PageSelectorScreen.cs" />
+    <Compile Include="Classes\Interface\CreateScreens\CreateMediaScreen.cs" />
+    <Compile Include="Classes\Interface\CreateScreens\CreateScreen.cs" />
+    <Compile Include="Classes\Interface\CreateScreens\PostToButtons.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -377,6 +379,8 @@
     <Folder Include="Resources\boardinterface\buttons\" />
     <Folder Include="Classes\Screens\Menu\" />
     <Folder Include="Classes\Interface\LookUp\" />
+    <Folder Include="Classes\Interface\CreateScreens\" />
+    <Folder Include="Classes\Interface\SettingsScreen\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

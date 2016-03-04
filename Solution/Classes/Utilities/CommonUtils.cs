@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-
-using Board.Schema;
 using CoreGraphics;
 
 using Foundation;
@@ -52,19 +48,6 @@ namespace Board.Utilities
 			return attstring;
 		}
 
-		public static void BinarySerialize(Content obj){
-			IFormatter formatter = new BinaryFormatter();
-
-			string docs = (NSFileManager.DefaultManager.GetUrls (
-				NSSearchPathDirectory.DocumentDirectory, 
-				NSSearchPathDomain.User) [0]).Path;
-			
-			string filename = Path.Combine (docs, obj.Id + ".bin"); 
-
-			Stream stream = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
-			formatter.Serialize(stream, obj);
-			stream.Close();
-		}
 		public static UIImage ResizeImage(UIImage sourceImage, CGSize newSize)
 		{
 			UIGraphics.BeginImageContext(newSize);

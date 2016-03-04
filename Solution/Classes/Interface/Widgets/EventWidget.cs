@@ -43,14 +43,6 @@ namespace Board.Interface.Widgets
 			CreateGestures ();
 		}
 
-
-		private void CreateGestures()
-		{
-			UITapGestureRecognizer doubleTap = CreateDoubleTapToLikeGesture ();
-			GestureRecognizers.Add (doubleTap);
-		}
-
-
 		private UIImageView CreateCalendarBox()
 		{
 			UIImageView box = new UIImageView (new CGRect(10, 10, 100, 140));

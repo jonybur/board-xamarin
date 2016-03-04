@@ -1,57 +1,39 @@
-using System;
 using System.IO;
 using SQLite;
 using Foundation;
-using UIKit;
-using CoreGraphics;
 using System.Collections.Generic;
 using Board.Schema;
-using Board.Interface.Widgets;
+
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Board.Infrastructure
 {
 	public static class StorageController
 	{
 		[Table("Announcements")]
-		public class AnnouncementL {
+		private class AnnouncementL {
 			[PrimaryKey]
 			public string Id { get; set; }
 
-			public string UserId { get; set; }
-
-			public float ImgX{ get; set;}
-			public float ImgY{ get; set;}
-			public float ImgW{ get; set;}
-			public float ImgH{ get; set;}
-
-			public float Rotation{ get; set;}
-
 			public AnnouncementL(){}
 
-			public AnnouncementL(Announcement ann)
-			{
-				Id = ann.Id;
-				UserId = ann.UserId;
-
-				ImgX = (float)ann.Frame.X;
-				ImgY = (float)ann.Frame.Y;
-				ImgW = (float)ann.Frame.Width;
-				ImgH = (float)ann.Frame.Height;
-
-				Rotation = ann.Rotation;
+			public AnnouncementL(string id){
+				Id = id;
 			}
 		}
 
 		private static string dbPath;
+		private static string docsPath;
 
 		private static SQLiteConnection database;
 
 		public static void Initialize () {
-			var docs = (NSFileManager.DefaultManager.GetUrls (
+			docsPath = (NSFileManager.DefaultManager.GetUrls (
 				NSSearchPathDirectory.LibraryDirectory, 
 				NSSearchPathDomain.User) [0]).Path;
 
-			dbPath = Path.Combine (docs, "localdb.db3");
+			dbPath = Path.Combine (docsPath, "localdb.db3");
 
 			database = new SQLiteConnection (dbPath);
 			database.CreateTable<AnnouncementL> ();
@@ -60,28 +42,63 @@ namespace Board.Infrastructure
 		public static void InsertContent(Content content)
 		{
 			if (content is Announcement) {
-				AnnouncementL anl = new AnnouncementL ((Announcement)content);
+				BinarySerialize ((Announcement)content);
+
+				AnnouncementL anl = new AnnouncementL (content.Id);
 				database.Insert (anl);
 			}
 		}
 
-		// returns all pictures
-		public static List<Content> ReturnAllStoredContent()
+		public static void RemoveContent(Content content)
 		{
-			List<Content> lstContent = new List<Content>();
+			if (content is Announcement) {
+				// searches in DB, if uid found then kill .bin
 
+				File.Delete (docsPath + content.Id + ".bin");
+			}
+		}
+
+		// returns all stored content dictionary
+		public static Dictionary<string, Content> ReturnAllStoredContent()
+		{
+			Dictionary<string, Content> dicContent = new Dictionary<string, Content>();
 			var table = database.Table<AnnouncementL> ();
-			foreach (AnnouncementL anl in table) {
 
-				Announcement ann = new Announcement ();
-				ann.Id = anl.Id;
-				ann.Frame = new CGRect (anl.ImgX, anl.ImgY, anl.ImgW, anl.ImgH);
-				ann.Rotation = anl.Rotation;
-				ann.UserId = anl.UserId;
-				lstContent.Add (ann);
+			foreach (AnnouncementL anl in table) {
+				
+				string filename = Path.Combine (docsPath, anl.Id + ".bin"); 
+
+				Announcement an = BinaryDeserialize (filename);
+
+				dicContent.Add (anl.Id, an);
 			}
 
-			return lstContent;
+			return dicContent;
+		}
+
+		// serializes object and saves it in file
+		private static void BinarySerialize(Announcement obj){
+			IFormatter formatter = new BinaryFormatter();
+
+			string filename = Path.Combine (docsPath, obj.Id + ".bin"); 
+
+			using (Stream stream = new FileStream (filename, FileMode.Create, FileAccess.Write, FileShare.None)) {
+				formatter.Serialize (stream, obj);
+				stream.Close ();
+			}
+		}
+
+		// deserializes, returns object
+		private static Announcement BinaryDeserialize(string url)
+		{
+			IFormatter formatter = new BinaryFormatter();
+
+			Announcement obj;
+			using (Stream stream = new FileStream (url, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+				obj = (Announcement)formatter.Deserialize (stream);
+				stream.Close ();
+			}
+			return obj;
 		}
 	}
 }

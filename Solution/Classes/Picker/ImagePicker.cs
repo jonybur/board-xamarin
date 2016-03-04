@@ -6,6 +6,8 @@ using UIKit;
 using Board.Schema;
 
 using MediaPlayer;
+
+using Board.Interface.CreateScreens;
 using Board.Interface;
 
 namespace Board.Picker
@@ -125,7 +127,7 @@ namespace Board.Picker
 
 			MPMoviePlayerController moviePlayer = new MPMoviePlayerController (url);
 
-			ShareScreen shareScreen = new ShareScreen(moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact), video);
+			CreateMediaScreen shareScreen = new CreateMediaScreen(moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact), video);
 
 			moviePlayer.Pause ();
 			moviePlayer.Dispose ();
@@ -139,7 +141,7 @@ namespace Board.Picker
 		{		
 			Picture picture = Preview.Initialize(image);
 
-			ShareScreen shareScreen = new ShareScreen(image, picture);
+			CreateMediaScreen shareScreen = new CreateMediaScreen(image, picture);
 
 			AppDelegate.NavigationController.DismissViewController(false, null);
 

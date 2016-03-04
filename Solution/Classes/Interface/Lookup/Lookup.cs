@@ -103,7 +103,7 @@ namespace Board.Interface.LookUp
 
 			trashTap = new UITapGestureRecognizer (tg => {
 
-				UIAlertController alert = UIAlertController.Create("Remove this picture from the Board?", "You can't undo this action", UIAlertControllerStyle.ActionSheet);
+				UIAlertController alert = UIAlertController.Create("Remove this widget from the Board?", "You can't undo this action", UIAlertControllerStyle.ActionSheet);
 
 				alert.AddAction (UIAlertAction.Create ("Accept", UIAlertActionStyle.Default, RemoveWidget));
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, HideWindow));

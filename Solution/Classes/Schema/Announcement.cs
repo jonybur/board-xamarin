@@ -1,12 +1,10 @@
 ﻿using Board.Utilities;
 using CoreGraphics;
 using Foundation;
-using System.Collections.Generic;
+using System;
 
 namespace Board.Schema
 {
-	// The Picture class as it is uploaded on Azure
-	// Board's way of storing its UIImageViews on the DB
 	public class Announcement : Content
 	{
 		public NSAttributedString Text;

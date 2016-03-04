@@ -1,21 +1,15 @@
 using System;
-using CoreGraphics;
-using System.Linq;
-
-using Foundation;
-using UIKit;
-
 using System.Collections.Generic;
-
-using MediaPlayer;
-
-using Facebook.CoreKit;
+using System.Linq;
+using BigTed;
+using Board.Interface;
 using Board.Interface.Buttons;
 using Board.Interface.Widgets;
-using Board.Interface;
 using Board.Schema;
-
-using BigTed;
+using CoreGraphics;
+using Facebook.CoreKit;
+using Foundation;
+using UIKit;
 
 namespace Board.Interface
 {
@@ -59,7 +53,6 @@ namespace Board.Interface
 
 		public override void DidReceiveMemoryWarning ()
 		{
-			AppDelegate.ExitBoardInterface ();
 			AppDelegate.NavigationController.PopViewController (true);
 		}
 
@@ -82,6 +75,7 @@ namespace Board.Interface
 		private void InitializeLists()
 		{
 			DictionaryContent = new Dictionary<string, Content> ();
+
 			DictionaryWidgets = new Dictionary<string, Widget> ();
 		}
 

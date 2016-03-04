@@ -18,10 +18,6 @@ namespace Board.Interface
 
 		string [] fbPermissions = new [] { "pages_show_list" };
 
-		public PageSelectorScreen ()
-		{
-		}
-
 		public override async void ViewDidLoad ()
 		{
 			LoadBanner ();

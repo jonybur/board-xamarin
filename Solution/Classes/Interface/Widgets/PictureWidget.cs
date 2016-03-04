@@ -51,35 +51,6 @@ namespace Board.Interface.Widgets
 			CreateGestures ();
 		}
 
-		private void CreateGestures()
-		{
-			UITapGestureRecognizer doubleTap = CreateDoubleTapToLikeGesture ();
-
-			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
-				if (Preview.View != null) { return; }
-
-				tg.NumberOfTapsRequired = 1; 
-
-				if (LikeComponent.Frame.Left < tg.LocationInView(this.View).X &&
-					LikeComponent.Frame.Top < tg.LocationInView(this.View).Y)
-				{
-					Like();
-				}
-				else{
-					PictureLookUp lookUp = new PictureLookUp(picture);
-					AppDelegate.NavigationController.PresentViewController(lookUp, true, null);
-				}
-			});
-
-			tap.DelaysTouchesBegan = true;
-			doubleTap.DelaysTouchesBegan = true;
-
-			tap.RequireGestureRecognizerToFail (doubleTap);
-
-			GestureRecognizers.Add (tap);
-			GestureRecognizers.Add (doubleTap);
-		}
-
 		private CGRect GetFrame(Picture picture)
 		{
 			float imgw, imgh;

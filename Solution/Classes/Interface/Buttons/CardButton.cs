@@ -1,5 +1,5 @@
-using System;
 using CoreGraphics;
+using Board.Interface.CreateScreens;
 using UIKit;
 
 namespace Board.Interface.Buttons
@@ -33,7 +33,7 @@ namespace Board.Interface.Buttons
 
 		private void CreateAnnouncement(UIAlertAction act)
 		{
-			AnnouncementScreen announcementScreen = new AnnouncementScreen ();
+			CreateAnnouncementScreen announcementScreen = new CreateAnnouncementScreen ();
 			AppDelegate.NavigationController.PushViewController (announcementScreen, true);
 		}
 	}

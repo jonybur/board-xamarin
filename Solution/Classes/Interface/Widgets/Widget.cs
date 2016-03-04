@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CoreGraphics;
 using Board.Schema;
 using System.Threading;
+using Board.Interface.LookUp;
 
 namespace Board.Interface.Widgets
 {
@@ -61,8 +62,8 @@ namespace Board.Interface.Widgets
 
 		private void CreateLikeComponent()
 		{
-			LikeComponent = new UIImageView (new CGRect (MountingView.Frame.Width - 100,
-				MountingView.Frame.Height - 40, 100, 40));
+			LikeComponent = new UIImageView (new CGRect (MountingView.Frame.Width - 80,
+				MountingView.Frame.Height - 40, 80, 40));
 
 			likeView = CreateLike (LikeComponent.Frame);
 			likeLabel = CreateLikeLabel (likeView.Center);
@@ -131,6 +132,7 @@ namespace Board.Interface.Widgets
 			likeLabel.Text = likeText;
 			likeLabel.Center = new CGPoint (center.X - likeLabel.Frame.Width / 2 - 5, center.Y);
 			likeLabel.TextAlignment = UITextAlignment.Center;
+
 			return likeLabel;
 		}
 
@@ -155,17 +157,63 @@ namespace Board.Interface.Widgets
 			}
 		}
 
-		public UITapGestureRecognizer CreateDoubleTapToLikeGesture()
+		protected void CreateGestures()
 		{
-			UITapGestureRecognizer doubletap = new UITapGestureRecognizer (tg => {
-				tg.NumberOfTapsRequired = 2;
-
+			UITapGestureRecognizer doubleTap = new UITapGestureRecognizer (tg => {
 				if (Preview.View != null) { return; }
 
 				Like();
+
+				// focus on widget on doubletap like
+				//CGPoint position = new CGPoint ((float)(View.Frame.X - AppDelegate.ScreenWidth/2 + View.Frame.Width/2), 0f);
+				//BoardInterface.scrollView.SetContentOffset (position, true);
 			});
 
-			return doubletap;
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
+				if (Preview.View != null) { return;	}
+
+				if (LikeComponent.Frame.Left < tg.LocationInView(this.View).X &&
+					LikeComponent.Frame.Top < tg.LocationInView(this.View).Y)
+				{
+					Like();
+				}
+				else{
+
+					LookUp.LookUp lookUp;
+
+					if (content is Video)
+					{
+						lookUp = new VideoLookUp((Video)content);
+					} 
+					else if (content is Picture)
+					{
+						lookUp = new PictureLookUp((Picture)content);
+					}
+					else if (content is Announcement)
+					{
+						lookUp = new AnnouncementLookUp((Announcement)content);
+					}
+					else if (content is BoardEvent)
+					{
+						lookUp = new EventLookUp((BoardEvent)content);
+					} else {
+						lookUp = new LookUp.LookUp();
+					}
+
+					AppDelegate.NavigationController.PresentViewController(lookUp, true, null);
+				}
+			});
+
+			tap.NumberOfTapsRequired = 1;
+			doubleTap.NumberOfTapsRequired = 2;
+
+			tap.DelaysTouchesBegan = true;
+			doubleTap.DelaysTouchesBegan = true;
+
+			tap.RequireGestureRecognizerToFail (doubleTap);
+
+			GestureRecognizers.Add (tap);
+			GestureRecognizers.Add (doubleTap);
 		}
 
 		public void Like()
