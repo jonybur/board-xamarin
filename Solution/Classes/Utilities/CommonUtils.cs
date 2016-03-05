@@ -12,6 +12,7 @@ namespace Board.Utilities
 {
 	public static class CommonUtils
 	{
+		// instead of nsdictionary, UIStringAttributes con su .Dictionary como el NSDictionary
 		public static Dictionary<NSRange, NSDictionary> GetFormatDictionaries(NSAttributedString attributedString)
 		{
 			// seteo un rango inicial

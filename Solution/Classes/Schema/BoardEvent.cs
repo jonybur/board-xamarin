@@ -11,6 +11,8 @@ namespace Board.Schema
 	{
 		public string Name;
 	
+		public string Description;
+
 		public UIImageView ImageView;
 
 		public UIImageView Thumbnail;

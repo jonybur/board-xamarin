@@ -53,7 +53,7 @@ namespace Board.Interface.Widgets
 			textview.Editable = false;
 			textview.Selectable = false;
 			textview.ScrollEnabled = true;
-			textview.BackgroundColor = UIColor.FromRGBA (250, 250, 250, 0);
+			textview.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 			textview.AttributedText = announcement.Text;
 			textview.SizeToFit ();
 			textview.TextColor = BoardInterface.board.MainColor;
@@ -69,6 +69,8 @@ namespace Board.Interface.Widgets
 			} else if (textview.Frame.Height > 180) {
 				textview.Frame = new CGRect (10, 10, textview.Frame.Width, 180);
 			}
+
+			textview.ContentOffset = new CGPoint (0, 0);
 
 			return textview;
 		}

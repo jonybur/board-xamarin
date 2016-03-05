@@ -1,7 +1,6 @@
 ﻿using Board.Schema;
 using System.Globalization;
 using CoreGraphics;
-using System;
 using UIKit;
 
 namespace Board.Interface.Widgets
@@ -58,7 +57,7 @@ namespace Board.Interface.Widgets
 			// empieza en 26 termina en 56
 			UILabel timeLabel = new UILabel (new CGRect (25, 32, 80, 30));
 			timeLabel.Font = UIFont.SystemFontOfSize (14);
-			timeLabel.Text = boardEvent.Date.ToString("hh:mm tt");
+			timeLabel.Text = boardEvent.Date.ToString("t");
 			timeLabel.TextAlignment = UITextAlignment.Center;
 			timeLabel.SizeToFit ();
 			timeLabel.TextColor = BoardInterface.board.MainColor;

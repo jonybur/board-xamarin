@@ -31,7 +31,6 @@ namespace Board.Interface.LookUp
 		{
 			AutomaticallyAdjustsScrollViewInsets = false;
 			View = new UIView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
-			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 		}
 
 		public void CreateButtons(UIColor buttonColor)

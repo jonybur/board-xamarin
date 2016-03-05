@@ -21,6 +21,9 @@ namespace Board.Interface.LookUp
 
 			CreateButtons (UIColor.White);
 
+			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			ScrollView.UserInteractionEnabled = true;
+
 			UIImageView lookUpImage = CreateImageFrame (picture.ImageView.Image);
 			ScrollView.AddSubview (lookUpImage);
 			ScrollView.MaximumZoomScale = 4f;
@@ -36,8 +39,6 @@ namespace Board.Interface.LookUp
 
 				tg.NumberOfTapsRequired = 2;
 			});
-
-			ScrollView.UserInteractionEnabled = true;
 
 			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton);
 
@@ -81,23 +82,6 @@ namespace Board.Interface.LookUp
 			base.ViewDidDisappear (animated);
 			ScrollView.RemoveGestureRecognizer (doubletap);
 			ScrollView.ViewForZoomingInScrollView -= zoomView;
-		}
-
-		private UIImageView CreateColorView(CGRect frame, CGColor color)
-		{
-			UIGraphics.BeginImageContext (new CGSize(frame.Size.Width, frame.Size.Height));
-			CGContext context = UIGraphics.GetCurrentContext ();
-
-			context.SetFillColor(color);
-			context.FillRect(frame);
-
-			UIImageView uiv;
-			using (UIImage img = UIGraphics.GetImageFromCurrentImageContext ()) {
-				uiv = new UIImageView (img);
-			}
-			uiv.Frame = frame;
-
-			return uiv;
 		}
 	}
 }

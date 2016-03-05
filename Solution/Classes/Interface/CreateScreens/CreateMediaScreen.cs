@@ -29,7 +29,7 @@ namespace Board.Interface.CreateScreens
 
 			LoadContent ();
 
-			string imagePath = "./screens/announcement/banner/" + AppDelegate.PhoneVersion + ".jpg";
+			string imagePath = "./screens/share/banner/" + AppDelegate.PhoneVersion + ".jpg";
 
 			LoadBanner (imagePath);
 			LoadNextButton ();
@@ -97,7 +97,7 @@ namespace Board.Interface.CreateScreens
 			textview.EnablesReturnKeyAutomatically = true;
 			textview.BackgroundColor = UIColor.White;
 			textview.TextColor = AppDelegate.BoardBlue;
-			textview.Font = UIFont.SystemFontOfSize (20);;
+			textview.Font = UIFont.SystemFontOfSize (18);
 
 			UIImageView colorWhite = new UIImageView(new CGRect (0, 0, AppDelegate.ScreenWidth, frame.Bottom));
 			colorWhite.BackgroundColor = UIColor.White;

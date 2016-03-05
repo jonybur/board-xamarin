@@ -16,9 +16,10 @@ namespace Board.Interface.LookUp
 
 			View.BackgroundColor = UIColor.FromRGB(250,250,250);
 
-			ScrollView.UserInteractionEnabled = true;
-
 			CreateButtons (BoardInterface.board.MainColor);
+
+			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			ScrollView.UserInteractionEnabled = true;
 
 			UITextView textView = LoadTextView (announcement);
 
@@ -42,6 +43,7 @@ namespace Board.Interface.LookUp
 			textView.Editable = false;
 			textView.Selectable = true;
 			textView.ScrollEnabled = true;
+			textView.TextColor = BoardInterface.board.MainColor;
 			textView.BackgroundColor = UIColor.FromRGB (250, 250, 250);
 
 			return textView;

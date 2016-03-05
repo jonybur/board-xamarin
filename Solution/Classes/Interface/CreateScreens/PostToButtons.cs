@@ -67,7 +67,7 @@ namespace Board.Interface.CreateScreens
 
 			UILabel label = new UILabel (new CGRect (logoView.Frame.Right, 0, AppDelegate.ScreenWidth / 2 - logoView.Frame.Right, ButtonHeight));
 			label.Text = text;
-			label.Font = UIFont.SystemFontOfSize (20);
+			label.Font = UIFont.SystemFontOfSize (18);
 			label.TextColor = UIColor.FromRGB(34, 36, 39);
 			label.TextAlignment = UITextAlignment.Center;
 
@@ -123,7 +123,7 @@ namespace Board.Interface.CreateScreens
 
 			UILabel label = new UILabel (new CGRect (logoView.Frame.Right, 0, AppDelegate.ScreenWidth / 2 - logoView.Frame.Right, ButtonHeight));
 			label.Text = text;
-			label.Font = UIFont.SystemFontOfSize (20);
+			label.Font = UIFont.SystemFontOfSize (18);
 			label.TextColor = UIColor.FromRGB(34, 36, 39);
 			label.TextAlignment = UITextAlignment.Center;
 
@@ -164,7 +164,7 @@ namespace Board.Interface.CreateScreens
 
 			UILabel label = new UILabel (new CGRect (logoView.Frame.Right, 0, AppDelegate.ScreenWidth / 2 - logoView.Frame.Right, ButtonHeight));
 			label.Text = text;
-			label.Font = UIFont.SystemFontOfSize (20);
+			label.Font = UIFont.SystemFontOfSize (18);
 			label.TextColor = UIColor.FromRGB(34, 36, 39);
 			label.TextAlignment = UITextAlignment.Center;
 
@@ -205,7 +205,7 @@ namespace Board.Interface.CreateScreens
 
 			UILabel label = new UILabel (new CGRect (logoView.Frame.Right, 0, AppDelegate.ScreenWidth / 2 - logoView.Frame.Right, ButtonHeight));
 			label.Text = text;
-			label.Font = UIFont.SystemFontOfSize (20);
+			label.Font = UIFont.SystemFontOfSize (18);
 			label.TextColor = UIColor.FromRGB(34, 36, 39);
 			label.TextAlignment = UITextAlignment.Center;
 

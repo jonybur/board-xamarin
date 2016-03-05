@@ -14,13 +14,14 @@ namespace Board.Interface.LookUp
 	{
 		public VideoLookUp(Video video)
 		{
-			this.content = video;
+			content = video;
 
 			View.BackgroundColor = UIColor.Black;
 
-			ScrollView.UserInteractionEnabled = true;
-
 			CreateButtons (UIColor.White);
+
+			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			ScrollView.UserInteractionEnabled = true;
 
 			AVPlayerViewController playerView = new AVPlayerViewController ();
 			playerView.ShowsPlaybackControls = true;

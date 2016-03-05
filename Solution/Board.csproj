@@ -124,6 +124,7 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="MonoTouch.Dialog-1" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\fonts\congress-font-medium.ttf" />
@@ -247,6 +248,10 @@
     <BundleResource Include="Resources\boardinterface\lookup\facebook.png" />
     <BundleResource Include="Resources\boardinterface\lookup\share.png" />
     <BundleResource Include="Resources\boardinterface\lookup\trash.png" />
+    <BundleResource Include="Resources\screens\poll\banner\6.jpg" />
+    <BundleResource Include="Resources\screens\poll\banner\6plus.jpg" />
+    <BundleResource Include="Resources\screens\event\banner\6plus.jpg" />
+    <BundleResource Include="Resources\screens\event\banner\6.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -312,6 +317,10 @@
     <Compile Include="Classes\Interface\CreateScreens\CreateMediaScreen.cs" />
     <Compile Include="Classes\Interface\CreateScreens\CreateScreen.cs" />
     <Compile Include="Classes\Interface\CreateScreens\PostToButtons.cs" />
+    <Compile Include="Classes\Interface\CreateScreens\CreateEventScreen.cs" />
+    <Compile Include="Classes\Interface\CreateScreens\CreatePollScreen.cs" />
+    <Compile Include="Classes\Interface\LookUp\PollLookUp.cs" />
+    <Compile Include="Classes\Interface\Widgets\PollWidget.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -381,6 +390,10 @@
     <Folder Include="Classes\Interface\LookUp\" />
     <Folder Include="Classes\Interface\CreateScreens\" />
     <Folder Include="Classes\Interface\SettingsScreen\" />
+    <Folder Include="Resources\screens\poll\" />
+    <Folder Include="Resources\screens\event\" />
+    <Folder Include="Resources\screens\event\banner\" />
+    <Folder Include="Resources\screens\poll\banner\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">
