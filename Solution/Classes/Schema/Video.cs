@@ -17,7 +17,6 @@ namespace Board.Schema
 
 		public Video(NSUrl url, UIImageView thumbnailView, float rotation, CGRect frame, string userid)
 		{
-			Id = CommonUtils.GenerateGuid ();
 			Url = url;
 			ThumbnailView = thumbnailView;
 			Rotation = rotation;

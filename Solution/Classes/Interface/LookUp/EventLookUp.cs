@@ -57,11 +57,13 @@ namespace Board.Interface.LookUp
 				0,
 				0));
 
-			textView.Text = text;
+			textView.AttributedText = new NSAttributedString(text);
 			textView.Font = UIFont.SystemFontOfSize (16);
 			textView.Editable = false;
 			textView.ScrollEnabled = false;
 			textView.Selectable = true;
+			textView.DataDetectorTypes = UIDataDetectorType.Link;
+			textView.UserInteractionEnabled = true;
 			textView.TextColor = BoardInterface.board.MainColor;
 			textView.BackgroundColor = UIColor.FromRGBA (250, 250, 250, 0);
 			textView.SizeToFit ();
@@ -197,17 +199,23 @@ namespace Board.Interface.LookUp
 				newEvent.AddAlarm (EKAlarm.FromDate (someNSDate));
 				// make the event start 20 minutes from now and last 30 minutes
 				newEvent.StartDate = someNSDate;
-				//newEvent.EndDate = (NSDate)DateTime.Now.AddMinutes (50);
+				newEvent.EndDate =  (NSDate)DateTime.SpecifyKind (boardEvent.Date.AddHours (1), DateTimeKind.Local);
 				newEvent.Title = boardEvent.Name;
-				newEvent.Notes = boardEvent.Description + "\n\nCreated with Board";
-				newEvent.Location = BoardInterface.board.Name;
 
+				string signature = "Created with Board";
+
+				if (boardEvent.Description != string.Empty) {
+					signature = "\n\n" + signature;
+				}
+					
+				newEvent.Notes = boardEvent.Description + signature;
+				newEvent.Location = BoardInterface.board.Name;
 
 				eventController.Event = newEvent;
 
 				// show the event controller
 				PresentViewController (eventController, true, null);
-			} else {
+			} else if (EKEventStore.GetAuthorizationStatus(EKEntityType.Event) == EKAuthorizationStatus.Denied) {
 				UIAlertController alert = UIAlertController.Create("Please authorize Board to use Calendar", "The option is on Settings -> Privacy -> Calendar", UIAlertControllerStyle.Alert);
 
 				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));

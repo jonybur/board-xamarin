@@ -122,7 +122,7 @@ namespace Board.Interface
 
 			// set different ranges to different styling!
 			var prettyString2 = new NSMutableAttributedString (composite);
-			prettyString2.SetAttributes (biggerBoldAttributes.Dictionary, new NSRange (0, 17));
+			prettyString2.SetAttributes (boldAttributes.Dictionary, new NSRange (0, 17));
 			prettyString2.SetAttributes (regularAttributes.Dictionary, new NSRange (17, intro.Length - 17));
 
 			prettyString2.SetAttributes (boldAttributes.Dictionary, new NSRange (intro.Length, 14));

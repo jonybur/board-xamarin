@@ -11,12 +11,10 @@ namespace Board.Schema
 		public UIImageView ThumbnailView;
 
 		public Picture() {
-			Id = CommonUtils.GenerateGuid ();
 		}
 
 		public Picture(UIImage image, UIImage thumbnail, float rotation, CGRect frame, string userid)
 		{
-			Id = CommonUtils.GenerateGuid ();
 			ImageView = new UIImageView(image);
 			ThumbnailView = new UIImageView(thumbnail);
 			Rotation = rotation;

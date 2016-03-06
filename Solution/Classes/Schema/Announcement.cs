@@ -9,13 +9,10 @@ namespace Board.Schema
 	{
 		public NSAttributedString Text;
 
-		public Announcement() {
-			Id = CommonUtils.GenerateGuid ();
-		}
+		public Announcement() {}
 
 		public Announcement(NSAttributedString text, float rotation, CGRect frame, string userid)
 		{
-			Id = CommonUtils.GenerateGuid ();
 			Text = text;
 			Rotation = rotation;
 			Frame = frame;

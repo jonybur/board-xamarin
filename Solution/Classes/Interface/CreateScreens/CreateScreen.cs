@@ -1,9 +1,6 @@
 ﻿using CoreGraphics;
 using UIKit;
 
-using Board.Interface;
-using Board.Interface.Buttons;
-using Board.Utilities;
 using Board.Schema;
 
 namespace Board.Interface.CreateScreens

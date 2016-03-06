@@ -16,14 +16,17 @@ namespace Board.Interface
 		UIImageView banner;
 		UIScrollView scrollView;
 
-		string [] fbPermissions = new [] { "pages_show_list" };
+		string [] fbPermissions = { "pages_show_list" };
 
-		public override async void ViewDidLoad ()
+		public override void ViewDidLoad ()
 		{
-			LoadBanner ();
-
 			View.BackgroundColor = UIColor.White;
 
+			LoadBanner ();
+		}
+
+		public override async void ViewDidAppear(bool animated)
+		{
 			if (!AccessToken.CurrentAccessToken.HasGranted(fbPermissions[0]))
 			{
 				// lo pido
@@ -31,7 +34,7 @@ namespace Board.Interface
 				await manager.LogInWithReadPermissionsAsync (fbPermissions, this);
 			}
 
-			Facebook.CoreKit.GraphRequest graph = new GraphRequest ("me/accounts", null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
+			GraphRequest graph = new GraphRequest ("me/accounts", null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
 			graph.Start (LoadList);
 		}
 
@@ -90,7 +93,7 @@ namespace Board.Interface
 
 			bool pressed = false;
 
-			pageButton.TouchUpInside += (object sender, EventArgs e) => {
+			pageButton.TouchUpInside += (sender, e) => {
 				if (!pressed)
 				{
 					pressed = true;
@@ -133,7 +136,7 @@ namespace Board.Interface
 
 			bool pressed = false;
 
-			pageButton.TouchUpInside += (object sender, EventArgs e) => {
+			pageButton.TouchUpInside += (sender, e) => {
 				if (!pressed)
 				{
 					pressed = true;

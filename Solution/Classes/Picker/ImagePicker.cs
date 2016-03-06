@@ -127,7 +127,7 @@ namespace Board.Picker
 
 			MPMoviePlayerController moviePlayer = new MPMoviePlayerController (url);
 
-			CreateMediaScreen shareScreen = new CreateMediaScreen(moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact), video);
+			CreateMediaScreen shareScreen = new CreateMediaScreen(new UIImageView(moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact)), video);
 
 			moviePlayer.Pause ();
 			moviePlayer.Dispose ();
@@ -141,7 +141,7 @@ namespace Board.Picker
 		{		
 			Picture picture = Preview.Initialize(image);
 
-			CreateMediaScreen shareScreen = new CreateMediaScreen(image, picture);
+			CreateMediaScreen shareScreen = new CreateMediaScreen(new UIImageView(image) , picture);
 
 			AppDelegate.NavigationController.DismissViewController(false, null);
 

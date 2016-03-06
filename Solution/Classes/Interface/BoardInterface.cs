@@ -117,25 +117,6 @@ namespace Board.Interface
 			DictionaryWidgets = null;
 		}
 
-		/*
-
-		private UIImageView CreateColorView(CGRect frame, CGColor color)
-		{
-			UIGraphics.BeginImageContext (new CGSize(frame.Size.Width, frame.Size.Height));
-			CGContext context = UIGraphics.GetCurrentContext ();
-
-			context.SetFillColor(color);
-			context.FillRect(frame);
-
-			UIImageView uiv;
-			using (UIImage img = UIGraphics.GetImageFromCurrentImageContext ()) {
-				uiv = new UIImageView (img);
-			}
-			uiv.Frame = frame;
-
-			return uiv;
-		}*/
-
 		// deprecated for now
 		private void InitializeGallery() {
 			UIDevice.CurrentDevice.BeginGeneratingDeviceOrientationNotifications();

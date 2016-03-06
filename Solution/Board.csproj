@@ -321,6 +321,7 @@
     <Compile Include="Classes\Interface\CreateScreens\CreatePollScreen.cs" />
     <Compile Include="Classes\Interface\LookUp\PollLookUp.cs" />
     <Compile Include="Classes\Interface\Widgets\PollWidget.cs" />
+    <Compile Include="Classes\Schema\Poll.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

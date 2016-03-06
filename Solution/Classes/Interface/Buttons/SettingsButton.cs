@@ -21,7 +21,8 @@ namespace Board.Interface.Buttons
 				(AppDelegate.ScreenWidth - ButtonSize) / 8 * 3, AppDelegate.ScreenHeight - ButtonSize / 2);
 
 			eventHandlers.Add ((sender, e) => {
-				
+				PageSelectorScreen pgScreen =new PageSelectorScreen();
+				AppDelegate.NavigationController.PushViewController(pgScreen, true);
 			});
 		}
 	}

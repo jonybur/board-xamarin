@@ -12,15 +12,15 @@ namespace Board.Interface.CreateScreens
 	public class CreateMediaScreen : CreateScreen
 	{
 		PlaceholderTextView textview;
-		UIImage image;
+		UIImageView imageView;
 
 		UITapGestureRecognizer scrollViewTap;
 		EventHandler nextButtonTap;
 
 		float positionY;
 
-		public CreateMediaScreen (UIImage _image, Content _content){
-			image = _image; content = _content;
+		public CreateMediaScreen (UIImageView _imageView, Content _content){
+			imageView = _imageView; content = _content;
 		}
 
 		public override void ViewDidLoad ()
@@ -71,7 +71,6 @@ namespace Board.Interface.CreateScreens
 				// switches to confbar
 				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
 			};
-
 		}
 
 		private void LoadTextView()
@@ -79,12 +78,12 @@ namespace Board.Interface.CreateScreens
 			float autosize = 50;
 			float imgw, imgh;
 
-			float scale = (float)(image.Size.Height / image.Size.Width);
+			float scale = (float)(imageView.Frame.Height / imageView.Frame.Width);
 			imgw = autosize;
 			imgh = autosize * scale;
 
-			UIImageView imageView = new UIImageView (new CGRect (10, Banner.Frame.Bottom + 10, imgw, imgh));
-			imageView.Image = image;
+			UIImageView thumbView = new UIImageView (new CGRect (10, Banner.Frame.Bottom + 10, imgw, imgh));
+			thumbView.Image = imageView.Image;
 
 			var frame = new CGRect(70, Banner.Frame.Bottom, 
 				AppDelegate.ScreenWidth - 50 - 23,
@@ -102,7 +101,7 @@ namespace Board.Interface.CreateScreens
 			UIImageView colorWhite = new UIImageView(new CGRect (0, 0, AppDelegate.ScreenWidth, frame.Bottom));
 			colorWhite.BackgroundColor = UIColor.White;
 
-			ScrollView.AddSubviews (colorWhite, textview, imageView);
+			ScrollView.AddSubviews (colorWhite, textview, thumbView);
 		}
 	}
 }

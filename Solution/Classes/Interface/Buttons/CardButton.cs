@@ -23,18 +23,30 @@ namespace Board.Interface.Buttons
 				UIAlertController alert = UIAlertController.Create(null, "Select the type of widget", UIAlertControllerStyle.ActionSheet);
 
 				alert.AddAction (UIAlertAction.Create ("Announcement", UIAlertActionStyle.Default, CreateAnnouncement));
-				alert.AddAction (UIAlertAction.Create ("Event", UIAlertActionStyle.Default, null));
-				alert.AddAction (UIAlertAction.Create ("Poll", UIAlertActionStyle.Default, null));
+				alert.AddAction (UIAlertAction.Create ("Event", UIAlertActionStyle.Default, CreateEvent));
+				alert.AddAction (UIAlertAction.Create ("Poll", UIAlertActionStyle.Default, CreatePoll));
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 
 				AppDelegate.NavigationController.PresentViewController (alert, true, null);
 			});
 		}
 
-		private void CreateAnnouncement(UIAlertAction act)
+		private static void CreateAnnouncement(UIAlertAction act)
 		{
 			CreateAnnouncementScreen announcementScreen = new CreateAnnouncementScreen ();
 			AppDelegate.NavigationController.PushViewController (announcementScreen, true);
+		}
+
+		private static void CreateEvent(UIAlertAction act)
+		{
+			CreateEventScreen eventScreen = new CreateEventScreen ();
+			AppDelegate.NavigationController.PushViewController (eventScreen, true);
+		}
+
+		private static void CreatePoll(UIAlertAction act)
+		{
+			CreatePollScreen pollScreen = new CreatePollScreen ();
+			AppDelegate.NavigationController.PushViewController (pollScreen, true);
 		}
 	}
 }

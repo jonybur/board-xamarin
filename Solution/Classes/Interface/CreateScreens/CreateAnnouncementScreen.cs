@@ -12,7 +12,6 @@ namespace Board.Interface.CreateScreens
 	public class CreateAnnouncementScreen : CreateScreen
 	{
 		PlaceholderTextView textview;
-		UIImage image;
 
 		float positionY;
 
