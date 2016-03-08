@@ -1,13 +1,12 @@
-﻿using CoreGraphics;
-using UIKit;
+﻿using UIKit;
 using Board.Screens.Controls;
 
 namespace Board.Interface
 {
 	public class SettingsScreen : UIViewController
 	{
-		UIImageView Banner;
-		OneLineScreenButton SyncButton;
+		MenuBanner Banner;
+		OneLineMenuButton SyncButton;
 
 		public override void ViewDidLoad ()
 		{
@@ -23,17 +22,23 @@ namespace Board.Interface
 		public override void ViewDidAppear(bool animated)
 		{
 			if (BoardInterface.board.FBPage == null) {
-				SyncButton.SetLabel("Sync to Facebook Page >");
+				SyncButton.SetLabel("Connect to Facebook Page >");
 			} else {
-				SyncButton.SetLabel(string.Format ("Synced to {0}", BoardInterface.board.FBPage.Name));
+				SyncButton.SetLabel(string.Format ("Connected to {0}", BoardInterface.board.FBPage.Name));
 			}
 
 			SyncButton.SetUnpressedColors ();
+			Banner.SuscribeToEvents ();
+		}
+
+		public override void ViewDidDisappear(bool animated)
+		{
+			Banner.UnsuscribeToEvents ();
 		}
 
 		private void CreateSyncButton(float yPosition)
 		{
-			SyncButton = new OneLineScreenButton (yPosition);
+			SyncButton = new OneLineMenuButton (yPosition);
 
 			SyncButton.TouchUpInside += (sender, e) => {
 				SyncButton.SetPressedColors();
@@ -44,10 +49,7 @@ namespace Board.Interface
 
 		private void LoadBanner()
 		{
-			using (UIImage bannerImage = UIImage.FromFile ("./screens/settings/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
-				Banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-				Banner.Image = bannerImage;	
-			}
+			Banner = new MenuBanner ("./screens/settings/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
@@ -55,9 +57,8 @@ namespace Board.Interface
 				}
 			});
 
-			Banner.UserInteractionEnabled = true;
-			Banner.AddGestureRecognizer (tap);
-			Banner.Alpha = .95f;
+			Banner.AddTap (tap);
+
 			View.AddSubview (Banner);
 		}
 	}

@@ -5,13 +5,15 @@ using Board.Picker;
 using Board.Utilities;
 using CoreGraphics;
 using Foundation;
+using Board.Screens.Controls;
 using UIKit;
+using BigTed;
 
 namespace Board.Screens
 {
 	public class CreateScreen2 : UIViewController
 	{
-		UIImageView banner;
+		MenuBanner Banner;
 		Board.Schema.Board board;
 
 		CGSize ColorSquareSize;
@@ -23,8 +25,6 @@ namespace Board.Screens
 
 		float pushRight;
 		float boardHeight;
-		float topBarHeight;
-		float bottomBarHeight;
 
 		UIScrollView scrollView;
 
@@ -32,12 +32,36 @@ namespace Board.Screens
 		UIImageView boardView, circleTop, circleLower, logoBackground;
 		UIImageView preview_mainLogo;
 
+		bool firstAppear;
+
 		public CreateScreen2 (Board.Schema.Board _board){
 			board = _board;
 		}
 
+		public override void ViewDidLoad ()
+		{
+			base.ViewDidLoad ();
+
+			BTProgressHUD.Show (null, -1, ProgressHUD.MaskType.Black);
+
+			View.BackgroundColor = UIColor.White;
+
+			scrollView = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			View.AddSubview (scrollView);
+
+			LoadBanner ();
+
+			this.AutomaticallyAdjustsScrollViewInsets = false;
+		}
+
 		public override void ViewDidAppear(bool animated)
 		{
+			if (!firstAppear) {
+				InitializeScrollView ();
+				firstAppear = true;
+				BTProgressHUD.Dismiss ();
+			}
+
 			SuscribeToEvents ();
 		}
 
@@ -55,6 +79,8 @@ namespace Board.Screens
 			// Keyboard Down
 			NSNotificationCenter.DefaultCenter.AddObserver
 			(UIKeyboard.WillHideNotification,KeyBoardDownNotification);
+
+			Banner.SuscribeToEvents ();
 		}
 
 		private void UnsuscribeToEvents()
@@ -64,26 +90,13 @@ namespace Board.Screens
 
 			// Keyboard Down
 			NSNotificationCenter.DefaultCenter.RemoveObserver (UIKeyboard.WillHideNotification);
-		}
 
-		public override void ViewDidLoad ()
-		{
-			base.ViewDidLoad ();
-
-			this.AutomaticallyAdjustsScrollViewInsets = false;
-
-			ColorSquareSize = new CGSize (230, 40);
-			ColorSquarePosition1 = new CGPoint (145, 350);
-			ColorSquarePosition2 = new CGPoint (145, 461);
-
-			InitializeInterface ();
+			Banner.UnsuscribeToEvents ();
 		}
 
 		private UIImageView GeneratePreviewBoard()
 		{
 			boardHeight = ((AppDelegate.ScreenWidth * AppDelegate.ScreenHeight) / BoardInterface.ScrollViewWidthSize);
-			topBarHeight = ((50 * boardHeight) / AppDelegate.ScreenHeight);
-			bottomBarHeight = ((100 * boardHeight) / AppDelegate.ScreenHeight);
 
 			boardView = new UIImageView (new CGRect(0, AppDelegate.ScreenHeight - boardHeight, AppDelegate.ScreenWidth, boardHeight));
 
@@ -126,23 +139,20 @@ namespace Board.Screens
 			return boardView;
 		}
 
-		private void InitializeInterface()
+		private void InitializeScrollView()
 		{
-			scrollView = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
-
-			// loads center button
-			LoadBanner ();
+			ColorSquareSize = new CGSize (230, 40);
+			ColorSquarePosition1 = new CGPoint (145, 350);
+			ColorSquarePosition2 = new CGPoint (145, 461);
 
 			LoadContent ();
-
-			View.AddSubview (scrollView);
 		}
 
 		private void LoadContent()
 		{
 			UIImageView contentImageView;
 			using (UIImage contentImage = UIImage.FromFile ("./screens/create/2/content/" + AppDelegate.PhoneVersion + ".jpg")) {
-				contentImageView = new UIImageView (new CGRect(0, banner.Frame.Bottom, contentImage.Size.Width / 2, contentImage.Size.Height / 2));
+				contentImageView = new UIImageView (new CGRect(0, Banner.Frame.Bottom, contentImage.Size.Width / 2, contentImage.Size.Height / 2));
 				contentImageView.Image = contentImage;
 			}
 			scrollView.AddSubviews (contentImageView);
@@ -374,47 +384,22 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			using (UIImage bannerImage = UIImage.FromFile ("./screens/create/2/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
-				banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-				banner.Image = bannerImage;
-			}
+			Banner = new MenuBanner("./screens/create/2/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					
 					NavigationController.PopViewController(false);
-
-
-					// Keyboard popup
-					NSNotificationCenter.DefaultCenter.RemoveObserver
-					(UIKeyboard.DidShowNotification);
-
-					// Keyboard Down
-					NSNotificationCenter.DefaultCenter.RemoveObserver
-					(UIKeyboard.WillHideNotification);
-
 				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 4) * 3){
-					
 					CreateScreen3 createScreen3 = new CreateScreen3(board);
 					NavigationController.PushViewController(createScreen3, false);
-
-
-					// Keyboard popup
-					NSNotificationCenter.DefaultCenter.RemoveObserver
-					(UIKeyboard.DidShowNotification);
-
-					// Keyboard Down
-					NSNotificationCenter.DefaultCenter.RemoveObserver
-					(UIKeyboard.WillHideNotification);
-
 				} 
 			});
 
-			banner.UserInteractionEnabled = true;
-			banner.AddGestureRecognizer (tap);
-			banner.Alpha = .95f;
-			scrollView.AddSubview (banner);
+			Banner.AddTap (tap);
+
+			View.AddSubview (Banner);
 		}
 
 

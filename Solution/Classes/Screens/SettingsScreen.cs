@@ -1,12 +1,13 @@
 ﻿using CoreGraphics;
 using UIKit;
 using Facebook.LoginKit;
+using Board.Screens.Controls;
 
 namespace Board.Screens
 {
 	public class SettingsScreen : UIViewController
 	{
-		UIImageView banner;
+		MenuBanner Banner;
 		LoginButton logInButton;
 
 		public SettingsScreen ()
@@ -20,6 +21,17 @@ namespace Board.Screens
 			LoadFBButton ();
 
 			View.BackgroundColor = UIColor.White;
+		}
+
+
+		public override void ViewDidAppear(bool animated)
+		{
+			Banner.SuscribeToEvents ();
+		}
+
+		public override void ViewDidDisappear(bool animated)
+		{
+			Banner.UnsuscribeToEvents ();
 		}
 
 		private void LoadFBButton()
@@ -43,10 +55,7 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			using (UIImage bannerImage = UIImage.FromFile ("./screens/settings/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
-				banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-				banner.Image = bannerImage;	
-			}
+			Banner = new MenuBanner ("./screens/settings/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
@@ -54,10 +63,8 @@ namespace Board.Screens
 				}
 			});
 
-			banner.UserInteractionEnabled = true;
-			banner.AddGestureRecognizer (tap);
-			banner.Alpha = .95f;
-			View.AddSubview (banner);
+			Banner.AddTap (tap);
+			View.AddSubview (Banner);
 		}
 	}
 }

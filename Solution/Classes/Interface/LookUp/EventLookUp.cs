@@ -30,7 +30,7 @@ namespace Board.Interface.LookUp
 				AppDelegate.ScreenHeight - TrashButton.Frame.Bottom - LikeButton.Frame.Height));
 			ScrollView.UserInteractionEnabled = true;
 
-			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton);
+			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton, TrashButton);
 
 			PictureBox = CreatePictureBox ();
 			CalendarBox = CreateCalendarBox();
@@ -44,10 +44,6 @@ namespace Board.Interface.LookUp
 			ScrollView.ContentSize = new CGSize (ScrollView.Frame.Width, DescriptionBox.Frame.Bottom + 10);
 
 			ScrollView.AddSubviews (PictureBox, CalendarBox, DescriptionBox);
-
-			if (Profile.CurrentProfile.UserID == BoardInterface.board.CreatorId) {
-				View.AddSubview (TrashButton);
-			}
 		}
 
 		private UITextView CreateTextView(string text){

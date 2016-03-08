@@ -2,6 +2,7 @@
 using Board.Utilities;
 using CoreGraphics;
 using UIKit;
+using Board.Screens.Controls;
 
 namespace Board.Screens
 {
@@ -14,7 +15,7 @@ namespace Board.Screens
 		Board.Schema.Board board;
 
 		UIImageView orangeRectangle;
-		UIImageView banner;
+		MenuBanner Banner;
 
 		int? selectedIndex;
 
@@ -33,9 +34,18 @@ namespace Board.Screens
 			LoadInterface ();
 		}
 
+		public override void ViewDidAppear(bool animated)
+		{
+			Banner.SuscribeToEvents ();
+		}
+
+		public override void ViewDidDisappear(bool animated)
+		{
+			Banner.UnsuscribeToEvents ();
+		}
+
 		private void LoadInterface()
 		{
-			//View.BackgroundColor = UIColor.FromRGB (150, 150, 150);
 			View.BackgroundColor = UIColor.White;
 
 			LoadBanner ();
@@ -45,10 +55,7 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			using (UIImage bannerImage = UIImage.FromFile ("./screens/create/3/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
-				banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-				banner.Image = bannerImage;
-			}
+			Banner = new MenuBanner ("./screens/create/3/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 
@@ -80,11 +87,11 @@ namespace Board.Screens
 
 			NextButtonEnabled(false);
 
-			banner.AddSubview (orangeRectangle);
-			banner.UserInteractionEnabled = true;
-			banner.AddGestureRecognizer (tap);
-			banner.Alpha = .95f;
-			View.AddSubview (banner);
+			Banner.AddSubview (orangeRectangle);
+
+			Banner.AddTap (tap);
+
+			View.AddSubview (Banner);
 		}
 
 		private void NextButtonEnabled(bool enabled)
@@ -121,19 +128,18 @@ namespace Board.Screens
 		{
 			const int cantSuscriptionButtons = 2;
 
-			float yposition = (float)(hborder + banner.Frame.Size.Height) + 20;
+			float yposition = (float)(hborder + Banner.Frame.Size.Height) + 20;
 	
-			yposition = (float)banner.Frame.Bottom;
+			yposition = (float)Banner.Frame.Bottom;
 
-			float heightButton = (float)(AppDelegate.ScreenHeight - banner.Frame.Height) / cantSuscriptionButtons;
+			float heightButton = (float)(AppDelegate.ScreenHeight - Banner.Frame.Height) / cantSuscriptionButtons;
 			float widthButton = AppDelegate.ScreenWidth;
 
 			numberButtons = new SuscriptionButton[cantSuscriptionButtons];
-			float xposition = 0;
 
 			for (int i = 0; i < cantSuscriptionButtons; i++) {
 				SuscriptionButton but;
-				CGRect frame = new CGRect (xposition, yposition, widthButton, heightButton);
+				CGRect frame = new CGRect (0, yposition, widthButton, heightButton);
 
 				switch (i) {
 				case 0:

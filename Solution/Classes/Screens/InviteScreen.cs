@@ -1,19 +1,16 @@
 ﻿using System;
 using CoreGraphics;
 using MessageUI;
+using Board.Screens.Controls;
 using UIKit;
 
 namespace Board.Screens
 {
 	public class InviteScreen : UIViewController
 	{
-		UIImageView banner;
+		MenuBanner Banner;
 		const int hborder = 65;
 		float yposition;
-
-		public InviteScreen ()
-		{
-		}
 
 		public override void ViewDidLoad ()
 		{
@@ -26,6 +23,16 @@ namespace Board.Screens
 			LoadMailButton ();
 
 			View.BackgroundColor = UIColor.White;
+		}
+
+		public override void ViewDidAppear(bool animated)
+		{
+			Banner.SuscribeToEvents ();
+		}
+
+		public override void ViewDidDisappear(bool animated)
+		{
+			Banner.UnsuscribeToEvents ();
 		}
 
 		private void LoadContent()
@@ -116,10 +123,7 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			using (UIImage bannerImage = UIImage.FromFile ("./screens/invite/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
-				banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-				banner.Image = bannerImage;
-			}
+			Banner = new MenuBanner ("./screens/invite/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
@@ -127,10 +131,8 @@ namespace Board.Screens
 				}
 			});
 
-			banner.UserInteractionEnabled = true;
-			banner.AddGestureRecognizer (tap);
-			banner.Alpha = .95f;
-			View.AddSubview (banner);
+			Banner.AddTap (tap);
+			View.AddSubview (Banner);
 		}
 	}
 }

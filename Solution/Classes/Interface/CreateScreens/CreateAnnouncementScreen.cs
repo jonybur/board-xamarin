@@ -3,6 +3,8 @@ using UIKit;
 
 using Board.Utilities;
 using Board.Schema;
+using Board.Facebook;
+using Foundation;
 
 using System;
 using Board.Interface.Buttons;
@@ -28,7 +30,8 @@ namespace Board.Interface.CreateScreens
 
 			string imagePath = "./screens/announcement/banner/" + AppDelegate.PhoneVersion + ".jpg";
 
-			LoadBanner (imagePath, "posts", null);
+			LoadBanner (imagePath);
+			LoadImportButton ("posts", LoadFromFacebookEvent);
 			LoadNextButton ();
 			LoadTextView ();
 
@@ -39,12 +42,15 @@ namespace Board.Interface.CreateScreens
 			CreateGestures ();
 		}
 
-		private void UpdateTextView()
+		private void LoadFromFacebookEvent(FacebookElement FBElement)
 		{
+			FacebookPost FBPost = (FacebookPost)FBElement;
 
+			content.FacebookId = FBPost.Id;
+			textview.Text = FBPost.Message;
 		}
 
-		public override void ViewDidAppear (bool animated)
+		public override void ViewDidAppear (bool animated)	
 		{
 			base.ViewDidAppear (animated);
 			ScrollView.AddGestureRecognizer (scrollViewTap);
@@ -75,11 +81,11 @@ namespace Board.Interface.CreateScreens
 					return;
 				}
 
-				Announcement ann = new Announcement();
+				Announcement ann = (Announcement)content;
 
+				ann.Text = textview.AttributedText;
 				ann.SocialChannel = ShareButtons.GetActiveSocialChannels ();
 				ann.CreationDate = DateTime.Now;
-				ann.Text = textview.AttributedText;
 
 				Preview.Initialize(ann);
 

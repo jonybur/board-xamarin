@@ -10,16 +10,17 @@ namespace Board.Interface.CreateScreens
 {
 	public class ImportScreen : UIViewController
 	{
-		UIImageView Banner;
+		MenuBanner Banner;
 		UIScrollView ScrollView;
-		UITapGestureRecognizer bannerTap;
-		List<ScreenButton> Buttons;
-		bool pressed;
+		List<MenuButton> Buttons;
 		string TypeOfImport;
+		Action<FacebookElement> OnReturn;
+		bool pressed;
 
-		public ImportScreen(string typeOfImport)
+		public ImportScreen(string typeOfImport, Action<FacebookElement> onReturn)
 		{
 			TypeOfImport = typeOfImport;
+			OnReturn = onReturn;
 		}
 
 		public override void ViewDidLoad()
@@ -30,12 +31,22 @@ namespace Board.Interface.CreateScreens
 			LoadBanner ();
 			View.BackgroundColor = UIColor.White;
 
-			Buttons = new List<ScreenButton> ();
+			Buttons = new List<MenuButton> ();
 
-			FacebookUtils.MakeGraphRequest (BoardInterface.board.FBPage.Id, TypeOfImport, LoadContent);
+			FacebookUtils.MakeGraphRequest (BoardInterface.board.FBPage.Id, TypeOfImport, Completion);
 		}
 
-		private void LoadContent(object sender, EventArgs e)
+		public override void ViewDidAppear(bool animated)
+		{
+			Banner.SuscribeToEvents ();
+		}
+
+		public override void ViewDidDisappear (bool animated)
+		{
+			UnsuscribeToEvents ();
+		}
+
+		private void Completion(object sender, EventArgs e)
 		{
 			LoadEvents ();
 			SuscribeToEvents ();
@@ -49,21 +60,29 @@ namespace Board.Interface.CreateScreens
 
 			int i = 0;
 			foreach (FacebookElement fbelement in FacebookUtils.ElementList) {
-				OneLineScreenButton button;
+				OneLineMenuButton button;
 
+				// for importing events
 				if (fbelement is FacebookEvent) {
-					button = CreateButton (yPosition, ((FacebookEvent)fbelement).Name);
-				} else if (fbelement is FacebookPost) {
+					FacebookEvent fbevent = (FacebookEvent)fbelement;
+					button = CreateButton (yPosition, fbevent.Name, fbevent);
+				}
+
+				// for importing posts
+				else if (fbelement is FacebookPost) {
 					FacebookPost fbpost = (FacebookPost)fbelement;
 					string text = string.Empty;
 					if (fbpost.Message != "<null>") {
+						// ignores stories
 						text = fbpost.Message;
 					} else {
 						continue;
 					}
-					button = CreateButton (yPosition, text);
+					button = CreateButton (yPosition, text, fbpost);
+
+				// in case of an error
 				} else {
-					button = new OneLineScreenButton ();
+					button = new OneLineMenuButton ();
 				}
 
 				yPosition += (float)button.Frame.Height + 1;
@@ -76,9 +95,9 @@ namespace Board.Interface.CreateScreens
 			View.AddSubview (Banner);
 		}
 
-		private OneLineScreenButton CreateButton(float yPosition, string content)
+		private OneLineMenuButton CreateButton(float yPosition, string content, FacebookElement fbelement)
 		{
-			OneLineScreenButton fbeventButton = new OneLineScreenButton (yPosition);
+			OneLineMenuButton fbeventButton = new OneLineMenuButton (yPosition);
 			fbeventButton.SetLabel (content);
 			fbeventButton.SetUnpressedColors ();
 
@@ -90,38 +109,26 @@ namespace Board.Interface.CreateScreens
 
 					Thread thread = new Thread(new ThreadStart(PopOut));
 					thread.Start();
+
+					OnReturn(fbelement);
 				}
 			};
 
 			return fbeventButton;
 		}
 
-		public override void ViewDidAppear (bool animated)
-		{
-			Banner.AddGestureRecognizer (bannerTap);
-		}
-
-		public override void ViewDidDisappear (bool animated)
-		{
-			Banner.RemoveGestureRecognizer (bannerTap);
-			UnsuscribeToEvents ();
-		}
-
 		protected void LoadBanner()
 		{
-			using (UIImage bannerImage = UIImage.FromFile ("./screens/import/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
-				Banner = new UIImageView(new CGRect(0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-				Banner.Image = bannerImage;	
-			}
+			Banner = new MenuBanner ("./screens/import/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
-			bannerTap = new UITapGestureRecognizer (tg => {
+			var tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4) {
 					NavigationController.PopViewController(true);
 				}
 			});
 
-			Banner.UserInteractionEnabled = true;
-			Banner.Alpha = .95f;
+			Banner.AddTap (tap);
+
 			View.AddSubview (Banner);
 		}
 
@@ -133,16 +140,18 @@ namespace Board.Interface.CreateScreens
 
 		private void SuscribeToEvents()
 		{
-			foreach (ScreenButton sb in Buttons) {
+			foreach (MenuButton sb in Buttons) {
 				sb.SuscribeToEvent ();
 			}
 		}
 
 		private void UnsuscribeToEvents()
 		{
-			foreach (ScreenButton sb in Buttons) {
+			foreach (MenuButton sb in Buttons) {
 				sb.UnsuscribeToEvent ();
 			}
+
+			Banner.UnsuscribeToEvents ();
 		}
 
 	}

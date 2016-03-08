@@ -4,12 +4,14 @@ using CoreGraphics;
 using Foundation;
 using Google.Maps;
 using UIKit;
+using Board.Screens.Controls;
+using BigTed;
 
 namespace Board.Screens
 {
 	public class CreateScreen1 : UIViewController
 	{
-		UIImageView banner;
+		MenuBanner Banner;
 		MapView map;
 		Marker marker;
 		UITextField addressView;
@@ -25,11 +27,13 @@ namespace Board.Screens
 		public override void ViewDidAppear (bool animated)
 		{
 			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
+			Banner.SuscribeToEvents ();
 		}
 
 		public override void ViewDidDisappear(bool animated)
 		{
 			map.RemoveObserver (this, new NSString ("myLocation"));
+			Banner.UnsuscribeToEvents ();
 		}
 
 		public override void ViewDidLoad ()
@@ -272,7 +276,7 @@ namespace Board.Screens
 		{
 			UIImageView contentImageView;
 			using (UIImage contentImage = UIImage.FromFile ("./screens/create/1/content/" + AppDelegate.PhoneVersion + ".jpg")) {
-				contentImageView = new UIImageView (new CGRect(0, banner.Frame.Bottom, contentImage.Size.Width / 2, contentImage.Size.Height / 2));
+				contentImageView = new UIImageView (new CGRect(0, Banner.Frame.Bottom, contentImage.Size.Width / 2, contentImage.Size.Height / 2));
 				contentImageView.Image = contentImage;
 			}
 
@@ -283,10 +287,7 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			using (UIImage bannerImage = UIImage.FromFile ("./screens/create/1/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
-				banner = new UIImageView(new CGRect(0,0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-				banner.Image = bannerImage;
-			}
+			Banner = new MenuBanner ("./screens/create/1/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
@@ -296,11 +297,13 @@ namespace Board.Screens
 					Board.Schema.Board newBoard = new Board.Schema.Board();
 					newBoard.Location = resultAddress.formatted_address;
 					newBoard.Name = nameView.Text;
-						
+
 					CreateScreen2 createScreen2 = new CreateScreen2(newBoard);
 					NavigationController.PushViewController(createScreen2, false);
 				}
 			});
+
+			Banner.AddTap (tap);
 
 			orangeRectangle = CreateColorSquare (new CGSize (75, 60), 
 				new CGPoint ((AppDelegate.ScreenWidth / 4) * 3 + 60, 25),
@@ -308,11 +311,9 @@ namespace Board.Screens
 
 			NextButtonEnabled(false);
 
-			banner.AddSubview (orangeRectangle);
-			banner.UserInteractionEnabled = true;
-			banner.AddGestureRecognizer (tap);
-			banner.Alpha = .95f;
-			View.AddSubview (banner);
+			Banner.AddSubview (orangeRectangle);
+
+			View.AddSubview (Banner);
 		}
 	}
 }

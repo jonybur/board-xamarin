@@ -26,8 +26,6 @@ namespace Board.Screens
 
 		LoginButton logInButton;
 
-		string [] extendedPermissions = { "public_profile" };
-
 		string responseError;
 
 		public LoginScreen (){
@@ -60,7 +58,7 @@ namespace Board.Screens
 			logInButton = new LoginButton (new CGRect (0, 0, AppDelegate.ScreenWidth - 70, 50)) {
 				LoginBehavior = LoginBehavior.Native,
 				Center = new CGPoint(AppDelegate.ScreenWidth/2, AppDelegate.ScreenHeight * (.90f)),
-				ReadPermissions = extendedPermissions
+				ReadPermissions = new string[] {"public_profile"}
 			};
 
 			logInButton.Completed += (sender, e) => {

@@ -1,8 +1,5 @@
-﻿using CoreGraphics;
-using UIKit;
-
-using Board.Utilities;
-using Board.Schema;
+﻿using Board.Schema;
+using Board.Facebook;
 
 using System;
 using Board.Interface.Buttons;
@@ -25,7 +22,8 @@ namespace Board.Interface.CreateScreens
 
 			string imagePath = "./screens/event/banner/" + AppDelegate.PhoneVersion + ".jpg";
 
-			LoadBanner (imagePath, "events", null);
+			LoadBanner (imagePath);
+			LoadImportButton ("posts", LoadFromFacebookEvent);
 			LoadNextButton ();
 
 			positionY = (float)Banner.Frame.Bottom;
@@ -33,6 +31,11 @@ namespace Board.Interface.CreateScreens
 			LoadPostToButtons (positionY);
 
 			CreateGestures ();
+		}
+
+		private void LoadFromFacebookEvent(FacebookElement FBElement)
+		{
+			FacebookEvent FBEvent = (FacebookEvent)FBElement;
 		}
 
 		private void CreateGestures()

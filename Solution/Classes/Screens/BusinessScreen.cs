@@ -1,22 +1,21 @@
 ﻿using System;
-using System.Linq;
-
-using CoreGraphics;
-using UIKit;
-
-using System.Threading.Tasks;
 using System.Collections.Generic;
-using Facebook.CoreKit;
+using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Board.Interface;
-using Board.Utilities;
 using Board.JsonResponses;
+using Board.Screens.Controls;
+using Board.Utilities;
+using CoreGraphics;
+using Facebook.CoreKit;
+using UIKit;
 
 namespace Board.Screens
 {
 	public class BusinessScreen : UIViewController
 	{
-		UIImageView banner;
+		MenuBanner Banner;
 		UIImageView sidemenu;
 		ProfilePictureView profileView;
 		UIScrollView content;
@@ -34,7 +33,7 @@ namespace Board.Screens
 			content = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			thumbSize = AppDelegate.ScreenWidth / 4;
 
-			LoadBanner ();
+
 			LoadSideMenu ();
 		}
 
@@ -67,12 +66,17 @@ namespace Board.Screens
 
 			InitializeInterface ();
 
-			banner.RemoveFromSuperview ();
 			sidemenu.RemoveFromSuperview ();
 			profileView.RemoveFromSuperview ();
 
 			LoadBanner ();
 			LoadSideMenu ();
+			Banner.SuscribeToEvents ();
+		}
+
+		public override void ViewDidDisappear(bool animated)
+		{
+			Banner.UnsuscribeToEvents ();
 		}
 
 		private async Task<UIImage> SaveImage(string webAddress, string boardName)
@@ -202,8 +206,6 @@ namespace Board.Screens
 
 			boardIcon.AddSubview (boardImage);
 
-			//boardIcon.AddSubview (circle);
-
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (sideMenuIsUp)
 				{sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return;}
@@ -323,10 +325,7 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			using (UIImage bannerImage = UIImage.FromFile ("./screens/business/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
-				banner = new UIImageView (new CGRect (0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-				banner.Image = bannerImage;
-			}
+			Banner = new MenuBanner ("./screens/business/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (sideMenuIsUp)
@@ -343,12 +342,10 @@ namespace Board.Screens
 				}
 			});
 
-			banner.UserInteractionEnabled = true;
-			banner.AddGestureRecognizer (tap);
-			banner.Alpha = .95f;
-			View.AddSubview (banner);
-		}
+			Banner.AddTap (tap);
 
+			View.AddSubview (Banner);
+		}
 
 	}
 }

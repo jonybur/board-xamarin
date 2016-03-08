@@ -2,17 +2,18 @@
 using UIKit;
 using System;
 using Board.Schema;
+using Board.Screens.Controls;
+using Board.Facebook;
 
 namespace Board.Interface.CreateScreens
 {
 	public class CreateScreen : UIViewController
 	{
-		public UIImageView Banner;
+		public MenuBanner Banner;
 		public UIScrollView ScrollView;
 		public UIButton NextButton;
 		public PostToButtons ShareButtons;
 		public Content content;
-		protected UITapGestureRecognizer bannerTap;
 
 		public override void ViewDidLoad()
 		{
@@ -22,12 +23,12 @@ namespace Board.Interface.CreateScreens
 
 		public override void ViewDidAppear (bool animated)
 		{
-			Banner.AddGestureRecognizer (bannerTap);
+			Banner.SuscribeToEvents ();
 		}
 
 		public override void ViewDidDisappear (bool animated)
 		{
-			Banner.RemoveGestureRecognizer (bannerTap);
+			Banner.UnsuscribeToEvents ();
 		}
 
 		protected void LoadContent()
@@ -39,20 +40,27 @@ namespace Board.Interface.CreateScreens
 			View.AddSubview (ScrollView);
 		}
 
-		protected void LoadBanner(string imagePath, string toImport, EventHandler onSelectEvent)
+		protected void LoadBanner(string imagePath)
 		{
-			using (UIImage bannerImage = UIImage.FromFile (imagePath)) {
-				Banner = new UIImageView(new CGRect(0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-				Banner.Image = bannerImage;	
-			}
+			Banner = new MenuBanner (imagePath);
 
-			bannerTap = new UITapGestureRecognizer (tg => {
+			var leftTap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4) {
 					NavigationController.PopViewController(true);
-				} else if (AppDelegate.ScreenWidth * (3 / 4) < tg.LocationInView(this.View).X && toImport != null) {
+				} 
+			});
+
+			Banner.AddTap (leftTap);
+			View.AddSubview (Banner);
+		}
+
+		protected void LoadImportButton(string toImport, Action<FacebookElement> onReturn)
+		{
+			var rightTap = new UITapGestureRecognizer (tg => {
+				if (AppDelegate.ScreenWidth * (3 / 4) < tg.LocationInView(this.View).X && toImport != null) {
 					if (BoardInterface.board.FBPage != null)
 					{
-						ImportScreen importScreen = new ImportScreen(toImport);
+						ImportScreen importScreen = new ImportScreen(toImport, onReturn);
 						NavigationController.PushViewController(importScreen, true);
 					} else { 
 						UIAlertController alert = UIAlertController.Create("Board not connected to a page", "Do you wish to go to settings to connect to a Facebook page?", UIAlertControllerStyle.Alert);
@@ -66,9 +74,7 @@ namespace Board.Interface.CreateScreens
 				}
 			});
 
-			Banner.UserInteractionEnabled = true;
-			Banner.Alpha = .95f;
-			View.AddSubview (Banner);
+			Banner.AddTap (rightTap);
 		}
 
 		protected void LoadNextButton()

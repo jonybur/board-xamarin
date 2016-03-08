@@ -5,41 +5,36 @@ using Board.Facebook;
 using System;
 using CoreGraphics;
 
-using Facebook.CoreKit;
-using Facebook.LoginKit;
 using UIKit;
 using Board.Screens.Controls;
+
+using BigTed;
 
 namespace Board.Interface
 {
 	public class PageSelectorScreen : UIViewController
 	{
-		UIImageView banner;
+		MenuBanner Banner;
 		UIScrollView ScrollView;
-		List<ScreenButton> Buttons;
-
+		List<MenuButton> Buttons;
 		bool pressed;
 
-		public override void ViewDidLoad ()
+		public override async void ViewDidLoad ()
 		{
-			Buttons = new List<ScreenButton> ();
-
-			View.BackgroundColor = UIColor.White;
+			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
+			NavigationController.NavigationBarHidden = true;
 
 			LoadBanner ();
-		}
+			View.BackgroundColor = UIColor.White;
 
-		public override async void ViewDidAppear(bool animated)
-		{
-			string [] permission = { "pages_show_list" };
+			Buttons = new List<MenuButton> ();
 
-			if (!AccessToken.CurrentAccessToken.HasGranted(permission[0]))
-			{
-				// lo pido
-				LoginManager manager = new LoginManager ();
-				await manager.LogInWithReadPermissionsAsync (permission, this);
-			}
+			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			View.AddSubview (ScrollView);
 
+			await FacebookUtils.GetReadPermission (this, "pages_show_list");
+
+			BTProgressHUD.Show ();
 			FacebookUtils.MakeGraphRequest ("me", "accounts", Completion);
 		}
 
@@ -50,54 +45,54 @@ namespace Board.Interface
 
 		private void SuscribeToEvents()
 		{
-			foreach (ScreenButton sb in Buttons) {
+			foreach (MenuButton sb in Buttons) {
 				sb.SuscribeToEvent ();
 			}
 		}
 
 		private void UnsuscribeToEvents()
 		{
-			foreach (ScreenButton sb in Buttons) {
+			foreach (MenuButton sb in Buttons) {
 				sb.UnsuscribeToEvent ();
 			}
+			Banner.UnsuscribeToEvents ();
+
 		}
 
 		private void Completion(object obj, EventArgs e)
 		{
 			LoadPages ();
+
 			SuscribeToEvents ();
+
+			BTProgressHUD.Dismiss();
 		}
 
 		private void LoadPages()
 		{
-			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
-			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, 80 * FacebookUtils.ElementList.Count + banner.Frame.Height + FacebookUtils.ElementList.Count + 1);
-			float yPosition = (float)banner.Frame.Height;
+			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, 80 * FacebookUtils.ElementList.Count + Banner.Frame.Height + FacebookUtils.ElementList.Count + 1);
+			float yPosition = (float)Banner.Frame.Bottom;
 
 			int i = 0;
 			foreach (FacebookElement page in FacebookUtils.ElementList) {
-				TwoLinesScreenButton pageButton = PageButton (yPosition, (FacebookPage)page);
+				TwoLinesMenuButton pageButton = PageButton (yPosition, (FacebookPage)page);
+				ScrollView.AddSubview (pageButton);
+				Buttons.Add (pageButton);
 				i++;
 				yPosition += (float)pageButton.Frame.Height + 1;
-				Buttons.Add (pageButton);
-				ScrollView.AddSubview (pageButton);
 			}
 
-			OneLineScreenButton unsyncButton = CreateUnsyncButton (yPosition);
+			OneLineMenuButton unsyncButton = CreateUnsyncButton (yPosition);
 			if (BoardInterface.board.FBPage == null) {
 				unsyncButton.Alpha = 0f;
 			}
-			Buttons.Add (unsyncButton);
 			ScrollView.AddSubview (unsyncButton);
-
-			View.AddSubview (ScrollView);
-			View.AddSubview (banner);
+			Buttons.Add (unsyncButton);
 		}
 
-
-		private TwoLinesScreenButton PageButton(float yPosition, FacebookPage page)
+		private TwoLinesMenuButton PageButton(float yPosition, FacebookPage page)
 		{
-			TwoLinesScreenButton pageButton = new TwoLinesScreenButton (yPosition);
+			TwoLinesMenuButton pageButton = new TwoLinesMenuButton (yPosition);
 			pageButton.SetLabels (page.Name, page.Category);
 			pageButton.SetUnpressedColors ();
 
@@ -117,9 +112,9 @@ namespace Board.Interface
 			return pageButton;
 		}
 
-		private OneLineScreenButton CreateUnsyncButton(float yPosition)
+		private OneLineMenuButton CreateUnsyncButton(float yPosition)
 		{
-			OneLineScreenButton unsyncButton = new OneLineScreenButton (yPosition);
+			OneLineMenuButton unsyncButton = new OneLineMenuButton (yPosition);
 			unsyncButton.SetLabel("Unsync");
 			unsyncButton.SetUnpressedColors ();
 
@@ -147,20 +142,19 @@ namespace Board.Interface
 
 		private void LoadBanner()
 		{
-			using (UIImage bannerImage = UIImage.FromFile ("./screens/pageselector/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
-				banner = new UIImageView (new CGRect (0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-				banner.Image = bannerImage;
-			}
+			Banner = new MenuBanner ("./screens/pageselector/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					NavigationController.PopViewController(true);
 				}
 			});
 
-			banner.UserInteractionEnabled = true;
-			banner.AddGestureRecognizer (tap);
-			banner.Alpha = .95f;
+			Banner.AddTap (tap);
+
+			Banner.SuscribeToEvents ();
+
+			View.AddSubview (Banner);
 		}
 	}
 }

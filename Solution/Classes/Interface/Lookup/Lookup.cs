@@ -2,6 +2,7 @@
 using CoreGraphics;
 using UIKit;
 using Board.Interface.Widgets;
+using Facebook.CoreKit;
 using System;
 using Board.Schema;
 
@@ -40,6 +41,14 @@ namespace Board.Interface.LookUp
 			CreateFacebookButton (buttonColor);
 			CreateShareButton (buttonColor);
 			CreateTrashButton (buttonColor);
+
+			if (Profile.CurrentProfile.UserID != BoardInterface.board.CreatorId) {
+				TrashButton.Alpha = 0f;
+			}
+
+			if (string.IsNullOrEmpty(content.FacebookId)) {
+				FacebookButton.Alpha = 0f;
+			}
 		}
 
 		public override void ViewDidAppear(bool animated)
@@ -224,7 +233,7 @@ namespace Board.Interface.LookUp
 		protected void CreateShareButton(UIColor buttonColor)
 		{
 			using (UIImage img = UIImage.FromFile ("./boardinterface/lookup/share.png")) {
-				string text = "Share";
+				const string text = "Share";
 				UIFont font = UIFont.SystemFontOfSize (14);
 
 				ShareButton = new UIImageView(new CGRect(0, 0, img.Size.Width + text.StringSize(font).Width + 5, img.Size.Height * 2));

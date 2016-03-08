@@ -125,7 +125,7 @@ namespace Board
 					screen = new LoginScreen ();
 				}
 			} else {
-				if (Profile.CurrentProfile != null && AccessToken.CurrentAccessToken != null) {
+				if (Profile.CurrentProfile != null && AccessToken.CurrentAccessToken != null && FacebookUtils.HasPermission("public_profile")) {
 					screen = new MainMenuScreen ();
 				} else {
 					screen = new LoginScreen ();	

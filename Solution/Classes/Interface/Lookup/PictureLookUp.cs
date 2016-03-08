@@ -40,11 +40,7 @@ namespace Board.Interface.LookUp
 				tg.NumberOfTapsRequired = 2;
 			});
 
-			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton);
-
-			if (Profile.CurrentProfile.UserID == BoardInterface.board.CreatorId) {
-				View.AddSubview (TrashButton);
-			}
+			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton, TrashButton);
 		}
 
 		private UIImageView CreateImageFrame(UIImage image)

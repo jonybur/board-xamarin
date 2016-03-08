@@ -3,6 +3,7 @@ using UIKit;
 
 using Facebook.CoreKit;
 using Facebook.LoginKit;
+using Board.Facebook;
 
 using System.Collections.Generic;
 
@@ -10,7 +11,6 @@ namespace Board.Interface.CreateScreens
 {
 	public class PostToButtons : UIViewController
 	{
-		static string [] publishPermissions = { "publish_actions" };
 
 		bool FBActive;
 		bool IGActive;
@@ -78,18 +78,13 @@ namespace Board.Interface.CreateScreens
 			FBActive = false;
 
 			composite.TouchUpInside += async (sender, e) => {
-				// si no tengo permiso
-				if (!AccessToken.CurrentAccessToken.HasGranted(publishPermissions[0]))
-				{
-					// lo pido
-					LoginManager manager = new LoginManager ();
-					await manager.LogInWithPublishPermissionsAsync (publishPermissions, parentViewController);
-				}
+				
+				await FacebookUtils.GetPublishPermission(this, "publish_actions");
 
 				if (!FBActive)
 				{
 					// si no esta activo y tengo los permisos
-					if (AccessToken.CurrentAccessToken.HasGranted(publishPermissions[0]))
+					if (FacebookUtils.HasPermission("publish_actions"))
 					{
 						// TODO: ver si funciona para post a pagina
 

@@ -4,9 +4,7 @@ using Board.Utilities;
 using Board.Interface;
 using CoreGraphics;
 
-using BigTed;
-
-namespace Board.Screens.Menu
+namespace Board.Screens.Controls
 {
 	public sealed class BoardThumb : UIButton
 	{

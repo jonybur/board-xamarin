@@ -80,8 +80,6 @@ namespace Board.JsonResponses
 		public string status { get; set; }
 	}
 
-
-
 	public static class JsonHandler
 	{
 		public static GoogleGeolocatorObject DeserializeObject (string json)
@@ -102,7 +100,8 @@ namespace Board.JsonResponses
 			}
 			catch (WebException ex) {
 				Console.WriteLine (ex);
-				throw;
+
+				return null;
 			}
 		}
 	}

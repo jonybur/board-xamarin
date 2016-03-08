@@ -25,11 +25,7 @@ namespace Board.Interface.LookUp
 
 			ScrollView.AddSubview (textView);
 
-			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton);
-
-			if (Profile.CurrentProfile.UserID == BoardInterface.board.CreatorId) {
-				View.AddSubview (TrashButton);
-			}
+			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton, TrashButton);
 		}
 
 		private UITextView LoadTextView(Announcement announcement){

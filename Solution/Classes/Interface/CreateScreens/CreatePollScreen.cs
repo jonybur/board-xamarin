@@ -21,7 +21,7 @@ namespace Board.Interface.CreateScreens
 
 			string imagePath = "./screens/poll/banner/" + AppDelegate.PhoneVersion + ".jpg";
 
-			LoadBanner (imagePath, null, null);
+			LoadBanner (imagePath);
 			LoadNextButton ();
 
 			positionY = (float)Banner.Frame.Bottom;
@@ -29,16 +29,6 @@ namespace Board.Interface.CreateScreens
 			LoadPostToButtons (positionY);
 
 			CreateGestures ();
-		}
-
-		public override void ViewDidAppear (bool animated)
-		{
-			base.ViewDidAppear (animated);
-		}
-
-		public override void ViewDidDisappear (bool animated)
-		{
-			base.ViewDidDisappear (animated);
 		}
 
 		private void CreateGestures()

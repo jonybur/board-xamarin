@@ -8,16 +8,14 @@ namespace Board.Schema
 	public class Content
 	{
 		public string Id;
+		public string CreatorId;
+		public string FacebookId;
 
 		public CGRect Frame;
-
-		public string CreatorId;
-
+		public DateTime CreationDate; 
 		public List<int> SocialChannel;
 
 		public float Rotation;
-
-		public DateTime CreationDate; 
 
 		public Content(){
 			Id = CommonUtils.GenerateGuid ();

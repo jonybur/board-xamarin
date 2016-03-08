@@ -1,19 +1,16 @@
 ﻿using System;
 using CoreGraphics;
 using MessageUI;
+using Board.Screens.Controls;
 using UIKit;
 
 namespace Board.Screens
 {
 	public class SupportScreen : UIViewController
 	{
-		UIImageView banner;
+		MenuBanner Banner;
 		const int hborder = 65;
 		float yposition;
-
-		public SupportScreen ()
-		{
-		}
 
 		public override void ViewDidLoad ()
 		{
@@ -28,6 +25,10 @@ namespace Board.Screens
 			View.BackgroundColor = UIColor.White;
 		}
 
+		public override void ViewDidDisappear(bool animated)
+		{
+			Banner.UnsuscribeToEvents ();
+		}
 
 		private void LoadContent()
 		{	
@@ -107,12 +108,9 @@ namespace Board.Screens
 				if (MFMailComposeViewController.CanSendMail) {
 					// do mail operations here
 					MFMailComposeViewController mailController = new MFMailComposeViewController ();
-					mailController.SetToRecipients(new string[]{"support@getonboard.us"});
+					mailController.SetToRecipients(new [] {"support@getonboard.us"} );
 					mailController.SetMessageBody ("", false);
-					mailController.Finished += ( object s, MFComposeResultEventArgs args) => {
-						Console.WriteLine (args.Result.ToString ());
-						args.Controller.DismissViewController (true, null);
-					};
+					mailController.Finished += (s, args) => args.Controller.DismissViewController (true, null);
 					NavigationController.PresentViewController (mailController, true, null);
 				}
 
@@ -124,21 +122,17 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			using (UIImage bannerImage = UIImage.FromFile ("./screens/support/banner/" + AppDelegate.PhoneVersion + ".jpg")) {
-				banner = new UIImageView (new CGRect (0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-				banner.Image = bannerImage;
-			}
+			Banner = new MenuBanner ("./screens/support/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					NavigationController.PopViewController(false);
 				}
 			});
 
-			banner.UserInteractionEnabled = true;
-			banner.AddGestureRecognizer (tap);
-			banner.Alpha = .95f;
-			View.AddSubview (banner);
+			Banner.AddTap (tap);
+			Banner.SuscribeToEvents ();
+			View.AddSubview (Banner);
 		}
 	}
 }

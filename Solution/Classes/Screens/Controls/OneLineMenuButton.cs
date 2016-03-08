@@ -3,11 +3,11 @@ using UIKit;
 
 namespace Board.Screens.Controls
 {
-	public class OneLineScreenButton : ScreenButton
+	public class OneLineMenuButton : MenuButton
 	{
-		public OneLineScreenButton(){}
+		public OneLineMenuButton(){}
 
-		public OneLineScreenButton(float yPosition)
+		public OneLineMenuButton(float yPosition)
 		{
 			Frame = new CGRect (0, yPosition, AppDelegate.ScreenWidth, 80);
 			UserInteractionEnabled = true;

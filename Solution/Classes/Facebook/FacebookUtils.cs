@@ -1,7 +1,8 @@
 ﻿using System;
 using Facebook.CoreKit;
+using Facebook.LoginKit;
 using Foundation;
-using Board.Utilities;
+using UIKit;
 using System.Collections.Generic;
 
 namespace Board.Facebook
@@ -11,12 +12,39 @@ namespace Board.Facebook
 		public static EventHandler Callback;
 		public static List<FacebookElement> ElementList;
 		public static string Element;
+		public static string Id;
+
+		// TODO: modify to accept permission params
+		public static async System.Threading.Tasks.Task GetReadPermission(UIViewController uiv, string permission)
+		{
+			if (!HasPermission(permission))
+			{
+				LoginManager manager = new LoginManager ();
+				await manager.LogInWithReadPermissionsAsync (new string[]{ permission }, uiv);
+			}
+		}
+
+		public static async System.Threading.Tasks.Task GetPublishPermission(UIViewController uiv, string permission)
+		{
+			if (!HasPermission(permission))
+			{
+				LoginManager manager = new LoginManager ();
+				await manager.LogInWithPublishPermissionsAsync (new string[]{ permission }, uiv);
+			}
+		}
+
+		public static bool HasPermission(string permission)
+		{
+			return AccessToken.CurrentAccessToken.HasGranted (permission);
+		}
 
 		public static void MakeGraphRequest(string id, string element, EventHandler onCompletionHandler)
 		{
 			Callback = onCompletionHandler;
-			GraphRequest graph = new GraphRequest (id + "/" + element, null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
 			Element = element;
+			Id = id;
+
+			GraphRequest graph = new GraphRequest (id + "/" + element, null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
 			graph.Start (LoadList);
 		}
 
@@ -31,6 +59,10 @@ namespace Board.Facebook
 					FacebookEvent fbevent = new FacebookEvent (objects [i, 0], objects [i, 1], objects [i, 2], objects [i, 3], objects [i, 4]);
 					ElementList.Add (fbevent);
 				}
+
+				/*GraphRequest graph = new GraphRequest (Id + "/" + Element + "?fields=cover", null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
+				graph.Start ();*/
+
 			} else if (Element == "posts") {
 				string[,] objects = NSObjectToElement (obj, "data.id", "data.message", "data.story", "data.created_time");
 
