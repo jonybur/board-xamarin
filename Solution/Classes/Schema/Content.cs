@@ -1,6 +1,7 @@
 using CoreGraphics;
 using System.Collections.Generic;
 using Board.Utilities;
+using System;
 
 namespace Board.Schema
 {
@@ -8,13 +9,15 @@ namespace Board.Schema
 	{
 		public string Id;
 
-		public CGRect Frame { get; set; }
+		public CGRect Frame;
 
-		public string UserId { get; set; }
+		public string CreatorId;
 
-		public List<int> SocialChannel { get; set; }
+		public List<int> SocialChannel;
 
-		public float Rotation { get; set; }
+		public float Rotation;
+
+		public DateTime CreationDate; 
 
 		public Content(){
 			Id = CommonUtils.GenerateGuid ();

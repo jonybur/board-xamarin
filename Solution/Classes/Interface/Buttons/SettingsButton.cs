@@ -1,6 +1,4 @@
-﻿using System;
-using Board.Picker;
-using CoreGraphics;
+﻿using CoreGraphics;
 using UIKit;
 
 namespace Board.Interface.Buttons
@@ -13,7 +11,6 @@ namespace Board.Interface.Buttons
 
 			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/strokebuttons/cog_3px.png")) {
 				uiButton.SetImage (uiImage, UIControlState.Normal);
-				
 			}
 
 			uiButton.Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
@@ -21,8 +18,8 @@ namespace Board.Interface.Buttons
 				(AppDelegate.ScreenWidth - ButtonSize) / 8 * 3, AppDelegate.ScreenHeight - ButtonSize / 2);
 
 			eventHandlers.Add ((sender, e) => {
-				PageSelectorScreen pgScreen =new PageSelectorScreen();
-				AppDelegate.NavigationController.PushViewController(pgScreen, true);
+				SettingsScreen settingsScreen = new SettingsScreen();
+				AppDelegate.NavigationController.PushViewController(settingsScreen, true);
 			});
 		}
 	}

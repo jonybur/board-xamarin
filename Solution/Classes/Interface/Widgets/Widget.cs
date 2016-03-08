@@ -27,6 +27,7 @@ namespace Board.Interface.Widgets
 		protected UIImageView MountingView;
 		protected UIImageView LikeComponent;
 		protected UIImageView EyeView;
+		protected UILabel TimeStamp;
 
 		private UIImageView likeView;
 		private UILabel likeLabel;
@@ -56,8 +57,34 @@ namespace Board.Interface.Widgets
 
 			CreateEye ();
 			CreateLikeComponent ();
+			CreateTimeStamp ();
 
-			MountingView.AddSubviews (LikeComponent, EyeView);
+			MountingView.AddSubviews (LikeComponent, EyeView, TimeStamp);
+		}
+
+		private void CreateTimeStamp()
+		{
+			TimeStamp = new UILabel (new CGRect (0, 0, MountingView.Frame.Width, 40));
+			TimeStamp.Font = UIFont.SystemFontOfSize (14);
+			TimeStamp.Center = new CGPoint (MountingView.Frame.Width / 2, LikeComponent.Center.Y);
+
+			TimeSpan timeDifference = DateTime.Now.Subtract (content.CreationDate);
+
+			if (timeDifference.TotalSeconds < 60) {
+				TimeStamp.Text = timeDifference.Seconds + "s";
+			} else if (timeDifference.TotalMinutes < 60) {
+				TimeStamp.Text = timeDifference.Minutes + "m";
+			} else if (timeDifference.TotalHours < 24) {
+				TimeStamp.Text = timeDifference.Hours + "h";
+			} else if (timeDifference.TotalDays < 7) {
+				TimeStamp.Text = timeDifference.Days + "d";
+			} else {
+				TimeStamp.Text = (timeDifference.Days/7) + "w";
+			}
+
+
+			TimeStamp.TextAlignment = UITextAlignment.Center;
+			TimeStamp.TextColor = UIColor.FromRGB (140, 140, 140);
 		}
 
 		private void CreateLikeComponent()

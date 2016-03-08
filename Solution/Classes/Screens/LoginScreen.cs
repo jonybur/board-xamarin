@@ -26,7 +26,7 @@ namespace Board.Screens
 
 		LoginButton logInButton;
 
-		string [] extendedPermissions = new [] { "public_profile" };
+		string [] extendedPermissions = { "public_profile" };
 
 		string responseError;
 
@@ -36,11 +36,6 @@ namespace Board.Screens
 
 		public LoginScreen (string error){
 			responseError = error;	
-		}
-
-		public override void DidReceiveMemoryWarning ()
-		{
-			base.DidReceiveMemoryWarning ();
 		}
 
 		public override void ViewDidLoad ()

@@ -28,7 +28,7 @@ namespace Board.Interface.CreateScreens
 
 			string imagePath = "./screens/announcement/banner/" + AppDelegate.PhoneVersion + ".jpg";
 
-			LoadBanner (imagePath);
+			LoadBanner (imagePath, "posts", null);
 			LoadNextButton ();
 			LoadTextView ();
 
@@ -37,6 +37,11 @@ namespace Board.Interface.CreateScreens
 			LoadPostToButtons (positionY);
 
 			CreateGestures ();
+		}
+
+		private void UpdateTextView()
+		{
+
 		}
 
 		public override void ViewDidAppear (bool animated)
@@ -73,7 +78,7 @@ namespace Board.Interface.CreateScreens
 				Announcement ann = new Announcement();
 
 				ann.SocialChannel = ShareButtons.GetActiveSocialChannels ();
-
+				ann.CreationDate = DateTime.Now;
 				ann.Text = textview.AttributedText;
 
 				Preview.Initialize(ann);

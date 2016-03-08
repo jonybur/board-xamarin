@@ -64,7 +64,7 @@ namespace Board.Interface.LookUp
 			textView.Selectable = true;
 			textView.DataDetectorTypes = UIDataDetectorType.Link;
 			textView.UserInteractionEnabled = true;
-			textView.TextColor = BoardInterface.board.MainColor;
+			textView.TextColor = UIColor.Black;
 			textView.BackgroundColor = UIColor.FromRGBA (250, 250, 250, 0);
 			textView.SizeToFit ();
 			textView.Frame = new CGRect (textView.Frame.X, textView.Frame.Y, PictureBox.Frame.Width, textView.Frame.Height);
@@ -119,7 +119,7 @@ namespace Board.Interface.LookUp
 			// empieza en 55 termina en 110
 			UILabel dayNumber = new UILabel (new CGRect (0, 0, 90, 74));
 			dayNumber.Font = UIFont.SystemFontOfSize (74);
-			dayNumber.Text = ((BoardEvent)content).Date.Day.ToString();
+			dayNumber.Text = ((BoardEvent)content).StartDate.Day.ToString();
 			dayNumber.AdjustsFontSizeToFitWidth = true;
 			dayNumber.TextAlignment = UITextAlignment.Center;
 			dayNumber.TextColor = BoardInterface.board.MainColor;
@@ -128,7 +128,7 @@ namespace Board.Interface.LookUp
 			// empieza en 0 termina en 24
 			UILabel dayName = new UILabel (new CGRect (dayNumber.Frame.Right + 10, 0, 200, 30));
 			dayName.Font = UIFont.SystemFontOfSize (16);
-			dayName.Text = ((BoardEvent)content).Date.DayOfWeek.ToString();
+			dayName.Text = ((BoardEvent)content).StartDate.DayOfWeek.ToString();
 			dayName.TextAlignment = UITextAlignment.Left;
 			dayName.TextColor = BoardInterface.board.MainColor;
 			dayName.AdjustsFontSizeToFitWidth = true;
@@ -137,7 +137,7 @@ namespace Board.Interface.LookUp
 			// empieza en 105 termina en 135
 			UILabel monthName = new UILabel (new CGRect (dayName.Frame.Left, dayName.Frame.Bottom + 5, 100, 30));
 			monthName.Font = UIFont.SystemFontOfSize (16);
-			int monthNumber = ((BoardEvent)content).Date.Month;
+			int monthNumber = ((BoardEvent)content).StartDate.Month;
 			monthName.Text = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNumber).ToUpper();
 			monthName.TextAlignment = UITextAlignment.Left;
 			monthName.TextColor = BoardInterface.board.MainColor;
@@ -157,7 +157,7 @@ namespace Board.Interface.LookUp
 			// empieza en 26 termina en 56
 			UILabel timeLabel = new UILabel (new CGRect(dayName.Frame.Right + 20, 0, 200, 30));
 			timeLabel.Font = UIFont.SystemFontOfSize (16);
-			timeLabel.Text = ((BoardEvent)content).Date.ToString("t");
+			timeLabel.Text = ((BoardEvent)content).StartDate.ToString("t");
 			timeLabel.TextAlignment = UITextAlignment.Left;
 			timeLabel.TextColor = BoardInterface.board.MainColor;
 			timeLabel.AdjustsFontSizeToFitWidth = true;
@@ -193,23 +193,25 @@ namespace Board.Interface.LookUp
 
 				EKEvent newEvent = EKEvent.FromStore (App.Current.EventStore);
 
-				NSDate someNSDate = (NSDate)DateTime.SpecifyKind (boardEvent.Date, DateTimeKind.Local);
+				NSDate startNSDate = (NSDate)DateTime.SpecifyKind (boardEvent.StartDate, DateTimeKind.Local);
+				NSDate endNSDate = (NSDate)DateTime.SpecifyKind (boardEvent.EndDate, DateTimeKind.Local);
 
 				// set the alarm for 10 minutes from now
-				newEvent.AddAlarm (EKAlarm.FromDate (someNSDate));
-				// make the event start 20 minutes from now and last 30 minutes
-				newEvent.StartDate = someNSDate;
-				newEvent.EndDate =  (NSDate)DateTime.SpecifyKind (boardEvent.Date.AddHours (1), DateTimeKind.Local);
-				newEvent.Title = boardEvent.Name;
+				newEvent.AddAlarm (EKAlarm.FromDate (startNSDate));
 
-				string signature = "Created with Board";
+				// make the event start 20 minutes from now and last 30 minutes
+				newEvent.StartDate = startNSDate;
+				newEvent.EndDate = endNSDate;
+				newEvent.Title = boardEvent.Name + " @ " + BoardInterface.board.Name;
+
+				string signature = "- Created with Board";
 
 				if (boardEvent.Description != string.Empty) {
 					signature = "\n\n" + signature;
 				}
 					
 				newEvent.Notes = boardEvent.Description + signature;
-				newEvent.Location = BoardInterface.board.Name;
+				newEvent.Location = BoardInterface.board.Location;
 
 				eventController.Event = newEvent;
 

@@ -252,6 +252,8 @@
     <BundleResource Include="Resources\screens\poll\banner\6plus.jpg" />
     <BundleResource Include="Resources\screens\event\banner\6plus.jpg" />
     <BundleResource Include="Resources\screens\event\banner\6.jpg" />
+    <BundleResource Include="Resources\screens\import\banner\6plus.jpg" />
+    <BundleResource Include="Resources\screens\import\banner\6.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -322,6 +324,16 @@
     <Compile Include="Classes\Interface\LookUp\PollLookUp.cs" />
     <Compile Include="Classes\Interface\Widgets\PollWidget.cs" />
     <Compile Include="Classes\Schema\Poll.cs" />
+    <Compile Include="Classes\Interface\SettingsScreen\SettingsScreen.cs" />
+    <Compile Include="Classes\Screens\Controls\OneLineScreenButton.cs" />
+    <Compile Include="Classes\Screens\Controls\TwoLinesScreenButton.cs" />
+    <Compile Include="Classes\Screens\Controls\ScreenButton.cs" />
+    <Compile Include="Classes\Interface\CreateScreens\ImportScreen.cs" />
+    <Compile Include="Classes\Facebook\FacebookEvent.cs" />
+    <Compile Include="Classes\Facebook\FacebookUtils.cs" />
+    <Compile Include="Classes\Facebook\FacebookElement.cs" />
+    <Compile Include="Classes\Facebook\FacebookPost.cs" />
+    <Compile Include="Classes\Facebook\FacebookPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -395,6 +407,10 @@
     <Folder Include="Resources\screens\event\" />
     <Folder Include="Resources\screens\event\banner\" />
     <Folder Include="Resources\screens\poll\banner\" />
+    <Folder Include="Classes\Screens\Controls\" />
+    <Folder Include="Classes\Facebook\" />
+    <Folder Include="Resources\screens\import\" />
+    <Folder Include="Resources\screens\import\banner\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

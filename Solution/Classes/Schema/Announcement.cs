@@ -11,12 +11,13 @@ namespace Board.Schema
 
 		public Announcement() {}
 
-		public Announcement(NSAttributedString text, float rotation, CGRect frame, string userid)
+		public Announcement(NSAttributedString text, float rotation, CGRect frame, string creatorid, DateTime creationdate)
 		{
 			Text = text;
 			Rotation = rotation;
 			Frame = frame;
-			UserId = userid;
+			CreatorId = creatorid;
+			CreationDate = creationdate;
 		}
 	}
 }

@@ -17,19 +17,23 @@ namespace Board.Schema
 
 		public UIImageView Thumbnail;
 
-		public DateTime Date;
+		public DateTime StartDate;
 
+		public DateTime EndDate;
+	
 		public BoardEvent() {
 		}
 
-		public BoardEvent(string name, UIImage image, DateTime date, float rotation, CGRect frame, string userid)
+		public BoardEvent(string name, UIImage image, DateTime startdate, DateTime enddate, float rotation, CGRect frame, string creatorid, DateTime creationdate)
 		{
 			ImageView = new UIImageView(image);
 			Name = name;
-			Date = date;
+			StartDate = startdate;
+			EndDate = enddate;
 			Rotation = rotation;
 			Frame = frame;
-			UserId = userid;
+			CreatorId = creatorid;
+			CreationDate = creationdate;
 		}
 	}
 }

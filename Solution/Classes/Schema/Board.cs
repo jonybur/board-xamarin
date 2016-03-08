@@ -1,4 +1,5 @@
 using Board.JsonResponses;
+using Board.Facebook;
 using UIKit;
 
 namespace Board.Schema
@@ -12,6 +13,7 @@ namespace Board.Schema
 		public string Location;
 		public string Name;
 		public string CreatorId;
+		public FacebookPage FBPage;
 
 		public Board()
 		{

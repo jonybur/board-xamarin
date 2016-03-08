@@ -49,7 +49,7 @@ namespace Board.Interface.Widgets
 			// empieza en 0 termina en 24
 			UILabel dayName = new UILabel (new CGRect (10, 0, 80, 30));
 			dayName.Font = UIFont.SystemFontOfSize (18);
-			dayName.Text = boardEvent.Date.DayOfWeek.ToString();
+			dayName.Text = boardEvent.StartDate.DayOfWeek.ToString();
 			dayName.TextAlignment = UITextAlignment.Center;
 			dayName.TextColor = BoardInterface.board.MainColor;
 			dayName.AdjustsFontSizeToFitWidth = true;
@@ -57,7 +57,7 @@ namespace Board.Interface.Widgets
 			// empieza en 26 termina en 56
 			UILabel timeLabel = new UILabel (new CGRect (25, 32, 80, 30));
 			timeLabel.Font = UIFont.SystemFontOfSize (14);
-			timeLabel.Text = boardEvent.Date.ToString("t");
+			timeLabel.Text = boardEvent.StartDate.ToString("t");
 			timeLabel.TextAlignment = UITextAlignment.Center;
 			timeLabel.SizeToFit ();
 			timeLabel.TextColor = BoardInterface.board.MainColor;
@@ -73,7 +73,7 @@ namespace Board.Interface.Widgets
 			// empieza en 55 termina en 110
 			UILabel dayNumber = new UILabel (new CGRect (0, 55, 100, 55));
 			dayNumber.Font = UIFont.SystemFontOfSize (60);
-			dayNumber.Text = boardEvent.Date.Day.ToString();
+			dayNumber.Text = boardEvent.StartDate.Day.ToString();
 			dayNumber.AdjustsFontSizeToFitWidth = true;
 			dayNumber.TextColor = BoardInterface.board.MainColor;
 			dayNumber.TextAlignment = UITextAlignment.Center;
@@ -81,7 +81,7 @@ namespace Board.Interface.Widgets
 			// empieza en 105 termina en 135
 			UILabel monthName = new UILabel (new CGRect (10, 110, 80, 30));
 			monthName.Font = UIFont.SystemFontOfSize (16);
-			int monthNumber = boardEvent.Date.Month;
+			int monthNumber = boardEvent.StartDate.Month;
 			monthName.Text = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNumber).ToUpper();
 			monthName.TextAlignment = UITextAlignment.Center;
 			monthName.TextColor = BoardInterface.board.MainColor;

@@ -57,6 +57,7 @@ namespace Board.Interface
 			Picture picture = new Picture ();
 
 			picture.ImageView = new UIImageView(image);
+			picture.CreationDate = DateTime.Now;
 
 			pictureWidget = new PictureWidget (picture);
 
@@ -78,14 +79,13 @@ namespace Board.Interface
 			TypeOfPreview = (int)Type.Video;
 
 			Video video = new Video ();
-
 			MPMoviePlayerController moviePlayer = new MPMoviePlayerController (new NSUrl(Url));
 			video.ThumbnailView = new UIImageView(moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact));
 			moviePlayer.Pause ();
 			moviePlayer.Dispose ();
 
 			video.Url = NSUrl.FromString (Url);
-
+			video.CreationDate = DateTime.Now;
 			videoWidget = new VideoWidget (video);
 
 			CGRect frame = videoWidget.View.Frame;
@@ -141,7 +141,7 @@ namespace Board.Interface
 				uiView.Transform = CGAffineTransform.MakeRotation (r);
 			}
 
-			UIRotationGestureRecognizer rotateGesture = new UIRotationGestureRecognizer ((rg) => {
+			UIRotationGestureRecognizer rotateGesture = new UIRotationGestureRecognizer (rg => {
 				if ((rg.State == UIGestureRecognizerState.Began || rg.State == UIGestureRecognizerState.Changed) && (rg.NumberOfTouches == 2)) {
 					uiView.Transform = CGAffineTransform.MakeRotation (rg.Rotation + r);
 					Rotation = (float)(rg.Rotation + r);
@@ -167,29 +167,22 @@ namespace Board.Interface
 		public static Picture GetPicture()
 		{
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
-			Picture p = new Picture (pictureWidget.picture.ImageView.Image, pictureWidget.picture.ThumbnailView.Image, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
+			Picture p = new Picture (pictureWidget.picture.ImageView.Image, pictureWidget.picture.ThumbnailView.Image, Rotation, uiView.Frame, Profile.CurrentProfile.UserID, DateTime.Now);
 			return p;
 		}
 
 		public static Video GetVideo()
 		{
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
-			Video v = new Video (videoWidget.video.Url, videoWidget.video.ThumbnailView, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
+			Video v = new Video (videoWidget.video.Url, videoWidget.video.ThumbnailView, Rotation, uiView.Frame, Profile.CurrentProfile.UserID, DateTime.Now);
 			return v;
 		}
 
 		public static Announcement GetAnnouncement()
 		{
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
-			Announcement ann = new Announcement (announcementWidget.announcement.Text, Rotation, uiView.Frame, Profile.CurrentProfile.UserID);
+			Announcement ann = new Announcement (announcementWidget.announcement.Text, Rotation, uiView.Frame, Profile.CurrentProfile.UserID, DateTime.Now);
 			ann.SocialChannel = announcementWidget.announcement.SocialChannel;
-
-			/*Dictionary<NSRange, NSDictionary> dic = CommonUtils.GetFormatDictionaries (ann.Text);
-			NSError err = new NSError ();
-			foreach (var element in dic) {
-				
-			}*/
-
 			return ann;
 		}
 

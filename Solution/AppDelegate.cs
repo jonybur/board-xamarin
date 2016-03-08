@@ -11,6 +11,7 @@ using Board.Utilities;
 using Board.JsonResponses;
 using Board.Interface;
 using Board.Screens;
+using Board.Facebook;
 
 namespace Board
 {
@@ -46,6 +47,7 @@ namespace Board
 		public const string FacebookAppId = "793699580736093";
 		public const string GoogleMapsAPIKey = "AIzaSyAUO-UX9QKVWK421yjXqoo02N5TYrG_hY8";
 		public const string FacebookDisplayName = "Board Alpha - Deve­l­o­p­ment";
+
 		public static string BoardToken;
 		public static string EncodedBoardToken;
 	

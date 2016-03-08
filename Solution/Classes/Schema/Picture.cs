@@ -1,5 +1,6 @@
 using CoreGraphics;
 using UIKit;
+using System;
 using Board.Utilities;
 
 namespace Board.Schema
@@ -13,13 +14,14 @@ namespace Board.Schema
 		public Picture() {
 		}
 
-		public Picture(UIImage image, UIImage thumbnail, float rotation, CGRect frame, string userid)
+		public Picture(UIImage image, UIImage thumbnail, float rotation, CGRect frame, string creatorid, DateTime creationdate)
 		{
 			ImageView = new UIImageView(image);
 			ThumbnailView = new UIImageView(thumbnail);
 			Rotation = rotation;
 			Frame = frame;
-			UserId = userid;
+			CreatorId = creatorid;
+			CreationDate = creationdate;
 		}
 	}
 }

@@ -1,25 +1,29 @@
-﻿using System;
-
-using CoreGraphics;
-using Foundation;
-using UIKit;
+﻿using System.Collections.Generic;
 
 using System.Threading;
-using System.Collections.Generic;
+using Board.Facebook;
+using System;
+using CoreGraphics;
+
 using Facebook.CoreKit;
 using Facebook.LoginKit;
+using UIKit;
+using Board.Screens.Controls;
 
 namespace Board.Interface
 {
 	public class PageSelectorScreen : UIViewController
 	{
 		UIImageView banner;
-		UIScrollView scrollView;
+		UIScrollView ScrollView;
+		List<ScreenButton> Buttons;
 
-		string [] fbPermissions = { "pages_show_list" };
+		bool pressed;
 
 		public override void ViewDidLoad ()
 		{
+			Buttons = new List<ScreenButton> ();
+
 			View.BackgroundColor = UIColor.White;
 
 			LoadBanner ();
@@ -27,137 +31,112 @@ namespace Board.Interface
 
 		public override async void ViewDidAppear(bool animated)
 		{
-			if (!AccessToken.CurrentAccessToken.HasGranted(fbPermissions[0]))
+			string [] permission = { "pages_show_list" };
+
+			if (!AccessToken.CurrentAccessToken.HasGranted(permission[0]))
 			{
 				// lo pido
 				LoginManager manager = new LoginManager ();
-				await manager.LogInWithReadPermissionsAsync (fbPermissions, this);
+				await manager.LogInWithReadPermissionsAsync (permission, this);
 			}
 
-			GraphRequest graph = new GraphRequest ("me/accounts", null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
-			graph.Start (LoadList);
+			FacebookUtils.MakeGraphRequest ("me", "accounts", Completion);
 		}
 
-		void LoadList(GraphRequestConnection connection, NSObject obj, NSError err)
+		public override void ViewDidDisappear(bool animated)
 		{
-			scrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			UnsuscribeToEvents ();
+		}
 
-			List<string> lstNames = NSObjectToString ("data.name", obj);
-			List<string> lstCategories = NSObjectToString ("data.category", obj);
+		private void SuscribeToEvents()
+		{
+			foreach (ScreenButton sb in Buttons) {
+				sb.SuscribeToEvent ();
+			}
+		}
 
-			scrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, 80 * lstNames.Count + banner.Frame.Height + lstNames.Count + 1);
+		private void UnsuscribeToEvents()
+		{
+			foreach (ScreenButton sb in Buttons) {
+				sb.UnsuscribeToEvent ();
+			}
+		}
 
+		private void Completion(object obj, EventArgs e)
+		{
+			LoadPages ();
+			SuscribeToEvents ();
+		}
+
+		private void LoadPages()
+		{
+			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, 80 * FacebookUtils.ElementList.Count + banner.Frame.Height + FacebookUtils.ElementList.Count + 1);
 			float yPosition = (float)banner.Frame.Height;
-			UIButton nameButton = ProfileButton(yPosition, Profile.CurrentProfile.Name + "'s Profile");
-			scrollView.AddSubview (nameButton);
-			yPosition += (float)nameButton.Frame.Height + 1;
+
 			int i = 0;
-			foreach (string name in lstNames) {
-				UIButton pageButton = PageButton (yPosition, name, lstCategories[i]);
+			foreach (FacebookElement page in FacebookUtils.ElementList) {
+				TwoLinesScreenButton pageButton = PageButton (yPosition, (FacebookPage)page);
 				i++;
 				yPosition += (float)pageButton.Frame.Height + 1;
-				scrollView.AddSubview (pageButton);
+				Buttons.Add (pageButton);
+				ScrollView.AddSubview (pageButton);
 			}
 
-			View.AddSubview (scrollView);
+			OneLineScreenButton unsyncButton = CreateUnsyncButton (yPosition);
+			if (BoardInterface.board.FBPage == null) {
+				unsyncButton.Alpha = 0f;
+			}
+			Buttons.Add (unsyncButton);
+			ScrollView.AddSubview (unsyncButton);
+
+			View.AddSubview (ScrollView);
 			View.AddSubview (banner);
 		}
 
-		List<string> NSObjectToString(string fetch, NSObject obj)
+
+		private TwoLinesScreenButton PageButton(float yPosition, FacebookPage page)
 		{
-			NSString nsString = new NSString (fetch);
+			TwoLinesScreenButton pageButton = new TwoLinesScreenButton (yPosition);
+			pageButton.SetLabels (page.Name, page.Category);
+			pageButton.SetUnpressedColors ();
 
-			NSArray array = (NSArray)obj.ValueForKeyPath (nsString);
-			List<string> list = new List<string> ();
-
-			for (int i = 0; i < (int)array.Count; i++) {
-				var item = array.GetItem<NSObject> ((nuint)i);
-				list.Add(item.ToString());
-			}
-
-			return list;
-		}
-
-
-		private UIButton ProfileButton(float yPosition, string name)
-		{
-			UIButton pageButton = new UIButton (new CGRect (0, yPosition, AppDelegate.ScreenWidth, 80));
-			pageButton.BackgroundColor = UIColor.FromRGB (250, 250, 250);	
-
-			UIFont nameFont = UIFont.SystemFontOfSize (20);
-			UILabel nameLabel = new UILabel (new CGRect (40, 30, AppDelegate.ScreenWidth - 50, 20));
-			nameLabel.Font = nameFont;
-			nameLabel.Text = name;
-			nameLabel.AdjustsFontSizeToFitWidth = true;
-			nameLabel.TextColor = AppDelegate.BoardBlue;
-
-			bool pressed = false;
-
-			pageButton.TouchUpInside += (sender, e) => {
+			pageButton.TapEvent += (sender, e) => {
 				if (!pressed)
 				{
 					pressed = true;
-					pageButton.BackgroundColor = AppDelegate.BoardLightBlue;
-					nameLabel.TextColor = UIColor.White;
+					pageButton.SetPressedColors();
 
-					/*Thread thread = new Thread(new ThreadStart(PopOut));
-					thread.Start();*/
-				} else {
-					pressed = false;
-					pageButton.BackgroundColor = UIColor.FromRGB(250,250,250);
-					nameLabel.TextColor = AppDelegate.BoardBlue;
-				}				
+					Thread thread = new Thread(new ThreadStart(PopOut));
+					thread.Start();
+
+					BoardInterface.board.FBPage = page;
+				}
 			};
-
-			pageButton.UserInteractionEnabled = true;
-			pageButton.AddSubviews (nameLabel);
 
 			return pageButton;
 		}
 
-		private UIButton PageButton(float yPosition, string name, string category)
+		private OneLineScreenButton CreateUnsyncButton(float yPosition)
 		{
-			UIButton pageButton = new UIButton (new CGRect (0, yPosition, AppDelegate.ScreenWidth, 80));
-			pageButton.BackgroundColor = UIColor.FromRGB (250, 250, 250);	
+			OneLineScreenButton unsyncButton = new OneLineScreenButton (yPosition);
+			unsyncButton.SetLabel("Unsync");
+			unsyncButton.SetUnpressedColors ();
 
-			UIFont nameFont = UIFont.SystemFontOfSize (20);
-			UILabel nameLabel = new UILabel (new CGRect (40, 20, AppDelegate.ScreenWidth - 50, 20));
-			nameLabel.Font = nameFont;
-			nameLabel.Text = name;
-			nameLabel.AdjustsFontSizeToFitWidth = true;
-			nameLabel.TextColor = AppDelegate.BoardBlue;
-
-			UIFont categoryFont = UIFont.SystemFontOfSize(14);
-			UILabel categoryLabel = new UILabel (new CGRect (40, nameLabel.Frame.Bottom + 5, AppDelegate.ScreenWidth - 50, 16));
-			categoryLabel.Font = categoryFont;
-			categoryLabel.Text = category;
-			categoryLabel.AdjustsFontSizeToFitWidth = true;
-			categoryLabel.TextColor = AppDelegate.BoardBlue;
-
-			bool pressed = false;
-
-			pageButton.TouchUpInside += (sender, e) => {
+			unsyncButton.TapEvent += (sender, e) => {
 				if (!pressed)
 				{
 					pressed = true;
-					pageButton.BackgroundColor = AppDelegate.BoardLightBlue;
-					nameLabel.TextColor = UIColor.White;
-					categoryLabel.TextColor = UIColor.White;
+					unsyncButton.SetPressedColors();
 
-					/*Thread thread = new Thread(new ThreadStart(PopOut));
-					thread.Start();*/
-				} else {
-					pressed = false;
-					pageButton.BackgroundColor = UIColor.FromRGB(250,250,250);
-					nameLabel.TextColor = AppDelegate.BoardBlue;
-					categoryLabel.TextColor = AppDelegate.BoardBlue;
-				}				
+					Thread thread = new Thread(new ThreadStart(PopOut));
+					thread.Start();
+
+					BoardInterface.board.FBPage = null;
+				}
 			};
 
-			pageButton.UserInteractionEnabled = true;
-			pageButton.AddSubviews (nameLabel, categoryLabel);
-
-			return pageButton;
+			return unsyncButton;
 		}
 
 		private void PopOut()

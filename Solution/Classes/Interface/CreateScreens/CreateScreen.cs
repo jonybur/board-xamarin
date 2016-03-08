@@ -1,6 +1,6 @@
 ﻿using CoreGraphics;
 using UIKit;
-
+using System;
 using Board.Schema;
 
 namespace Board.Interface.CreateScreens
@@ -11,10 +11,8 @@ namespace Board.Interface.CreateScreens
 		public UIScrollView ScrollView;
 		public UIButton NextButton;
 		public PostToButtons ShareButtons;
-
 		public Content content;
-
-		UITapGestureRecognizer bannerTap;
+		protected UITapGestureRecognizer bannerTap;
 
 		public override void ViewDidLoad()
 		{
@@ -41,7 +39,7 @@ namespace Board.Interface.CreateScreens
 			View.AddSubview (ScrollView);
 		}
 
-		protected void LoadBanner(string imagePath)
+		protected void LoadBanner(string imagePath, string toImport, EventHandler onSelectEvent)
 		{
 			using (UIImage bannerImage = UIImage.FromFile (imagePath)) {
 				Banner = new UIImageView(new CGRect(0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
@@ -49,8 +47,22 @@ namespace Board.Interface.CreateScreens
 			}
 
 			bannerTap = new UITapGestureRecognizer (tg => {
-				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
+				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4) {
 					NavigationController.PopViewController(true);
+				} else if (AppDelegate.ScreenWidth * (3 / 4) < tg.LocationInView(this.View).X && toImport != null) {
+					if (BoardInterface.board.FBPage != null)
+					{
+						ImportScreen importScreen = new ImportScreen(toImport);
+						NavigationController.PushViewController(importScreen, true);
+					} else { 
+						UIAlertController alert = UIAlertController.Create("Board not connected to a page", "Do you wish to go to settings to connect to a Facebook page?", UIAlertControllerStyle.Alert);
+						alert.AddAction (UIAlertAction.Create ("Later", UIAlertActionStyle.Cancel, null));
+						alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate(UIAlertAction obj) {
+							SettingsScreen settingsScreen = new SettingsScreen();
+							NavigationController.PushViewController(settingsScreen, true);
+						}));
+						NavigationController.PresentViewController (alert, true, null);
+					}
 				}
 			});
 

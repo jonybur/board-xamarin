@@ -31,7 +31,7 @@ namespace Board.Interface.CreateScreens
 
 			string imagePath = "./screens/share/banner/" + AppDelegate.PhoneVersion + ".jpg";
 
-			LoadBanner (imagePath);
+			LoadBanner (imagePath, null, null);
 			LoadNextButton ();
 			LoadTextView ();
 

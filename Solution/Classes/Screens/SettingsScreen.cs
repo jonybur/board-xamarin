@@ -22,8 +22,6 @@ namespace Board.Screens
 			View.BackgroundColor = UIColor.White;
 		}
 
-
-
 		private void LoadFBButton()
 		{
 			logInButton = new LoginButton (new CGRect (0, 0, AppDelegate.ScreenWidth - 70, 50)) {
@@ -42,7 +40,6 @@ namespace Board.Screens
 
 			View.AddSubview (logInButton);
 		}
-
 
 		private void LoadBanner()
 		{

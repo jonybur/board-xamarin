@@ -12,6 +12,21 @@ namespace Board.Utilities
 {
 	public static class CommonUtils
 	{
+		public static List<string> NSObjectToString(string fetch, NSObject obj)
+		{
+			NSString nsString = new NSString (fetch);
+
+			NSArray array = (NSArray)obj.ValueForKeyPath (nsString);
+			List<string> list = new List<string> ();
+
+			for (int i = 0; i < (int)array.Count; i++) {
+				var item = array.GetItem<NSObject> ((nuint)i);
+				list.Add(item.ToString());
+			}
+
+			return list;
+		}
+
 		// instead of nsdictionary, UIStringAttributes con su .Dictionary como el NSDictionary
 		public static Dictionary<NSRange, NSDictionary> GetFormatDictionaries(NSAttributedString attributedString)
 		{
