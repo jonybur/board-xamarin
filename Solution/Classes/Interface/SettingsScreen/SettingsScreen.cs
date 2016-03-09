@@ -43,7 +43,7 @@ namespace Board.Interface
 			SyncButton.TouchUpInside += (sender, e) => {
 				SyncButton.SetPressedColors();
 				PageSelectorScreen pgScreen = new PageSelectorScreen();
-				NavigationController.PushViewController(pgScreen, true);
+				AppDelegate.NavigationController.PushViewController(pgScreen, true);
 			};
 		}
 
@@ -53,7 +53,7 @@ namespace Board.Interface
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					NavigationController.PopViewController(true);
+					AppDelegate.NavigationController.PopViewController(true);
 				}
 			});
 

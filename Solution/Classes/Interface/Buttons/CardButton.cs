@@ -1,4 +1,5 @@
 using CoreGraphics;
+using CoreAnimation;
 using Board.Interface.CreateScreens;
 using UIKit;
 
@@ -27,26 +28,26 @@ namespace Board.Interface.Buttons
 				alert.AddAction (UIAlertAction.Create ("Poll", UIAlertActionStyle.Default, CreatePoll));
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 
-				AppDelegate.NavigationController.PresentViewController (alert, true, null);
+				AppDelegate.boardInterface.NavigationController.PresentViewController (alert, true, null);
 			});
 		}
 
 		private static void CreateAnnouncement(UIAlertAction act)
 		{
 			CreateAnnouncementScreen announcementScreen = new CreateAnnouncementScreen ();
-			AppDelegate.NavigationController.PushViewController (announcementScreen, true);
+			AppDelegate.PushViewLikePresentView (announcementScreen);
 		}
 
 		private static void CreateEvent(UIAlertAction act)
 		{
 			CreateEventScreen eventScreen = new CreateEventScreen ();
-			AppDelegate.NavigationController.PushViewController (eventScreen, true);
+			AppDelegate.PushViewLikePresentView (eventScreen);
 		}
 
 		private static void CreatePoll(UIAlertAction act)
 		{
 			CreatePollScreen pollScreen = new CreatePollScreen ();
-			AppDelegate.NavigationController.PushViewController (pollScreen, true);
+			AppDelegate.PushViewLikePresentView (pollScreen);
 		}
 	}
 }

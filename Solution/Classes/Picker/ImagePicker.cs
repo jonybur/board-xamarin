@@ -3,6 +3,7 @@ using CoreGraphics;
 using Foundation;
 using UIKit;
 
+using System;
 using Board.Schema;
 
 using MediaPlayer;
@@ -59,6 +60,54 @@ namespace Board.Picker
 				}          
 				// dismiss the picker
 				imagePickerController.DismissViewController(true, null);
+			};
+
+			imagePickerController.Canceled += OnCancelation;
+		}
+
+		public ImagePicker (UIImageView banner, Action hideWindow)
+		{
+			imagePickerController = new UIImagePickerController();
+
+			imagePickerController.SourceType = UIImagePickerControllerSourceType.PhotoLibrary;
+			imagePickerController.MediaTypes = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.PhotoLibrary);
+
+			imagePickerController.FinishedPickingMedia += (sender, e) => {
+				// determines what was selected, video or image
+				bool isImage = false;
+
+				if (e.Info[UIImagePickerController.MediaType].ToString() == "public.image")
+				{
+					isImage = true;
+				}
+
+				// if it was an image, get the other image info
+				if(isImage) {
+					// get the original image
+					UIImage image = e.Info[UIImagePickerController.OriginalImage] as UIImage;
+
+					if(image != null) {
+						// call addimage
+						float autosize = AppDelegate.ScreenWidth / 3;
+						float scale = (float)(image.Size.Height/image.Size.Width);
+						float imgh; float imgw;
+
+						if (scale > 1) {
+							scale = (float)(image.Size.Width/image.Size.Height);
+							imgh = autosize;
+							imgw = autosize * scale;
+						}
+						else {
+							imgw = autosize;
+							imgh = autosize * scale;	
+						}
+
+						banner.Image = image;
+					}
+				}
+
+				// dismiss the picker
+				imagePickerController.DismissViewController(true, hideWindow);
 			};
 
 			imagePickerController.Canceled += OnCancelation;
@@ -132,8 +181,6 @@ namespace Board.Picker
 			moviePlayer.Pause ();
 			moviePlayer.Dispose ();
 
-			AppDelegate.NavigationController.DismissViewController(false, null);
-
 			AppDelegate.NavigationController.PushViewController(shareScreen, false);
 		}
 
@@ -142,8 +189,6 @@ namespace Board.Picker
 			Picture picture = Preview.Initialize(image);
 
 			CreateMediaScreen shareScreen = new CreateMediaScreen(new UIImageView(image) , picture);
-
-			AppDelegate.NavigationController.DismissViewController(false, null);
 
 			AppDelegate.NavigationController.PushViewController(shareScreen, false);
 		}

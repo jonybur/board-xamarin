@@ -1,5 +1,6 @@
 ﻿using Board.Interface.Buttons;
 using CoreGraphics;
+using Foundation;
 using UIKit;
 using Board.Interface.Widgets;
 using Facebook.CoreKit;
@@ -226,6 +227,16 @@ namespace Board.Interface.LookUp
 			FacebookButton.UserInteractionEnabled = true;
 
 			facebookTap = new UITapGestureRecognizer (tg => {
+				NSUrl url;
+
+				if(content is BoardEvent)
+				{
+					url = new NSUrl("fb://event?id=" + content.FacebookId);
+				}else {
+					url = new NSUrl("https://facebook.com/" + content.FacebookId);
+				}
+				UIApplication.SharedApplication.OpenUrl(url);
+
 
 			});
 		}

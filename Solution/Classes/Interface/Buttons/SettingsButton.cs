@@ -19,7 +19,7 @@ namespace Board.Interface.Buttons
 
 			eventHandlers.Add ((sender, e) => {
 				SettingsScreen settingsScreen = new SettingsScreen();
-				AppDelegate.NavigationController.PushViewController(settingsScreen, true);
+				AppDelegate.PushViewLikePresentView (settingsScreen);
 			});
 		}
 	}

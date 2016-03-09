@@ -31,7 +31,7 @@ namespace Board.Interface.CreateScreens
 
 			string imagePath = "./screens/share/banner/" + AppDelegate.PhoneVersion + ".jpg";
 
-			LoadBanner (imagePath);
+			LoadBanner (imagePath, null, null);
 			LoadNextButton ();
 			LoadTextView ();
 
@@ -61,7 +61,7 @@ namespace Board.Interface.CreateScreens
 			scrollViewTap = new UITapGestureRecognizer (obj => textview.ResignFirstResponder ());
 
 			nextButtonTap += (sender, e) => {
-				NavigationController.PopViewController (false);
+				AppDelegate.NavigationController.PopViewController (false);
 
 				content.SocialChannel = ShareButtons.GetActiveSocialChannels ();
 

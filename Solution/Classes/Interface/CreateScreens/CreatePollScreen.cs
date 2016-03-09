@@ -21,7 +21,7 @@ namespace Board.Interface.CreateScreens
 
 			string imagePath = "./screens/poll/banner/" + AppDelegate.PhoneVersion + ".jpg";
 
-			LoadBanner (imagePath);
+			LoadBanner (imagePath, null, null);
 			LoadNextButton ();
 
 			positionY = (float)Banner.Frame.Bottom;

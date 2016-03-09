@@ -17,8 +17,8 @@ namespace Board.Interface.CreateScreens
 
 		public override void ViewDidLoad()
 		{
-			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
-			NavigationController.NavigationBarHidden = true;
+			AppDelegate.NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
+			AppDelegate.NavigationController.NavigationBarHidden = true;
 		}
 
 		public override void ViewDidAppear (bool animated)
@@ -40,41 +40,34 @@ namespace Board.Interface.CreateScreens
 			View.AddSubview (ScrollView);
 		}
 
-		protected void LoadBanner(string imagePath)
+		protected void LoadBanner(string imagePath, string toImport, Action<FacebookElement> onReturn)
 		{
 			Banner = new MenuBanner (imagePath);
 
 			var leftTap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4) {
-					NavigationController.PopViewController(true);
-				} 
-			});
-
-			Banner.AddTap (leftTap);
-			View.AddSubview (Banner);
-		}
-
-		protected void LoadImportButton(string toImport, Action<FacebookElement> onReturn)
-		{
-			var rightTap = new UITapGestureRecognizer (tg => {
-				if (AppDelegate.ScreenWidth * (3 / 4) < tg.LocationInView(this.View).X && toImport != null) {
+					AppDelegate.PopViewLikeDismissView();
+					//AppDelegate.NavigationController.PopViewController(true);
+				} else if (AppDelegate.ScreenWidth * 3 / 4 < tg.LocationInView(this.View).X && toImport != null) {
+					
 					if (BoardInterface.board.FBPage != null)
 					{
 						ImportScreen importScreen = new ImportScreen(toImport, onReturn);
-						NavigationController.PushViewController(importScreen, true);
+						AppDelegate.NavigationController.PushViewController(importScreen, false);
 					} else { 
 						UIAlertController alert = UIAlertController.Create("Board not connected to a page", "Do you wish to go to settings to connect to a Facebook page?", UIAlertControllerStyle.Alert);
 						alert.AddAction (UIAlertAction.Create ("Later", UIAlertActionStyle.Cancel, null));
 						alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate(UIAlertAction obj) {
 							SettingsScreen settingsScreen = new SettingsScreen();
-							NavigationController.PushViewController(settingsScreen, true);
+							AppDelegate.NavigationController.PushViewController(settingsScreen, true);
 						}));
-						NavigationController.PresentViewController (alert, true, null);
+						AppDelegate.NavigationController.PresentViewController (alert, true, null);
 					}
 				}
 			});
 
-			Banner.AddTap (rightTap);
+			Banner.AddTap (leftTap);
+			View.AddSubview (Banner);
 		}
 
 		protected void LoadNextButton()

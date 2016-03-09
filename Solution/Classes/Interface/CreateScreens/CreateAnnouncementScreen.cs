@@ -30,8 +30,7 @@ namespace Board.Interface.CreateScreens
 
 			string imagePath = "./screens/announcement/banner/" + AppDelegate.PhoneVersion + ".jpg";
 
-			LoadBanner (imagePath);
-			LoadImportButton ("posts", LoadFromFacebookEvent);
+			LoadBanner (imagePath, "posts", LoadFromFacebookEvent);
 			LoadNextButton ();
 			LoadTextView ();
 
@@ -47,7 +46,7 @@ namespace Board.Interface.CreateScreens
 			FacebookPost FBPost = (FacebookPost)FBElement;
 
 			content.FacebookId = FBPost.Id;
-			textview.Text = FBPost.Message;
+			textview.SetText (FBPost.Message);
 		}
 
 		public override void ViewDidAppear (bool animated)	
@@ -102,7 +101,7 @@ namespace Board.Interface.CreateScreens
 
 		private void LoadTextView()
 		{
-			var frame = new CGRect(10, Banner.Frame.Height, 
+			var frame = new CGRect(10, Banner.Frame.Bottom, 
 				AppDelegate.ScreenWidth - 50 - 23,
 				140);
 

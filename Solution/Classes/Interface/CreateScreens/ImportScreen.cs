@@ -98,6 +98,11 @@ namespace Board.Interface.CreateScreens
 		private OneLineMenuButton CreateButton(float yPosition, string content, FacebookElement fbelement)
 		{
 			OneLineMenuButton fbeventButton = new OneLineMenuButton (yPosition);
+
+			if (content.Length > 35) {
+				content = content.Substring (0, 35) + "...";
+			}
+
 			fbeventButton.SetLabel (content);
 			fbeventButton.SetUnpressedColors ();
 
@@ -123,7 +128,7 @@ namespace Board.Interface.CreateScreens
 
 			var tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4) {
-					NavigationController.PopViewController(true);
+					NavigationController.PopViewController(false);
 				}
 			});
 

@@ -8,6 +8,7 @@ using Facebook.CoreKit;
 
 using Google.Maps;
 using Board.Utilities;
+using CoreAnimation;
 using Board.JsonResponses;
 using Board.Interface;
 using Board.Screens;
@@ -169,6 +170,33 @@ namespace Board
 			GC.Collect ();
 		}
 
+		public static void PushViewLikePresentView(UIViewController screen)
+		{
+			CATransition transition = new CATransition ();
+
+			transition.Duration = .3f;
+			transition.TimingFunction = CAMediaTimingFunction.FromName (CAMediaTimingFunction.Linear);
+			transition.Type = CAAnimation.TransitionMoveIn;
+			transition.Subtype = CAAnimation.TransitionFromTop;
+			NavigationController.View.Layer.RemoveAllAnimations ();
+			NavigationController.View.Layer.AddAnimation (transition, null);
+
+			NavigationController.PushViewController (screen, false);
+		}
+
+		public static void PopViewLikeDismissView()
+		{
+			CATransition transition = new CATransition ();
+
+			transition.Duration = .3f;
+			transition.TimingFunction = CAMediaTimingFunction.FromName (CAMediaTimingFunction.Linear);
+			transition.Type = CAAnimation.TransitionMoveIn;
+			transition.Subtype = CAAnimation.TransitionFromTop;
+			NavigationController.View.Layer.RemoveAllAnimations ();
+			NavigationController.View.Layer.AddAnimation (transition, null);
+
+			NavigationController.PopViewController (false);
+		}
 	}
 }
 

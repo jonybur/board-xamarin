@@ -36,7 +36,6 @@ namespace Board.Interface
 			TypeOfPreview = (int)Type.Announcement;
 
 			announcementWidget = new AnnouncementWidget (ann);
-
 			announcementWidget.ScrollEnabled (false);
 
 			CGRect frame = announcementWidget.View.Frame;
@@ -182,6 +181,7 @@ namespace Board.Interface
 		{
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
 			Announcement ann = new Announcement (announcementWidget.announcement.Text, Rotation, uiView.Frame, Profile.CurrentProfile.UserID, DateTime.Now);
+			ann.FacebookId = announcementWidget.announcement.FacebookId;
 			ann.SocialChannel = announcementWidget.announcement.SocialChannel;
 			return ann;
 		}

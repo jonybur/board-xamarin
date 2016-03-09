@@ -36,6 +36,13 @@ namespace Board.Utilities
 
 		public bool IsPlaceHolder;
 
+		public void SetText(string text)
+		{
+			IsPlaceHolder = false;
+			Text = text;
+			Alpha = 1f;
+		}
+
 		public void Initialize ()
 		{
 			IsPlaceHolder = true;

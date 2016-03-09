@@ -23,7 +23,7 @@ namespace Board.Interface.LookUp
 
 			View.BackgroundColor = UIColor.FromRGB(250,250,250);
 
-			CreateButtons (BoardInterface.board.MainColor);
+			CreateButtons (UIColor.Black);
 
 			ScrollView = new UIScrollView (new CGRect (10, TrashButton.Frame.Bottom,
 				AppDelegate.ScreenWidth - 20,

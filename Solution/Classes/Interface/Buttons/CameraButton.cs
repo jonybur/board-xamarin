@@ -1,4 +1,3 @@
-using System;
 using Board.Picker;
 using CoreGraphics;
 using UIKit;
@@ -23,6 +22,7 @@ namespace Board.Interface.Buttons
 			eventHandlers.Add ((sender, e) => {
 				UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
 
+				alert.AddAction (UIAlertAction.Create ("Import from Facebook", UIAlertActionStyle.Default, null));
 				alert.AddAction (UIAlertAction.Create ("Photo Library", UIAlertActionStyle.Default, OpenPhotoGallery));
 				alert.AddAction (UIAlertAction.Create ("Take Photo or Video", UIAlertActionStyle.Default, OpenCamera));
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
