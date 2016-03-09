@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 
 using CoreGraphics;
+using System.Threading.Tasks;
 
 using Foundation;
 using UIKit;
@@ -12,6 +13,20 @@ namespace Board.Utilities
 {
 	public static class CommonUtils
 	{
+		public static async Task<UIImage> DownloadUIImageFromURL(string webAddress)
+		{
+			var webClient = new WebClient ();
+			var uri = new Uri (webAddress);
+			byte[] bytes = null;
+			try
+			{
+				bytes = await webClient.DownloadDataTaskAsync(uri);
+				return CommonUtils.GetImagefromByteArray(bytes);
+			}catch{
+				return new UIImage ();
+			}
+		}
+
 		public static List<string> NSObjectToString(string fetch, NSObject obj)
 		{
 			NSString nsString = new NSString (fetch);

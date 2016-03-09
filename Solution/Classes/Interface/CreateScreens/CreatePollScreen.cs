@@ -19,7 +19,7 @@ namespace Board.Interface.CreateScreens
 
 			LoadContent ();
 
-			string imagePath = "./screens/poll/banner/" + AppDelegate.PhoneVersion + ".jpg";
+			string imagePath = "./boardinterface/screens/poll/banner/" + AppDelegate.PhoneVersion + ".jpg";
 
 			LoadBanner (imagePath, null, null);
 			LoadNextButton ();

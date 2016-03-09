@@ -49,11 +49,11 @@ namespace Board.Interface
 
 		private void LoadBanner()
 		{
-			Banner = new MenuBanner ("./screens/settings/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new MenuBanner ("./boardinterface/screens/settings/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					AppDelegate.NavigationController.PopViewController(true);
+					AppDelegate.PopViewLikeDismissView();
 				}
 			});
 

@@ -14,11 +14,10 @@ namespace Board.Interface.CreateScreens
 	public class CreateAnnouncementScreen : CreateScreen
 	{
 		PlaceholderTextView textview;
-
-		float positionY;
-
 		UITapGestureRecognizer scrollViewTap;
 		EventHandler nextButtonTap;
+
+		float positionY;
 
 		public override void ViewDidLoad ()
 		{
@@ -28,7 +27,7 @@ namespace Board.Interface.CreateScreens
 
 			LoadContent ();
 
-			string imagePath = "./screens/announcement/banner/" + AppDelegate.PhoneVersion + ".jpg";
+			string imagePath = "./boardinterface/screens/announcement/banner/" + AppDelegate.PhoneVersion + ".jpg";
 
 			LoadBanner (imagePath, "posts", LoadFromFacebookEvent);
 			LoadNextButton ();
@@ -43,6 +42,8 @@ namespace Board.Interface.CreateScreens
 
 		private void LoadFromFacebookEvent(FacebookElement FBElement)
 		{
+			ShareButtons.ActivateFacebook ();
+
 			FacebookPost FBPost = (FacebookPost)FBElement;
 
 			content.FacebookId = FBPost.Id;
@@ -102,17 +103,17 @@ namespace Board.Interface.CreateScreens
 		private void LoadTextView()
 		{
 			var frame = new CGRect(10, Banner.Frame.Bottom, 
-				AppDelegate.ScreenWidth - 50 - 23,
+				AppDelegate.ScreenWidth - 20,
 				140);
 
 			textview = new PlaceholderTextView(frame, "Write a caption...");
 
 			textview.KeyboardType = UIKeyboardType.Default;
+			textview.TextColor = AppDelegate.BoardBlue;
 			textview.ReturnKeyType = UIReturnKeyType.Default;
 			textview.EnablesReturnKeyAutomatically = true;
 			textview.AllowsEditingTextAttributes = true;
 			textview.BackgroundColor = UIColor.White;
-			textview.TextColor = AppDelegate.BoardBlue;
 			textview.Font = UIFont.SystemFontOfSize (18);
 
 			UIImageView colorWhite = new UIImageView(new CGRect (0, 0, AppDelegate.ScreenWidth, frame.Bottom));

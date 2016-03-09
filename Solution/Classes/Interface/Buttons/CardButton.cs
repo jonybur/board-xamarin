@@ -25,7 +25,7 @@ namespace Board.Interface.Buttons
 
 				alert.AddAction (UIAlertAction.Create ("Announcement", UIAlertActionStyle.Default, CreateAnnouncement));
 				alert.AddAction (UIAlertAction.Create ("Event", UIAlertActionStyle.Default, CreateEvent));
-				alert.AddAction (UIAlertAction.Create ("Poll", UIAlertActionStyle.Default, CreatePoll));
+				alert.AddAction (UIAlertAction.Create ("Poll (Coming Soon)", UIAlertActionStyle.Default, CreatePoll));
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 
 				AppDelegate.boardInterface.NavigationController.PresentViewController (alert, true, null);

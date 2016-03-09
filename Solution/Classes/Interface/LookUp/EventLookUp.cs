@@ -1,9 +1,7 @@
 ﻿using Board.Schema;
 using CoreGraphics;
 using System.Globalization;
-using Facebook.CoreKit;
 using UIKit;
-using MonoTouch.Dialog;
 using System;
 using Foundation;
 using EventKit;
@@ -33,7 +31,7 @@ namespace Board.Interface.LookUp
 			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton, TrashButton);
 
 			PictureBox = CreatePictureBox ();
-			CalendarBox = CreateCalendarBox();
+			CalendarBox = CreateCalendarBox(UIColor.Black);
 			DescriptionBox = CreateTextView (boardEvent.Description);
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => CreateEvent (boardEvent));
@@ -79,7 +77,7 @@ namespace Board.Interface.LookUp
 
 			float scale = (float)(imageSize.Width/imageSize.Height);
 
-			if (scale < 1) {
+			if (scale <= 1) {
 				scale = (float)(imageSize.Height/imageSize.Width);
 				imgw = (float)posterSize.Width;
 				imgh = imgw * scale;
@@ -95,20 +93,7 @@ namespace Board.Interface.LookUp
 			return box;
 		}
 
-		private UILabel CreateCalendarLabel(string dateString, CGRect topFrame)
-		{
-			UIFont font = UIFont.BoldSystemFontOfSize (18);
-			//string dateString = boardEvent.Date.ToString ("f");
-			UILabel dateLabel = new UILabel (new CGRect (topFrame.X, topFrame.Bottom + 20, topFrame.Width, dateString.StringSize (font).Height));
-			dateLabel.Text = dateString;
-			dateLabel.TextColor = BoardInterface.board.MainColor;
-			dateLabel.Font = font;
-			dateLabel.AdjustsFontSizeToFitWidth = true;
-
-			return dateLabel;
-		}
-
-		private UIImageView CreateCalendarBox()
+		private UIImageView CreateCalendarBox(UIColor color)
 		{
 			UIImageView box = new UIImageView (new CGRect(10, PictureBox.Frame.Bottom + 20, PictureBox.Frame.Width, 90));
 
@@ -118,7 +103,7 @@ namespace Board.Interface.LookUp
 			dayNumber.Text = ((BoardEvent)content).StartDate.Day.ToString();
 			dayNumber.AdjustsFontSizeToFitWidth = true;
 			dayNumber.TextAlignment = UITextAlignment.Center;
-			dayNumber.TextColor = BoardInterface.board.MainColor;
+			dayNumber.TextColor = color;
 			dayNumber.TextAlignment = UITextAlignment.Center;
 
 			// empieza en 0 termina en 24
@@ -126,7 +111,7 @@ namespace Board.Interface.LookUp
 			dayName.Font = UIFont.SystemFontOfSize (16);
 			dayName.Text = ((BoardEvent)content).StartDate.DayOfWeek.ToString();
 			dayName.TextAlignment = UITextAlignment.Left;
-			dayName.TextColor = BoardInterface.board.MainColor;
+			dayName.TextColor = color;
 			dayName.AdjustsFontSizeToFitWidth = true;
 			dayName.SizeToFit ();
 
@@ -136,7 +121,7 @@ namespace Board.Interface.LookUp
 			int monthNumber = ((BoardEvent)content).StartDate.Month;
 			monthName.Text = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNumber).ToUpper();
 			monthName.TextAlignment = UITextAlignment.Left;
-			monthName.TextColor = BoardInterface.board.MainColor;
+			monthName.TextColor = color;
 			monthName.AdjustsFontSizeToFitWidth = true;
 			monthName.SizeToFit ();
 
@@ -146,7 +131,7 @@ namespace Board.Interface.LookUp
 			addToCalendar.Font = UIFont.BoldSystemFontOfSize (16);
 			addToCalendar.Text = "ADD TO CALENDAR >";
 			addToCalendar.TextAlignment = UITextAlignment.Left;
-			addToCalendar.TextColor = BoardInterface.board.MainColor;
+			addToCalendar.TextColor = color;
 			addToCalendar.AdjustsFontSizeToFitWidth = true;
 			addToCalendar.SizeToFit ();
 
@@ -155,14 +140,14 @@ namespace Board.Interface.LookUp
 			timeLabel.Font = UIFont.SystemFontOfSize (16);
 			timeLabel.Text = ((BoardEvent)content).StartDate.ToString("t");
 			timeLabel.TextAlignment = UITextAlignment.Left;
-			timeLabel.TextColor = BoardInterface.board.MainColor;
+			timeLabel.TextColor = color;
 			timeLabel.AdjustsFontSizeToFitWidth = true;
 			timeLabel.SizeToFit ();
 
 			UIImageView timeView = new UIImageView (new CGRect (0, 0, 10, 10));
 			using (UIImage img = UIImage.FromFile ("./boardinterface/widget/time.png")) {
 				timeView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-				timeView.TintColor = BoardInterface.board.MainColor;
+				timeView.TintColor = color;
 				timeView.Center = new CGPoint (timeLabel.Frame.Left - 10, timeLabel.Center.Y);
 			}
 

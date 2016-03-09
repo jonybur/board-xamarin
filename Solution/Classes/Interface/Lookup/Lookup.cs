@@ -229,12 +229,13 @@ namespace Board.Interface.LookUp
 			facebookTap = new UITapGestureRecognizer (tg => {
 				NSUrl url;
 
+				url = new NSUrl("https://facebook.com/" + content.FacebookId);
+				/*
 				if(content is BoardEvent)
 				{
 					url = new NSUrl("fb://event?id=" + content.FacebookId);
 				}else {
-					url = new NSUrl("https://facebook.com/" + content.FacebookId);
-				}
+				}*/
 				UIApplication.SharedApplication.OpenUrl(url);
 
 

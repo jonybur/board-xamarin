@@ -46,20 +46,20 @@ namespace Board.Interface.CreateScreens
 			UnsuscribeToEvents ();
 		}
 
-		private void Completion(object sender, EventArgs e)
+		private void Completion(List<FacebookElement> ElementList)
 		{
-			LoadEvents ();
+			LoadEvents (ElementList);
 			SuscribeToEvents ();
 		}
 			
-		private void LoadEvents()
+		private void LoadEvents(List<FacebookElement> ElementList)
 		{
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
-			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, 80 * FacebookUtils.ElementList.Count + Banner.Frame.Height + FacebookUtils.ElementList.Count + 1);
+			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, 80 * ElementList.Count + Banner.Frame.Height + ElementList.Count + 1);
 			float yPosition = (float)Banner.Frame.Height;
 
 			int i = 0;
-			foreach (FacebookElement fbelement in FacebookUtils.ElementList) {
+			foreach (FacebookElement fbelement in ElementList) {
 				OneLineMenuButton button;
 
 				// for importing events
@@ -124,11 +124,11 @@ namespace Board.Interface.CreateScreens
 
 		protected void LoadBanner()
 		{
-			Banner = new MenuBanner ("./screens/import/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new MenuBanner ("./boardinterface/screens/import/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			var tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4) {
-					NavigationController.PopViewController(false);
+					NavigationController.PopViewController(true);
 				}
 			});
 

@@ -62,10 +62,10 @@ namespace Board.Picker
 				imagePickerController.DismissViewController(true, null);
 			};
 
-			imagePickerController.Canceled += OnCancelation;
+			imagePickerController.Canceled += (sender, e) => imagePickerController.DismissViewController (true, null);
 		}
 
-		public ImagePicker (UIImageView banner, Action hideWindow)
+		public ImagePicker (Action<UIImage> setImage, Action onDismiss)
 		{
 			imagePickerController = new UIImagePickerController();
 
@@ -85,32 +85,14 @@ namespace Board.Picker
 				if(isImage) {
 					// get the original image
 					UIImage image = e.Info[UIImagePickerController.OriginalImage] as UIImage;
-
-					if(image != null) {
-						// call addimage
-						float autosize = AppDelegate.ScreenWidth / 3;
-						float scale = (float)(image.Size.Height/image.Size.Width);
-						float imgh; float imgw;
-
-						if (scale > 1) {
-							scale = (float)(image.Size.Width/image.Size.Height);
-							imgh = autosize;
-							imgw = autosize * scale;
-						}
-						else {
-							imgw = autosize;
-							imgh = autosize * scale;	
-						}
-
-						banner.Image = image;
-					}
+					setImage(image);
 				}
 
 				// dismiss the picker
-				imagePickerController.DismissViewController(true, hideWindow);
+				imagePickerController.DismissViewController(true, onDismiss);
 			};
 
-			imagePickerController.Canceled += OnCancelation;
+			imagePickerController.Canceled += (sender, e) => imagePickerController.DismissViewController (true, onDismiss);
 		}
 
 		public ImagePicker (UIImageView icon, UIImageView preview_icon, Board.Schema.Board board)
@@ -167,7 +149,7 @@ namespace Board.Picker
 				imagePickerController.DismissViewController(true, null);
 			};
 
-			imagePickerController.Canceled += OnCancelation;
+			imagePickerController.Canceled += (sender, e) => imagePickerController.DismissViewController (true, null);
 		}
 
 		private void LaunchVideoPreview(NSUrl url)
@@ -191,12 +173,6 @@ namespace Board.Picker
 			CreateMediaScreen shareScreen = new CreateMediaScreen(new UIImageView(image) , picture);
 
 			AppDelegate.NavigationController.PushViewController(shareScreen, false);
-		}
-
-
-		protected void OnCancelation(object sender, System.EventArgs e)
-		{
-			imagePickerController.DismissViewController(true, null);
 		}
 	}
 }

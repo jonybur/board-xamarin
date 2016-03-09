@@ -33,7 +33,6 @@ namespace Board.Screens
 			content = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			thumbSize = AppDelegate.ScreenWidth / 4;
 
-
 			LoadSideMenu ();
 		}
 
@@ -49,7 +48,7 @@ namespace Board.Screens
 				if (response != null) {
 					foreach (BoardResponse.Datum r in response.data) {
 						// gets image from url
-						UIImage boardImage = await SaveImage (r.logoURL, r.name);
+						UIImage boardImage = await CommonUtils.DownloadUIImageFromURL (r.logoURL);
 
 						// gets address
 						string jsonobj = JsonHandler.GET ("https://maps.googleapis.com/maps/api/geocode/json?address=" + r.address + "&key=" + AppDelegate.GoogleMapsAPIKey);
@@ -78,30 +77,6 @@ namespace Board.Screens
 		{
 			Banner.UnsuscribeToEvents ();
 		}
-
-		private async Task<UIImage> SaveImage(string webAddress, string boardName)
-		{
-			var webClient = new WebClient ();
-			var uri = new Uri (webAddress);
-			byte[] bytes = null;
-			try
-			{
-				bytes = await webClient.DownloadDataTaskAsync(uri);
-
-				return CommonUtils.GetImagefromByteArray(bytes);
-				/*
-				var path = (NSFileManager.DefaultManager.GetUrls (
-					NSSearchPathDirectory.DocumentDirectory, 
-					NSSearchPathDomain.User) [0]).Path;
-				
-				string imgFilename = System.IO.Path.Combine (path, boardName + ".jpg"); 
-
-				File.WriteAllBytes(imgFilename, bytes);*/
-			}catch{
-				return new UIImage ();
-			}
-		}
-
 
 		private void InitializeInterface()
 		{

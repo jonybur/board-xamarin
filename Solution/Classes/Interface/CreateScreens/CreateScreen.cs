@@ -47,19 +47,18 @@ namespace Board.Interface.CreateScreens
 			var leftTap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4) {
 					AppDelegate.PopViewLikeDismissView();
-					//AppDelegate.NavigationController.PopViewController(true);
 				} else if (AppDelegate.ScreenWidth * 3 / 4 < tg.LocationInView(this.View).X && toImport != null) {
 					
 					if (BoardInterface.board.FBPage != null)
 					{
 						ImportScreen importScreen = new ImportScreen(toImport, onReturn);
-						AppDelegate.NavigationController.PushViewController(importScreen, false);
+						AppDelegate.NavigationController.PushViewController(importScreen, true);
 					} else { 
 						UIAlertController alert = UIAlertController.Create("Board not connected to a page", "Do you wish to go to settings to connect to a Facebook page?", UIAlertControllerStyle.Alert);
 						alert.AddAction (UIAlertAction.Create ("Later", UIAlertActionStyle.Cancel, null));
 						alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate(UIAlertAction obj) {
 							SettingsScreen settingsScreen = new SettingsScreen();
-							AppDelegate.NavigationController.PushViewController(settingsScreen, true);
+							AppDelegate.PushViewLikePresentView(settingsScreen);
 						}));
 						AppDelegate.NavigationController.PresentViewController (alert, true, null);
 					}
@@ -72,7 +71,7 @@ namespace Board.Interface.CreateScreens
 
 		protected void LoadNextButton()
 		{
-			using (UIImage mapImage = UIImage.FromFile ("./screens/share/next/" + AppDelegate.PhoneVersion + ".jpg")) {
+			using (UIImage mapImage = UIImage.FromFile ("./boardinterface/screens/share/next/" + AppDelegate.PhoneVersion + ".jpg")) {
 				NextButton = new UIButton(new CGRect(0,AppDelegate.ScreenHeight - (mapImage.Size.Height / 2),
 					mapImage.Size.Width / 2, mapImage.Size.Height / 2));
 				NextButton.SetImage(mapImage, UIControlState.Normal);	
@@ -84,7 +83,7 @@ namespace Board.Interface.CreateScreens
 
 		protected void LoadPostToButtons(float positionY)
 		{
-			ShareButtons = new PostToButtons(positionY, this);
+			ShareButtons = new PostToButtons(positionY);
 			ScrollView.AddSubview (ShareButtons.View);
 		}
 

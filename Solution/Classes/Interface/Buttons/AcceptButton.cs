@@ -65,6 +65,13 @@ namespace Board.Interface.Buttons
 							BoardInterface.DictionaryContent.Add (ann.Id, ann);
 						}
 						break;
+
+					case (int)Preview.Type.Event:
+						BoardEvent bve = Preview.GetEvent();
+						if (bve != null){
+							BoardInterface.DictionaryContent.Add (bve.Id, bve);							
+						}
+						break;
 				}
 
 				// remove the preview imageview from the superview

@@ -9,10 +9,8 @@ namespace Board.Facebook
 {
 	public static class FacebookUtils
 	{
-		public static EventHandler Callback;
-		public static List<FacebookElement> ElementList;
-		public static string Element;
-		public static string Id;
+		private static Action<List<FacebookElement>> Callback;
+		private static string Element;
 
 		// TODO: modify to accept permission params
 		public static async System.Threading.Tasks.Task GetReadPermission(UIViewController uiv, string permission)
@@ -20,7 +18,7 @@ namespace Board.Facebook
 			if (!HasPermission(permission))
 			{
 				LoginManager manager = new LoginManager ();
-				await manager.LogInWithReadPermissionsAsync (new string[]{ permission }, uiv);
+				await manager.LogInWithReadPermissionsAsync (new []{ permission }, uiv);
 			}
 		}
 
@@ -29,7 +27,7 @@ namespace Board.Facebook
 			if (!HasPermission(permission))
 			{
 				LoginManager manager = new LoginManager ();
-				await manager.LogInWithPublishPermissionsAsync (new string[]{ permission }, uiv);
+				await manager.LogInWithPublishPermissionsAsync (new []{ permission }, uiv);
 			}
 		}
 
@@ -38,11 +36,10 @@ namespace Board.Facebook
 			return AccessToken.CurrentAccessToken.HasGranted (permission);
 		}
 
-		public static void MakeGraphRequest(string id, string element, EventHandler onCompletionHandler)
+		public static void MakeGraphRequest(string id, string element, Action<List<FacebookElement>> callback)
 		{
-			Callback = onCompletionHandler;
+			Callback = callback;
 			Element = element;
-			Id = id;
 
 			GraphRequest graph = new GraphRequest (id + "/" + element, null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
 			graph.Start (LoadList);
@@ -50,7 +47,7 @@ namespace Board.Facebook
 
 		private static void LoadList(GraphRequestConnection connection, NSObject obj, NSError err)
 		{
-			ElementList = new List<FacebookElement> ();
+			List<FacebookElement> ElementList = new List<FacebookElement> ();
 
 			if (Element == "events") {
 				string[,] objects = NSObjectToElement (obj, "data.id", "data.name", "data.description", "data.start_time", "data.end_time");
@@ -77,24 +74,43 @@ namespace Board.Facebook
 					FacebookPage fbpage = new FacebookPage (objects [i, 0], objects [i, 1], objects [i, 2]);
 					ElementList.Add (fbpage);
 				}
+			} else if (Element == "?fields=cover") {
+				string[,] objects = NSObjectToElement (obj, "cover.id", "cover.source");
+
+				for (int i = 0; i < objects.GetLength (0); i++) {
+					FacebookCover fbcover = new FacebookCover (objects [i, 0], objects [i, 1]);
+					ElementList.Add (fbcover);
+				}
 			}
 
 			if (Callback != null) {
-				Callback (null, null);
+				Callback (ElementList);
 			}
 		}
 
 		// first parameter must be primary key
-		public static string[,] NSObjectToElement(NSObject obj, params string[] fetch)
+		private static string[,] NSObjectToElement(NSObject obj, params string[] fetch)
 		{
 			NSString idString = new NSString (fetch[0]);
+			NSArray ids = obj.ValueForKeyPath (idString) as NSArray;
 
-			NSArray ids = (NSArray)obj.ValueForKeyPath (idString);
+			if (ids == null) {
+				NSMutableArray array = new NSMutableArray (1);
+				array.Add (obj.ValueForKeyPath (idString));
+				ids = array;
+			}
+
 			NSArray[] attributes = new NSArray[fetch.Length - 1];
 
 			for (int i = 1; i < fetch.Length; i++) {
 				NSString nsString = new NSString (fetch [i]);
-				attributes[i - 1] = (NSArray)obj.ValueForKeyPath (nsString);
+				attributes [i - 1] = obj.ValueForKeyPath (nsString) as NSArray;
+
+				if (attributes [i - 1] == null) {
+					NSMutableArray array = new NSMutableArray (1);
+					array.Add (obj.ValueForKeyPath (nsString));
+					attributes[i - 1] = array;
+				}
 			}
 
 			// instancias x atributos

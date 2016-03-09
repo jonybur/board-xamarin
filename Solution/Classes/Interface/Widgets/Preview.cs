@@ -18,6 +18,7 @@ namespace Board.Interface
 {
 	public static class Preview
 	{
+		public static EventWidget eventWidget;
 		public static AnnouncementWidget announcementWidget;
 		public static PictureWidget pictureWidget;
 		public static VideoWidget videoWidget;
@@ -28,7 +29,7 @@ namespace Board.Interface
 		}
 		private static float Rotation;
 
-		public enum Type {Picture = 1, Video, Announcement};
+		public enum Type {Picture = 1, Video, Announcement, Event};
 		public static int TypeOfPreview;
 
 		public static void Initialize (Announcement ann)
@@ -47,6 +48,23 @@ namespace Board.Interface
 			uiView.AddGestureRecognizer (SetNewPanGestureRecognizer());
 			uiView.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
 			uiView.AddSubviews(announcementWidget.View);
+		}
+
+		public static void Initialize (BoardEvent bve)
+		{
+			TypeOfPreview = (int)Type.Event;
+
+			eventWidget = new EventWidget(bve);
+
+			CGRect frame = eventWidget.View.Frame;
+
+			uiView = new UIView (new CGRect(BoardInterface.scrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
+				BoardInterface.scrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Board.Interface.Buttons.Button.ButtonSize / 2, frame.Width, frame.Height));
+
+			uiView.Alpha = .5f;
+			uiView.AddGestureRecognizer (SetNewPanGestureRecognizer());
+			uiView.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
+			uiView.AddSubviews(eventWidget.View);
 		}
 
 		public static Picture Initialize (UIImage image)
@@ -186,6 +204,14 @@ namespace Board.Interface
 			return ann;
 		}
 
+		public static BoardEvent GetEvent()
+		{
+			uiView.Transform = CGAffineTransform.MakeRotation (0);
+			BoardEvent bve = new BoardEvent (eventWidget.boardEvent.Name, eventWidget.boardEvent.ImageView.Image, eventWidget.boardEvent.StartDate, eventWidget.boardEvent.EndDate, Rotation, uiView.Frame, Profile.CurrentProfile.UserID, DateTime.Now);
+			bve.Description = eventWidget.boardEvent.Description;
+			bve.FacebookId = eventWidget.boardEvent.FacebookId;
+			return bve;
+		}
 	}
 }
 

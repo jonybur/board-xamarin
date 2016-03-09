@@ -190,8 +190,8 @@ namespace Board
 
 			transition.Duration = .3f;
 			transition.TimingFunction = CAMediaTimingFunction.FromName (CAMediaTimingFunction.Linear);
-			transition.Type = CAAnimation.TransitionMoveIn;
-			transition.Subtype = CAAnimation.TransitionFromTop;
+			transition.Type = CAAnimation.TransitionReveal;
+			transition.Subtype = CAAnimation.TransitionFromBottom;
 			NavigationController.View.Layer.RemoveAllAnimations ();
 			NavigationController.View.Layer.AddAnimation (transition, null);
 

@@ -31,6 +31,7 @@ namespace Board.Interface
 
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			View.AddSubview (ScrollView);
+			View.AddSubview (Banner);
 
 			await FacebookUtils.GetReadPermission (this, "pages_show_list");
 
@@ -59,22 +60,22 @@ namespace Board.Interface
 
 		}
 
-		private void Completion(object obj, EventArgs e)
+		private void Completion(List<FacebookElement> ElementList)
 		{
-			LoadPages ();
+			LoadPages (ElementList);
 
 			SuscribeToEvents ();
 
 			BTProgressHUD.Dismiss();
 		}
 
-		private void LoadPages()
+		private void LoadPages(List<FacebookElement> ElementList)
 		{
-			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, 80 * FacebookUtils.ElementList.Count + Banner.Frame.Height + FacebookUtils.ElementList.Count + 1);
-			float yPosition = (float)Banner.Frame.Bottom;
+			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, 80 * ElementList.Count + Banner.Frame.Height + ElementList.Count + 1);
+			float yPosition = (float)Banner.Frame.Bottom - 21 ;
 
 			int i = 0;
-			foreach (FacebookElement page in FacebookUtils.ElementList) {
+			foreach (FacebookElement page in ElementList) {
 				TwoLinesMenuButton pageButton = PageButton (yPosition, (FacebookPage)page);
 				ScrollView.AddSubview (pageButton);
 				Buttons.Add (pageButton);
@@ -152,9 +153,7 @@ namespace Board.Interface
 
 			Banner.AddTap (tap);
 
-			Banner.SuscribeToEvents ();
-
-			View.AddSubview (Banner);
+			Banner.SuscribeToEvents (); 
 		}
 	}
 }

@@ -29,7 +29,7 @@ namespace Board.Interface.CreateScreens
 
 			LoadContent ();
 
-			string imagePath = "./screens/share/banner/" + AppDelegate.PhoneVersion + ".jpg";
+			string imagePath = "./boardinterface/screens/share/banner/" + AppDelegate.PhoneVersion + ".jpg";
 
 			LoadBanner (imagePath, null, null);
 			LoadNextButton ();

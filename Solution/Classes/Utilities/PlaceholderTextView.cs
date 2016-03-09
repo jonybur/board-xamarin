@@ -27,6 +27,9 @@ namespace Board.Utilities
 		/// </summary>
 		public string Placeholder { get; set; }
 
+		// default placeholder color:
+		// 195, 195, 201
+
 		public PlaceholderTextView (CGRect frame, string placeholder)
 			: base(frame)
 		{
