@@ -257,6 +257,11 @@
     <BundleResource Include="Resources\boardinterface\screens\import\banner\6.jpg" />
     <BundleResource Include="Resources\boardinterface\screens\import\banner\6plus.jpg" />
     <BundleResource Include="Resources\boardinterface\screens\share\link\logo.png" />
+    <BundleResource Include="Resources\boardinterface\screens\event\placeholder.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\facebook2.png" />
+    <BundleResource Include="Resources\screens\home\map\markerbase.png" />
+    <BundleResource Include="Resources\screens\home\map\markerbase1.png" />
+    <BundleResource Include="Resources\screens\home\map\marker2.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -340,6 +345,7 @@
     <Compile Include="Classes\Screens\MainMenuScreen_Demo.cs" />
     <Compile Include="Classes\Screens\Controls\MenuBanner.cs" />
     <Compile Include="Classes\Facebook\FacebookCover.cs" />
+    <Compile Include="Classes\Interface\Buttons\FacebookButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

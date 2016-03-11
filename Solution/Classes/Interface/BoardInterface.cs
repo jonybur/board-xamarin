@@ -254,9 +254,9 @@ namespace Board.Interface
 			this.View.AddSubview (buttonBackground);
 
 			if (Profile.CurrentProfile.UserID == board.CreatorId) {
-				this.View.AddSubviews (ButtonInterface.GetCreatorButtons());
+				this.View.AddSubviews (ButtonInterface.GetCreatorButtons().ToArray());
 			} else {
-				this.View.AddSubviews (ButtonInterface.GetUserButtons ());
+				this.View.AddSubviews (ButtonInterface.GetUserButtons (board.FBPage != null).ToArray());
 			}
 
 			ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.NavigationBar);

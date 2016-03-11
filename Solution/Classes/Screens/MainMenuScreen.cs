@@ -4,8 +4,11 @@ using System.Linq;
 using CoreGraphics;
 using Facebook.CoreKit;
 using Foundation;
+using Board.Interface;
 using Google.Maps;
+using Board.Utilities;
 using UIKit;
+using BigTed;
 using Board.Screens.Controls;
 
 namespace Board.Screens
@@ -28,6 +31,7 @@ namespace Board.Screens
 		MapView map;
 
 		bool sideMenuIsUp;
+		bool mapInfoTapped;
 		bool firstLocationUpdate;
 
 		public override void DidReceiveMemoryWarning ()
@@ -56,6 +60,7 @@ namespace Board.Screens
 			foreach (BoardThumb bt in ListThumbs) {
 				bt.SuscribeToEvent ();
 			}
+			mapInfoTapped = false;
 			Banner.SuscribeToEvents ();
 		}
 
@@ -228,22 +233,24 @@ namespace Board.Screens
 			
 		private void LoadMap()
 		{
-			var camera = CameraPosition.FromCamera (latitude: 40, 
-				longitude: -100, 
-				zoom: -2);
+			var camera = CameraPosition.FromCamera (40, -100, -2);
 			
 			map = MapView.FromCamera (new CGRect (0, Banner.Frame.Bottom, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight - Banner.Frame.Height - map_button.Frame.Height), camera);
 			map.Alpha = 0f;
 			map.Settings.CompassButton = true;
 			map.Settings.MyLocationButton = true;
-
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				if (sideMenuIsUp)
-				{ sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return; }
-			});
-
 			map.UserInteractionEnabled = true;
-			map.AddGestureRecognizer (tap);
+
+			map.InfoTapped += (sender, e) => {
+				if (!mapInfoTapped)
+				{
+					BoardThumb bthumb = ListThumbs.Find(t=>t.Board.Id == ((NSString)e.Marker.UserData).ToString());
+					AppDelegate.boardInterface = new BoardInterface(bthumb.Board, false);
+					AppDelegate.NavigationController.PushViewController(AppDelegate.boardInterface, true);
+					mapInfoTapped = true;
+					Console.WriteLine("done!!");
+				}
+			};
 
 			View.AddSubview (map);
 
@@ -257,7 +264,53 @@ namespace Board.Screens
 
 				var location = change.ObjectForKey (NSValue.ChangeNewKey) as CoreLocation.CLLocation;
 				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
+				GenerateMarkers (location.Coordinate);
 			}
+		}
+
+		private void GenerateMarkers(CoreLocation.CLLocationCoordinate2D location)
+		{
+			Random rnd = new Random ();
+			foreach (BoardThumb thumb in ListThumbs) {
+				double lat = rnd.NextDouble () - .5;
+				double lon = rnd.NextDouble () - .5;
+
+
+				Marker marker = new Marker ();
+				marker.AppearAnimation = MarkerAnimation.Pop;
+				marker.Position = new CoreLocation.CLLocationCoordinate2D (location.Latitude - (lat * .02), location.Longitude + (lon * .02));
+				marker.Map = map;
+				marker.Icon = CreateMarker (thumb.Board.ImageView.Image);
+				marker.Draggable = false;
+				marker.Title = thumb.Board.Name;
+				marker.Snippet = thumb.Board.Location + "\nSEE MORE";
+				marker.InfoWindowAnchor = new CGPoint (.5, .5);
+				marker.Tappable = true;
+				marker.UserData = new NSString(thumb.Board.Id);
+				//CommonUtils.ResizeImage(thumb.Board.ImageView.Image, new CGSize(50,50));
+			}
+		}
+
+
+		// this one just creates a color square
+		private UIImage CreateMarker(UIImage logo)
+		{
+			UIGraphics.BeginImageContext (new CGSize(66, 96));
+			CGContext context = UIGraphics.GetCurrentContext ();
+
+			using (UIImage circle = UIImage.FromFile ("./screens/home/map/marker2.png")) {
+				circle.Draw (new CGRect (0, 0, 66, 96));
+			}
+
+			float imgw, imgh;
+
+			float scale = (float)(logo.Size.Height/logo.Size.Width);
+			imgw = 40;
+			imgh = imgw * scale;
+
+			logo.Draw (new CGRect (33 - imgw / 2, 33 - imgh / 2, imgw, imgh));
+
+			return UIGraphics.GetImageFromCurrentImageContext ();
 		}
 
 		private void LoadMapButton()

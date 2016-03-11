@@ -10,9 +10,11 @@ namespace Board.Screens.Controls
 	{
 		public static float Size;
 		private EventHandler TouchEvent;
+		public Board.Schema.Board Board;
 
 		public BoardThumb (Board.Schema.Board board, CGPoint contentOffset)
 		{ 
+			this.Board = board;
 			float imgx, imgy, imgw, imgh;
 
 			float autosize = Size;

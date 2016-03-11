@@ -2,7 +2,6 @@ using System;
 using Board.Schema;
 using Board.Utilities;
 using CoreGraphics;
-using Board.Infrastructure;
 using UIKit;
 
 namespace Board.Interface.Buttons

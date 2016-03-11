@@ -1,6 +1,7 @@
 using System;
 using CoreGraphics;
 using UIKit;
+using System.Collections.Generic;
 
 namespace Board.Interface.Buttons
 {
@@ -21,26 +22,30 @@ namespace Board.Interface.Buttons
 			navigationButton = new NavigationButton ();			
 		}
 
-		public static UIView[] GetUserButtons()
+		public static List<UIView> GetUserButtons(bool facebookPage)
 		{
-			const int cantViews = 2;
-			UIView[] views = new UIView[cantViews];
-			views [0] = actionsButtonSet.arrayButtons [0].uiButton;
-			views [1] = navigationButton.uiButton;
+			List<UIView> views = new List<UIView>();
+			views.Add(actionsButtonSet.arrayButtons [0].uiButton);
+
+			if (facebookPage) {
+				views.Add(actionsButtonSet.arrayButtons [4].uiButton);
+			}
+
+			views.Add(navigationButton.uiButton);
+
 			return views;
 		}
 
-		public static UIView[] GetCreatorButtons()
+		public static List<UIView> GetCreatorButtons()
 		{
-			int cantViews = 1 + ActionsButtonSet.CantButtons + ConfirmationButtonSet.CantButtons;
-			UIView[] views = new UIView[cantViews];
-			views [0] = actionsButtonSet.arrayButtons [0].uiButton;
-			views [1] = actionsButtonSet.arrayButtons [1].uiButton;
-			views [2] = actionsButtonSet.arrayButtons [2].uiButton;
-			views [3] = actionsButtonSet.arrayButtons [3].uiButton;
-			views [4] = confirmationButtonSet.arrayButtons [0].uiButton;
-			views [5] = confirmationButtonSet.arrayButtons [1].uiButton;
-			views [6] = navigationButton.uiButton;
+			List<UIView> views = new List<UIView> ();
+			views.Add(actionsButtonSet.arrayButtons [0].uiButton);
+			views.Add(actionsButtonSet.arrayButtons [1].uiButton);
+			views.Add(actionsButtonSet.arrayButtons [2].uiButton);
+			views.Add(actionsButtonSet.arrayButtons [3].uiButton);
+			views.Add(confirmationButtonSet.arrayButtons [0].uiButton);
+			views.Add(confirmationButtonSet.arrayButtons [1].uiButton);
+			views.Add(navigationButton.uiButton);
 			return views;
 		}
 

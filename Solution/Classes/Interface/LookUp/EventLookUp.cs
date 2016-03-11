@@ -12,6 +12,7 @@ namespace Board.Interface.LookUp
 	public class EventLookUp : LookUp
 	{
 		UIImageView PictureBox;
+		UILabel NameLabel;
 		UIImageView CalendarBox;
 		UITextView DescriptionBox;
 
@@ -19,9 +20,13 @@ namespace Board.Interface.LookUp
 		{
 			content = boardEvent;
 
-			View.BackgroundColor = UIColor.FromRGB(250,250,250);
+			UIColor backColor = UIColor.FromRGB(250,250,250);
+			UIColor frontColor = AppDelegate.BoardBlack;
 
-			CreateButtons (UIColor.Black);
+			//View.BackgroundColor = UIColor.FromRGB(250,250,250);
+			View.BackgroundColor = backColor;
+
+			CreateButtons (frontColor);
 
 			ScrollView = new UIScrollView (new CGRect (10, TrashButton.Frame.Bottom,
 				AppDelegate.ScreenWidth - 20,
@@ -31,23 +36,38 @@ namespace Board.Interface.LookUp
 			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton, TrashButton);
 
 			PictureBox = CreatePictureBox ();
-			CalendarBox = CreateCalendarBox(UIColor.Black);
-			DescriptionBox = CreateTextView (boardEvent.Description);
+			NameLabel = CreateNameLabel (boardEvent.Name, backColor);
+			CalendarBox = CreateCalendarBox(backColor);
+			DescriptionBox = CreateTextView (boardEvent.Description, frontColor);
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => CreateEvent (boardEvent));
 			CalendarBox.AddGestureRecognizer (tap);
 			CalendarBox.UserInteractionEnabled = true;
 
 			ScrollView.ScrollEnabled = true;
-			ScrollView.ContentSize = new CGSize (ScrollView.Frame.Width, DescriptionBox.Frame.Bottom + 10);
+			ScrollView.ContentSize = new CGSize (ScrollView.Frame.Width, DescriptionBox.Frame.Bottom + 30);
 
-			ScrollView.AddSubviews (PictureBox, CalendarBox, DescriptionBox);
+			UIImageView calendarBoxBackground = new UIImageView(new CGRect(0, PictureBox.Frame.Bottom, AppDelegate.ScreenWidth, (CalendarBox.Frame.Bottom + 30) - PictureBox.Frame.Bottom));
+			calendarBoxBackground.BackgroundColor = AppDelegate.BoardBlack;
+
+			ScrollView.AddSubviews (PictureBox, calendarBoxBackground, NameLabel, CalendarBox, DescriptionBox);
 		}
 
-		private UITextView CreateTextView(string text){
+		private UILabel CreateNameLabel(string name, UIColor color)
+		{
+			UILabel label = new UILabel (new CGRect(0, PictureBox.Frame.Bottom + 20, PictureBox.Frame.Width, 25));
+			label.Text = name;
+			label.Font = UIFont.BoldSystemFontOfSize (20);
+			label.TextColor = color;
+			label.TextAlignment = UITextAlignment.Center;
+			label.AdjustsFontSizeToFitWidth = true;
+			return label;
+		}
+
+		private UITextView CreateTextView(string text, UIColor color){
 
 			UITextView textView = new UITextView(new CGRect (0,
-				CalendarBox.Frame.Bottom + 10,
+				CalendarBox.Frame.Bottom + 45,
 				0,
 				0));
 
@@ -58,7 +78,7 @@ namespace Board.Interface.LookUp
 			textView.Selectable = true;
 			textView.DataDetectorTypes = UIDataDetectorType.Link;
 			textView.UserInteractionEnabled = true;
-			textView.TextColor = UIColor.Black;
+			textView.TextColor = color;
 			textView.BackgroundColor = UIColor.FromRGBA (250, 250, 250, 0);
 			textView.SizeToFit ();
 			textView.Frame = new CGRect (textView.Frame.X, textView.Frame.Y, PictureBox.Frame.Width, textView.Frame.Height);
@@ -75,16 +95,9 @@ namespace Board.Interface.LookUp
 
 			float imgw, imgh;
 
-			float scale = (float)(imageSize.Width/imageSize.Height);
-
-			if (scale <= 1) {
-				scale = (float)(imageSize.Height/imageSize.Width);
-				imgw = (float)posterSize.Width;
-				imgh = imgw * scale;
-			} else {
-				imgh = (float)posterSize.Height;
-				imgw = imgh * scale;
-			}
+			float scale = (float)(imageSize.Height/imageSize.Width);
+			imgw = (float)posterSize.Width;
+			imgh = imgw * scale;
 
 			UIImageView box = new UIImageView (new CGRect (0, 0,
 				imgw, imgh));
@@ -95,10 +108,18 @@ namespace Board.Interface.LookUp
 
 		private UIImageView CreateCalendarBox(UIColor color)
 		{
-			UIImageView box = new UIImageView (new CGRect(10, PictureBox.Frame.Bottom + 20, PictureBox.Frame.Width, 90));
+			UIImageView box = new UIImageView (new CGRect(20, NameLabel.Frame.Bottom + 30, PictureBox.Frame.Width - 40, 90));
+
+			UILabel monthName = new UILabel (new CGRect (0, 0, 90, 16));
+			monthName.Font = UIFont.SystemFontOfSize (16);
+			int monthNumber = ((BoardEvent)content).StartDate.Month;
+			monthName.Text = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNumber).ToUpper();
+			monthName.TextAlignment = UITextAlignment.Center;
+			monthName.TextColor = color;
+			monthName.AdjustsFontSizeToFitWidth = true;
 
 			// empieza en 55 termina en 110
-			UILabel dayNumber = new UILabel (new CGRect (0, 0, 90, 74));
+			UILabel dayNumber = new UILabel (new CGRect (0, monthName.Frame.Bottom + 5, 90, 74));
 			dayNumber.Font = UIFont.SystemFontOfSize (74);
 			dayNumber.Text = ((BoardEvent)content).StartDate.Day.ToString();
 			dayNumber.AdjustsFontSizeToFitWidth = true;
@@ -107,27 +128,32 @@ namespace Board.Interface.LookUp
 			dayNumber.TextAlignment = UITextAlignment.Center;
 
 			// empieza en 0 termina en 24
-			UILabel dayName = new UILabel (new CGRect (dayNumber.Frame.Right + 10, 0, 200, 30));
+			UILabel dayName = new UILabel (new CGRect (dayNumber.Frame.Right + 15, dayNumber.Frame.Top, 200, 30));
 			dayName.Font = UIFont.SystemFontOfSize (16);
-			dayName.Text = ((BoardEvent)content).StartDate.DayOfWeek.ToString();
+			dayName.Text = "Starts " + ((BoardEvent)content).StartDate.DayOfWeek.ToString();
 			dayName.TextAlignment = UITextAlignment.Left;
 			dayName.TextColor = color;
 			dayName.AdjustsFontSizeToFitWidth = true;
 			dayName.SizeToFit ();
 
-			// empieza en 105 termina en 135
-			UILabel monthName = new UILabel (new CGRect (dayName.Frame.Left, dayName.Frame.Bottom + 5, 100, 30));
-			monthName.Font = UIFont.SystemFontOfSize (16);
-			int monthNumber = ((BoardEvent)content).StartDate.Month;
-			monthName.Text = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNumber).ToUpper();
-			monthName.TextAlignment = UITextAlignment.Left;
-			monthName.TextColor = color;
-			monthName.AdjustsFontSizeToFitWidth = true;
-			monthName.SizeToFit ();
+			UILabel endName = new UILabel (new CGRect (dayName.Frame.Left, dayName.Frame.Bottom + 5, 100, 30));
+			endName.Font = UIFont.SystemFontOfSize (16);
+			string endString = "Ends";
+			if (((BoardEvent)content).EndDate.DayOfWeek.ToString() != ((BoardEvent)content).StartDate.DayOfWeek.ToString())
+			{
+				endString += " " + ((BoardEvent)content).EndDate.DayOfWeek.ToString();
+			}
+			endName.Text = endString;
+			endName.TextAlignment = UITextAlignment.Left;
+			endName.TextColor = color;
+			endName.AdjustsFontSizeToFitWidth = true;
+			endName.SizeToFit ();
 
+			// empieza en 105 termina en 135
+			/**/
 
 			// empieza en 105 termina en 135
-			UILabel addToCalendar = new UILabel (new CGRect (dayName.Frame.Left, monthName.Frame.Bottom + 5, 100, 30));
+			UILabel addToCalendar = new UILabel (new CGRect (dayName.Frame.Left, endName.Frame.Bottom + 5, 100, 30));
 			addToCalendar.Font = UIFont.BoldSystemFontOfSize (16);
 			addToCalendar.Text = "ADD TO CALENDAR >";
 			addToCalendar.TextAlignment = UITextAlignment.Left;
@@ -136,7 +162,7 @@ namespace Board.Interface.LookUp
 			addToCalendar.SizeToFit ();
 
 			// empieza en 26 termina en 56
-			UILabel timeLabel = new UILabel (new CGRect(dayName.Frame.Right + 20, 0, 200, 30));
+			UILabel timeLabel = new UILabel (new CGRect(dayName.Frame.Right + 20, dayName.Frame.Top, 200, 30));
 			timeLabel.Font = UIFont.SystemFontOfSize (16);
 			timeLabel.Text = ((BoardEvent)content).StartDate.ToString("t");
 			timeLabel.TextAlignment = UITextAlignment.Left;
@@ -151,8 +177,24 @@ namespace Board.Interface.LookUp
 				timeView.Center = new CGPoint (timeLabel.Frame.Left - 10, timeLabel.Center.Y);
 			}
 
+			// empieza en 26 termina en 56
+			UILabel timeEndLabel = new UILabel (new CGRect(endName.Frame.Right + 20, endName.Frame.Top, 200, 30));
+			timeEndLabel.Font = UIFont.SystemFontOfSize (16);
+			timeEndLabel.Text = ((BoardEvent)content).EndDate.ToString("t");
+			timeEndLabel.TextAlignment = UITextAlignment.Left;
+			timeEndLabel.TextColor = color;
+			timeEndLabel.AdjustsFontSizeToFitWidth = true;
+			timeEndLabel.SizeToFit ();
 
-			box.AddSubviews (dayName, timeView, timeLabel, dayNumber, monthName, addToCalendar);
+			UIImageView timeEndView = new UIImageView (new CGRect (0, 0, 10, 10));
+			using (UIImage img = UIImage.FromFile ("./boardinterface/widget/time.png")) {
+				timeEndView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				timeEndView.TintColor = color;
+				timeEndView.Center = new CGPoint (timeEndLabel.Frame.Left - 10, timeEndLabel.Center.Y);
+			}
+
+
+			box.AddSubviews (monthName, dayName, timeView, timeLabel, dayNumber, endName, timeEndLabel, timeEndView, addToCalendar);
 
 			return box;
 		}

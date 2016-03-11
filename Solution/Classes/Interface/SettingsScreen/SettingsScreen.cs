@@ -44,6 +44,7 @@ namespace Board.Interface
 				SyncButton.SetPressedColors();
 				PageSelectorScreen pgScreen = new PageSelectorScreen();
 				AppDelegate.NavigationController.PushViewController(pgScreen, true);
+				//AppDelegate.NavigationController.PushViewController(pgScreen, true);
 			};
 		}
 

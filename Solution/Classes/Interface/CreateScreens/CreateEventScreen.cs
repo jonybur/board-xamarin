@@ -24,6 +24,8 @@ namespace Board.Interface.CreateScreens
 		UITextField StartDateView;
 		UITextField EndDateView;
 
+		UIImageView whiteBack;
+
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
@@ -34,6 +36,9 @@ namespace Board.Interface.CreateScreens
 
 			string imagePath = "./boardinterface/screens/event/banner/" + AppDelegate.PhoneVersion + ".jpg";
 
+			whiteBack = new UIImageView ();
+			ScrollView.AddSubview (whiteBack);
+
 			LoadBanner (imagePath, "events", LoadFromFacebookEvent);
 			LoadPictureBox ();
 			LoadNameLabel ((float) PictureBox.Frame.Bottom + 50);
@@ -43,9 +48,15 @@ namespace Board.Interface.CreateScreens
 			LoadPostToButtons ((float) EndDateView.Frame.Bottom + 50);
 			LoadNextButton ();
 
-			AdjustContentSize ();
+			//AdjustContentSize ();
+
+			using (UIImage img = UIImage.FromFile ("./boardinterface/screens/event/placeholder.png")) {
+				SetImage (img);
+			}
 
 			CreateGestures ();
+
+			View.BackgroundColor = UIColor.White;
 		}
 
 		public override void ViewDidAppear(bool animated){
@@ -63,14 +74,15 @@ namespace Board.Interface.CreateScreens
 		private void LoadEndDateView(float yPosition)
 		{
 			UIDatePicker DatePicker = new UIDatePicker (new CGRect (0, AppDelegate.ScreenHeight - 250, AppDelegate.ScreenWidth, 250));
-			DatePicker.TimeZone = NSTimeZone.LocalTimeZone;
+			DatePicker.TimeZone = NSTimeZone.SystemTimeZone;
 			DatePicker.Date = (NSDate)DateTime.Now;
 			DatePicker.BackgroundColor = UIColor.White;
 			DatePicker.Mode = UIDatePickerMode.DateAndTime;
 			DatePicker.MinimumDate = (NSDate)DateTime.Now;
 			DatePicker.ValueChanged += (object sender, EventArgs e) => {
-				EndDateView.Text = "Ends: " + ((DateTime)DatePicker.Date).ToString("g");
-				((BoardEvent)content).EndDate = (DateTime)DatePicker.Date;
+				DateTime selectedDate = ((DateTime)DatePicker.Date).ToLocalTime();
+				EndDateView.Text = "Ends: " + selectedDate.ToString("g");
+				((BoardEvent)content).EndDate = selectedDate;
 			};
 
 			UIToolbar toolbar = new UIToolbar (new CGRect(0, DatePicker.Frame.Top- 40, AppDelegate.ScreenWidth, 40));
@@ -78,6 +90,7 @@ namespace Board.Interface.CreateScreens
 			UIBarButtonItem btnCenter = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace, null);
 			UIBarButtonItem btnRight = new UIBarButtonItem(UIBarButtonSystemItem.Done, delegate(object sender, EventArgs e) {
 				EndDateView.ResignFirstResponder();
+				StartDateView.ResignFirstResponder();
 				toolbar.Alpha = 0f;
 			});
 			toolbar.SetItems (new []{btnLeft, btnCenter, btnRight}, true);
@@ -99,7 +112,7 @@ namespace Board.Interface.CreateScreens
 			EndDateView.AttributedPlaceholder = prettyString;
 
 			EndDateView.TextColor = AppDelegate.BoardBlue;
-			EndDateView.Started += (object sender, EventArgs e) => {
+			EndDateView.Started += (sender, e) => {
 				toolbar.Alpha = 1f;
 				ScrollView.SetContentOffset(new CGPoint(0, EndDateView.Frame.Y - 200), true);
 			};
@@ -110,14 +123,15 @@ namespace Board.Interface.CreateScreens
 		private void LoadStartDateView(float yPosition)
 		{
 			UIDatePicker DatePicker = new UIDatePicker (new CGRect (0, AppDelegate.ScreenHeight - 250, AppDelegate.ScreenWidth, 250));
-			//DatePicker.TimeZone = NSTimeZone.LocalTimeZone;
-			DatePicker.Date = (NSDate)DateTime.Now;
+			DatePicker.TimeZone = NSTimeZone.LocalTimeZone;
+			DatePicker.Date = (NSDate)DateTime.Now.ToLocalTime();
 			DatePicker.BackgroundColor = UIColor.White;
 			DatePicker.Mode = UIDatePickerMode.DateAndTime;
-			DatePicker.MinimumDate = (NSDate)DateTime.Now;
-			DatePicker.ValueChanged += (object sender, EventArgs e) => {
-				StartDateView.Text = "Starts: " + DatePicker.Date.ToString();
-				((BoardEvent)content).StartDate = (DateTime)DatePicker.Date;
+			DatePicker.MinimumDate = (NSDate)DateTime.Now.ToLocalTime();
+			DatePicker.ValueChanged += (sender, e) => {
+				DateTime selectedDate = ((DateTime)DatePicker.Date).ToLocalTime();
+				StartDateView.Text = "Starts: " + selectedDate.ToString("g");
+				((BoardEvent)content).StartDate = selectedDate;
 			};
 
 			UIToolbar toolbar = new UIToolbar (new CGRect(0, DatePicker.Frame.Top- 40, AppDelegate.ScreenWidth, 40));
@@ -125,6 +139,7 @@ namespace Board.Interface.CreateScreens
 			UIBarButtonItem btnCenter = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace, null);
 			UIBarButtonItem btnRight = new UIBarButtonItem(UIBarButtonSystemItem.Done, delegate(object sender, EventArgs e) {
 				StartDateView.ResignFirstResponder();
+				EndDateView.ResignFirstResponder();
 				toolbar.Alpha = 0f;
 			});
 			toolbar.SetItems (new []{btnLeft, btnCenter, btnRight}, true);
@@ -158,7 +173,7 @@ namespace Board.Interface.CreateScreens
 		private void LoadNameLabel(float yPosition)
 		{
 			NameLabel = new UITextField (new CGRect(15, yPosition, AppDelegate.ScreenWidth - 30, 20));
-			NameLabel.Font = UIFont.SystemFontOfSize (18);
+			NameLabel.Font = UIFont.BoldSystemFontOfSize (18);
 
 			var placeholderAttribute = new UIStringAttributes {
 				Font = UIFont.SystemFontOfSize (18),
@@ -202,9 +217,7 @@ namespace Board.Interface.CreateScreens
 			
 		private void LoadPictureBox()
 		{
-			PictureBox = new UIImageView (new CGRect (10, Banner.Frame.Bottom,
-				AppDelegate.ScreenWidth - 20, 200));
-			PictureBox.BackgroundColor = UIColor.FromRGB (100, 100, 100);
+			PictureBox = new UIImageView ();
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				ImagePicker ip = new ImagePicker(SetImage, HideWindow);
@@ -230,16 +243,9 @@ namespace Board.Interface.CreateScreens
 
 			float imgw, imgh;
 
-			float scale = (float)(imageSize.Width/imageSize.Height);
-
-			if (scale <= 1) {
-				scale = (float)(imageSize.Height/imageSize.Width);
-				imgw = (float)posterSize.Width;
-				imgh = imgw * scale;
-			} else {
-				imgh = (float)posterSize.Height;
-				imgw = imgh * scale;
-			}
+			float scale = (float)(imageSize.Height/imageSize.Width);
+			imgw = (float)posterSize.Width;
+			imgh = imgw * scale;
 
 			PictureBox.Frame = new CGRect (10, Banner.Frame.Bottom, imgw, imgh);
 			PictureBox.Image = img;
@@ -253,11 +259,11 @@ namespace Board.Interface.CreateScreens
 
 			NameLabel.Frame = new CGRect (NameLabel.Frame.X, yPosition, NameLabel.Frame.Width, NameLabel.Frame.Height);
 
-			yPosition = (float)NameLabel.Frame.Bottom + 10;
+			yPosition = (float)NameLabel.Frame.Bottom + 20;
 
 			DescriptionView.Frame = new CGRect (DescriptionView.Frame.X, yPosition, DescriptionView.Frame.Width, DescriptionView.Frame.Height);
 
-			yPosition = (float)DescriptionView.Frame.Bottom + 30;
+			yPosition = (float)DescriptionView.Frame.Bottom + 40;
 
 			StartDateView.Frame = new CGRect (StartDateView.Frame.X, yPosition,
 				StartDateView.Frame.Width, StartDateView.Frame.Height);
@@ -271,6 +277,9 @@ namespace Board.Interface.CreateScreens
 
 			ShareButtons.View.Frame = new CGRect (ShareButtons.View.Frame.X, yPosition,
 				ShareButtons.View.Frame.Width, ShareButtons.View.Frame.Height);
+
+			whiteBack.Frame = new CGRect (0, NameLabel.Frame.Top - 15, AppDelegate.ScreenWidth, EndDateView.Frame.Bottom - NameLabel.Frame.Top + 30);
+			whiteBack.BackgroundColor = UIColor.White;
 
 			ScrollView.ContentSize = new CGSize(AppDelegate.ScreenWidth, yPosition + ShareButtons.View.Frame.Height + NextButton.Frame.Height + 50);
 		}
@@ -308,10 +317,14 @@ namespace Board.Interface.CreateScreens
 			if (ElementList.Count > 0) {
 				FacebookCover cover = ElementList [0] as FacebookCover;
 				if (cover != null) {
-					UIImage facebookImage = await CommonUtils.DownloadUIImageFromURL (cover.Source);
+					try{
+						UIImage facebookImage = await CommonUtils.DownloadUIImageFromURL (cover.Source);
+						SetImage (facebookImage);
+					} catch (Exception ex) {
+						Console.WriteLine ("ERROR: " + ex.Message);
+					}
 					BTProgressHUD.Dismiss ();
 
-					SetImage (facebookImage);
 				}
 			}
 		}

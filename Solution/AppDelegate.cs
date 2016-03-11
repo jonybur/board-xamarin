@@ -37,6 +37,7 @@ namespace Board
 		public static UIColor BoardOrange;
 		public static UIColor BoardBlue;
 		public static UIColor BoardLightBlue;
+		public static UIColor BoardBlack;
 
 		public static BoardInterface boardInterface;
 
@@ -75,6 +76,7 @@ namespace Board
 			BoardOrange = UIColor.FromRGB(244, 108, 85);
 			BoardBlue = UIColor.FromRGB(38, 106, 154);
 			BoardLightBlue = UIColor.FromRGB(45, 121, 180);
+			BoardBlack = UIColor.FromRGB (40, 40, 40);
 
 			MapServices.ProvideAPIKey (MapsApiKey);
 

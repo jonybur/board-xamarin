@@ -89,9 +89,7 @@ namespace Board.Screens
 			marker = new Marker ();
 			marker.AppearAnimation = MarkerAnimation.Pop;
 
-			var camera = CameraPosition.FromCamera (latitude: 40, 
-				longitude: -100, 
-				zoom: -2);
+			var camera = CameraPosition.FromCamera (40, -100, -2);
 
 			float mapSize = 0;
 
