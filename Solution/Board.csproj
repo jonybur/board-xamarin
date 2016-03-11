@@ -259,9 +259,9 @@
     <BundleResource Include="Resources\boardinterface\screens\share\link\logo.png" />
     <BundleResource Include="Resources\boardinterface\screens\event\placeholder.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\facebook2.png" />
-    <BundleResource Include="Resources\screens\home\map\markerbase.png" />
-    <BundleResource Include="Resources\screens\home\map\markerbase1.png" />
-    <BundleResource Include="Resources\screens\home\map\marker2.png" />
+    <BundleResource Include="Resources\screens\home\map\marker_blue.png" />
+    <BundleResource Include="Resources\screens\home\map\marker_orange.png" />
+    <BundleResource Include="Resources\boardinterface\lookup\uber.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -346,6 +346,9 @@
     <Compile Include="Classes\Screens\Controls\MenuBanner.cs" />
     <Compile Include="Classes\Facebook\FacebookCover.cs" />
     <Compile Include="Classes\Interface\Buttons\FacebookButton.cs" />
+    <Compile Include="Classes\Interface\Widgets\MapWidget.cs" />
+    <Compile Include="Classes\Schema\Map.cs" />
+    <Compile Include="Classes\Interface\LookUp\MapLookUp.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

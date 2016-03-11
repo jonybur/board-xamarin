@@ -90,11 +90,12 @@
 		<string>fb-messenger-api</string>
 		<string>fbauth2</string>
 		<string>fbshareextension</string>
+		<string>uber</string>
 	</array>
 	<key>CFBundleShortVersionString</key>
-	<string>0.2.9</string>
+	<string>0.3</string>
 	<key>CFBundleVersion</key>
-	<string>0.2.9</string>
+	<string>0.3</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.boardinc.Board</string>
 	<key>CFBundleName</key>

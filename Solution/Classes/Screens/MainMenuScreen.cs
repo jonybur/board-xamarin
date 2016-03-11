@@ -101,13 +101,15 @@ namespace Board.Screens
 
 			// starting point
 			float yposition = 5;
-
+			bool newLine = false;
 			foreach (Board.Schema.Board b in boardList) {
 				if (location != b.Location) {
 					// draw new location string
-					yposition += 70;
+					if (!newLine) {
+						yposition += 70;
+					}
 					UILabel lblLocation = new UILabel(new CGRect(30, yposition, AppDelegate.ScreenWidth - 40, 24));
-					yposition += (float)lblLocation.Frame.Height + BoardThumb.Size / 2+ 10;
+					yposition += (float)lblLocation.Frame.Height + BoardThumb.Size / 2 + 10;
 					lblLocation.Font = UIFont.FromName ("narwhal-bold", 20);
 					lblLocation.TextColor = UIColor.FromRGB (241, 93, 74);
 					location = b.Location;
@@ -117,12 +119,14 @@ namespace Board.Screens
 				}
 				 
 				BoardThumb boardThumb = new BoardThumb (b, new CGPoint ((AppDelegate.ScreenWidth/ 4) * i, yposition));
-				ListThumbs.Add (boardThumb);
 				i++;
 				if (i >= 4) {
 					i = 1;
 					yposition += BoardThumb.Size + 6;
-				}
+					newLine = true;
+				} else { newLine = false;}
+
+				ListThumbs.Add (boardThumb);
 				content.AddSubview (boardThumb);
 			}
 
@@ -248,7 +252,6 @@ namespace Board.Screens
 					AppDelegate.boardInterface = new BoardInterface(bthumb.Board, false);
 					AppDelegate.NavigationController.PushViewController(AppDelegate.boardInterface, true);
 					mapInfoTapped = true;
-					Console.WriteLine("done!!");
 				}
 			};
 
@@ -275,30 +278,27 @@ namespace Board.Screens
 				double lat = rnd.NextDouble () - .5;
 				double lon = rnd.NextDouble () - .5;
 
-
 				Marker marker = new Marker ();
 				marker.AppearAnimation = MarkerAnimation.Pop;
 				marker.Position = new CoreLocation.CLLocationCoordinate2D (location.Latitude - (lat * .02), location.Longitude + (lon * .02));
 				marker.Map = map;
-				marker.Icon = CreateMarker (thumb.Board.ImageView.Image);
+				marker.Icon = CreateMarkerImage (thumb.Board.ImageView.Image);
 				marker.Draggable = false;
 				marker.Title = thumb.Board.Name;
-				marker.Snippet = thumb.Board.Location + "\nSEE MORE";
+				marker.Snippet = "2 Cooper Street, Wynwood, FL 33880" + "\n\nTAP TO ENTER BOARD";
 				marker.InfoWindowAnchor = new CGPoint (.5, .5);
 				marker.Tappable = true;
 				marker.UserData = new NSString(thumb.Board.Id);
-				//CommonUtils.ResizeImage(thumb.Board.ImageView.Image, new CGSize(50,50));
 			}
 		}
 
 
 		// this one just creates a color square
-		private UIImage CreateMarker(UIImage logo)
+		private UIImage CreateMarkerImage(UIImage logo)
 		{
 			UIGraphics.BeginImageContext (new CGSize(66, 96));
-			CGContext context = UIGraphics.GetCurrentContext ();
 
-			using (UIImage circle = UIImage.FromFile ("./screens/home/map/marker2.png")) {
+			using (UIImage circle = UIImage.FromFile ("./screens/home/map/marker_blue.png")) {
 				circle.Draw (new CGRect (0, 0, 66, 96));
 			}
 

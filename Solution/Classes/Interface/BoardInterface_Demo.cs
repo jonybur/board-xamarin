@@ -145,6 +145,21 @@ namespace Board.Interface
 
 			AddTestAnnouncement (new CGRect (1930, 245, 0, 0), .01f, prettyString3, DateTime.Now.AddMinutes(-129));
 
+			// set different ranges to different styling!
+			AddTestPoll (new CGRect (1615, 390, 0, 0), .01f, "Couch potato or potato couch?", DateTime.Now.AddMinutes(-35), "Couch Potato", "Potato Couch");
+
+			AddTestMap (new CGRect (1930, 390, 0, 0), -.01f, null, DateTime.Now);
+		}
+
+		private void AddTestMap(CGRect frame, float rotation, string creatorid, DateTime creationdate){
+			Map map = new Map (rotation, frame, creatorid, creationdate);
+			DictionaryContent.Add (map.Id, map);
+		}
+
+		private void AddTestPoll(CGRect frame, float rotation, string text, DateTime creationDate, params string[] answers)
+		{
+			Poll poll = new Poll (text, rotation, frame, null, creationDate, answers);
+			DictionaryContent.Add (poll.Id, poll);
 		}
 
 		private void AddTestAnnouncement(CGRect frame, float rotation, NSMutableAttributedString text, DateTime creationDate)

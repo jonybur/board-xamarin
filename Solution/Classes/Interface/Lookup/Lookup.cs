@@ -24,6 +24,7 @@ namespace Board.Interface.LookUp
 		protected UIImageView BackButton;
 		protected UIImageView LikeButton;
 		protected UIImageView FacebookButton;
+		protected UIImageView UberButton;
 		protected UIImageView ShareButton;
 		protected UIImageView TrashButton;
 
@@ -40,6 +41,7 @@ namespace Board.Interface.LookUp
 			CreateBackButton (buttonColor);
 			CreateLikeButton (buttonColor);
 			CreateFacebookButton (buttonColor);
+			CreateUberButton (buttonColor);
 			CreateShareButton (buttonColor);
 			CreateTrashButton (buttonColor);
 
@@ -47,8 +49,17 @@ namespace Board.Interface.LookUp
 				TrashButton.Alpha = 0f;
 			}
 
-			if (string.IsNullOrEmpty(content.FacebookId)) {
+			if (content is Map) {
+				
 				FacebookButton.Alpha = 0f;
+				UberButton.Alpha = 1f;
+
+			} else {
+				UberButton.Alpha = 0f;
+
+				if (string.IsNullOrEmpty(content.FacebookId)) {
+					FacebookButton.Alpha = 0f;
+				}
 			}
 		}
 
@@ -200,6 +211,51 @@ namespace Board.Interface.LookUp
 				}
 			});
 		}
+
+
+		protected void CreateUberButton(UIColor buttonColor)
+		{
+			using (UIImage img = UIImage.FromFile ("./boardinterface/lookup/uber.png")) {
+				const string text = "Open in Uber";
+				UIFont font = UIFont.SystemFontOfSize (14);
+
+				FacebookButton = new UIImageView(new CGRect(0, 0, img.Size.Width + text.StringSize(font).Width + 5, img.Size.Height * 2));
+
+				UIImageView subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
+				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				subView.TintColor = buttonColor;
+				subView.Center = new CGPoint (img.Size.Width / 2, BackButton.Frame.Height / 2);
+
+				UILabel lblLikes = new UILabel (new CGRect (0, 0, text.StringSize(font).Width, 14));
+				lblLikes.Font = font;
+				lblLikes.Text = text;
+				lblLikes.TextColor = buttonColor;
+				lblLikes.Center = new CGPoint (subView.Center.X + lblLikes.Frame.Width / 2 + 15, subView.Center.Y);
+
+				FacebookButton.AddSubviews(subView, lblLikes);
+				FacebookButton.Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - 25);
+			}
+
+			FacebookButton.UserInteractionEnabled = true;
+
+			facebookTap = new UITapGestureRecognizer (tg => {
+				NSUrl url = new NSUrl("uber://");
+
+				if (UIApplication.SharedApplication.CanOpenUrl(url)) {
+					double latitude = 25.792826, longitude = -80.129943;
+
+					url = new NSUrl("uber://?action=setPickup&pickup=my_location&dropoff[latitude]="+ latitude +"&dropoff[longitude]="+longitude+"&dropoff[nickname]=" + BoardInterface.board.Name);
+
+					UIApplication.SharedApplication.OpenUrl(url);
+				}
+				else {
+					// No Uber app! Open mobile website.
+				}
+
+
+			});
+		}
+
 
 		protected void CreateFacebookButton(UIColor buttonColor)
 		{

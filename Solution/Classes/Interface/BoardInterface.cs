@@ -292,6 +292,10 @@ namespace Board.Interface
 				widget = new EventWidget (content as BoardEvent);
 			} else if (content is Announcement) {
 				widget = new AnnouncementWidget (content as Announcement);
+			} else if (content is Poll) {
+				widget = new PollWidget (content as Poll);
+			} else if (content is Map) {
+				widget = new MapWidget (content as Map);
 			} else {
 				widget = new Widget ();
 			}
@@ -321,7 +325,6 @@ namespace Board.Interface
 				circle2 = circle2.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 				circleLower = new UIImageView (circle2);
 			}
-
 
 			circleTop.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
 			circleTop.Tag = (int)Tags.Background;

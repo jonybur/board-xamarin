@@ -223,7 +223,12 @@ namespace Board.Interface.Widgets
 					else if (content is BoardEvent)
 					{
 						lookUp = new EventLookUp((BoardEvent)content);
-					} else {
+					}
+					else if (content is Map)
+					{
+						lookUp = new MapLookUp((Map)content);
+					}  
+					else {
 						lookUp = new LookUp.LookUp();
 					}
 
