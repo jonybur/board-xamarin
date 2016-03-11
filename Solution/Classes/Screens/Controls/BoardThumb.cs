@@ -62,6 +62,26 @@ namespace Board.Screens.Controls
 			this.UserInteractionEnabled = true;
 		}
 
+		// TODO: implement this
+		private UIImage CreateThumbImage(UIImage logo)
+		{
+			UIGraphics.BeginImageContext (new CGSize(66, 96));
+
+			using (UIImage circle = UIImage.FromFile ("./screens/home/map/marker_blue.png")) {
+				circle.Draw (new CGRect (0, 0, 66, 96));
+			}
+
+			float imgw, imgh;
+
+			float scale = (float)(logo.Size.Height/logo.Size.Width);
+			imgw = 40;
+			imgh = imgw * scale;
+
+			logo.Draw (new CGRect (33 - imgw / 2, 33 - imgh / 2, imgw, imgh));
+
+			return UIGraphics.GetImageFromCurrentImageContext ();
+		}
+
 		public void SuscribeToEvent()
 		{
 			TouchUpInside += TouchEvent;	

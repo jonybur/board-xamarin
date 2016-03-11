@@ -3,20 +3,18 @@ using UIKit;
 using CoreLocation;
 using CoreGraphics;
 using System;
-using Foundation;
-
 using Board.Schema;
 
 namespace Board.Interface.Widgets
 {
 	public class MapWidget : Widget
 	{
+		MapContainer container;
+
 		public Map map
 		{
 			get { return (Map)content; }
 		}
-
-		MapContainer container;
 
 		public MapWidget(Map _map)
 		{
@@ -35,10 +33,8 @@ namespace Board.Interface.Widgets
 
 			EyeOpen = false;
 
-			CreateGestures ();	
-
+			CreateGestures ();
 		}
-
 
 		private class MapContainer : UIViewController{
 			
@@ -62,30 +58,30 @@ namespace Board.Interface.Widgets
 
 				Marker marker = new Marker ();
 				marker.AppearAnimation = MarkerAnimation.Pop;
-				CLLocationCoordinate2D markerLocation = new CLLocationCoordinate2D (25.792826, -80.129943);
+				CLLocationCoordinate2D markerLocation = new CLLocationCoordinate2D (25.792826, -80.12994);
 				marker.Position = markerLocation;
 				marker.Map = mapView;
 				marker.Icon = CreateMarkerImage (BoardInterface.board.ImageView.Image);
 				marker.Draggable = false;
-				mapView.Camera = CameraPosition.FromCamera (new CLLocationCoordinate2D(25.792826, -80.129953), 16);
+				mapView.Camera = CameraPosition.FromCamera (new CLLocationCoordinate2D(25.792826, -80.12994), 16);
 			}
 
 			// this one just creates a color square
 			private UIImage CreateMarkerImage(UIImage logo)
 			{
-				UIGraphics.BeginImageContext (new CGSize(66, 96));
+				UIGraphics.BeginImageContext (new CGSize(44, 64));
 
 				using (UIImage circle = UIImage.FromFile ("./screens/home/map/marker_blue.png")) {
-					circle.Draw (new CGRect (0, 0, 66, 96));
+					circle.Draw (new CGRect (0, 0, 44, 64));
 				}
 
 				float imgw, imgh;
 
 				float scale = (float)(logo.Size.Height/logo.Size.Width);
-				imgw = 40;
+				imgw = 25;
 				imgh = imgw * scale;
 
-				logo.Draw (new CGRect (33 - imgw / 2, 33 - imgh / 2, imgw, imgh));
+				logo.Draw (new CGRect (22 - imgw / 2, 22 - imgh / 2, imgw, imgh));
 
 				return UIGraphics.GetImageFromCurrentImageContext ();
 			}

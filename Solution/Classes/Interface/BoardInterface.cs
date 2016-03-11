@@ -264,7 +264,7 @@ namespace Board.Interface
 
 		public void RefreshContent()
 		{
-			//RemoveAllContent ();
+			// RemoveAllContent ();
 
 			// looks for new keys in the DictionaryContent
 			// draws new widget in case new content is found

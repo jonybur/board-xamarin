@@ -29,7 +29,7 @@ namespace Board.Interface.Widgets
 			UITextView insideText = CreateText ();
 			List<UIButton> lstAnswers = new List<UIButton> ();
 
-			float height = (float)insideText.Frame.Height;
+			float height = (float)insideText.Frame.Height + 10;
 
 			foreach (string ans in poll.Answers) {
 				UIButton button = CreateAnswer (ans, height, (float)insideText.Frame.Width);
@@ -56,20 +56,28 @@ namespace Board.Interface.Widgets
 
 		private UIButton CreateAnswer (string answer, float yposition, float width)
 		{
-
 			// 30 is the space for radio button, 40 is height of button
-			UIButton button = new UIButton (new CGRect(0, yposition, width, 40));
+			UIButton button = new UIButton (new CGRect(10, yposition, width, 40));
 
+			UIImageView radioImage;
+			using (UIImage img = UIImage.FromFile ("./boardinterface/widget/radiobut.png")) {
+				UIImage tmp = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				radioImage = new UIImageView(tmp);
+			}
+			radioImage.Frame = new CGRect (0, 0, 20, 20);
+			radioImage.TintColor = BoardInterface.board.MainColor;
+			radioImage.Center = new CGPoint (15, button.Frame.Height / 2);
+				
 			UILabel lblAnswer = new UILabel ();
 			lblAnswer.Frame = new CGRect (0, 0, width - 60, 16);
-			lblAnswer.Center = new CGPoint (width / 2 + 30 / 2, 40 / 2);
+			lblAnswer.Center = new CGPoint (width / 2 + 10, button.Frame.Height / 2);
 
 			lblAnswer.Font = UIFont.SystemFontOfSize (16);
 			lblAnswer.AdjustsFontSizeToFitWidth = true;
 			lblAnswer.Text = answer;
 			lblAnswer.TextColor = BoardInterface.board.MainColor;
 
-			button.AddSubview (lblAnswer);
+			button.AddSubviews (lblAnswer, radioImage);
 
 			return button;
 		}

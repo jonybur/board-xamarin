@@ -146,7 +146,7 @@ namespace Board.Interface
 			AddTestAnnouncement (new CGRect (1930, 245, 0, 0), .01f, prettyString3, DateTime.Now.AddMinutes(-129));
 
 			// set different ranges to different styling!
-			AddTestPoll (new CGRect (1615, 390, 0, 0), .01f, "Couch potato or potato couch?", DateTime.Now.AddMinutes(-35), "Couch Potato", "Potato Couch");
+			AddTestPoll (new CGRect (1615, 390, 0, 0), .01f, "If you could travel through time where would you go?", DateTime.Now.AddMinutes(-35), "The future", "The past");
 
 			AddTestMap (new CGRect (1930, 390, 0, 0), -.01f, null, DateTime.Now);
 		}

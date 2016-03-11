@@ -262,6 +262,7 @@
     <BundleResource Include="Resources\screens\home\map\marker_blue.png" />
     <BundleResource Include="Resources\screens\home\map\marker_orange.png" />
     <BundleResource Include="Resources\boardinterface\lookup\uber.png" />
+    <BundleResource Include="Resources\boardinterface\widget\radiobut.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

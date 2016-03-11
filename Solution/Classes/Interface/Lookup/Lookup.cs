@@ -18,6 +18,7 @@ namespace Board.Interface.LookUp
 		UITapGestureRecognizer backTap;
 		UITapGestureRecognizer likeTap;
 		UITapGestureRecognizer facebookTap;
+		UITapGestureRecognizer uberTap;
 		UITapGestureRecognizer shareTap;
 		UITapGestureRecognizer trashTap;
 
@@ -45,21 +46,12 @@ namespace Board.Interface.LookUp
 			CreateShareButton (buttonColor);
 			CreateTrashButton (buttonColor);
 
-			if (Profile.CurrentProfile.UserID != BoardInterface.board.CreatorId) {
-				TrashButton.Alpha = 0f;
+			if (string.IsNullOrEmpty(content.FacebookId)) {
+				FacebookButton.Alpha = 0f;
 			}
 
-			if (content is Map) {
-				
-				FacebookButton.Alpha = 0f;
-				UberButton.Alpha = 1f;
-
-			} else {
-				UberButton.Alpha = 0f;
-
-				if (string.IsNullOrEmpty(content.FacebookId)) {
-					FacebookButton.Alpha = 0f;
-				}
+			if (Profile.CurrentProfile.UserID != BoardInterface.board.CreatorId) {
+				TrashButton.Alpha = 0f;
 			}
 		}
 
@@ -69,6 +61,7 @@ namespace Board.Interface.LookUp
 			LikeButton.AddGestureRecognizer (likeTap);
 			FacebookButton.AddGestureRecognizer (facebookTap);
 			ShareButton.AddGestureRecognizer (shareTap);
+			UberButton.AddGestureRecognizer (uberTap);
 			TrashButton.AddGestureRecognizer (trashTap);
 		}
 
@@ -78,6 +71,7 @@ namespace Board.Interface.LookUp
 			LikeButton.RemoveGestureRecognizer (likeTap);
 			LikeButton.RemoveGestureRecognizer (facebookTap);
 			ShareButton.RemoveGestureRecognizer (shareTap);
+			UberButton.RemoveGestureRecognizer (uberTap);
 			TrashButton.RemoveGestureRecognizer (trashTap);
 		}
 
@@ -219,7 +213,7 @@ namespace Board.Interface.LookUp
 				const string text = "Open in Uber";
 				UIFont font = UIFont.SystemFontOfSize (14);
 
-				FacebookButton = new UIImageView(new CGRect(0, 0, img.Size.Width + text.StringSize(font).Width + 5, img.Size.Height * 2));
+				UberButton = new UIImageView(new CGRect(0, 0, img.Size.Width + text.StringSize(font).Width + 5, img.Size.Height * 2));
 
 				UIImageView subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
 				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
@@ -232,27 +226,26 @@ namespace Board.Interface.LookUp
 				lblLikes.TextColor = buttonColor;
 				lblLikes.Center = new CGPoint (subView.Center.X + lblLikes.Frame.Width / 2 + 15, subView.Center.Y);
 
-				FacebookButton.AddSubviews(subView, lblLikes);
-				FacebookButton.Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - 25);
+				UberButton.AddSubviews(subView, lblLikes);
+				UberButton.Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - 25);
 			}
 
-			FacebookButton.UserInteractionEnabled = true;
+			UberButton.UserInteractionEnabled = true;
 
-			facebookTap = new UITapGestureRecognizer (tg => {
+			uberTap = new UITapGestureRecognizer (tg => {
 				NSUrl url = new NSUrl("uber://");
 
 				if (UIApplication.SharedApplication.CanOpenUrl(url)) {
 					double latitude = 25.792826, longitude = -80.129943;
 
-					url = new NSUrl("uber://?action=setPickup&pickup=my_location&dropoff[latitude]="+ latitude +"&dropoff[longitude]="+longitude+"&dropoff[nickname]=" + BoardInterface.board.Name);
+					// TODO: fix this
+					NSUrl uberRequest = new NSUrl("uber://?action=setPickup&pickup=my_location&dropoff[latitude]="+ latitude +"&dropoff[longitude]="+longitude+ "&product_id=7-UVBjdHfUrKKeZU9nDlP_HktFs3iWVT");//+"&dropoff[nickname]=" + BoardInterface.board.Name);
 
-					UIApplication.SharedApplication.OpenUrl(url);
+					UIApplication.SharedApplication.OpenUrl(uberRequest);
 				}
 				else {
 					// No Uber app! Open mobile website.
 				}
-
-
 			});
 		}
 

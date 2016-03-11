@@ -266,7 +266,7 @@ namespace Board.Screens
 				firstLocationUpdate = true; 
 
 				var location = change.ObjectForKey (NSValue.ChangeNewKey) as CoreLocation.CLLocation;
-				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
+				map.Camera = CameraPosition.FromCamera (location.Coordinate, 16);
 				GenerateMarkers (location.Coordinate);
 			}
 		}

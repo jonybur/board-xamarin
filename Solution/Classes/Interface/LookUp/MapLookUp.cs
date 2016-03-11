@@ -1,5 +1,8 @@
 ﻿using Board.Schema;
-
+using System;
+using Foundation;
+using Google.Maps;
+using CoreLocation;
 using CoreGraphics;
 using UIKit;
 
@@ -7,6 +10,9 @@ namespace Board.Interface.LookUp
 {
 	public class MapLookUp : LookUp
 	{
+		MapView mapView;
+		bool firstLocationUpdate;
+
 		public MapLookUp(Map map)
 		{
 			this.content = map;
@@ -21,31 +27,83 @@ namespace Board.Interface.LookUp
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			ScrollView.UserInteractionEnabled = true;
 
-			//UITextView textView = LoadTextView (announcement, frontColor);
+			LoadMap ();
+			ScrollView.AddSubview (mapView);
 
-			//ScrollView.AddSubview (textView);
-
-			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton, TrashButton);
+			View.AddSubviews (ScrollView, BackButton, LikeButton, UberButton, ShareButton, TrashButton);
 		}
 
-		private UITextView LoadMap(Announcement announcement, UIColor color){
+		public override void ViewDidDisappear(bool animated)
+		{
+			// unsuscribe from observers, gesture recgonizers, events
+			base.ViewDidDisappear(animated);
+			mapView.RemoveObserver (this, new NSString ("myLocation"));
+		}
 
-			UITextView textView = new UITextView(new CGRect (10,
+		private void LoadMap()
+		{
+			var camera = CameraPosition.FromCamera (40, -100, -2);
+
+			mapView = MapView.FromCamera (new CGRect (10,
 				TrashButton.Frame.Bottom,
 				AppDelegate.ScreenWidth - 20,
-				AppDelegate.ScreenHeight - TrashButton.Frame.Bottom - LikeButton.Frame.Height));
+				AppDelegate.ScreenHeight - TrashButton.Frame.Bottom - LikeButton.Frame.Height), camera);
+			mapView.Settings.CompassButton = true;
+			mapView.Settings.MyLocationButton = true;
+			mapView.UserInteractionEnabled = true;
+			mapView.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
 
-			textView.AttributedText = announcement.Text;
-			textView.Editable = false;
-			textView.ScrollEnabled = true;
-			textView.Selectable = true;
-			textView.DataDetectorTypes = UIDataDetectorType.Link;
-			textView.UserInteractionEnabled = true;
-			textView.TextColor = color;
-			textView.BackgroundColor = UIColor.FromRGBA (250, 250, 250, 0);
+			InvokeOnMainThread (()=> mapView.MyLocationEnabled = true);
+		}
 
-			return textView;
+		public override void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
+		{
+			if (!firstLocationUpdate) {
+				firstLocationUpdate = true; 
 
+				var location = change.ObjectForKey (NSObject.ChangeNewKey) as CLLocation;
+				CreateMarker (location.Coordinate);
+			}
+		}
+
+		private void CreateMarker(CLLocationCoordinate2D location)
+		{
+			Random rnd = new Random ();
+			double lat = rnd.NextDouble () - .5;
+			double lon = rnd.NextDouble () - .5;
+
+			Marker marker = new Marker ();
+			marker.AppearAnimation = MarkerAnimation.Pop;
+			CLLocationCoordinate2D markerLocation = new CLLocationCoordinate2D (25.792826, -80.129943);
+			marker.Position = markerLocation;
+			marker.Map = mapView;
+			marker.Icon = CreateMarkerImage (BoardInterface.board.ImageView.Image);
+			marker.Draggable = false;
+			marker.Title = BoardInterface.board.Name;
+			marker.Snippet = "2 Cooper Street, Wynwood, FL 33880";
+			marker.InfoWindowAnchor = new CGPoint (.5, .5);
+			marker.Tappable = true;
+			mapView.Camera = CameraPosition.FromCamera (new CLLocationCoordinate2D(25.792826, -80.129953), 16);
+		}
+
+		// this one just creates a color square
+		private UIImage CreateMarkerImage(UIImage logo)
+		{
+			UIGraphics.BeginImageContext (new CGSize(66, 96));
+
+			using (UIImage circle = UIImage.FromFile ("./screens/home/map/marker_blue.png")) {
+				circle.Draw (new CGRect (0, 0, 66, 96));
+			}
+
+			float imgw, imgh;
+
+			float scale = (float)(logo.Size.Height/logo.Size.Width);
+			imgw = 40;
+			imgh = imgw * scale;
+
+			logo.Draw (new CGRect (33 - imgw / 2, 33 - imgh / 2, imgw, imgh));
+
+			return UIGraphics.GetImageFromCurrentImageContext ();
 		}
 	}
 }
