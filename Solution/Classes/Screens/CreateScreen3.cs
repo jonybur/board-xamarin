@@ -217,7 +217,7 @@ namespace Board.Screens
 			button.Name = name;
 			button.Description = description;
 
-			UIFont nameFont = UIFont.FromName("narwhal-bold", 24);
+			UIFont nameFont = AppDelegate.Narwhal24;
 			CGSize labelSize = name.StringSize (nameFont);
 
 			button.NameLabel = new UILabel (new CGRect(0, 0, button.Frame.Width, labelSize.Height));
@@ -229,7 +229,7 @@ namespace Board.Screens
 			button.NameLabel.TextAlignment = UITextAlignment.Left;
 			button.AddSubview (button.NameLabel);
 
-			UIFont descriptionFont = UIFont.SystemFontOfSize (18);
+			UIFont descriptionFont = AppDelegate.SystemFontOfSize18;
 			button.DescriptionView = new UITextView(new CGRect(button.NameLabel.Frame.Left, button.NameLabel.Frame.Bottom + 10, (button.Frame.Width / 3) * 2, button.Frame.Height));
 			button.DescriptionView.Font = descriptionFont;
 			button.DescriptionView.Text = description;

@@ -72,7 +72,7 @@ namespace Board.Interface.LookUp
 				0));
 
 			textView.AttributedText = new NSAttributedString(text);
-			textView.Font = UIFont.SystemFontOfSize (16);
+			textView.Font = AppDelegate.SystemFontOfSize16;
 			textView.Editable = false;
 			textView.ScrollEnabled = false;
 			textView.Selectable = true;
@@ -111,7 +111,7 @@ namespace Board.Interface.LookUp
 			UIImageView box = new UIImageView (new CGRect(20, NameLabel.Frame.Bottom + 30, PictureBox.Frame.Width - 40, 90));
 
 			UILabel monthName = new UILabel (new CGRect (0, 0, 90, 16));
-			monthName.Font = UIFont.SystemFontOfSize (16);
+			monthName.Font = AppDelegate.SystemFontOfSize16;
 			int monthNumber = ((BoardEvent)content).StartDate.Month;
 			monthName.Text = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNumber).ToUpper();
 			monthName.TextAlignment = UITextAlignment.Center;
@@ -129,7 +129,7 @@ namespace Board.Interface.LookUp
 
 			// empieza en 0 termina en 24
 			UILabel dayName = new UILabel (new CGRect (dayNumber.Frame.Right + 15, dayNumber.Frame.Top, 200, 30));
-			dayName.Font = UIFont.SystemFontOfSize (16);
+			dayName.Font = AppDelegate.SystemFontOfSize16;
 			dayName.Text = "Starts " + ((BoardEvent)content).StartDate.DayOfWeek.ToString();
 			dayName.TextAlignment = UITextAlignment.Left;
 			dayName.TextColor = color;
@@ -137,7 +137,7 @@ namespace Board.Interface.LookUp
 			dayName.SizeToFit ();
 
 			UILabel endName = new UILabel (new CGRect (dayName.Frame.Left, dayName.Frame.Bottom + 5, 100, 30));
-			endName.Font = UIFont.SystemFontOfSize (16);
+			endName.Font = AppDelegate.SystemFontOfSize16;
 			string endString = "Ends";
 			if (((BoardEvent)content).EndDate.DayOfWeek.ToString() != ((BoardEvent)content).StartDate.DayOfWeek.ToString())
 			{
@@ -163,7 +163,7 @@ namespace Board.Interface.LookUp
 
 			// empieza en 26 termina en 56
 			UILabel timeLabel = new UILabel (new CGRect(dayName.Frame.Right + 20, dayName.Frame.Top, 200, 30));
-			timeLabel.Font = UIFont.SystemFontOfSize (16);
+			timeLabel.Font = AppDelegate.SystemFontOfSize16;
 			timeLabel.Text = ((BoardEvent)content).StartDate.ToString("t");
 			timeLabel.TextAlignment = UITextAlignment.Left;
 			timeLabel.TextColor = color;
@@ -179,7 +179,7 @@ namespace Board.Interface.LookUp
 
 			// empieza en 26 termina en 56
 			UILabel timeEndLabel = new UILabel (new CGRect(endName.Frame.Right + 20, endName.Frame.Top, 200, 30));
-			timeEndLabel.Font = UIFont.SystemFontOfSize (16);
+			timeEndLabel.Font = AppDelegate.SystemFontOfSize16;
 			timeEndLabel.Text = ((BoardEvent)content).EndDate.ToString("t");
 			timeEndLabel.TextAlignment = UITextAlignment.Left;
 			timeEndLabel.TextColor = color;

@@ -12,6 +12,19 @@ namespace Board.Interface.LookUp
 {
 	public class VideoLookUp : LookUp
 	{
+		AVPlayerViewController playerView;
+		AVPlayer player;
+
+		public override void ViewDidDisappear(bool animated)
+		{
+			base.ViewDidDisappear (animated);
+
+			player.Pause ();
+
+			player.Dispose ();
+			playerView.Dispose ();
+		}
+
 		public VideoLookUp(Video video)
 		{
 			content = video;
@@ -23,7 +36,7 @@ namespace Board.Interface.LookUp
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			ScrollView.UserInteractionEnabled = true;
 
-			AVPlayerViewController playerView = new AVPlayerViewController ();
+			playerView = new AVPlayerViewController ();
 			playerView.ShowsPlaybackControls = true;
 			playerView.View.Frame = new CGRect (0, TrashButton.Frame.Bottom, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight - TrashButton.Frame.Bottom - LikeButton.Frame.Height);
 			playerView.Player = LoadPlayer (video);
@@ -36,7 +49,6 @@ namespace Board.Interface.LookUp
 		private AVPlayer LoadPlayer(Video video)
 		{	
 			AVPlayerItem playerItem;
-			AVPlayer player;
 
 			using (AVAsset _asset = AVAsset.FromUrl (video.Url)) {
 				playerItem = new AVPlayerItem (_asset);

@@ -55,7 +55,7 @@ namespace Board.Screens
 						GoogleGeolocatorObject geolocatorObject = JsonHandler.DeserializeObject (jsonobj);
 
 						// compiles the board, adds the geolocator object for further reference
-						Board.Schema.Board board = new Board.Schema.Board (r.name, boardImage, CommonUtils.HexToUIColor (r.mainColorCode), CommonUtils.HexToUIColor (r.secondaryColorCode), r.address, null);
+						Board.Schema.Board board = new Board.Schema.Board (r.name, new UIImageView(boardImage), CommonUtils.HexToUIColor (r.mainColorCode), CommonUtils.HexToUIColor (r.secondaryColorCode), r.address, null);
 						board.GeolocatorObject = geolocatorObject;
 
 						boardList.Add (board);
@@ -109,7 +109,7 @@ namespace Board.Screens
 					yposition += 70;
 					UILabel lblLocation = new UILabel(new CGRect(30, yposition, AppDelegate.ScreenWidth - 40, 24));
 					yposition += (float)lblLocation.Frame.Height + thumbSize / 2 + 10;
-					lblLocation.Font = UIFont.FromName ("narwhal-bold", 20);
+					lblLocation.Font = AppDelegate.Narwhal20;
 					lblLocation.TextColor = UIColor.FromRGB (241, 93, 74);
 					location = hood;
 					lblLocation.Text = location.ToUpper();
@@ -272,8 +272,9 @@ namespace Board.Screens
 
 			View.AddSubviews (profileView, sidemenu);
 
-			UIFont namefont = UIFont.FromName("narwhal-bold", 20);
-			UIFont lastnamefont = UIFont.FromName("narwhal-bold", 24);
+			UIFont namefont = AppDelegate.Narwhal20;
+			UIFont lastnamefont = AppDelegate.Narwhal24;
+
 
 			UILabel name = new UILabel (new CGRect(10, profileView.Frame.Bottom + 15, sidemenu.Frame.Width - 20, 20));
 			name.Font = namefont;

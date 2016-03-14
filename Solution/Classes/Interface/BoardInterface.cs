@@ -5,6 +5,7 @@ using BigTed;
 using Board.Interface;
 using Board.Interface.Buttons;
 using Board.Interface.Widgets;
+using Board.Utilities;
 using Board.Schema;
 using CoreGraphics;
 using Facebook.CoreKit;
@@ -18,7 +19,6 @@ namespace Board.Interface
 	public partial class BoardInterface : UIViewController
 	{
 		private Gallery gallery;
-		private NSObject orientationObserver;
 
 		const float buttonBar = 90;
 
@@ -32,18 +32,15 @@ namespace Board.Interface
 
 		public enum Tags : byte {Background=1, Content};
 
-		//private CloudController cloudController;
-
 		public static int ScrollViewWidthSize = 2500;
-
-		bool TestMode;
 
 		public static Dictionary<string, Content> DictionaryContent;
 		public static Dictionary<string, Widget> DictionaryWidgets;
 
 		EventHandler scrolledEvent;
-
 		bool firstLoad;
+
+		bool TestMode;
 
 		public BoardInterface (Board.Schema.Board _board, bool _testMode){
 			board = _board;
@@ -97,7 +94,9 @@ namespace Board.Interface
 
 		public void ExitBoard()
 		{
+			View.BackgroundColor = UIColor.Black;
 			RemoveAllContent ();
+			MemoryUtility.ReleaseUIViewWithChildren (this.View, true);
 			ButtonInterface.DisableAllLayouts();
 			UnsuscribeToEvents ();
 		}
@@ -125,7 +124,7 @@ namespace Board.Interface
 			galleryActive = false;
 			View.AddSubview (gallery.GetScrollView ());
 
-			orientationObserver = UIDevice.Notifications.ObserveOrientationDidChange ((s, e) => {
+			/*orientationObserver = UIDevice.Notifications.ObserveOrientationDidChange ((s, e) => {
 				
 				if (galleryActive)
 				{
@@ -150,7 +149,7 @@ namespace Board.Interface
 						ActivateGallery();
 					}
 				}
-			});
+			});*/
 		}
 
 		private void ActivateGallery()
@@ -405,5 +404,6 @@ namespace Board.Interface
 
 			scrollView.AddSubviews (circleBackground, mainLogo);
 		}
+
 	}
 }

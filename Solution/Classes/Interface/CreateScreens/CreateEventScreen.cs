@@ -101,10 +101,10 @@ namespace Board.Interface.CreateScreens
 			EndDateView = new UITextField(new CGRect (15, yPosition, AppDelegate.ScreenWidth - 30, 24));
 			EndDateView.InputView = DatePicker;
 			EndDateView.BackgroundColor = UIColor.White;
-			EndDateView.Font = UIFont.SystemFontOfSize (18);
+			EndDateView.Font = AppDelegate.SystemFontOfSize18;
 
 			var placeholderAttribute = new UIStringAttributes {
-				Font = UIFont.SystemFontOfSize (18),
+				Font = AppDelegate.SystemFontOfSize18,
 				ForegroundColor = UIColor.FromRGB(101, 149, 183)
 			};
 			var prettyString = new NSMutableAttributedString ("End Date");
@@ -150,10 +150,10 @@ namespace Board.Interface.CreateScreens
 			StartDateView = new UITextField(new CGRect (15, yPosition, AppDelegate.ScreenWidth - 30, 24));
 			StartDateView.InputView = DatePicker;
 			StartDateView.BackgroundColor = UIColor.White;
-			StartDateView.Font = UIFont.SystemFontOfSize (18);
+			StartDateView.Font = AppDelegate.SystemFontOfSize18;
 
 			var placeholderAttribute = new UIStringAttributes {
-				Font = UIFont.SystemFontOfSize (18),
+				Font = AppDelegate.SystemFontOfSize18,
 				ForegroundColor = UIColor.FromRGB(101, 149, 183)
 			};
 			var prettyString = new NSMutableAttributedString ("Start Date");
@@ -176,7 +176,7 @@ namespace Board.Interface.CreateScreens
 			NameLabel.Font = UIFont.BoldSystemFontOfSize (18);
 
 			var placeholderAttribute = new UIStringAttributes {
-				Font = UIFont.SystemFontOfSize (18),
+				Font = AppDelegate.SystemFontOfSize18,
 				ForegroundColor = UIColor.FromRGB(101, 149, 183)
 			};
 			var prettyString = new NSMutableAttributedString ("Event Name");
@@ -210,7 +210,7 @@ namespace Board.Interface.CreateScreens
 			DescriptionView.EnablesReturnKeyAutomatically = true;
 			DescriptionView.AllowsEditingTextAttributes = true;
 			DescriptionView.BackgroundColor = UIColor.White;
-			DescriptionView.Font = UIFont.SystemFontOfSize (18);
+			DescriptionView.Font = AppDelegate.SystemFontOfSize18;
 
 			ScrollView.AddSubviews (DescriptionView);
 		}

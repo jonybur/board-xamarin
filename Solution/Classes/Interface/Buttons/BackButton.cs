@@ -1,4 +1,5 @@
 using CoreGraphics;
+using Board.Screens;
 using UIKit;
 
 namespace Board.Interface.Buttons
@@ -17,6 +18,7 @@ namespace Board.Interface.Buttons
 				AppDelegate.ScreenHeight - ButtonSize / 2);
 			
 			eventHandlers.Add ((sender, e) => {
+				((MainMenuScreen)(AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 2])).InitializeInterface();
 				AppDelegate.NavigationController.PopViewController (true);
 				AppDelegate.ExitBoardInterface();
 			});

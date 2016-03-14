@@ -100,5 +100,6 @@
 	<string>com.boardinc.Board</string>
 	<key>CFBundleName</key>
 	<string>Board</string>
+	<key>ITSAppUsesNonExemptEncryption</key><false/>
 </dict>
 </plist>

@@ -38,12 +38,16 @@ namespace Board.Interface.Widgets
 
 		public Widget()
 		{
-			using (UIImage image = UIImage.FromFile ("./boardinterface/widget/closedeye.png")) {
-				ClosedEyeImageView = new UIImageView(image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate));
+			if (ClosedEyeImageView == null) {
+				using (UIImage image = UIImage.FromFile ("./boardinterface/widget/closedeye.png")) {
+					ClosedEyeImageView = new UIImageView (image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate));
+				}
 			}
 
-			using (UIImage image = UIImage.FromFile ("./boardinterface/widget/openeye.png")) {
-				OpenEyeImageView = new UIImageView(image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate));
+			if (OpenEyeImageView == null) {
+				using (UIImage image = UIImage.FromFile ("./boardinterface/widget/openeye.png")) {
+					OpenEyeImageView = new UIImageView (image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate));
+				}
 			}
 
 			View = new UIButton ();
@@ -127,16 +131,16 @@ namespace Board.Interface.Widgets
 				MountingView.BackgroundColor = UIColor.FromRGB (250, 250, 250);
 			});	
 		}
-			
+	
 		protected UIImageView CreateLike(CGRect frame)
 		{
 			UIImageView likeView = new UIImageView(new CGRect(0, 0, iconSize, iconSize));
 
-			using (UIImage image = UIImage.FromFile ("./boardinterface/widget/like.png")){
-				likeView.Image = image;
+			using (UIImage img = UIImage.FromFile ("./boardinterface/widget/like.png")) {
+				likeView.Image = img;
+				likeView.Image = likeView.Image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 			}
 
-			likeView.Image = likeView.Image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 			likeView.TintColor = UIColor.FromRGB(140,140,140);
 			likeView.Center = new CGPoint (frame.Width - 5 - iconSize / 2, frame.Height / 2);
 			return likeView;
@@ -166,7 +170,7 @@ namespace Board.Interface.Widgets
 		protected void CreateEye()
 		{
 			EyeView = new UIImageView(new CGRect (MountingView.Frame.X + 10, MountingView.Frame.Height - iconSize - 5, iconSize, iconSize));
-			EyeView.Image = Widget.ClosedEyeImageView.Image;
+			EyeView.Image = ClosedEyeImageView.Image;
 			EyeView.TintColor = UIColor.FromRGB(140,140,140);
 		}
 
@@ -227,7 +231,10 @@ namespace Board.Interface.Widgets
 					else if (content is Map)
 					{
 						lookUp = new MapLookUp((Map)content);
-					}  
+					}  else if (content is Poll)
+					{
+						return; // no poll
+					}
 					else {
 						lookUp = new LookUp.LookUp();
 					}

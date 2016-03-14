@@ -262,7 +262,9 @@
     <BundleResource Include="Resources\screens\home\map\marker_blue.png" />
     <BundleResource Include="Resources\screens\home\map\marker_orange.png" />
     <BundleResource Include="Resources\boardinterface\lookup\uber.png" />
-    <BundleResource Include="Resources\boardinterface\widget\radiobut.png" />
+    <BundleResource Include="Resources\boardinterface\widget\radiobut2.png" />
+    <BundleResource Include="Resources\boardinterface\lookup\waze.png" />
+    <BundleResource Include="Resources\boardinterface\widget\radiobutfull.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -350,6 +352,7 @@
     <Compile Include="Classes\Interface\Widgets\MapWidget.cs" />
     <Compile Include="Classes\Schema\Map.cs" />
     <Compile Include="Classes\Interface\LookUp\MapLookUp.cs" />
+    <Compile Include="Classes\Utilities\ICanCleanUpMyself.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

@@ -10,7 +10,7 @@ namespace Board.Screens.Controls
 			Frame = new CGRect (0, yPosition, AppDelegate.ScreenWidth, 80);
 			UserInteractionEnabled = true;
 
-			UIFont nameFont = UIFont.SystemFontOfSize (18);
+			UIFont nameFont = AppDelegate.SystemFontOfSize18;
 			UILabel Label = new UILabel (new CGRect (40, 22, AppDelegate.ScreenWidth - 50, 18));
 			Label.Font = nameFont;
 			Label.AdjustsFontSizeToFitWidth = true;

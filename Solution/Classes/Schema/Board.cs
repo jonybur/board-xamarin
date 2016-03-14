@@ -23,10 +23,10 @@ namespace Board.Schema
 			Id = CommonUtils.GenerateGuid ();
 		}
 
-		public Board (string name, UIImage image, UIColor mainColor, UIColor secondaryColor, string location, string creatorId)
+		public Board (string name, UIImageView imageview, UIColor mainColor, UIColor secondaryColor, string location, string creatorId)
 		{
 			Id = CommonUtils.GenerateGuid ();
-			ImageView = new UIImageView(image);
+			ImageView = imageview;
 			MainColor = mainColor;
 			SecondaryColor = secondaryColor;
 			Location = location;

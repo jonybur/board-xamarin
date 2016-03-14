@@ -17,8 +17,8 @@ namespace Board.Interface.LookUp
 		{
 			this.content = map;
 
-			UIColor backColor = UIColor.FromRGB(250,250,250);
-			UIColor frontColor = AppDelegate.BoardBlack;
+			UIColor frontColor = UIColor.FromRGB(250,250,250);
+			UIColor backColor = UIColor.Black;
 
 			View.BackgroundColor = backColor;
 
@@ -38,15 +38,16 @@ namespace Board.Interface.LookUp
 			// unsuscribe from observers, gesture recgonizers, events
 			base.ViewDidDisappear(animated);
 			mapView.RemoveObserver (this, new NSString ("myLocation"));
+			mapView = null;
 		}
 
 		private void LoadMap()
 		{
 			var camera = CameraPosition.FromCamera (40, -100, -2);
 
-			mapView = MapView.FromCamera (new CGRect (10,
+			mapView = MapView.FromCamera (new CGRect (0,
 				TrashButton.Frame.Bottom,
-				AppDelegate.ScreenWidth - 20,
+				AppDelegate.ScreenWidth,
 				AppDelegate.ScreenHeight - TrashButton.Frame.Bottom - LikeButton.Frame.Height), camera);
 			mapView.Settings.CompassButton = true;
 			mapView.Settings.MyLocationButton = true;

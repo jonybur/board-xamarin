@@ -111,7 +111,7 @@ namespace Board.Interface.CreateScreens
 
 				Label = new UILabel (new CGRect (Logo.Frame.Right, 0, AppDelegate.ScreenWidth / 2 - Logo.Frame.Right, ButtonHeight));
 				Label.Text = text;
-				Label.Font = UIFont.SystemFontOfSize (18);
+				Label.Font = AppDelegate.SystemFontOfSize18;
 				Label.TextAlignment = UITextAlignment.Center;
 
 				Frame = frame;

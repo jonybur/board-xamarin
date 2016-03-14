@@ -43,7 +43,7 @@ namespace Board.Screens
 
 			yposition += (float)(uivmailicon.Frame.Height / 2) + 40;
 
-			UIFont bold = UIFont.FromName("narwhal-bold", 24);
+			UIFont bold = AppDelegate.Narwhal24;
 			UIFont regular = UIFont.SystemFontOfSize(20);
 
 			string earningsString = "CONTACT BOARD";
@@ -91,7 +91,7 @@ namespace Board.Screens
 			uib.Center = new CGPoint (AppDelegate.ScreenWidth / 2, yposition+ 200);
 
 			UILabel lbl = new UILabel ();
-			lbl.Font = UIFont.SystemFontOfSize (20);
+			lbl.Font = AppDelegate.SystemFontOfSize20;
 
 			string text = "EMAIL STAFF";
 			float lblheight =  (float)text.StringSize(lbl.Font).Height;

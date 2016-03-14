@@ -207,14 +207,14 @@ namespace Board.Screens
 			// creates first colorsquare + first hash + first hexstring
 
 			UITextField hash1 = new UITextField(new CGRect(color1.Frame.Right + pushRight + 10, color1.Frame.Y + 10, 10, 20));
-			hash1.Font = UIFont.SystemFontOfSize (20);
+			hash1.Font = AppDelegate.SystemFontOfSize20;
 			hash1.BackgroundColor = UIColor.White;
 			hash1.TextColor =AppDelegate.BoardBlue;
 			hash1.Text = "#";
 			hash1.UserInteractionEnabled = false;
 
 			hexView1 = new UITextField(new CGRect(hash1.Frame.Right + 3, hash1.Frame.Y, 100, hash1.Frame.Height));
-			hexView1.Font = UIFont.SystemFontOfSize (20);
+			hexView1.Font = AppDelegate.SystemFontOfSize20;
 			hexView1.BackgroundColor = UIColor.White;
 			hexView1.TextColor = AppDelegate.BoardBlue;
 			hexView1.KeyboardType = UIKeyboardType.Default;
@@ -257,14 +257,14 @@ namespace Board.Screens
 				AppDelegate.BoardBlue.CGColor, 2);
 
 			UITextField hash2 = new UITextField(new CGRect(color2.Frame.Right + pushRight + 10, color2.Frame.Y + 10, 10, 20));
-			hash2.Font = UIFont.SystemFontOfSize (20);
+			hash2.Font = AppDelegate.SystemFontOfSize20;
 			hash2.BackgroundColor = UIColor.White;
 			hash2.TextColor = AppDelegate.BoardBlue;
 			hash2.Text = "#";
 			hash2.UserInteractionEnabled = false;
 
 			hexView2 = new UITextField(new CGRect(hash2.Frame.Right + 3, hash2.Frame.Y, 100, hash2.Frame.Height));
-			hexView2.Font = UIFont.SystemFontOfSize (20);
+			hexView2.Font = AppDelegate.SystemFontOfSize20;
 			hexView2.BackgroundColor = UIColor.White;
 			hexView2.TextColor = AppDelegate.BoardBlue;
 			hexView2.KeyboardType = UIKeyboardType.Default;

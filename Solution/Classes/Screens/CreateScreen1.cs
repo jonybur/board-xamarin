@@ -60,7 +60,7 @@ namespace Board.Screens
 			nameView = new UITextField (new CGRect (30, 173, AppDelegate.ScreenWidth - 65, 26));
 			nameView.BackgroundColor = UIColor.White;
 			nameView.TextColor = AppDelegate.BoardBlue;
-			nameView.Font = UIFont.SystemFontOfSize (20);
+			nameView.Font = AppDelegate.SystemFontOfSize20;
 
 			nameView.AutocapitalizationType = UITextAutocapitalizationType.Words;
 			nameView.KeyboardType = UIKeyboardType.Default;
@@ -205,7 +205,7 @@ namespace Board.Screens
 			addressView = new UITextField (new CGRect (30, 286, AppDelegate.ScreenWidth - 65, 26));
 			addressView.BackgroundColor = UIColor.White;
 			addressView.TextColor = AppDelegate.BoardBlue;
-			addressView.Font = UIFont.SystemFontOfSize (20);
+			addressView.Font = AppDelegate.SystemFontOfSize20;
 
 			addressView.KeyboardType = UIKeyboardType.Default;
 			addressView.ReturnKeyType = UIReturnKeyType.Done;

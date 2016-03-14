@@ -39,6 +39,12 @@ namespace Board
 		public static UIColor BoardLightBlue;
 		public static UIColor BoardBlack;
 
+		public static UIFont Narwhal20;
+		public static UIFont Narwhal24;
+		public static UIFont SystemFontOfSize16;
+		public static UIFont SystemFontOfSize18;
+		public static UIFont SystemFontOfSize20;
+
 		public static BoardInterface boardInterface;
 
 		public static double Latitude;
@@ -77,6 +83,11 @@ namespace Board
 			BoardBlue = UIColor.FromRGB(38, 106, 154);
 			BoardLightBlue = UIColor.FromRGB(45, 121, 180);
 			BoardBlack = UIColor.FromRGB (40, 40, 40);
+			Narwhal20 = UIFont.FromName ("narwhal-bold", 20);
+			Narwhal24 = UIFont.FromName ("narwhal-bold", 24);
+			SystemFontOfSize16 = UIFont.SystemFontOfSize (16);
+			SystemFontOfSize18 = UIFont.SystemFontOfSize (18);
+			SystemFontOfSize20 = UIFont.SystemFontOfSize (20);
 
 			MapServices.ProvideAPIKey (MapsApiKey);
 
@@ -150,7 +161,7 @@ namespace Board
 				{
 					while (true) {
 						System.Threading.Thread.Sleep (1000);
-						GC.Collect ();
+						GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 					}
 				}).Start ();
 			*/
@@ -169,7 +180,7 @@ namespace Board
 			boardInterface.ExitBoard ();
 			boardInterface.Dispose ();
 			boardInterface = null;
-			GC.Collect ();
+			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 		}
 
 		public static void PushViewLikePresentView(UIViewController screen)

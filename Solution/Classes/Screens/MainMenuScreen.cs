@@ -4,11 +4,10 @@ using System.Linq;
 using CoreGraphics;
 using Facebook.CoreKit;
 using Foundation;
+using Board.Utilities;
 using Board.Interface;
 using Google.Maps;
-using Board.Utilities;
 using UIKit;
-using BigTed;
 using Board.Screens.Controls;
 
 namespace Board.Screens
@@ -36,7 +35,7 @@ namespace Board.Screens
 
 		public override void DidReceiveMemoryWarning ()
 		{
-			GC.Collect ();
+			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 		}
 
 		public override void ViewDidLoad ()
@@ -55,7 +54,7 @@ namespace Board.Screens
 		{
 			// suscribe to observers, gesture recgonizers, events
 			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
-			map_button.TouchUpInside += MapButtonEvent;
+			map_button.TouchUpInside += MapButtonEvent;			
 			sidemenu.AddGestureRecognizer (SideMenuTap);
 			foreach (BoardThumb bt in ListThumbs) {
 				bt.SuscribeToEvent ();
@@ -74,15 +73,29 @@ namespace Board.Screens
 				bt.UnsuscribeToEvent ();
 			}
 			Banner.UnsuscribeToEvents ();
+
+			MemoryUtility.ReleaseUIViewWithChildren (View, true);
 		}
 
-		private void InitializeInterface()
+		public void InitializeInterface()
 		{
 			LoadContent ();
 			LoadBanner ();
 			LoadMapButton ();
 			LoadMap ();
 			LoadSideMenu ();
+		}
+
+		class LocationLabel : UILabel{
+			public static UIFont font;
+		
+			public LocationLabel(float yposition, string location)
+			{
+				Frame = new CGRect(30, yposition, AppDelegate.ScreenWidth - 40, 24);
+				Font = font;
+				TextColor = AppDelegate.BoardOrange;
+				Text = location;
+			}
 		}
 
 		private void LoadContent()
@@ -99,6 +112,8 @@ namespace Board.Screens
 
 			string location = String.Empty;
 
+			LocationLabel.font = AppDelegate.Narwhal20;
+
 			// starting point
 			float yposition = 5;
 			bool newLine = false;
@@ -108,13 +123,10 @@ namespace Board.Screens
 					if (!newLine) {
 						yposition += 70;
 					}
-					UILabel lblLocation = new UILabel(new CGRect(30, yposition, AppDelegate.ScreenWidth - 40, 24));
-					yposition += (float)lblLocation.Frame.Height + BoardThumb.Size / 2 + 10;
-					lblLocation.Font = UIFont.FromName ("narwhal-bold", 20);
-					lblLocation.TextColor = UIColor.FromRGB (241, 93, 74);
+					LocationLabel locationLabel = new LocationLabel (yposition, b.Location);
+					yposition += (float)locationLabel.Frame.Height + BoardThumb.Size / 2 + 10;
 					location = b.Location;
-					lblLocation.Text = location.ToUpper();
-					content.AddSubview (lblLocation);
+					content.AddSubview (locationLabel);
 					i = 1;
 				}
 				 
@@ -195,8 +207,8 @@ namespace Board.Screens
 
 			View.AddSubviews (profileView, sidemenu);
 
-			UIFont namefont = UIFont.FromName("narwhal-bold", 20);
-			UIFont lastnamefont = UIFont.FromName("narwhal-bold", 24);
+			UIFont namefont = AppDelegate.Narwhal20;
+			UIFont lastnamefont = AppDelegate.Narwhal24;
 
 			UILabel name = new UILabel (new CGRect(10, profileView.Frame.Bottom + 15, sidemenu.Frame.Width - 20, 20));
 			name.Font = namefont;
@@ -292,15 +304,20 @@ namespace Board.Screens
 			}
 		}
 
+		static UIImage markerImage;
 
 		// this one just creates a color square
 		private UIImage CreateMarkerImage(UIImage logo)
 		{
 			UIGraphics.BeginImageContext (new CGSize(66, 96));
 
-			using (UIImage circle = UIImage.FromFile ("./screens/home/map/marker_blue.png")) {
-				circle.Draw (new CGRect (0, 0, 66, 96));
+			if (markerImage == null) {
+				using (UIImage circle = UIImage.FromFile ("./screens/home/map/marker_blue.png")) {
+					markerImage = circle;
+				}	
 			}
+
+			markerImage.Draw (new CGRect (0, 0, 66, 96));
 
 			float imgw, imgh;
 

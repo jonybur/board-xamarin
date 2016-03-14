@@ -1,5 +1,4 @@
-﻿using System;
-using Board.Schema;
+﻿using Board.Schema;
 using UIKit;
 using CoreGraphics;
 using System.Collections.Generic;
@@ -11,6 +10,7 @@ namespace Board.Interface.Widgets
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
 		private UITextView textview;
+		private static List<AnswerButton> lstAnswers;
 
 		public Poll poll
 		{
@@ -27,12 +27,14 @@ namespace Board.Interface.Widgets
 			content = poll;
 
 			UITextView insideText = CreateText ();
-			List<UIButton> lstAnswers = new List<UIButton> ();
+			lstAnswers = new List<AnswerButton> ();
 
 			float height = (float)insideText.Frame.Height + 10;
 
+			AnswerButton.Initialize ();
+
 			foreach (string ans in poll.Answers) {
-				UIButton button = CreateAnswer (ans, height, (float)insideText.Frame.Width);
+				AnswerButton button = new AnswerButton(ans, height, (float)insideText.Frame.Width);
 				height += (float)button.Frame.Height;
 				lstAnswers.Add (button);
 			}
@@ -54,32 +56,65 @@ namespace Board.Interface.Widgets
 			CreateGestures ();
 		}
 
-		private UIButton CreateAnswer (string answer, float yposition, float width)
-		{
-			// 30 is the space for radio button, 40 is height of button
-			UIButton button = new UIButton (new CGRect(10, yposition, width, 40));
+		class AnswerButton : UIButton{
 
-			UIImageView radioImage;
-			using (UIImage img = UIImage.FromFile ("./boardinterface/widget/radiobut.png")) {
-				UIImage tmp = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-				radioImage = new UIImageView(tmp);
+			UIImageView ImageView;
+			UILabel label;
+
+			static UIImage EmptyRadio;
+			static UIImage FullRadio;
+
+			public static void Initialize()
+			{
+				using (UIImage img = UIImage.FromFile ("./boardinterface/widget/radiobut2.png")){
+					EmptyRadio = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				}
+
+				using (UIImage img = UIImage.FromFile ("./boardinterface/widget/radiobutfull.png")){
+					FullRadio = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				}
 			}
-			radioImage.Frame = new CGRect (0, 0, 20, 20);
-			radioImage.TintColor = BoardInterface.board.MainColor;
-			radioImage.Center = new CGPoint (15, button.Frame.Height / 2);
-				
-			UILabel lblAnswer = new UILabel ();
-			lblAnswer.Frame = new CGRect (0, 0, width - 60, 16);
-			lblAnswer.Center = new CGPoint (width / 2 + 10, button.Frame.Height / 2);
 
-			lblAnswer.Font = UIFont.SystemFontOfSize (16);
-			lblAnswer.AdjustsFontSizeToFitWidth = true;
-			lblAnswer.Text = answer;
-			lblAnswer.TextColor = BoardInterface.board.MainColor;
+			private void SetEmptyImage()
+			{
+				ImageView = new UIImageView (EmptyRadio);
+				ImageView.Frame = new CGRect (0, 0, 20, 20);
+				ImageView.TintColor = BoardInterface.board.MainColor;
+				ImageView.Center = new CGPoint (15, Frame.Height / 2);
+			}
 
-			button.AddSubviews (lblAnswer, radioImage);
+			private void SetFullImage()
+			{
+				ImageView.Image = FullRadio;
+			}
 
-			return button;
+			public AnswerButton(string answer, float yposition, float width)
+			{
+				Frame = new CGRect(10, yposition, width, 50);
+
+				label = new UILabel ();
+				label.Frame = new CGRect (0, 0, width - 60, 16);
+				label.Center = new CGPoint (width / 2 + 10, Frame.Height / 2);
+
+				label.Font = AppDelegate.SystemFontOfSize16;
+				label.AdjustsFontSizeToFitWidth = true;
+				label.Text = answer;
+				label.TextColor = BoardInterface.board.MainColor;
+
+				SetEmptyImage();
+
+				AddSubviews (label, ImageView);
+
+				TouchUpInside += (sender, e) => {
+					SetFullImage();
+					foreach (AnswerButton ansButton in lstAnswers)
+					{
+						ansButton.label.Text += " - 50%";
+						ansButton.UserInteractionEnabled = false;
+					}
+				};
+
+			}
 		}
 
 		public void ScrollEnabled(bool value)
@@ -97,7 +132,7 @@ namespace Board.Interface.Widgets
 			textview.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 			textview.Text = poll.Question;
 			textview.TextColor = BoardInterface.board.MainColor;
-			textview.Font = UIFont.SystemFontOfSize (18);
+			textview.Font = AppDelegate.SystemFontOfSize18;
 			textview.SizeToFit ();
 
 			if (textview.Frame.Width < 160) {

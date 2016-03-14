@@ -78,6 +78,7 @@ namespace Board.Interface.LookUp
 			base.ViewDidDisappear (animated);
 			ScrollView.RemoveGestureRecognizer (doubletap);
 			ScrollView.ViewForZoomingInScrollView -= zoomView;
+			ScrollView = null;
 		}
 	}
 }

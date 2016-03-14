@@ -1,21 +1,11 @@
 ﻿using System;
 using CoreGraphics;
-using System.Linq;
 
 using Foundation;
 using UIKit;
 
-using System.Collections.Generic;
-
 using MediaPlayer;
-
-using Facebook.CoreKit;
-using Board.Interface.Buttons;
-using Board.Interface.Widgets;
-using Board.Interface;
 using Board.Schema;
-
-using BigTed;
 
 namespace Board.Interface
 {
@@ -88,11 +78,11 @@ namespace Board.Interface
 			AddTestVideo ("./demo/videos/3.mp4", 635, 420, .0f, DateTime.Now.AddMinutes(-50));
 
 			var firstAttributes = new UIStringAttributes {
-				Font = UIFont.FromName("narwhal-bold", 18f)
+				Font = AppDelegate.Narwhal20
 			};
 
 			var regularAttributes = new UIStringAttributes {
-				Font = UIFont.SystemFontOfSize (18)
+				Font = AppDelegate.SystemFontOfSize18
 			};
 
 			var boldAttributes = new UIStringAttributes {
@@ -168,7 +158,7 @@ namespace Board.Interface
 			ann.Frame = frame;
 			ann.Rotation = rotation;
 			ann.CreationDate = creationDate;
-			ann.Text = new NSAttributedString (text);
+			ann.Text = new NSAttributedString (text); 
 			DictionaryContent.Add (ann.Id, ann);
 		}
 

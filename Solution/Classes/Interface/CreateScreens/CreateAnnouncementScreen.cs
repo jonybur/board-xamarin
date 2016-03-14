@@ -114,7 +114,7 @@ namespace Board.Interface.CreateScreens
 			textview.EnablesReturnKeyAutomatically = true;
 			textview.AllowsEditingTextAttributes = true;
 			textview.BackgroundColor = UIColor.White;
-			textview.Font = UIFont.SystemFontOfSize (18);
+			textview.Font = AppDelegate.SystemFontOfSize18;
 
 			UIImageView colorWhite = new UIImageView(new CGRect (0, 0, AppDelegate.ScreenWidth, frame.Bottom));
 			colorWhite.BackgroundColor = UIColor.White;
