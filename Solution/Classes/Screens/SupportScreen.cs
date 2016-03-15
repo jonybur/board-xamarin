@@ -10,6 +10,7 @@ namespace Board.Screens
 	public class SupportScreen : UIViewController
 	{
 		MenuBanner Banner;
+		UIWindow window;
 		const int hborder = 65;
 		float yposition;
 
@@ -48,7 +49,7 @@ namespace Board.Screens
 			UIFont bold = AppDelegate.Narwhal24;
 			UIFont regular = UIFont.SystemFontOfSize(20);
 
-			string earningsString = "CONTACT BOARD";
+			const string earningsString = "CONTACT BOARD";
 			string withdrawString;
 
 			if (AppDelegate.PhoneVersion == "6") {
@@ -95,7 +96,7 @@ namespace Board.Screens
 			UILabel lbl = new UILabel ();
 			lbl.Font = AppDelegate.SystemFontOfSize20;
 
-			string text = "EMAIL STAFF";
+			const string text = "EMAIL STAFF";
 			float lblheight =  (float)text.StringSize(lbl.Font).Height;
 
 			CGRect lblframe = new CGRect (0, 0, uibframe.Size.Width, lblheight);
@@ -112,14 +113,25 @@ namespace Board.Screens
 					MFMailComposeViewController mailController = new MFMailComposeViewController ();
 					mailController.SetToRecipients(new [] {"support@getonboard.us"} );
 					mailController.SetMessageBody ("", false);
-					mailController.Finished += (s, args) => args.Controller.DismissViewController (true, null);
-					NavigationController.PresentViewController (mailController, true, null);
+					mailController.Finished += (s, args) => {
+						args.Controller.DismissViewController (true, HideWindow);
+					};
+					window = new UIWindow(new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+					window.RootViewController = new UIViewController();
+					window.MakeKeyAndVisible();
+					window.RootViewController.PresentViewController(mailController, true, null);
 				}
 
 			};
 
 			uib.AddSubview (lbl);
 			View.AddSubview (uib);
+		}
+
+		private void HideWindow()
+		{
+			window.Hidden = true;
+			window.Dispose();
 		}
 
 		private void LoadBanner()

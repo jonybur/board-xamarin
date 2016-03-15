@@ -10,6 +10,7 @@ namespace Board.Screens
 	public class InviteScreen : UIViewController
 	{
 		MenuBanner Banner;
+		UIWindow window;
 		const int hborder = 65;
 		float yposition;
 
@@ -110,16 +111,23 @@ namespace Board.Screens
 					MFMailComposeViewController mailController = new MFMailComposeViewController ();
 					mailController.SetSubject ("Get on Board!");
 					mailController.SetMessageBody ("", false);
-					mailController.Finished += ( object s, MFComposeResultEventArgs args) => {
-						args.Controller.DismissViewController (true, null);
+					mailController.Finished += (s, args) => {
+						args.Controller.DismissViewController (true, HideWindow);
 					};
-					NavigationController.PresentViewController (mailController, true, null);
-				}
-
+					window = new UIWindow(new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+					window.RootViewController = new UIViewController();
+					window.MakeKeyAndVisible();
+					window.RootViewController.PresentViewController(mailController, true, null);				}
 			};
 
 			uib.AddSubview (lbl);
 			View.AddSubview (uib);
+		}
+
+		private void HideWindow()
+		{
+			window.Hidden = true;
+			window.Dispose();
 		}
 
 		private void LoadBanner()
