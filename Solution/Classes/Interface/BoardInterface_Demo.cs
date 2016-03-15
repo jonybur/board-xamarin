@@ -135,8 +135,11 @@ namespace Board.Interface
 
 			AddTestAnnouncement (new CGRect (1930, 245, 0, 0), .01f, prettyString3, DateTime.Now.AddMinutes(-129));
 
+			var prettyString4 = new NSMutableAttributedString("If you could travel through time where would you go?");
+			prettyString4.SetAttributes(regularAttributes.Dictionary, new NSRange(0, prettyString4.Length));
+
 			// set different ranges to different styling!
-			AddTestPoll (new CGRect (1615, 390, 0, 0), .01f, "If you could travel through time where would you go?", DateTime.Now.AddMinutes(-35), "The future", "The past");
+			AddTestPoll (new CGRect (1615, 390, 0, 0), .01f, prettyString4, DateTime.Now.AddMinutes(-35), "The future", "The past");
 
 			AddTestMap (new CGRect (1930, 390, 0, 0), -.01f, null, DateTime.Now);
 		}
@@ -146,7 +149,7 @@ namespace Board.Interface
 			DictionaryContent.Add (map.Id, map);
 		}
 
-		private void AddTestPoll(CGRect frame, float rotation, string text, DateTime creationDate, params string[] answers)
+		private void AddTestPoll(CGRect frame, float rotation, NSMutableAttributedString text, DateTime creationDate, params string[] answers)
 		{
 			Poll poll = new Poll (text, rotation, frame, null, creationDate, answers);
 			DictionaryContent.Add (poll.Id, poll);

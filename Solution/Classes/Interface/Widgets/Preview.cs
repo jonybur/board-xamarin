@@ -22,6 +22,7 @@ namespace Board.Interface
 		public static AnnouncementWidget announcementWidget;
 		public static PictureWidget pictureWidget;
 		public static VideoWidget videoWidget;
+		public static PollWidget pollWidget;
 
 		private static UIView uiView;
 		public static UIView View{
@@ -29,8 +30,25 @@ namespace Board.Interface
 		}
 		private static float Rotation;
 
-		public enum Type {Picture = 1, Video, Announcement, Event};
+		public enum Type {Picture = 1, Video, Announcement, Event, Poll};
 		public static int TypeOfPreview;
+
+		public static void Initialize (Poll poll)
+		{
+			TypeOfPreview = (int)Type.Poll;
+
+			pollWidget = new PollWidget (poll);
+
+			CGRect frame = pollWidget.View.Frame;
+
+			uiView = new UIView (new CGRect(BoardInterface.scrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
+				BoardInterface.scrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Board.Interface.Buttons.Button.ButtonSize / 2, frame.Width, frame.Height));
+
+			uiView.Alpha = .5f;
+			uiView.AddGestureRecognizer (SetNewPanGestureRecognizer());
+			uiView.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
+			uiView.AddSubviews(pollWidget.View);
+		}
 
 		public static void Initialize (Announcement ann)
 		{

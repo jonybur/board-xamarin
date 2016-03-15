@@ -45,7 +45,7 @@ namespace Board.Interface.CreateScreens
 			LoadTextView ((float) NameLabel.Frame.Bottom + 10);
 			LoadStartDateView ((float) DescriptionView.Frame.Bottom + 30);
 			LoadEndDateView ((float) StartDateView.Frame.Bottom + 20);
-			LoadPostToButtons ((float) EndDateView.Frame.Bottom + 50);
+			LoadPostToButtons ((float) EndDateView.Frame.Bottom + 60);
 			LoadNextButton ();
 
 			//AdjustContentSize ();
@@ -69,6 +69,7 @@ namespace Board.Interface.CreateScreens
 			base.ViewDidDisappear (animated);
 			NextButton.TouchUpInside -= nextButtonTap;
 			ScrollView.RemoveGestureRecognizer (scrollViewTap);
+			MemoryUtility.ReleaseUIViewWithChildren (View, true);
 		}
 
 		private void LoadEndDateView(float yPosition)
@@ -312,10 +313,10 @@ namespace Board.Interface.CreateScreens
 			FacebookUtils.MakeGraphRequest (FBEvent.Id, "?fields=cover", LoadCover);
 		}
 
-		private async void LoadCover(List<FacebookElement> ElementList)
+		private async void LoadCover(List<FacebookElement> elementList)
 		{
-			if (ElementList.Count > 0) {
-				FacebookCover cover = ElementList [0] as FacebookCover;
+			if (elementList.Count > 0) {
+				FacebookCover cover = elementList [0] as FacebookCover;
 				if (cover != null) {
 					try{
 						UIImage facebookImage = await CommonUtils.DownloadUIImageFromURL (cover.Source);
@@ -356,8 +357,6 @@ namespace Board.Interface.CreateScreens
 				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
 
 				AppDelegate.NavigationController.PopViewController(false);
-
-				MemoryUtility.ReleaseUIViewWithChildren (View);
 			};
 
 

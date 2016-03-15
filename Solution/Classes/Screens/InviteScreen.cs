@@ -79,7 +79,6 @@ namespace Board.Screens
 			View.AddSubviews (uivmailicon, lbl1, uit);
 		}
 
-
 		private void LoadMailButton()
 		{
 			float heightButton = 50;

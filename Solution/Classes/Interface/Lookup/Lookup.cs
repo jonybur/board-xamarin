@@ -149,8 +149,8 @@ namespace Board.Interface.LookUp
 				BoardInterface.DictionaryWidgets.Remove (content.Id);
 			}
 				
+			AppDelegate.PopViewLikeDismissView ();
 			window.Hidden = true;
-			AppDelegate.NavigationController.DismissViewController (true, null);
 		}
 
 		private void HideWindow(UIAlertAction action)

@@ -35,7 +35,7 @@ namespace Board.Interface.CreateScreens
 			LoadNextButton ();
 			LoadTextView ();
 
-			positionY = (float)textview.Frame.Bottom + 50;
+			positionY = (float)textview.Frame.Bottom + 60;
 
 			LoadPostToButtons (positionY);
 
@@ -54,6 +54,7 @@ namespace Board.Interface.CreateScreens
 			base.ViewDidDisappear (animated);
 			ScrollView.RemoveGestureRecognizer (scrollViewTap);
 			NextButton.TouchUpInside -= nextButtonTap;
+			MemoryUtility.ReleaseUIViewWithChildren (View, true);
 		}
 
 		private void CreateGestures()
@@ -70,8 +71,6 @@ namespace Board.Interface.CreateScreens
 
 				// switches to confbar
 				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
-
-				MemoryUtility.ReleaseUIViewWithChildren (View);
 			};
 		}
 

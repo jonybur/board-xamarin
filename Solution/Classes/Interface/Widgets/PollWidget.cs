@@ -117,11 +117,6 @@ namespace Board.Interface.Widgets
 			}
 		}
 
-		public void ScrollEnabled(bool value)
-		{
-			textview.ScrollEnabled = value;
-		}
-
 		private UITextView CreateText()
 		{
 			textview = new UITextView ();
@@ -130,7 +125,7 @@ namespace Board.Interface.Widgets
 			textview.ScrollEnabled = true;
 			textview.DataDetectorTypes = UIDataDetectorType.Link;
 			textview.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
-			textview.Text = poll.Question;
+			textview.AttributedText = poll.Question;
 			textview.TextColor = BoardInterface.board.MainColor;
 			textview.Font = AppDelegate.SystemFontOfSize18;
 			textview.SizeToFit ();
