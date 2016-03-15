@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
-
+using Board.Utilities;
 using System.Threading;
 using Board.Facebook;
 using System;
 using CoreGraphics;
-
 using UIKit;
 using Board.Screens.Controls;
-
 using BigTed;
 
 namespace Board.Interface
@@ -148,6 +146,7 @@ namespace Board.Interface
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					NavigationController.PopViewController(true);
+					MemoryUtility.ReleaseUIViewWithChildren (View);
 				}
 			});
 

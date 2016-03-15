@@ -61,6 +61,8 @@ namespace Board
 	
 		public static int Autosize = 140;
 
+		public static ContainerScreen containerScreen;
+
 		/*
 		public const string FacebookAppId = "761616930611025";
 		public const string FacebookDisplayName = "Board";
@@ -131,7 +133,9 @@ namespace Board
 					if (Profile.CurrentProfile != null && result != "InternalServerError" && result != "ConnectFailure" && tk != null && tk.authToken != null & tk.authToken != string.Empty) {
 						BoardToken = tk.authToken;
 						EncodedBoardToken = WebUtility.UrlEncode(AppDelegate.BoardToken);
-						screen = new MainMenuScreen ();
+
+						containerScreen = new ContainerScreen ();
+						screen = containerScreen;
 					} else {
 						screen = new LoginScreen (result);	
 					}
@@ -140,7 +144,8 @@ namespace Board
 				}
 			} else {
 				if (Profile.CurrentProfile != null && AccessToken.CurrentAccessToken != null && FacebookUtils.HasPermission("public_profile")) {
-					screen = new MainMenuScreen ();
+					containerScreen = new ContainerScreen ();
+					screen = containerScreen;
 				} else {
 					screen = new LoginScreen ();	
 				}
@@ -155,6 +160,7 @@ namespace Board
 			window.AddSubview (NavigationController.View);
 
 			window.MakeKeyAndVisible ();
+
 
 			/*
 			new System.Threading.Thread (() => 

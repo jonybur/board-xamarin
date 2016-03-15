@@ -2,6 +2,7 @@
 using CoreGraphics;
 using MessageUI;
 using Board.Screens.Controls;
+using Board.Utilities;
 using UIKit;
 
 namespace Board.Screens
@@ -28,6 +29,7 @@ namespace Board.Screens
 		public override void ViewDidDisappear(bool animated)
 		{
 			Banner.UnsuscribeToEvents ();
+			MemoryUtility.ReleaseUIViewWithChildren (View, true);
 		}
 
 		private void LoadContent()
@@ -126,7 +128,7 @@ namespace Board.Screens
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					NavigationController.PopViewController(false);
+					AppDelegate.containerScreen.BringSideMenuUp("support");
 				}
 			});
 

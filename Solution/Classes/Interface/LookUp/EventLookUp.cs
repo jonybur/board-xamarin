@@ -204,8 +204,6 @@ namespace Board.Interface.LookUp
 			App.Current.EventStore.RequestAccess (EKEntityType.Event, (granted, e) => {});
 
 			if (EKEventStore.GetAuthorizationStatus (EKEntityType.Event) == EKAuthorizationStatus.Authorized) {
-				Console.WriteLine (EKEventStore.GetAuthorizationStatus (EKEntityType.Event) == EKAuthorizationStatus.Authorized);
-
 				EKEventEditViewController eventController = new EKEventEditViewController ();
 				 
 				// set the controller's event store - it needs to know where/how to save the event

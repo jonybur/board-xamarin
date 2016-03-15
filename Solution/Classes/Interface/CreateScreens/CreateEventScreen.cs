@@ -356,6 +356,8 @@ namespace Board.Interface.CreateScreens
 				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
 
 				AppDelegate.NavigationController.PopViewController(false);
+
+				MemoryUtility.ReleaseUIViewWithChildren (View);
 			};
 
 

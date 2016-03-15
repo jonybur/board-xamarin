@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using Board.Interface;
 using Board.JsonResponses;
 using Board.Screens.Controls;
 using Board.Utilities;
 using CoreGraphics;
-using Facebook.CoreKit;
 using UIKit;
 
 namespace Board.Screens
@@ -16,24 +13,19 @@ namespace Board.Screens
 	public class BusinessScreen : UIViewController
 	{
 		MenuBanner Banner;
-		UIImageView sidemenu;
-		ProfilePictureView profileView;
 		UIScrollView content;
 		List<Board.Schema.Board> boardList;
 		float thumbSize;
-		bool sideMenuIsUp;
 
 		public override void ViewDidLoad ()
 		{
-			base.ViewDidLoad ();
+			//base.ViewDidLoad ();
 			this.AutomaticallyAdjustsScrollViewInsets = false;
 
-			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
-			NavigationController.NavigationBarHidden = true;
+			//NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
+			//NavigationController.NavigationBarHidden = true;
 			content = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			thumbSize = AppDelegate.ScreenWidth / 4;
-
-			LoadSideMenu ();
 		}
 
 		public override async void ViewDidAppear(bool animated)
@@ -65,17 +57,14 @@ namespace Board.Screens
 
 			InitializeInterface ();
 
-			sidemenu.RemoveFromSuperview ();
-			profileView.RemoveFromSuperview ();
-
 			LoadBanner ();
-			LoadSideMenu ();
 			Banner.SuscribeToEvents ();
 		}
 
 		public override void ViewDidDisappear(bool animated)
 		{
 			Banner.UnsuscribeToEvents ();
+			MemoryUtility.ReleaseUIViewWithChildren (View, true);
 		}
 
 		private void InitializeInterface()
@@ -130,12 +119,6 @@ namespace Board.Screens
 			content.ScrollEnabled = true;
 			content.UserInteractionEnabled = true;
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				if (sideMenuIsUp)
-				{ sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return; }
-			});
-
-			content.AddGestureRecognizer (tap);
 			content.UserInteractionEnabled = true;
 			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, yposition + thumbSize);
 
@@ -182,9 +165,6 @@ namespace Board.Screens
 			boardIcon.AddSubview (boardImage);
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				if (sideMenuIsUp)
-				{sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return;}
-
 				BoardInterface boardInterface = new BoardInterface(board, false);
 				NavigationController.PushViewController(boardInterface, true);
 			});
@@ -211,92 +191,8 @@ namespace Board.Screens
 			content.ScrollEnabled = true;
 			content.UserInteractionEnabled = true;
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				if (sideMenuIsUp)
-				{sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return;}
-			});
-
-			content.AddGestureRecognizer (tap);
 
 			View.AddSubview (content);
-		}
-
-		private void LoadSideMenu()
-		{
-			using (UIImage image = UIImage.FromFile ("./screens/business/sidemenu/" + AppDelegate.PhoneVersion + ".png")) {
-				sidemenu = new UIImageView(new CGRect(0,0, image.Size.Width / 2, image.Size.Height / 2));
-				sidemenu.Image = image;	
-			}
-
-			float[] buttonLocations = new float[4];
-			if (AppDelegate.PhoneVersion == "6") {
-				buttonLocations [0] = 350;
-				buttonLocations [1] = 440;
-				buttonLocations [2] = 525;
-				buttonLocations [3] = 605;
-			} else {
-				buttonLocations [0] = 390;
-				buttonLocations [1] = 470;
-				buttonLocations [2] = 550;
-				buttonLocations [3] = 630;
-			}
-
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				if (tg.LocationInView(this.View).Y > buttonLocations[0]-35 && tg.LocationInView(this.View).Y < buttonLocations[0]+35 ){
-					NavigationController.PopViewController(false);
-				}
-				else if (tg.LocationInView(this.View).Y > buttonLocations[1]-35 && tg.LocationInView(this.View).Y < buttonLocations[1]+35){
-					SettingsScreen screen = new SettingsScreen();
-					NavigationController.PushViewController(screen, false);
-				}
-				else if (tg.LocationInView(this.View).Y > buttonLocations[2]-35 && tg.LocationInView(this.View).Y < buttonLocations[2]+35){
-					SupportScreen screen = new SupportScreen();
-					NavigationController.PushViewController(screen, false);
-				}
-				else if (tg.LocationInView(this.View).Y > buttonLocations[3]-35 && tg.LocationInView(this.View).Y < buttonLocations[3]+35){
-					InviteScreen screen = new InviteScreen();
-					NavigationController.PushViewController(screen, false);
-				}
-				HideSideMenu();
-			});
-
-			sidemenu.UserInteractionEnabled = true;
-			sidemenu.AddGestureRecognizer (tap);
-			sidemenu.Alpha = 0f;
-
-			profileView = new ProfilePictureView (new CGRect (11, 78, 149, 149));
-			profileView.ProfileId = Profile.CurrentProfile.UserID;
-			profileView.Alpha = 0f;
-
-			sideMenuIsUp = false;
-
-			View.AddSubviews (profileView, sidemenu);
-
-			UIFont namefont = AppDelegate.Narwhal20;
-			UIFont lastnamefont = AppDelegate.Narwhal24;
-
-
-			UILabel name = new UILabel (new CGRect(10, profileView.Frame.Bottom + 15, sidemenu.Frame.Width - 20, 20));
-			name.Font = namefont;
-			name.Text = Profile.CurrentProfile.FirstName;
-			name.TextColor = UIColor.White;
-			name.TextAlignment = UITextAlignment.Center;
-			name.AdjustsFontSizeToFitWidth = true;
-			sidemenu.AddSubview (name);
-
-			UILabel lastname = new UILabel (new CGRect(10, name.Frame.Bottom + 3, sidemenu.Frame.Width - 20, 24));
-			lastname.Font = lastnamefont;
-			lastname.AdjustsFontSizeToFitWidth = true;
-			lastname.Text = Profile.CurrentProfile.LastName;
-			lastname.TextColor = UIColor.White;
-			lastname.TextAlignment = UITextAlignment.Center;
-			sidemenu.AddSubview (lastname);
-		}
-
-		public void HideSideMenu()
-		{
-			if (sideMenuIsUp)
-			{ sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; }
 		}
 
 		private void LoadBanner()
@@ -304,17 +200,12 @@ namespace Board.Screens
 			Banner = new MenuBanner ("./screens/business/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				if (sideMenuIsUp)
-				{sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return;}
-
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					sidemenu.Alpha = 1f;
-					profileView.Alpha = 1f;
-					sideMenuIsUp = true;
+					AppDelegate.containerScreen.BringSideMenuUp("business");
 				}
 				else if (AppDelegate.ScreenWidth / 4 * 3 < tg.LocationInView(this.View).X){
 					CreateScreen1 createScreen1 = new CreateScreen1();
-					NavigationController.PushViewController(createScreen1, false);
+					AppDelegate.NavigationController.PushViewController(createScreen1, false);
 				}
 			});
 

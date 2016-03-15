@@ -2,8 +2,10 @@ using System.IO;
 using SQLite;
 using Foundation;
 using System.Collections.Generic;
+using System;
 using Board.Schema;
-
+using UIKit;
+using Board.Utilities;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -29,6 +31,7 @@ namespace Board.Infrastructure
 		private static SQLiteConnection database;
 
 		public static void Initialize () {
+			
 			docsPath = (NSFileManager.DefaultManager.GetUrls (
 				NSSearchPathDirectory.LibraryDirectory, 
 				NSSearchPathDomain.User) [0]).Path;

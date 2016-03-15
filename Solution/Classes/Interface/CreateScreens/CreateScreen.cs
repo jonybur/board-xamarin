@@ -2,6 +2,7 @@
 using UIKit;
 using System;
 using Board.Schema;
+using Board.Utilities;
 using Board.Screens.Controls;
 using Board.Facebook;
 
@@ -47,6 +48,7 @@ namespace Board.Interface.CreateScreens
 			var leftTap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4) {
 					AppDelegate.PopViewLikeDismissView();
+					MemoryUtility.ReleaseUIViewWithChildren (View);
 				} else if (AppDelegate.ScreenWidth * 3 / 4 < tg.LocationInView(this.View).X && toImport != null) {
 					
 					if (BoardInterface.board.FBPage != null)

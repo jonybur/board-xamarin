@@ -4,6 +4,7 @@ using Board.Facebook;
 using System;
 using CoreGraphics;
 using UIKit;
+using Board.Utilities;
 using Board.Screens.Controls;
 
 namespace Board.Interface.CreateScreens
@@ -44,6 +45,7 @@ namespace Board.Interface.CreateScreens
 		public override void ViewDidDisappear (bool animated)
 		{
 			UnsuscribeToEvents ();
+			MemoryUtility.ReleaseUIViewWithChildren (View);
 		}
 
 		private void Completion(List<FacebookElement> ElementList)

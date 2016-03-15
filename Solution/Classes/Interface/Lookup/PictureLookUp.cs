@@ -1,9 +1,6 @@
-using Board.Interface.Buttons;
-
 using Board.Schema;
-
 using CoreGraphics;
-using Facebook.CoreKit;
+using AssetsLibrary;
 using UIKit;
 
 namespace Board.Interface.LookUp
@@ -11,6 +8,7 @@ namespace Board.Interface.LookUp
 	public class PictureLookUp : LookUp
 	{
 		UITapGestureRecognizer doubletap;
+		UILongPressGestureRecognizer longpress;
 		UIScrollViewGetZoomView zoomView;
 
 		public PictureLookUp(Picture picture)
@@ -31,7 +29,7 @@ namespace Board.Interface.LookUp
 
 			zoomView = sv => lookUpImage;
 
-			doubletap = new UITapGestureRecognizer  ((tg) => {
+			doubletap = new UITapGestureRecognizer  (tg => {
 				if (ScrollView.ZoomScale > 1)
 					ScrollView.SetZoomScale(1f, true);
 				else
@@ -40,7 +38,25 @@ namespace Board.Interface.LookUp
 				tg.NumberOfTapsRequired = 2;
 			});
 
-			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton, TrashButton);
+			longpress = new UILongPressGestureRecognizer (tg => {
+				UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
+
+				alert.AddAction (UIAlertAction.Create ("Save Photo", UIAlertActionStyle.Default, SavePhoto));
+				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));	
+
+				AppDelegate.NavigationController.PresentViewController(alert, true, null);	
+			});
+
+			longpress.MinimumPressDuration = .3f;
+
+			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, TrashButton);
+		}
+
+		private async void SavePhoto(UIAlertAction action)
+		{
+			ALAssetsLibrary lib = new ALAssetsLibrary ();
+			await lib.WriteImageToSavedPhotosAlbumAsync(((Picture)content).ImageView.Image.CGImage, ALAssetOrientation.Up);
+			lib.Dispose();
 		}
 
 		private UIImageView CreateImageFrame(UIImage image)
@@ -70,6 +86,7 @@ namespace Board.Interface.LookUp
 		{
 			base.ViewDidAppear (animated);
 			ScrollView.AddGestureRecognizer (doubletap);
+			ScrollView.AddGestureRecognizer (longpress);
 			ScrollView.ViewForZoomingInScrollView += zoomView;
 		}
 
@@ -77,9 +94,16 @@ namespace Board.Interface.LookUp
 		{
 			base.ViewDidDisappear (animated);
 			ScrollView.RemoveGestureRecognizer (doubletap);
+			ScrollView.RemoveGestureRecognizer (longpress);
 			ScrollView.ViewForZoomingInScrollView -= zoomView;
 			ScrollView = null;
 		}
+
+
+		/*
+		if (sideMenuIsUp)
+				{ sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return; }
+		*/
 	}
 }
 

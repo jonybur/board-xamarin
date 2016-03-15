@@ -1,4 +1,5 @@
 ﻿using UIKit;
+using Board.Utilities;
 using Board.Screens.Controls;
 
 namespace Board.Interface
@@ -55,6 +56,7 @@ namespace Board.Interface
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					AppDelegate.PopViewLikeDismissView();
+					MemoryUtility.ReleaseUIViewWithChildren (View);
 				}
 			});
 

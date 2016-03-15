@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CoreGraphics;
-using Facebook.CoreKit;
 using Foundation;
 using Board.Utilities;
 using Board.Interface;
@@ -15,23 +14,16 @@ namespace Board.Screens
 	public partial class MainMenuScreen : UIViewController
 	{
 		MenuBanner Banner;
-		UIImageView sidemenu;
-		UIButton map_button;
-
+		UIScrollView content;
 		List<BoardThumb> ListThumbs;
 
-		ProfilePictureView profileView;
-
-		UIScrollView content;
-
+		UIButton map_button;
 		EventHandler MapButtonEvent;
-		UITapGestureRecognizer SideMenuTap;
-
 		MapView map;
 
-		bool sideMenuIsUp;
 		bool mapInfoTapped;
 		bool firstLocationUpdate;
+		bool generatedMarkers;
 
 		public override void DidReceiveMemoryWarning ()
 		{
@@ -42,9 +34,6 @@ namespace Board.Screens
 		{
 			base.ViewDidLoad ();
 
-			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
-			NavigationController.NavigationBarHidden = true;
-
 			ListThumbs = new List<BoardThumb> ();
 
 			InitializeInterface ();
@@ -54,8 +43,7 @@ namespace Board.Screens
 		{
 			// suscribe to observers, gesture recgonizers, events
 			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
-			map_button.TouchUpInside += MapButtonEvent;			
-			sidemenu.AddGestureRecognizer (SideMenuTap);
+			map_button.TouchUpInside += MapButtonEvent;	
 			foreach (BoardThumb bt in ListThumbs) {
 				bt.SuscribeToEvent ();
 			}
@@ -68,7 +56,6 @@ namespace Board.Screens
 			// unsuscribe from observers, gesture recgonizers, events
 			map.RemoveObserver (this, new NSString ("myLocation"));
 			map_button.TouchUpInside -= MapButtonEvent;
-			sidemenu.RemoveGestureRecognizer (SideMenuTap);
 			foreach (BoardThumb bt in ListThumbs) {
 				bt.UnsuscribeToEvent ();
 			}
@@ -83,7 +70,6 @@ namespace Board.Screens
 			LoadBanner ();
 			LoadMapButton ();
 			LoadMap ();
-			LoadSideMenu ();
 		}
 
 		class LocationLabel : UILabel{
@@ -150,95 +136,13 @@ namespace Board.Screens
 			View.AddSubview (content);
 		}
 
-		public void HideSideMenu()
-		{
-			if (sideMenuIsUp)
-			{ sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; }
-		}
-
-		private void LoadSideMenu()
-		{
-			using (UIImage bannerImage = UIImage.FromFile ("./screens/home/sidemenu/" + AppDelegate.PhoneVersion + ".png")) {
-				sidemenu = new UIImageView (new CGRect (0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
-				sidemenu.Image = bannerImage;
-			}
-
-			float[] buttonLocations = new float[4];
-			if (AppDelegate.PhoneVersion == "6") {
-				buttonLocations [0] = 350;
-				buttonLocations [1] = 440;
-				buttonLocations [2] = 525;
-				buttonLocations [3] = 605;
-			} else {
-				buttonLocations [0] = 390;
-				buttonLocations [1] = 470;
-				buttonLocations [2] = 550;
-				buttonLocations [3] = 630;
-			}
-
-			SideMenuTap = new UITapGestureRecognizer ((tg) => {
-				if (tg.LocationInView(this.View).Y > buttonLocations[0]-35 && tg.LocationInView(this.View).Y < buttonLocations[0]+35 ){
-					BusinessScreen screen = new BusinessScreen();
-					NavigationController.PushViewController(screen, false);
-				}
-				else if (tg.LocationInView(this.View).Y > buttonLocations[1]-35 && tg.LocationInView(this.View).Y < buttonLocations[1]+35){
-					SettingsScreen screen = new SettingsScreen();
-					NavigationController.PushViewController(screen, false);
-				}
-				else if (tg.LocationInView(this.View).Y > buttonLocations[2]-35 && tg.LocationInView(this.View).Y < buttonLocations[2]+35){
-					SupportScreen screen = new SupportScreen();
-					NavigationController.PushViewController(screen, false);
-				}
-				else if (tg.LocationInView(this.View).Y > buttonLocations[3]-35 && tg.LocationInView(this.View).Y < buttonLocations[3]+35){
-					InviteScreen screen = new InviteScreen();
-					NavigationController.PushViewController(screen, false);
-				}
-				HideSideMenu();
-			});
-
-			sidemenu.UserInteractionEnabled = true;
-			sidemenu.Alpha = 0f;
-
-			profileView = new ProfilePictureView (new CGRect (11, 78, 149, 149));
-			profileView.ProfileId = Profile.CurrentProfile.UserID;
-			profileView.Alpha = 0f;
-
-			sideMenuIsUp = false;
-
-			View.AddSubviews (profileView, sidemenu);
-
-			UIFont namefont = AppDelegate.Narwhal20;
-			UIFont lastnamefont = AppDelegate.Narwhal24;
-
-			UILabel name = new UILabel (new CGRect(10, profileView.Frame.Bottom + 15, sidemenu.Frame.Width - 20, 20));
-			name.Font = namefont;
-			name.Text = Profile.CurrentProfile.FirstName;
-			name.TextColor = UIColor.White;
-			name.TextAlignment = UITextAlignment.Center;
-			name.AdjustsFontSizeToFitWidth = true;
-			sidemenu.AddSubview (name);
-
-			UILabel lastname = new UILabel (new CGRect(10, name.Frame.Bottom + 3, sidemenu.Frame.Width - 20, 24));
-			lastname.Font = lastnamefont;
-			lastname.AdjustsFontSizeToFitWidth = true;
-			lastname.Text = Profile.CurrentProfile.LastName;
-			lastname.TextColor = UIColor.White;
-			lastname.TextAlignment = UITextAlignment.Center;
-			sidemenu.AddSubview (lastname);
-		}
-
 		private void LoadBanner()
 		{
-			Banner = new MenuBanner("./screens/home/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new MenuBanner("./screens/main/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				if (sideMenuIsUp)
-				{ sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return; }
-
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					sidemenu.Alpha = 1f;
-					profileView.Alpha = 1f;
-					sideMenuIsUp = true;
+					AppDelegate.containerScreen.BringSideMenuUp("main");
 				}
 			});
 
@@ -250,7 +154,9 @@ namespace Board.Screens
 		private void LoadMap()
 		{
 			var camera = CameraPosition.FromCamera (40, -100, -2);
-			
+
+			firstLocationUpdate = false;
+
 			map = MapView.FromCamera (new CGRect (0, Banner.Frame.Bottom, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight - Banner.Frame.Height - map_button.Frame.Height), camera);
 			map.Alpha = 0f;
 			map.Settings.CompassButton = true;
@@ -278,14 +184,20 @@ namespace Board.Screens
 				firstLocationUpdate = true; 
 
 				var location = change.ObjectForKey (NSValue.ChangeNewKey) as CoreLocation.CLLocation;
-				map.Camera = CameraPosition.FromCamera (location.Coordinate, 16);
-				GenerateMarkers (location.Coordinate);
+				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
+
+				if (!generatedMarkers) {
+					GenerateMarkers (location.Coordinate);
+					generatedMarkers = true;
+				}
 			}
 		}
 
 		private void GenerateMarkers(CoreLocation.CLLocationCoordinate2D location)
 		{
 			Random rnd = new Random ();
+			UIImage container = UIImage.FromFile ("./screens/main/map/marker_blue.png");
+
 			foreach (BoardThumb thumb in ListThumbs) {
 				double lat = rnd.NextDouble () - .5;
 				double lon = rnd.NextDouble () - .5;
@@ -294,7 +206,7 @@ namespace Board.Screens
 				marker.AppearAnimation = MarkerAnimation.Pop;
 				marker.Position = new CoreLocation.CLLocationCoordinate2D (location.Latitude - (lat * .02), location.Longitude + (lon * .02));
 				marker.Map = map;
-				marker.Icon = CreateMarkerImage (thumb.Board.ImageView.Image);
+				marker.Icon = CreateMarkerImage (container, thumb.Board.ImageView.Image);
 				marker.Draggable = false;
 				marker.Title = thumb.Board.Name;
 				marker.Snippet = "2 Cooper Street, Wynwood, FL 33880" + "\n\nTAP TO ENTER BOARD";
@@ -304,20 +216,12 @@ namespace Board.Screens
 			}
 		}
 
-		static UIImage markerImage;
-
 		// this one just creates a color square
-		private UIImage CreateMarkerImage(UIImage logo)
+		private UIImage CreateMarkerImage(UIImage container, UIImage logo)
 		{
 			UIGraphics.BeginImageContext (new CGSize(66, 96));
 
-			if (markerImage == null) {
-				using (UIImage circle = UIImage.FromFile ("./screens/home/map/marker_blue.png")) {
-					markerImage = circle;
-				}	
-			}
-
-			markerImage.Draw (new CGRect (0, 0, 66, 96));
+			container.Draw (new CGRect (0, 0, 66, 96));
 
 			float imgw, imgh;
 
@@ -332,27 +236,24 @@ namespace Board.Screens
 
 		private void LoadMapButton()
 		{
-			using (UIImage mapImage = UIImage.FromFile ("./screens/home/map/" + AppDelegate.PhoneVersion + ".jpg")) {
+			using (UIImage mapImage = UIImage.FromFile ("./screens/main/map/" + AppDelegate.PhoneVersion + ".jpg")) {
 				map_button = new UIButton(new CGRect(0,AppDelegate.ScreenHeight - (mapImage.Size.Height / 2),
 					mapImage.Size.Width / 2, mapImage.Size.Height / 2));
 				map_button.SetImage(mapImage, UIControlState.Normal);
 			}
 
 			MapButtonEvent = (sender, e) => {
-				if (sideMenuIsUp)
-				{ sidemenu.Alpha = 0f; profileView.Alpha = 0f; sideMenuIsUp = false; return; }
-
 				if (map.Alpha == 0f)
 				{ 
 					map.Alpha = 1f; 
 
-					using (UIImage listImage = UIImage.FromFile ("./screens/home/list/" + AppDelegate.PhoneVersion + ".jpg")) {
+					using (UIImage listImage = UIImage.FromFile ("./screens/main/list/" + AppDelegate.PhoneVersion + ".jpg")) {
 						map_button.SetImage(listImage, UIControlState.Normal);
 					}
 				} else {
 					map.Alpha = 0f;
 
-					using (UIImage mapImage = UIImage.FromFile ("./screens/home/map/" + AppDelegate.PhoneVersion + ".jpg")) {
+					using (UIImage mapImage = UIImage.FromFile ("./screens/main/map/" + AppDelegate.PhoneVersion + ".jpg")) {
 						map_button.SetImage(mapImage, UIControlState.Normal);
 					}
 				} 

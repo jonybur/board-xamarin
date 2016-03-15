@@ -1,4 +1,5 @@
 ﻿using System;
+using Board.Utilities;
 using CoreGraphics;
 using MessageUI;
 using Board.Screens.Controls;
@@ -33,6 +34,7 @@ namespace Board.Screens
 		public override void ViewDidDisappear(bool animated)
 		{
 			Banner.UnsuscribeToEvents ();
+			MemoryUtility.ReleaseUIViewWithChildren (View, true);
 		}
 
 		private void LoadContent()
@@ -109,7 +111,6 @@ namespace Board.Screens
 					mailController.SetSubject ("Get on Board!");
 					mailController.SetMessageBody ("", false);
 					mailController.Finished += ( object s, MFComposeResultEventArgs args) => {
-						Console.WriteLine (args.Result.ToString ());
 						args.Controller.DismissViewController (true, null);
 					};
 					NavigationController.PresentViewController (mailController, true, null);
@@ -125,9 +126,9 @@ namespace Board.Screens
 		{
 			Banner = new MenuBanner ("./screens/invite/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					NavigationController.PopViewController(false);
+					AppDelegate.containerScreen.BringSideMenuUp("invite");
 				}
 			});
 

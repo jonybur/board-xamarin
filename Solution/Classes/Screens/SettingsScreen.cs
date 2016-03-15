@@ -2,6 +2,7 @@
 using UIKit;
 using Facebook.LoginKit;
 using Board.Screens.Controls;
+using Board.Utilities;
 
 namespace Board.Screens
 {
@@ -32,6 +33,7 @@ namespace Board.Screens
 		public override void ViewDidDisappear(bool animated)
 		{
 			Banner.UnsuscribeToEvents ();
+			MemoryUtility.ReleaseUIViewWithChildren (View, true);
 		}
 
 		private void LoadFBButton()
@@ -57,9 +59,9 @@ namespace Board.Screens
 		{
 			Banner = new MenuBanner ("./screens/settings/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					NavigationController.PopViewController(false);
+					AppDelegate.containerScreen.BringSideMenuUp("settings");
 				}
 			});
 

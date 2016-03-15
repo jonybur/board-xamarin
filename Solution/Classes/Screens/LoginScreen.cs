@@ -58,7 +58,7 @@ namespace Board.Screens
 			logInButton = new LoginButton (new CGRect (0, 0, AppDelegate.ScreenWidth - 70, 50)) {
 				LoginBehavior = LoginBehavior.Native,
 				Center = new CGPoint(AppDelegate.ScreenWidth/2, AppDelegate.ScreenHeight * (.90f)),
-				ReadPermissions = new string[] {"public_profile"}
+				ReadPermissions = new [] { "public_profile" }
 			};
 
 			logInButton.Completed += (sender, e) => {
@@ -79,8 +79,8 @@ namespace Board.Screens
 
 						if (result != "InternalServerError" && result != "ConnectFailure" && tk != null && tk.authToken != null & tk.authToken != string.Empty) {
 							AppDelegate.BoardToken = tk.authToken;
-							MainMenuScreen screen = new MainMenuScreen ();
-							NavigationController.PushViewController(screen, true);
+							AppDelegate.containerScreen = new ContainerScreen ();
+							AppDelegate.NavigationController.PushViewController(AppDelegate.containerScreen, true);
 						} else {
 							responseError = result;
 							UIAlertController alert = UIAlertController.Create(responseError, null, UIAlertControllerStyle.Alert);
@@ -88,8 +88,8 @@ namespace Board.Screens
 							NavigationController.PresentViewController (alert, true, null);
 						}
 					} else {
-						MainMenuScreen screen = new MainMenuScreen ();
-						NavigationController.PushViewController(screen, true);
+						AppDelegate.containerScreen = new ContainerScreen ();
+						AppDelegate.NavigationController.PushViewController(AppDelegate.containerScreen, true);
 					}
 				}
 			};

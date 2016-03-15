@@ -239,7 +239,9 @@ namespace Board.Interface.Widgets
 						lookUp = new LookUp.LookUp();
 					}
 
-					AppDelegate.NavigationController.PresentViewController(lookUp, true, null);
+
+					AppDelegate.PushViewLikePresentView(lookUp);
+					//AppDelegate.NavigationController.PresentViewController(lookUp, true, null);
 				}
 			});
 

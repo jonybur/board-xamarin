@@ -125,6 +125,12 @@
     <Reference Include="Google.Maps">
       <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.11.1.1\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
     </Reference>
+    <Reference Include="Plugin.Share">
+      <HintPath>..\packages\Plugin.Share.3.0.1\lib\Xamarin.iOS10\Plugin.Share.dll</HintPath>
+    </Reference>
+    <Reference Include="Plugin.Share.Abstractions">
+      <HintPath>..\packages\Plugin.Share.3.0.1\lib\Xamarin.iOS10\Plugin.Share.Abstractions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\fonts\congress-font-medium.ttf" />
@@ -138,8 +144,6 @@
     <BundleResource Include="Resources\screens\business\banner\6plus.jpg" />
     <BundleResource Include="Resources\screens\business\empty\6.jpg" />
     <BundleResource Include="Resources\screens\business\empty\6plus.jpg" />
-    <BundleResource Include="Resources\screens\business\sidemenu\6plus.png" />
-    <BundleResource Include="Resources\screens\business\sidemenu\6.png" />
     <BundleResource Include="Resources\screens\create\1\banner\6.jpg" />
     <BundleResource Include="Resources\screens\create\1\banner\6plus.jpg" />
     <BundleResource Include="Resources\screens\create\1\content\6.jpg" />
@@ -152,24 +156,10 @@
     <BundleResource Include="Resources\screens\create\3\lock.png" />
     <BundleResource Include="Resources\screens\create\3\banner\6.jpg" />
     <BundleResource Include="Resources\screens\create\3\banner\6plus.jpg" />
-    <BundleResource Include="Resources\screens\home\banner\6.jpg" />
-    <BundleResource Include="Resources\screens\home\banner\6plus.jpg" />
-    <BundleResource Include="Resources\screens\home\list\6.jpg" />
-    <BundleResource Include="Resources\screens\home\list\6plus.jpg" />
-    <BundleResource Include="Resources\screens\home\map\6.jpg" />
-    <BundleResource Include="Resources\screens\home\map\6plus.jpg" />
-    <BundleResource Include="Resources\screens\home\sidemenu\6.png" />
-    <BundleResource Include="Resources\screens\home\sidemenu\6plus.png" />
     <BundleResource Include="Resources\screens\invite\icon.png" />
-    <BundleResource Include="Resources\screens\invite\banner\6.jpg" />
-    <BundleResource Include="Resources\screens\invite\banner\6plus.jpg" />
     <BundleResource Include="Resources\screens\login\logo.png" />
     <BundleResource Include="Resources\screens\pageselector\banner\6.jpg" />
     <BundleResource Include="Resources\screens\pageselector\banner\6plus.jpg" />
-    <BundleResource Include="Resources\screens\settings\banner\6.jpg" />
-    <BundleResource Include="Resources\screens\settings\banner\6plus.jpg" />
-    <BundleResource Include="Resources\screens\support\banner\6.jpg" />
-    <BundleResource Include="Resources\screens\support\banner\6plus.jpg" />
     <BundleResource Include="Resources\screens\support\icon.png" />
     <BundleResource Include="Resources\Default-568h%402x.png" />
     <BundleResource Include="Resources\Default-667h%402x.png" />
@@ -259,12 +249,34 @@
     <BundleResource Include="Resources\boardinterface\screens\share\link\logo.png" />
     <BundleResource Include="Resources\boardinterface\screens\event\placeholder.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\facebook2.png" />
-    <BundleResource Include="Resources\screens\home\map\marker_blue.png" />
-    <BundleResource Include="Resources\screens\home\map\marker_orange.png" />
     <BundleResource Include="Resources\boardinterface\lookup\uber.png" />
     <BundleResource Include="Resources\boardinterface\widget\radiobut2.png" />
     <BundleResource Include="Resources\boardinterface\lookup\waze.png" />
     <BundleResource Include="Resources\boardinterface\widget\radiobutfull.png" />
+    <BundleResource Include="Resources\screens\main\banner\6.jpg" />
+    <BundleResource Include="Resources\screens\main\banner\6plus.jpg" />
+    <BundleResource Include="Resources\screens\main\list\6.jpg" />
+    <BundleResource Include="Resources\screens\main\list\6plus.jpg" />
+    <BundleResource Include="Resources\screens\main\map\6.jpg" />
+    <BundleResource Include="Resources\screens\main\map\6plus.jpg" />
+    <BundleResource Include="Resources\screens\main\map\marker_blue.png" />
+    <BundleResource Include="Resources\screens\main\map\marker_orange.png" />
+    <BundleResource Include="Resources\screens\business\sidemenu\6.png" />
+    <BundleResource Include="Resources\screens\business\sidemenu\6plus.png" />
+    <BundleResource Include="Resources\screens\main\sidemenu\6.png" />
+    <BundleResource Include="Resources\screens\main\sidemenu\6plus.png" />
+    <BundleResource Include="Resources\screens\settings\sidemenu\6.png" />
+    <BundleResource Include="Resources\screens\support\sidemenu\6.png" />
+    <BundleResource Include="Resources\screens\invite\sidemenu\6.png" />
+    <BundleResource Include="Resources\screens\invite\banner\6.jpg" />
+    <BundleResource Include="Resources\screens\invite\banner\6plus.jpg" />
+    <BundleResource Include="Resources\screens\settings\banner\6.jpg" />
+    <BundleResource Include="Resources\screens\settings\banner\6plus.jpg" />
+    <BundleResource Include="Resources\screens\support\banner\6.jpg" />
+    <BundleResource Include="Resources\screens\support\banner\6plus.jpg" />
+    <BundleResource Include="Resources\screens\invite\sidemenu\6plus.png" />
+    <BundleResource Include="Resources\screens\settings\sidemenu\6plus.png" />
+    <BundleResource Include="Resources\screens\support\sidemenu\6plus.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -353,6 +365,9 @@
     <Compile Include="Classes\Schema\Map.cs" />
     <Compile Include="Classes\Interface\LookUp\MapLookUp.cs" />
     <Compile Include="Classes\Utilities\ICanCleanUpMyself.cs" />
+    <Compile Include="Classes\Screens\Controls\MapMarker.cs" />
+    <Compile Include="Classes\Screens\Controls\SideMenu.cs" />
+    <Compile Include="Classes\Screens\ContainerScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -367,7 +382,6 @@
     <Folder Include="Resources\logos\" />
     <Folder Include="Resources\screens\" />
     <Folder Include="Resources\screens\business\" />
-    <Folder Include="Resources\screens\business\sidemenu\" />
     <Folder Include="Resources\screens\business\banner\" />
     <Folder Include="Resources\screens\invite\" />
     <Folder Include="Resources\screens\business\empty\" />
@@ -376,11 +390,6 @@
     <Folder Include="Resources\screens\settings\banner\" />
     <Folder Include="Resources\screens\support\" />
     <Folder Include="Resources\screens\support\banner\" />
-    <Folder Include="Resources\screens\home\" />
-    <Folder Include="Resources\screens\home\banner\" />
-    <Folder Include="Resources\screens\home\map\" />
-    <Folder Include="Resources\screens\home\list\" />
-    <Folder Include="Resources\screens\home\sidemenu\" />
     <Folder Include="Resources\screens\create\" />
     <Folder Include="Resources\screens\create\1\" />
     <Folder Include="Resources\screens\create\2\" />
@@ -425,6 +434,15 @@
     <Folder Include="Resources\boardinterface\screens\settings\banner\" />
     <Folder Include="Resources\boardinterface\screens\import\" />
     <Folder Include="Resources\boardinterface\screens\share\link\" />
+    <Folder Include="Resources\screens\main\" />
+    <Folder Include="Resources\screens\main\banner\" />
+    <Folder Include="Resources\screens\main\map\" />
+    <Folder Include="Resources\screens\main\list\" />
+    <Folder Include="Resources\screens\business\sidemenu\" />
+    <Folder Include="Resources\screens\invite\sidemenu\" />
+    <Folder Include="Resources\screens\main\sidemenu\" />
+    <Folder Include="Resources\screens\settings\sidemenu\" />
+    <Folder Include="Resources\screens\support\sidemenu\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">
@@ -445,6 +463,10 @@
     </XamarinComponentReference>
     <XamarinComponentReference Include="btprogresshud">
       <Version>1.20</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="SharePlugin">
+      <Version>3.0.1</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

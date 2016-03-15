@@ -70,6 +70,8 @@ namespace Board.Interface.CreateScreens
 
 				// switches to confbar
 				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
+
+				MemoryUtility.ReleaseUIViewWithChildren (View);
 			};
 		}
 

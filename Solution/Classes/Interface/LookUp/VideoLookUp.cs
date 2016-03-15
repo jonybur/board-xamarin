@@ -1,10 +1,7 @@
-﻿using Board.Interface.Buttons;
-
-using Board.Schema;
-
+﻿using Board.Schema;
 using CoreGraphics;
-using Facebook.CoreKit;
 using UIKit;
+using AssetsLibrary;
 using AVFoundation;
 using AVKit;
 
@@ -14,15 +11,18 @@ namespace Board.Interface.LookUp
 	{
 		AVPlayerViewController playerView;
 		AVPlayer player;
+		UILongPressGestureRecognizer longpress;
 
 		public override void ViewDidDisappear(bool animated)
 		{
 			base.ViewDidDisappear (animated);
 
 			player.Pause ();
-
 			player.Dispose ();
 			playerView.Dispose ();
+			ScrollView.RemoveGestureRecognizer (longpress);
+
+			ScrollView = null;
 		}
 
 		public VideoLookUp(Video video)
@@ -43,7 +43,29 @@ namespace Board.Interface.LookUp
 
 			ScrollView.AddSubview (playerView.View);
 
-			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton, TrashButton);
+			longpress = new UILongPressGestureRecognizer (tg => {
+				UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
+
+				alert.AddAction (UIAlertAction.Create ("Save Video", UIAlertActionStyle.Default, SaveVideo));
+				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));	
+
+				AppDelegate.NavigationController.PresentViewController(alert, true, null);	
+			});
+
+			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, TrashButton);
+		}
+
+		public override void ViewDidAppear(bool animated)
+		{
+			base.ViewDidAppear (animated);
+			ScrollView.AddGestureRecognizer (longpress);
+		}
+
+		private async void SaveVideo(UIAlertAction action)
+		{
+			ALAssetsLibrary lib = new ALAssetsLibrary ();
+			await lib.WriteVideoToSavedPhotosAlbumAsync(((Video)content).Url);
+			lib.Dispose();
 		}
 
 		private AVPlayer LoadPlayer(Video video)

@@ -1,9 +1,5 @@
 ﻿using CoreGraphics;
 using UIKit;
-
-using Facebook.CoreKit;
-using System;
-using Facebook.LoginKit;
 using Board.Facebook;
 
 using System.Collections.Generic;

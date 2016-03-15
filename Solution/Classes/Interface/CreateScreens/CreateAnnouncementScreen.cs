@@ -1,11 +1,8 @@
 ﻿using CoreGraphics;
 using UIKit;
-
 using Board.Utilities;
 using Board.Schema;
 using Board.Facebook;
-using Foundation;
-
 using System;
 using Board.Interface.Buttons;
 
@@ -96,6 +93,8 @@ namespace Board.Interface.CreateScreens
 				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
 
 				NavigationController.PopViewController(false);
+
+				MemoryUtility.ReleaseUIViewWithChildren (View);
 			};
 		}
 

@@ -1,4 +1,5 @@
 ﻿using Board.Interface.Buttons;
+using Board.Utilities;
 using CoreGraphics;
 using Foundation;
 using UIKit;
@@ -6,6 +7,7 @@ using Board.Interface.Widgets;
 using Facebook.CoreKit;
 using System;
 using Board.Schema;
+using Plugin.Share;
 
 namespace Board.Interface.LookUp
 {
@@ -18,6 +20,7 @@ namespace Board.Interface.LookUp
 		UITapGestureRecognizer backTap;
 		UITapGestureRecognizer likeTap;
 		UITapGestureRecognizer facebookTap;
+		UITapGestureRecognizer wazeTap;
 		UITapGestureRecognizer uberTap;
 		UITapGestureRecognizer shareTap;
 		UITapGestureRecognizer trashTap;
@@ -26,6 +29,7 @@ namespace Board.Interface.LookUp
 		protected UIImageView LikeButton;
 		protected UIImageView FacebookButton;
 		protected UIImageView UberButton;
+		protected UIImageView WazeButton;
 		protected UIImageView ShareButton;
 		protected UIImageView TrashButton;
 
@@ -45,7 +49,7 @@ namespace Board.Interface.LookUp
 			CreateUberButton (buttonColor);
 			CreateShareButton (buttonColor);
 			CreateTrashButton (buttonColor);
-
+		
 			if (string.IsNullOrEmpty(content.FacebookId)) {
 				FacebookButton.Alpha = 0f;
 			}
@@ -88,14 +92,14 @@ namespace Board.Interface.LookUp
 				BackButton.AddSubview (subView);
 				BackButton.Center = new CGPoint (img.Size.Width / 2 + 10, 35);
 			}
-
+			 
 			BackButton.UserInteractionEnabled = true;
 
 			backTap = new UITapGestureRecognizer (tg => {
 				// user tapped on "Done" button
-				AppDelegate.NavigationController.DismissViewController(true, null);
+				AppDelegate.PopViewLikeDismissView();
 				ButtonInterface.SwitchButtonLayout((int)ButtonInterface.ButtonLayout.NavigationBar);
-				View.Dispose();
+				MemoryUtility.ReleaseUIViewWithChildren (View);
 			});
 		}
 
@@ -280,10 +284,14 @@ namespace Board.Interface.LookUp
 
 				if(content is BoardEvent)
 				{
+					// opens in app
 					url = new NSUrl("https://www.facebook.com/" + content.FacebookId);
 				}else {
+
+					// opens in safari
 					url = new NSUrl("https://facebook.com/" + content.FacebookId);
 				}
+
 				UIApplication.SharedApplication.OpenUrl(url);
 
 
@@ -315,11 +323,27 @@ namespace Board.Interface.LookUp
 
 			ShareButton.UserInteractionEnabled = true;
 
-			shareTap = new UITapGestureRecognizer (tg => {
+			shareTap = new UITapGestureRecognizer (async tg => {
+				if (tg == null)
+					throw new ArgumentNullException ("tg");
 
+				await ShareImplementation.Init ();
+				ShareImplementation a = new ShareImplementation ();
+		
+				string metadata = "["+BoardInterface.board.Name + " via Board, " + content.CreationDate.ToString("M/d h:m tt") + "]: \n";
+
+				if (content is Announcement)
+				{
+					await a.Share (metadata + ((Announcement)content).Text.Value, null);
+				}
+
+				else if (content is BoardEvent)
+				{
+					await a.Share (metadata + ((BoardEvent)content).Name + " \nStarts: " + ((BoardEvent)content).StartDate.ToString("g")
+						+ " \nEnds: " + ((BoardEvent)content).EndDate.ToString("g"), null);
+				}
 			});
 		}
-
 	}
 }
 
