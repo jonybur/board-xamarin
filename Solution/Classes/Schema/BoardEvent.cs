@@ -24,14 +24,14 @@ namespace Board.Schema
 		public BoardEvent() {
 		}
 
-		public BoardEvent(string name, UIImage image, DateTime startdate, DateTime enddate, float rotation, CGRect frame, string creatorid, DateTime creationdate)
+		public BoardEvent(string name, UIImage image, DateTime startdate, DateTime enddate, float rotation, CGPoint position, string creatorid, DateTime creationdate)
 		{
 			ImageView = new UIImageView(image);
 			Name = name;
 			StartDate = startdate;
 			EndDate = enddate;
 			Rotation = rotation;
-			Frame = frame;
+			Position = position;
 			CreatorId = creatorid;
 			CreationDate = creationdate;
 		}

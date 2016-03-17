@@ -10,11 +10,11 @@ namespace Board.Schema
 
 		public Announcement() {}
 
-		public Announcement(NSAttributedString text, float rotation, CGRect frame, string creatorid, DateTime creationdate)
+		public Announcement(NSAttributedString text, float rotation, CGPoint position, string creatorid, DateTime creationdate)
 		{
 			Text = text;
 			Rotation = rotation;
-			Frame = frame;
+			Position = position;
 			CreatorId = creatorid;
 			CreationDate = creationdate;
 		}

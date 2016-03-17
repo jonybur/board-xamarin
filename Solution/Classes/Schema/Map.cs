@@ -8,10 +8,10 @@ namespace Board.Schema
 		public Map() {
 		}
 
-		public Map(float rotation, CGRect frame, string creatorid, DateTime creationdate)
+		public Map(float rotation, CGPoint position, string creatorid, DateTime creationdate)
 		{
 			Rotation = rotation;
-			Frame = frame;
+			Position = position;
 			CreatorId = creatorid;
 			CreationDate = creationdate;
 		}

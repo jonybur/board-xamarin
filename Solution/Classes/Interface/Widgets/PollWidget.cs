@@ -48,7 +48,7 @@ namespace Board.Interface.Widgets
 				View.AddSubview (but);
 			}
 
-			View.Frame = new CGRect (poll.Frame.X, poll.Frame.Y, MountingView.Frame.Width, MountingView.Frame.Height);
+			View.Frame = new CGRect (poll.Position.X, poll.Position.Y, MountingView.Frame.Width, MountingView.Frame.Height);
 			View.Transform = CGAffineTransform.MakeRotation(poll.Rotation);
 
 			EyeOpen = false;

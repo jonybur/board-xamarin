@@ -15,22 +15,22 @@ namespace Board.Interface
 		private void GenerateTestPictures()
 		{
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/0.jpg")) {
-				AddTestPicture (img, 70, 20, -.03f, DateTime.Now.AddHours(-1));
+				AddTestPicture (img, new CGPoint(70, 20), -.03f, DateTime.Now.AddHours(-1));
 			}
 
-			AddTestVideo ("./demo/videos/0.mp4", 45, 220, -.01f, DateTime.Now.AddHours(-2));
+			AddTestVideo ("./demo/videos/0.mp4", new CGPoint(45, 220), -.01f, DateTime.Now.AddHours(-2));
 
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/2.jpg")) {
-				AddTestPicture (img, 340, 20, 0f, DateTime.Now.AddMinutes(-31));
+				AddTestPicture (img, new CGPoint(340, 20), 0f, DateTime.Now.AddMinutes(-31));
 			}
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/1.jpg")) {
-				AddTestPicture (img, 360, 220, -.04f, DateTime.Now.AddMinutes(-39));
+				AddTestPicture (img, new CGPoint(360, 220), -.04f, DateTime.Now.AddMinutes(-39));
 			}
 
-			AddTestVideo ("./demo/videos/1.mp4", 610, 25, -.02f, DateTime.Now.AddMinutes(-25));
+			AddTestVideo ("./demo/videos/1.mp4", new CGPoint(610, 25), -.02f, DateTime.Now.AddMinutes(-25));
 
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/3.jpg")) {
-				AddTestPicture (img, 655, 225, .01f, DateTime.Now.AddMinutes(-2));
+				AddTestPicture (img, new CGPoint(655, 225), .01f, DateTime.Now.AddMinutes(-2));
 			}
 
 			using (UIImage img = UIImage.FromFile ("./demo/events/0.jpg")) {
@@ -57,25 +57,25 @@ namespace Board.Interface
 					"os\n\n\nMARZO FREE\n-Mujeres GRATIS de 1.30 a 2.30AM (No válido para los shows)\n-Hombres 2x1 de 1.30 a 2.30AM (No vál" +
 					"ido para los shows)\n\n\nCUMPLEAÑOS:\nPara festejar tu cumple en LA ROXTAR manda un mail a fiestaroxtar@gmail.com y te " +
 					"contamos los beneficios y descuentos especiales para tu noche de cumpleaños!!\n\n\nSeguinos en:\nhttp://www.twitter.com" +
-					"/la_roxtar\nhttp://www.facebook.com/laroxtar\nhttp://instagram.com/la_roxtar",img, new DateTime (2016, 3, 4, 23, 58, 0),new DateTime (2016, 3, 5, 7, 0, 0), new CGRect (1650, 29, 0, 0), -.03f, DateTime.Now.AddDays(-7));
+					"/la_roxtar\nhttp://www.facebook.com/laroxtar\nhttp://instagram.com/la_roxtar",img, new DateTime (2016, 3, 4, 23, 58, 0),new DateTime (2016, 3, 5, 7, 0, 0), new CGPoint (1650, 29), -.03f, DateTime.Now.AddDays(-7));
 			}
 
 
 			using (UIImage img = UIImage.FromFile ("./demo/events/1.jpg")) {
-				AddTestEvent ("RIVERS in the Alley", string.Empty, img, new DateTime (2015, 12, 11, 21, 0, 0), new DateTime (2015, 12, 12, 3, 0, 0), new CGRect (1910, 30, 0, 0), .02f, DateTime.Now.AddMinutes(-8));
+				AddTestEvent ("RIVERS in the Alley", string.Empty, img, new DateTime (2015, 12, 11, 21, 0, 0), new DateTime (2015, 12, 12, 3, 0, 0), new CGPoint (1910, 30), .02f, DateTime.Now.AddMinutes(-8));
 			}
 
 			using (UIImage img = UIImage.FromFile ("./demo/events/2.jpg")) {
-				AddTestEvent ("Retirement Block Party", "Rad event on Jan 23rd! Be there-", img, new DateTime (2016, 1, 23, 14, 30, 0), new DateTime (2016, 1, 23, 17, 30, 0), new CGRect (2170, 27, 0, 0), .02f, DateTime.Now.AddDays(-12));
+				AddTestEvent ("Retirement Block Party", "Rad event on Jan 23rd! Be there-", img, new DateTime (2016, 1, 23, 14, 30, 0), new DateTime (2016, 1, 23, 17, 30, 0), new CGPoint (2170, 27), .02f, DateTime.Now.AddDays(-12));
 			}
 
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/4.jpg")) {
-				AddTestPicture (img, 50, 420, .03f, DateTime.Now.AddMinutes(-605));
+				AddTestPicture (img, new CGPoint(50, 420), .03f, DateTime.Now.AddMinutes(-605));
 			}
 
-			AddTestVideo ("./demo/videos/2.mp4", 330, 415, -.02f, DateTime.Now.AddMinutes(-701));
+			AddTestVideo ("./demo/videos/2.mp4", new CGPoint(330, 415), -.02f, DateTime.Now.AddMinutes(-701));
 
-			AddTestVideo ("./demo/videos/3.mp4", 635, 420, .0f, DateTime.Now.AddMinutes(-50));
+			AddTestVideo ("./demo/videos/3.mp4", new CGPoint(635, 420), .0f, DateTime.Now.AddMinutes(-50));
 
 			var firstAttributes = new UIStringAttributes {
 				Font = AppDelegate.Narwhal20
@@ -99,7 +99,7 @@ namespace Board.Interface
 			prettyString.SetAttributes (regularAttributes.Dictionary, new NSRange (5, 3));
 			prettyString.SetAttributes (boldAttributes.Dictionary, new NSRange (8, 8));
 
-			AddTestAnnouncement (new CGRect (1700, 235, 0, 0), -.02f, prettyString, DateTime.Now.AddMinutes(-12));
+			AddTestAnnouncement (new CGPoint(1700, 235), -.02f, prettyString, DateTime.Now.AddMinutes(-12));
 
 			const string intro = "Introducing Board\n\nA better way of finding a good time\n\n";
 			const string bigText1 = "Promos / Deals\n\nAccess to promotions and discounts. Restaurants, bars and clubs will post deals and specials. Have a good time without hurting your wallet.\n\n";
@@ -126,64 +126,64 @@ namespace Board.Interface
 			prettyString2.SetAttributes (boldAttributes.Dictionary, new NSRange (intro.Length + bigText1.Length + bigText2.Length + bigText3.Length, 22));
 			prettyString2.SetAttributes (regularAttributes.Dictionary, new NSRange (intro.Length + bigText1.Length + bigText2.Length + bigText3.Length + 22, bigText4.Length - 23));
 
-			AddTestAnnouncement (new CGRect (2220, 240, 0, 0), .03f, prettyString2, DateTime.Now.AddMinutes(-125));
+			AddTestAnnouncement (new CGPoint(2220, 240), .03f, prettyString2, DateTime.Now.AddMinutes(-125));
 
 			// set different ranges to different styling!
 			var prettyString3 = new NSMutableAttributedString ("OUR MOJITO GAME? STRONG");
 			prettyString3.SetAttributes (regularAttributes.Dictionary, new NSRange (0, 17));
 			prettyString3.SetAttributes (boldAttributes.Dictionary, new NSRange (17, 6));
 
-			AddTestAnnouncement (new CGRect (1930, 245, 0, 0), .01f, prettyString3, DateTime.Now.AddMinutes(-129));
+			AddTestAnnouncement (new CGPoint(1930, 245), .01f, prettyString3, DateTime.Now.AddMinutes(-129));
 
 			var prettyString4 = new NSMutableAttributedString("If you could travel through time where would you go?");
 			prettyString4.SetAttributes(regularAttributes.Dictionary, new NSRange(0, prettyString4.Length));
 
 			// set different ranges to different styling!
-			AddTestPoll (new CGRect (1615, 390, 0, 0), .01f, prettyString4, DateTime.Now.AddMinutes(-35), "The future", "The past");
+			AddTestPoll (new CGPoint(1615, 390), .01f, prettyString4, DateTime.Now.AddMinutes(-35), "The future", "The past");
 
-			AddTestMap (new CGRect (1930, 390, 0, 0), -.01f, null, DateTime.Now);
+			AddTestMap (new CGPoint(1930, 390), -.01f, null, DateTime.Now);
 		}
 
-		private void AddTestMap(CGRect frame, float rotation, string creatorid, DateTime creationdate){
-			Map map = new Map (rotation, frame, creatorid, creationdate);
+		private void AddTestMap(CGPoint position, float rotation, string creatorid, DateTime creationdate){
+			Map map = new Map (rotation, position, creatorid, creationdate);
 			DictionaryContent.Add (map.Id, map);
 		}
 
-		private void AddTestPoll(CGRect frame, float rotation, NSMutableAttributedString text, DateTime creationDate, params string[] answers)
+		private void AddTestPoll(CGPoint position, float rotation, NSMutableAttributedString text, DateTime creationDate, params string[] answers)
 		{
-			Poll poll = new Poll (text, rotation, frame, null, creationDate, answers);
+			Poll poll = new Poll (text, rotation, position, null, creationDate, answers);
 			DictionaryContent.Add (poll.Id, poll);
 		}
 
-		private void AddTestAnnouncement(CGRect frame, float rotation, NSMutableAttributedString text, DateTime creationDate)
+		private void AddTestAnnouncement(CGPoint position, float rotation, NSMutableAttributedString text, DateTime creationDate)
 		{
 			Announcement ann = new Announcement ();
-			ann.Frame = frame;
+			ann.Position = position;
 			ann.Rotation = rotation;
 			ann.CreationDate = creationDate;
 			ann.Text = new NSAttributedString (text); 
 			DictionaryContent.Add (ann.Id, ann);
 		}
 
-		private void AddTestEvent(string name, string description, UIImage img, DateTime startdate, DateTime enddate, CGRect frame, float rotation, DateTime creationDate)
+		private void AddTestEvent(string name, string description, UIImage img, DateTime startdate, DateTime enddate, CGPoint position, float rotation, DateTime creationDate)
 		{
-			BoardEvent bevent = new BoardEvent (name, img, startdate, enddate, rotation, frame, null, creationDate);
+			BoardEvent bevent = new BoardEvent (name, img, startdate, enddate, rotation, position, null, creationDate);
 			bevent.Rotation = rotation;
 			bevent.Description = description;
 			DictionaryContent.Add (bevent.Id, bevent);
 		}
 
-		private void AddTestPicture(UIImage image, float imgx, float imgy, float rotation, DateTime creationDate)
+		private void AddTestPicture(UIImage image, CGPoint position, float rotation, DateTime creationDate)
 		{
 			Picture pic = new Picture ();
 			pic.ImageView = new UIImageView(image);
 			pic.CreationDate = creationDate;
-			pic.Frame = new CGRect(imgx, imgy, 0, 0);
+			pic.Position = position;
 			pic.Rotation = rotation;
 			DictionaryContent.Add (pic.Id, pic);
 		}
 
-		private void AddTestVideo(string url, float imgx, float imgy, float rotation, DateTime creationDate)
+		private void AddTestVideo(string url, CGPoint position, float rotation, DateTime creationDate)
 		{
 			Video vid = new Video ();
 
@@ -194,7 +194,7 @@ namespace Board.Interface
 			}
 
 			vid.Url = NSUrl.FromFilename (url);
-			vid.Frame = new CGRect(imgx, imgy, 0, 0);
+			vid.Position = position;
 			vid.CreationDate = creationDate;
 			vid.Rotation = rotation;
 

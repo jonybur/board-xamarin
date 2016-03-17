@@ -11,7 +11,7 @@ namespace Board.Schema
 		public string CreatorId;
 		public string FacebookId;
 
-		public CGRect Frame;
+		public CGPoint Position;
 		public DateTime CreationDate; 
 		public List<int> SocialChannel;
 

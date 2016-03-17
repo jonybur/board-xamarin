@@ -56,7 +56,7 @@ namespace Board.Interface.Widgets
 			//View.AddSubview (playButton);
 			*/
 
-			View.Frame = new CGRect (vid.Frame.X, vid.Frame.Y, MountingView.Frame.Width, MountingView.Frame.Height);
+			View.Frame = new CGRect (vid.Position.X, vid.Position.Y, MountingView.Frame.Width, MountingView.Frame.Height);
 			View.Transform = CGAffineTransform.MakeRotation(vid.Rotation);
 
 			EyeOpen = false;
@@ -104,7 +104,7 @@ namespace Board.Interface.Widgets
 
 			vid.ThumbnailView = new UIImageView(CommonUtils.ResizeImage (vid.ThumbnailView.Image, new CGSize (imgw, imgh)));
 
-			CGRect frame = new CGRect (vid.Frame.X, vid.Frame.Y, imgw, imgh);
+			CGRect frame = new CGRect (vid.Position.X, vid.Position.Y, imgw, imgh);
 
 			return frame;
 		}

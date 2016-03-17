@@ -14,12 +14,12 @@ namespace Board.Schema
 		public Picture() {
 		}
 
-		public Picture(UIImage image, UIImage thumbnail, float rotation, CGRect frame, string creatorid, DateTime creationdate)
+		public Picture(UIImage image, UIImage thumbnail, float rotation, CGPoint position, string creatorid, DateTime creationdate)
 		{
 			ImageView = new UIImageView(image);
 			ThumbnailView = new UIImageView(thumbnail);
 			Rotation = rotation;
-			Frame = frame;
+			Position = position;
 			CreatorId = creatorid;
 			CreationDate = creationdate;
 		}

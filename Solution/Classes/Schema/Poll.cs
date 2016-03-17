@@ -13,21 +13,21 @@ namespace Board.Schema
 
 		public Poll(){}
 
-		public Poll(NSAttributedString question, float rotation, CGRect frame, string creatorid, DateTime creationdate, params string[] answers)
+		public Poll(NSAttributedString question, float rotation, CGPoint position, string creatorid, DateTime creationdate, params string[] answers)
 		{
 			Question = question;
 			Rotation = rotation;
-			Frame = frame;
+			Position = position;
 			CreatorId = creatorid;
 			CreationDate = creationdate;
 			Answers = answers.ToList ();
 		}
 
-		public Poll(NSAttributedString question, float rotation, CGRect frame, string creatorid, DateTime creationdate, List<string> answers)
+		public Poll(NSAttributedString question, float rotation, CGPoint position, string creatorid, DateTime creationdate, List<string> answers)
 		{
 			Question = question;
 			Rotation = rotation;
-			Frame = frame;
+			Position = position;
 			CreatorId = creatorid;
 			CreationDate = creationdate;
 			Answers = answers;

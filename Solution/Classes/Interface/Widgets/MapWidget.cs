@@ -28,7 +28,7 @@ namespace Board.Interface.Widgets
 			View = new UIView(MountingView.Frame);
 			View.AddSubviews (MountingView, container.mapView);
 
-			View.Frame = new CGRect (_map.Frame.X, _map.Frame.Y, MountingView.Frame.Width, MountingView.Frame.Height);
+			View.Frame = new CGRect (_map.Position.X, _map.Position.Y, MountingView.Frame.Width, MountingView.Frame.Height);
 			View.Transform = CGAffineTransform.MakeRotation(_map.Rotation);
 
 			EyeOpen = false;
@@ -71,7 +71,7 @@ namespace Board.Interface.Widgets
 			{
 				UIGraphics.BeginImageContext (new CGSize(44, 64));
 
-				using (UIImage circle = UIImage.FromFile ("./screens/home/map/marker_blue.png")) {
+				using (UIImage circle = UIImage.FromFile ("./screens/main/map/marker_blue.png")) {
 					circle.Draw (new CGRect (0, 0, 44, 64));
 				}
 

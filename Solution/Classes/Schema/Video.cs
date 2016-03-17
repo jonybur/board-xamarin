@@ -16,12 +16,12 @@ namespace Board.Schema
 			Id = CommonUtils.GenerateGuid ();
 		}
 
-		public Video(NSUrl url, UIImageView thumbnailView, float rotation, CGRect frame, string creatorid, DateTime creationdate)
+		public Video(NSUrl url, UIImageView thumbnailView, float rotation, CGPoint position, string creatorid, DateTime creationdate)
 		{
 			Url = url;
 			ThumbnailView = thumbnailView;
 			Rotation = rotation;
-			Frame = frame;
+			Position = position;
 			CreatorId = creatorid;
 			CreationDate = creationdate;
 		}

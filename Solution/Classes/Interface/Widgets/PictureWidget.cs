@@ -41,7 +41,7 @@ namespace Board.Interface.Widgets
 			uiv.Image = picture.ThumbnailView.Image;
 			View.AddSubview (uiv);
 
-			View.Frame = new CGRect (pic.Frame.X, pic.Frame.Y, MountingView.Frame.Width, MountingView.Frame.Height);
+			View.Frame = new CGRect (pic.Position.X, pic.Position.Y, MountingView.Frame.Width, MountingView.Frame.Height);
 			View.Transform = CGAffineTransform.MakeRotation(pic.Rotation);
 
 			View.BackgroundColor = UIColor.FromRGB (250, 250, 250);
@@ -75,7 +75,7 @@ namespace Board.Interface.Widgets
 
 			picture.ThumbnailView = new UIImageView(CommonUtils.ResizeImage (picture.ImageView.Image, new CGSize (imgw, imgh)));
 
-			CGRect frame = new CGRect (picture.Frame.X, picture.Frame.Y, imgw, imgh);
+			CGRect frame = new CGRect (picture.Position.X, picture.Position.Y, imgw, imgh);
 
 			return frame;
 		}

@@ -34,7 +34,7 @@ namespace Board.Interface.Widgets
 
 			View.AddSubviews (MountingView, insideText);
 
-			View.Frame = new CGRect (ann.Frame.X, ann.Frame.Y, MountingView.Frame.Width, MountingView.Frame.Height);
+			View.Frame = new CGRect (ann.Position.X, ann.Position.Y, MountingView.Frame.Width, MountingView.Frame.Height);
 			View.Transform = CGAffineTransform.MakeRotation(ann.Rotation);
 
 			EyeOpen = false;

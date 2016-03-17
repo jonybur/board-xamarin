@@ -5,11 +5,11 @@ using BigTed;
 using Board.Interface;
 using Board.Interface.Buttons;
 using Board.Interface.Widgets;
+using Board.Infrastructure;
 using Board.Utilities;
 using Board.Schema;
 using CoreGraphics;
 using Facebook.CoreKit;
-using Foundation;
 using UIKit;
 
 namespace Board.Interface
@@ -66,7 +66,6 @@ namespace Board.Interface
 
 			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
 			NavigationController.NavigationBarHidden = true;
-
 		}
 
 		private void InitializeLists()
@@ -89,6 +88,18 @@ namespace Board.Interface
 				firstLoad = false;
 
 				BTProgressHUD.Dismiss ();
+			}
+
+			SerializeDictionary ();
+		}
+
+		public void SerializeDictionary()
+		{
+			foreach (KeyValuePair<string, Content> content in DictionaryContent) {
+				if (content.Value is Video) {
+					//string asd = JsonUtilty.ObjectToJson (content.Value);
+					//Console.WriteLine (asd);
+				}
 			}
 		}
 

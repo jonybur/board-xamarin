@@ -202,21 +202,21 @@ namespace Board.Interface
 		public static Picture GetPicture()
 		{
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
-			Picture p = new Picture (pictureWidget.picture.ImageView.Image, pictureWidget.picture.ThumbnailView.Image, Rotation, uiView.Frame, Profile.CurrentProfile.UserID, DateTime.Now);
+			Picture p = new Picture (pictureWidget.picture.ImageView.Image, pictureWidget.picture.ThumbnailView.Image, Rotation, uiView.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
 			return p;
 		}
 
 		public static Video GetVideo()
 		{
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
-			Video v = new Video (videoWidget.video.Url, videoWidget.video.ThumbnailView, Rotation, uiView.Frame, Profile.CurrentProfile.UserID, DateTime.Now);
+			Video v = new Video (videoWidget.video.Url, videoWidget.video.ThumbnailView, Rotation, uiView.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
 			return v;
 		}
 
 		public static Announcement GetAnnouncement()
 		{
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
-			Announcement ann = new Announcement (announcementWidget.announcement.Text, Rotation, uiView.Frame, Profile.CurrentProfile.UserID, DateTime.Now);
+			Announcement ann = new Announcement (announcementWidget.announcement.Text, Rotation, uiView.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
 			ann.FacebookId = announcementWidget.announcement.FacebookId;
 			ann.SocialChannel = announcementWidget.announcement.SocialChannel;
 			return ann;
@@ -225,7 +225,7 @@ namespace Board.Interface
 		public static BoardEvent GetEvent()
 		{
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
-			BoardEvent bve = new BoardEvent (eventWidget.boardEvent.Name, eventWidget.boardEvent.ImageView.Image, eventWidget.boardEvent.StartDate, eventWidget.boardEvent.EndDate, Rotation, uiView.Frame, Profile.CurrentProfile.UserID, DateTime.Now);
+			BoardEvent bve = new BoardEvent (eventWidget.boardEvent.Name, eventWidget.boardEvent.ImageView.Image, eventWidget.boardEvent.StartDate, eventWidget.boardEvent.EndDate, Rotation, uiView.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
 			bve.Description = eventWidget.boardEvent.Description;
 			bve.FacebookId = eventWidget.boardEvent.FacebookId;
 			return bve;

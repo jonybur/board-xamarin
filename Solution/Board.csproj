@@ -368,6 +368,7 @@
     <Compile Include="Classes\Screens\Controls\MapMarker.cs" />
     <Compile Include="Classes\Screens\Controls\SideMenu.cs" />
     <Compile Include="Classes\Screens\ContainerScreen.cs" />
+    <Compile Include="Classes\Infrastructure\JsonUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
