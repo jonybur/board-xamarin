@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using CoreGraphics;
+﻿using System.Collections.Generic;
 using Facebook.CoreKit;
-using Foundation;
-using Google.Maps;
 using UIKit;
-using Board.Screens.Controls;
 
 namespace Board.Screens
 {

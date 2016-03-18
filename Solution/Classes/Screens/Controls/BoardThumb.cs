@@ -14,7 +14,7 @@ namespace Board.Screens.Controls
 
 		public BoardThumb (Board.Schema.Board board, CGPoint contentOffset)
 		{ 
-			this.Board = board;
+			Board = board;
 			float imgx, imgy, imgw, imgh;
 
 			float autosize = Size;
@@ -40,16 +40,11 @@ namespace Board.Screens.Controls
 			imgy = (float)(contentOffset.Y);
 
 			// launches the image preview
-			this.Frame = new CGRect (0, 0, autosize, autosize);
-			this.Center = new CGPoint (imgx, imgy);
+			Frame = new CGRect (0, 0, autosize, autosize);
+			Center = new CGPoint (imgx, imgy);
 
-			UIImageView boardImage = new UIImageView (new CGRect (0, 0, imgw * .8f, imgh * .8f));
-			boardImage.Center = new CGPoint (autosize / 2, autosize / 2);
-
-			UIImage img = CommonUtils.ResizeImage (board.ImageView.Image, this.Frame.Size);
-			boardImage.Image = img;
-
-			this.AddSubview (boardImage);
+			UIImage img = CreateThumbImage (board.ImageView.Image, new CGSize(autosize, autosize));
+			SetImage(img, UIControlState.Normal);
 
 			TouchEvent = (sender, e) => {
 				if (AppDelegate.boardInterface == null)
@@ -63,21 +58,22 @@ namespace Board.Screens.Controls
 		}
 
 		// TODO: implement this
-		private UIImage CreateThumbImage(UIImage logo)
+		private UIImage CreateThumbImage(UIImage logo, CGSize size)
 		{
-			UIGraphics.BeginImageContext (new CGSize(66, 96));
+			UIGraphics.BeginImageContext (size);
 
-			using (UIImage circle = UIImage.FromFile ("./screens/home/map/marker_blue.png")) {
-				circle.Draw (new CGRect (0, 0, 66, 96));
-			}
+			CGContext current = UIGraphics.GetCurrentContext ();
+
+			current.SetFillColor (UIColor.White.CGColor);
+			current.FillEllipseInRect (new CGRect(0,0,size.Width, size.Height));
 
 			float imgw, imgh;
 
 			float scale = (float)(logo.Size.Height/logo.Size.Width);
-			imgw = 40;
+			imgw = (float)size.Width * .69f;
 			imgh = imgw * scale;
 
-			logo.Draw (new CGRect (33 - imgw / 2, 33 - imgh / 2, imgw, imgh));
+			logo.Draw (new CGRect (size.Width / 2 - imgw / 2, size.Height / 2 - imgh / 2, imgw, imgh));
 
 			return UIGraphics.GetImageFromCurrentImageContext ();
 		}

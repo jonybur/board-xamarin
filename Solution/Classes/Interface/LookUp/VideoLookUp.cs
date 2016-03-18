@@ -52,7 +52,7 @@ namespace Board.Interface.LookUp
 				AppDelegate.NavigationController.PresentViewController(alert, true, null);	
 			});
 
-			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, TrashButton);
+			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, TrashButton, EditButton);
 		}
 
 		public override void ViewDidAppear(bool animated)

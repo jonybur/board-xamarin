@@ -1,6 +1,7 @@
 using System;
 using Board.Schema;
 using Board.Utilities;
+using Board.Infrastructure;
 using CoreGraphics;
 using UIKit;
 
@@ -28,53 +29,46 @@ namespace Board.Interface.Buttons
 				// takes out the confirmation bar and resets navigation
 				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.NavigationBar);
 
+				Content content;
+
 				switch (Preview.TypeOfPreview) {
 
 					case (int)Preview.Type.Picture:
-						// create the picture from the preview
-						Picture p = Preview.GetPicture ();
-						// if the picture is not null...
-						if (p != null) {
-							// uploads
-
-							BoardInterface.DictionaryContent.Add (p.Id, p);
-						}
+						content = Preview.GetPicture ();
 						break;
 
 					case (int)Preview.Type.Video:
-						Video v = Preview.GetVideo ();
-						if (v != null) {
-						
-							BoardInterface.DictionaryContent.Add (v.Id, v);
-						}
+						content = Preview.GetVideo ();
 						break;
 
 					case (int)Preview.Type.Announcement:
-						Announcement ann = Preview.GetAnnouncement ();
-						if (ann != null) {
+						content = Preview.GetAnnouncement ();
 							
-							if (AppDelegate.ServerActive && ann.SocialChannel != null && ann.SocialChannel.Count > 0) {
-								if (ann.SocialChannel.Contains (0)) {
-								string json = "{ \"text\": \"" + ann.AttributedText + "\", " + "\"socialChannel\": \"" + "0" + "\" }";
+						if (AppDelegate.ServerActive && content.SocialChannel != null && content.SocialChannel.Count > 0) {
+								if (content.SocialChannel.Contains (0)) {
+								string json = "{ \"text\": \"" + ((Announcement)content).AttributedText + "\", " + "\"socialChannel\": \"" + "0" + "\" }";
 									string result = CommonUtils.JsonPOSTRequest ("http://192.168.1.101:5000/api/publications?authToken=" + AppDelegate.EncodedBoardToken, json);
 									Console.WriteLine (result);
 								}
 							}
-
-							BoardInterface.DictionaryContent.Add (ann.Id, ann);
-						}
 						break;
 
 					case (int)Preview.Type.Event:
-						BoardEvent bve = Preview.GetEvent();
-						if (bve != null){
-							BoardInterface.DictionaryContent.Add (bve.Id, bve);							
-						}
+						content = Preview.GetEvent();
+						break;
+
+					default:
+						content = new Content();
 						break;
 				}
 
+				string jsonString = JsonUtilty.GenerateUpdateJson(content);
+
+				BoardInterface.DictionaryContent.Add (content.Id, content);
+
 				// remove the preview imageview from the superview
 				Preview.RemoveFromSuperview ();
+
 				// refreshes the scrollview
 				refreshPictures ();
 			});

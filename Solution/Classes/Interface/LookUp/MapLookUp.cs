@@ -2,6 +2,7 @@
 using System;
 using Foundation;
 using Google.Maps;
+using Board.Utilities;
 using CoreLocation;
 using CoreGraphics;
 using UIKit;
@@ -30,7 +31,7 @@ namespace Board.Interface.LookUp
 			LoadMap ();
 			ScrollView.AddSubview (mapView);
 
-			View.AddSubviews (ScrollView, BackButton, LikeButton, UberButton, TrashButton);
+			View.AddSubviews (ScrollView, BackButton, LikeButton, WazeButton, TrashButton);
 		}
 
 		public override void ViewDidDisappear(bool animated)
@@ -39,6 +40,7 @@ namespace Board.Interface.LookUp
 			base.ViewDidDisappear(animated);
 			mapView.RemoveObserver (this, new NSString ("myLocation"));
 			mapView = null;
+			MemoryUtility.ReleaseUIViewWithChildren (View);
 		}
 
 		private void LoadMap()

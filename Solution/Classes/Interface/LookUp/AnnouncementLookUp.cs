@@ -28,7 +28,7 @@ namespace Board.Interface.LookUp
 
 			ScrollView.AddSubview (textView);
 
-			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton, TrashButton);
+			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton, TrashButton, EditButton);
 		}
 
 		private UITextView LoadTextView(Announcement announcement, UIColor color){

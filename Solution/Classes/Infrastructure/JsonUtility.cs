@@ -8,7 +8,7 @@ namespace Board.Infrastructure
 	public static class JsonUtilty{
 
 		// recibe un diccionario de contents, arma al json
-		public static string GenerateJson(Dictionary<string, Content> dictionary)
+		public static string GenerateUpdateJson(Dictionary<string, Content> dictionary)
 		{
 			Dictionary<string, object> FinalJson = new Dictionary<string, object> ();
 
@@ -20,7 +20,7 @@ namespace Board.Infrastructure
 		}
 
 		// recibe un content, arma json de update
-		public static string GenerateJson(Content content)
+		public static string GenerateUpdateJson(Content content)
 		{
 			Dictionary<string, Content> singleContent = new Dictionary<string, Content> ();
 			singleContent.Add (content.Id, content);
@@ -29,7 +29,18 @@ namespace Board.Infrastructure
 
 			FinalJson.Add ("updated", singleContent);
 
-			FinalJson.Add ("timestamp", GetUnixTimeStamp());
+			FinalJson.Add ("timestamp", GetUnixTimeStamp ());
+
+			return JsonConvert.SerializeObject (FinalJson);
+		}
+
+		public static string GenerateDeleteJson(params string[] contentids)
+		{
+			Dictionary<string, object> FinalJson = new Dictionary<string, object> ();
+
+			FinalJson.Add ("deleted", contentids);
+
+			FinalJson.Add ("timestamp", GetUnixTimeStamp ());
 
 			return JsonConvert.SerializeObject (FinalJson);
 		}

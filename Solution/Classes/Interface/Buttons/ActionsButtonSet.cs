@@ -12,7 +12,7 @@ namespace Board.Interface.Buttons
 			arrayButtons[1] = new CameraButton ();
 			arrayButtons[2] = new CardButton ();
 			arrayButtons[3] = new SettingsButton ();
-			arrayButtons[4] = new FacebookButton ();
+			arrayButtons[4] = new InfoButton ();
 		}
 	}
 }

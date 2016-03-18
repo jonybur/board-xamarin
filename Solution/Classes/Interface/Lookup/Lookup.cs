@@ -1,4 +1,5 @@
 ﻿using Board.Interface.Buttons;
+using Board.Infrastructure;
 using Board.Utilities;
 using CoreGraphics;
 using Foundation;
@@ -21,6 +22,7 @@ namespace Board.Interface.LookUp
 		UITapGestureRecognizer likeTap;
 		UITapGestureRecognizer facebookTap;
 		UITapGestureRecognizer wazeTap;
+		UITapGestureRecognizer editTap;
 		UITapGestureRecognizer uberTap;
 		UITapGestureRecognizer shareTap;
 		UITapGestureRecognizer trashTap;
@@ -28,6 +30,7 @@ namespace Board.Interface.LookUp
 		protected UIImageView BackButton;
 		protected UIImageView LikeButton;
 		protected UIImageView FacebookButton;
+		protected UIImageView EditButton;
 		protected UIImageView UberButton;
 		protected UIImageView WazeButton;
 		protected UIImageView ShareButton;
@@ -49,6 +52,8 @@ namespace Board.Interface.LookUp
 			CreateUberButton (buttonColor);
 			CreateShareButton (buttonColor);
 			CreateTrashButton (buttonColor);
+			CreateWazeButton (buttonColor);
+			CreateEditButton (buttonColor);
 		
 			if (string.IsNullOrEmpty(content.FacebookId)) {
 				FacebookButton.Alpha = 0f;
@@ -56,6 +61,7 @@ namespace Board.Interface.LookUp
 
 			if (Profile.CurrentProfile.UserID != BoardInterface.board.CreatorId) {
 				TrashButton.Alpha = 0f;
+				EditButton.Alpha = 0f;
 			}
 		}
 
@@ -65,8 +71,10 @@ namespace Board.Interface.LookUp
 			LikeButton.AddGestureRecognizer (likeTap);
 			FacebookButton.AddGestureRecognizer (facebookTap);
 			ShareButton.AddGestureRecognizer (shareTap);
+			EditButton.AddGestureRecognizer (editTap);
 			UberButton.AddGestureRecognizer (uberTap);
 			TrashButton.AddGestureRecognizer (trashTap);
+			WazeButton.AddGestureRecognizer (wazeTap);
 		}
 
 		public override void ViewDidDisappear(bool animated)
@@ -74,9 +82,11 @@ namespace Board.Interface.LookUp
 			BackButton.RemoveGestureRecognizer (backTap);
 			LikeButton.RemoveGestureRecognizer (likeTap);
 			LikeButton.RemoveGestureRecognizer (facebookTap);
+			EditButton.RemoveGestureRecognizer (editTap);
 			ShareButton.RemoveGestureRecognizer (shareTap);
 			UberButton.RemoveGestureRecognizer (uberTap);
 			TrashButton.RemoveGestureRecognizer (trashTap);
+			WazeButton.RemoveGestureRecognizer (wazeTap);
 		}
 
 		protected void CreateBackButton(UIColor buttonColor)
@@ -99,7 +109,30 @@ namespace Board.Interface.LookUp
 				// user tapped on "Done" button
 				AppDelegate.PopViewLikeDismissView();
 				ButtonInterface.SwitchButtonLayout((int)ButtonInterface.ButtonLayout.NavigationBar);
-				MemoryUtility.ReleaseUIViewWithChildren (View);
+				if (!(content is Map))
+				{
+					MemoryUtility.ReleaseUIViewWithChildren (View);
+				}
+			});
+		}
+
+		protected void CreateEditButton(UIColor buttonColor)
+		{
+			using (UIImage img = UIImage.FromFile ("./boardinterface/lookup/edit.png")) {
+				EditButton = new UIImageView(new CGRect(0,0,img.Size.Width * 2,img.Size.Height * 2));
+
+				UIImageView subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
+				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				subView.Center = new CGPoint (EditButton.Frame.Width / 2, EditButton.Frame.Height / 2);
+				subView.TintColor = buttonColor;
+
+				EditButton.AddSubview (subView);
+				EditButton.Center = new CGPoint (AppDelegate.ScreenWidth - img.Size.Width * 2- 10, 35);
+			}
+
+			EditButton.UserInteractionEnabled = true;
+
+			editTap = new UITapGestureRecognizer (tg => {
 			});
 		}
 
@@ -121,7 +154,7 @@ namespace Board.Interface.LookUp
 
 			trashTap = new UITapGestureRecognizer (tg => {
 
-				UIAlertController alert = UIAlertController.Create("Remove this widget from the Board?", "You can't undo this action", UIAlertControllerStyle.ActionSheet);
+				UIAlertController alert = UIAlertController.Create("Remove this widget from the board?", "You can't undo this action", UIAlertControllerStyle.ActionSheet);
 
 				alert.AddAction (UIAlertAction.Create ("Accept", UIAlertActionStyle.Default, RemoveWidget));
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, HideWindow));
@@ -148,7 +181,9 @@ namespace Board.Interface.LookUp
 				widget.View.RemoveFromSuperview ();
 				BoardInterface.DictionaryWidgets.Remove (content.Id);
 			}
-				
+
+			string deleteJson = JsonUtilty.GenerateDeleteJson (content.Id);
+
 			AppDelegate.PopViewLikeDismissView ();
 			window.Hidden = true;
 		}
@@ -210,6 +245,48 @@ namespace Board.Interface.LookUp
 			});
 		}
 
+		protected void CreateWazeButton(UIColor buttonColor)
+		{
+			using (UIImage img = UIImage.FromFile ("./boardinterface/lookup/waze.png")) {
+				const string text = "Open in Waze";
+				UIFont font = UIFont.SystemFontOfSize (14);
+
+				WazeButton = new UIImageView(new CGRect(0, 0, img.Size.Width + text.StringSize(font).Width + 5, img.Size.Height * 2));
+
+				UIImageView subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
+				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				subView.TintColor = buttonColor;
+				subView.Center = new CGPoint (img.Size.Width / 2, BackButton.Frame.Height / 2);
+
+				UILabel lblLikes = new UILabel (new CGRect (0, 0, text.StringSize(font).Width, 14));
+				lblLikes.Font = font;
+				lblLikes.Text = text;
+				lblLikes.TextColor = buttonColor;
+				lblLikes.Center = new CGPoint (subView.Center.X + lblLikes.Frame.Width / 2 + 15, subView.Center.Y);
+
+				WazeButton.AddSubviews(subView, lblLikes);
+				WazeButton.Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - 25);
+			}
+
+			WazeButton.UserInteractionEnabled = true;
+
+			wazeTap = new UITapGestureRecognizer (tg => {
+
+				NSUrl url = new NSUrl("waze://");
+
+				if (UIApplication.SharedApplication.CanOpenUrl(url)) {
+					double latitude = 25.792826, longitude = -80.129943;
+
+					// TODO: fix this
+					NSUrl uberRequest = new NSUrl("waze://?ll="+latitude+","+longitude+"&z=10&navigate=yes");
+
+					UIApplication.SharedApplication.OpenUrl(uberRequest);
+				}
+				else {
+					// No Waze app! Open mobile website.
+				}
+			});
+		}
 
 		protected void CreateUberButton(UIColor buttonColor)
 		{

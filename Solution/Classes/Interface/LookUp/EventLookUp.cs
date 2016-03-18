@@ -33,7 +33,7 @@ namespace Board.Interface.LookUp
 				AppDelegate.ScreenHeight - TrashButton.Frame.Bottom - LikeButton.Frame.Height));
 			ScrollView.UserInteractionEnabled = true;
 
-			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton, TrashButton);
+			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, ShareButton, TrashButton, EditButton);
 
 			PictureBox = CreatePictureBox ();
 			NameLabel = CreateNameLabel (boardEvent.Name, backColor);
@@ -55,9 +55,9 @@ namespace Board.Interface.LookUp
 
 		private UILabel CreateNameLabel(string name, UIColor color)
 		{
-			UILabel label = new UILabel (new CGRect(0, PictureBox.Frame.Bottom + 20, PictureBox.Frame.Width, 25));
+			UILabel label = new UILabel (new CGRect(10, PictureBox.Frame.Bottom + 25, PictureBox.Frame.Width-20, 25));
 			label.Text = name;
-			label.Font = UIFont.BoldSystemFontOfSize (20);
+			label.Font = UIFont.FromName("narwhal-bold", 24);
 			label.TextColor = color;
 			label.TextAlignment = UITextAlignment.Center;
 			label.AdjustsFontSizeToFitWidth = true;
@@ -84,7 +84,6 @@ namespace Board.Interface.LookUp
 			textView.Frame = new CGRect (textView.Frame.X, textView.Frame.Y, PictureBox.Frame.Width, textView.Frame.Height);
 
 			return textView;
-
 		}
 
 		private UIImageView CreatePictureBox()

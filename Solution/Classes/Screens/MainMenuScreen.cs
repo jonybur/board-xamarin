@@ -77,13 +77,16 @@ namespace Board.Screens
 		
 			public LocationLabel(float yposition, string location)
 			{
-				Frame = new CGRect(30, yposition, AppDelegate.ScreenWidth - 40, 24);
+				Frame = new CGRect(10, yposition, AppDelegate.ScreenWidth - 20, 24);
+				//Frame = new CGRect(30, yposition, AppDelegate.ScreenWidth - 40, 24);
 				Font = font;
+				TextAlignment = UITextAlignment.Center;
 				TextColor = AppDelegate.BoardOrange;
 				Text = location;
 			}
 		}
 
+		float yposition;
 		private void LoadContent()
 		{
 			BoardThumb.Size = AppDelegate.ScreenWidth / 4;
@@ -101,19 +104,27 @@ namespace Board.Screens
 			LocationLabel.font = AppDelegate.Narwhal20;
 
 			// starting point
-			float yposition = 5;
 			bool newLine = false;
+			int neighborhoodnumber = 0;
+			yposition = 15;
 			foreach (Board.Schema.Board b in boardList) {
 				if (location != b.Location) {
 					// draw new location string
 					if (!newLine) {
-						yposition += 70;
+						yposition += 60;
 					}
+
+					if (neighborhoodnumber > 0) {
+						DrawTrendingBanner (neighborhoodnumber, false);
+					}
+
 					LocationLabel locationLabel = new LocationLabel (yposition, b.Location);
-					yposition += (float)locationLabel.Frame.Height + BoardThumb.Size / 2 + 10;
+					yposition += (float)locationLabel.Frame.Height + BoardThumb.Size / 2 + 5;
 					location = b.Location;
 					content.AddSubview (locationLabel);
+
 					i = 1;
+					neighborhoodnumber++;
 				}
 				 
 				BoardThumb boardThumb = new BoardThumb (b, new CGPoint ((AppDelegate.ScreenWidth/ 4) * i, yposition));
@@ -122,18 +133,36 @@ namespace Board.Screens
 					i = 1;
 					yposition += BoardThumb.Size + 6;
 					newLine = true;
-				} else { newLine = false;}
+				} else { newLine = false; }
 
 				ListThumbs.Add (boardThumb);
 				content.AddSubview (boardThumb);
 			}
+			yposition += 60;
+			DrawTrendingBanner (neighborhoodnumber, true);
 
 			content.ScrollEnabled = true;
 			content.UserInteractionEnabled = true;
 
-			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, yposition + BoardThumb.Size + 25);
+			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, yposition + BoardThumb.Size + 5);
 
 			View.AddSubview (content);
+		}
+
+		private void DrawTrendingBanner(int number, bool last)
+		{
+			yposition += 15;
+			UIImageView featuredBlock = new UIImageView(new CGRect(0, yposition, AppDelegate.ScreenWidth, 150));
+			using (UIImage img = UIImage.FromFile ("./demo/main/trending"+number+".jpg")) {
+				featuredBlock.Image = img;
+			}
+			content.AddSubview (featuredBlock);
+
+			yposition += (float)featuredBlock.Frame.Height;
+
+			if (!last) {
+				yposition += 40;
+			}
 		}
 
 		private void LoadBanner()

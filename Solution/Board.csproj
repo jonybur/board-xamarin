@@ -277,6 +277,14 @@
     <BundleResource Include="Resources\screens\invite\sidemenu\6plus.png" />
     <BundleResource Include="Resources\screens\settings\sidemenu\6plus.png" />
     <BundleResource Include="Resources\screens\support\sidemenu\6plus.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\info_3px.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\info_3px2.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\info_3px3.png" />
+    <BundleResource Include="Resources\screens\controls\thumbback.png" />
+    <BundleResource Include="Resources\demo\main\trending1.jpg" />
+    <BundleResource Include="Resources\demo\main\trending2.jpg" />
+    <BundleResource Include="Resources\demo\main\trending3.jpg" />
+    <BundleResource Include="Resources\boardinterface\lookup\edit.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -369,6 +377,7 @@
     <Compile Include="Classes\Screens\Controls\SideMenu.cs" />
     <Compile Include="Classes\Screens\ContainerScreen.cs" />
     <Compile Include="Classes\Infrastructure\JsonUtility.cs" />
+    <Compile Include="Classes\Interface\Buttons\InfoButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -444,6 +453,8 @@
     <Folder Include="Resources\screens\main\sidemenu\" />
     <Folder Include="Resources\screens\settings\sidemenu\" />
     <Folder Include="Resources\screens\support\sidemenu\" />
+    <Folder Include="Resources\screens\controls\" />
+    <Folder Include="Resources\demo\main\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

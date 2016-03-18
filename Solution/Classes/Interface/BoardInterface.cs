@@ -89,14 +89,6 @@ namespace Board.Interface
 
 				BTProgressHUD.Dismiss ();
 			}
-
-			SerializeDictionary ();
-		}
-
-		public void SerializeDictionary()
-		{
-			string asd = JsonUtilty.GenerateJson (DictionaryContent); 
-			Console.WriteLine (asd);
 		}
 
 		public void ExitBoard()

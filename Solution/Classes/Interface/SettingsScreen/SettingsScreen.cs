@@ -32,11 +32,6 @@ namespace Board.Interface
 			Banner.SuscribeToEvents ();
 		}
 
-		public override void ViewDidDisappear(bool animated)
-		{
-			Banner.UnsuscribeToEvents ();
-		}
-
 		private void CreateSyncButton(float yPosition)
 		{
 			SyncButton = new OneLineMenuButton (yPosition);
@@ -44,8 +39,8 @@ namespace Board.Interface
 			SyncButton.TouchUpInside += (sender, e) => {
 				SyncButton.SetPressedColors();
 				PageSelectorScreen pgScreen = new PageSelectorScreen();
+				Banner.UnsuscribeToEvents ();
 				AppDelegate.NavigationController.PushViewController(pgScreen, true);
-				//AppDelegate.NavigationController.PushViewController(pgScreen, true);
 			};
 		}
 
@@ -56,6 +51,7 @@ namespace Board.Interface
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					AppDelegate.PopViewLikeDismissView();
+					Banner.UnsuscribeToEvents ();
 					MemoryUtility.ReleaseUIViewWithChildren (View);
 				}
 			});

@@ -49,7 +49,7 @@ namespace Board.Interface.LookUp
 
 			longpress.MinimumPressDuration = .3f;
 
-			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, TrashButton);
+			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, TrashButton, EditButton);
 		}
 
 		private async void SavePhoto(UIAlertAction action)

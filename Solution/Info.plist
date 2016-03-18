@@ -91,6 +91,7 @@
 		<string>fbauth2</string>
 		<string>fbshareextension</string>
 		<string>uber</string>
+		<string>waze</string>
 	</array>
 	<key>CFBundleShortVersionString</key>
 	<string>0.3.2</string>
