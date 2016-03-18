@@ -1,48 +1,41 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Board.Schema;
 
 namespace Board.Infrastructure
 {
 	public static class JsonUtilty{
-		public static string ObjectToJson(object obj)
-		{
-			string test = JsonConvert.SerializeObject (obj);
-			return test;
-		}
-	}
 
-	public abstract class JsonCreationConverter<T> : JsonConverter
-	{
-		protected abstract T Create(Type objectType, JObject jObject);
-
-		public override bool CanConvert(Type objectType)
+		// recibe un diccionario de contents, arma al json
+		public static string GenerateJson(Dictionary<string, Content> dictionary)
 		{
-			return typeof(T).IsAssignableFrom(objectType);
+			Dictionary<string, object> FinalJson = new Dictionary<string, object> ();
+
+			FinalJson.Add ("updated", dictionary);
+
+			FinalJson.Add ("timestamp", GetUnixTimeStamp());
+
+			return JsonConvert.SerializeObject (FinalJson);
 		}
 
-		public override object ReadJson(JsonReader reader, 
-			Type objectType, 
-			object existingValue, 
-			JsonSerializer serializer)
+		// recibe un content, arma json de update
+		public static string GenerateJson(Content content)
 		{
-			// Load JObject from stream
-			JObject jObject = JObject.Load(reader);
+			Dictionary<string, Content> singleContent = new Dictionary<string, Content> ();
+			singleContent.Add (content.Id, content);
 
-			// Create target object based on JObject
-			T target = Create(objectType, jObject);
+			Dictionary<string, object> FinalJson = new Dictionary<string, object> ();
 
-			// Populate the object properties
-			serializer.Populate(jObject.CreateReader(), target);
+			FinalJson.Add ("updated", singleContent);
 
-			return target;
+			FinalJson.Add ("timestamp", GetUnixTimeStamp());
+
+			return JsonConvert.SerializeObject (FinalJson);
 		}
 
-		public override void WriteJson(JsonWriter writer, 
-			object value,
-			JsonSerializer serializer)
-		{
-			throw new NotImplementedException();
+		private static Int32 GetUnixTimeStamp(){
+			return (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 		}
 	}
 }

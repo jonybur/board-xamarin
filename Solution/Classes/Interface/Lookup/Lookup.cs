@@ -334,7 +334,7 @@ namespace Board.Interface.LookUp
 
 				if (content is Announcement)
 				{
-					await a.Share (metadata + ((Announcement)content).Text.Value, null);
+					await a.Share (metadata + ((Announcement)content).AttributedText.Value, null);
 				}
 
 				else if (content is BoardEvent)

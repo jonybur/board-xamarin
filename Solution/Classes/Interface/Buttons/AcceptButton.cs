@@ -55,7 +55,7 @@ namespace Board.Interface.Buttons
 							
 							if (AppDelegate.ServerActive && ann.SocialChannel != null && ann.SocialChannel.Count > 0) {
 								if (ann.SocialChannel.Contains (0)) {
-									string json = "{ \"text\": \"" + ann.Text + "\", " + "\"socialChannel\": \"" + "0" + "\" }";
+								string json = "{ \"text\": \"" + ann.AttributedText + "\", " + "\"socialChannel\": \"" + "0" + "\" }";
 									string result = CommonUtils.JsonPOSTRequest ("http://192.168.1.101:5000/api/publications?authToken=" + AppDelegate.EncodedBoardToken, json);
 									Console.WriteLine (result);
 								}

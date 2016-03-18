@@ -1,15 +1,19 @@
 using CoreGraphics;
 using UIKit;
+using System.Runtime.Serialization;
 using System;
-using Board.Utilities;
 
 namespace Board.Schema
 {
 	public class Picture : Content
 	{
+		[IgnoreDataMember]
 		public UIImageView ImageView;
 
+		[IgnoreDataMember]
 		public UIImageView ThumbnailView;
+
+		public string ImageUrl;
 
 		public Picture() {
 		}

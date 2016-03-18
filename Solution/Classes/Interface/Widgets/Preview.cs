@@ -216,7 +216,7 @@ namespace Board.Interface
 		public static Announcement GetAnnouncement()
 		{
 			uiView.Transform = CGAffineTransform.MakeRotation (0);
-			Announcement ann = new Announcement (announcementWidget.announcement.Text, Rotation, uiView.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
+			Announcement ann = new Announcement (announcementWidget.announcement.AttributedText, Rotation, uiView.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
 			ann.FacebookId = announcementWidget.announcement.FacebookId;
 			ann.SocialChannel = announcementWidget.announcement.SocialChannel;
 			return ann;

@@ -56,10 +56,6 @@ namespace Board.Facebook
 					FacebookEvent fbevent = new FacebookEvent (objects [i, 0], objects [i, 1], objects [i, 2], objects [i, 3], objects [i, 4]);
 					ElementList.Add (fbevent);
 				}
-
-				/*GraphRequest graph = new GraphRequest (Id + "/" + Element + "?fields=cover", null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
-				graph.Start ();*/
-
 			} else if (Element == "posts") {
 				string[,] objects = NSObjectToElement (obj, "data.id", "data.message", "data.story", "data.created_time");
 

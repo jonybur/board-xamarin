@@ -1,7 +1,7 @@
 ﻿using System;
 using UIKit;
 using CoreGraphics;
-using Board.Utilities;
+using System.Runtime.Serialization;
 
 namespace Board.Schema
 {
@@ -13,13 +13,17 @@ namespace Board.Schema
 	
 		public string Description;
 
+		[IgnoreDataMember]
 		public UIImageView ImageView;
 
+		[IgnoreDataMember]
 		public UIImageView Thumbnail;
 
 		public DateTime StartDate;
 
 		public DateTime EndDate;
+
+		public string ImageUrl;
 	
 		public BoardEvent() {
 		}

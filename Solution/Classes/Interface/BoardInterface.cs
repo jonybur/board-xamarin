@@ -95,12 +95,8 @@ namespace Board.Interface
 
 		public void SerializeDictionary()
 		{
-			foreach (KeyValuePair<string, Content> content in DictionaryContent) {
-				if (content.Value is Video) {
-					//string asd = JsonUtilty.ObjectToJson (content.Value);
-					//Console.WriteLine (asd);
-				}
-			}
+			string asd = JsonUtilty.GenerateJson (DictionaryContent); 
+			Console.WriteLine (asd);
 		}
 
 		public void ExitBoard()

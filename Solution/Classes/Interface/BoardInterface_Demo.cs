@@ -157,11 +157,7 @@ namespace Board.Interface
 
 		private void AddTestAnnouncement(CGPoint position, float rotation, NSMutableAttributedString text, DateTime creationDate)
 		{
-			Announcement ann = new Announcement ();
-			ann.Position = position;
-			ann.Rotation = rotation;
-			ann.CreationDate = creationDate;
-			ann.Text = new NSAttributedString (text); 
+			Announcement ann = new Announcement (text, rotation, position, null, creationDate);
 			DictionaryContent.Add (ann.Id, ann);
 		}
 
@@ -194,6 +190,7 @@ namespace Board.Interface
 			}
 
 			vid.Url = NSUrl.FromFilename (url);
+			vid.UrlText = vid.Url.AbsoluteString;
 			vid.Position = position;
 			vid.CreationDate = creationDate;
 			vid.Rotation = rotation;

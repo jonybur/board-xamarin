@@ -3,12 +3,17 @@ using Foundation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Board.Schema
 {
 	public class Poll : Content
 	{
+		[IgnoreDataMember]
 		public NSAttributedString Question;
+
+		public string QuestionText;
+
 		public List<string> Answers;
 
 		public Poll(){}
@@ -16,6 +21,7 @@ namespace Board.Schema
 		public Poll(NSAttributedString question, float rotation, CGPoint position, string creatorid, DateTime creationdate, params string[] answers)
 		{
 			Question = question;
+			QuestionText = question.Value;
 			Rotation = rotation;
 			Position = position;
 			CreatorId = creatorid;
@@ -26,6 +32,7 @@ namespace Board.Schema
 		public Poll(NSAttributedString question, float rotation, CGPoint position, string creatorid, DateTime creationdate, List<string> answers)
 		{
 			Question = question;
+			QuestionText = question.Value;
 			Rotation = rotation;
 			Position = position;
 			CreatorId = creatorid;
