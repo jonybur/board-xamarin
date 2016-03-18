@@ -7,6 +7,7 @@ using UIKit;
 using Board.Interface.Widgets;
 using Facebook.CoreKit;
 using System;
+using Board.Interface.CreateScreens;
 using Board.Schema;
 using Plugin.Share;
 
@@ -133,6 +134,11 @@ namespace Board.Interface.LookUp
 			EditButton.UserInteractionEnabled = true;
 
 			editTap = new UITapGestureRecognizer (tg => {
+				if (content is Announcement)
+				{
+					var screen = new CreateAnnouncementScreen((Announcement)content);
+					AppDelegate.PushViewLikePresentView(screen);	
+				}
 			});
 		}
 

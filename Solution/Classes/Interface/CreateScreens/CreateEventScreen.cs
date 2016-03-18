@@ -26,11 +26,21 @@ namespace Board.Interface.CreateScreens
 
 		UIImageView whiteBack;
 
+		public CreateEventScreen()
+		{}
+
+		public CreateEventScreen(BoardEvent boardEvent)
+		{
+			content = boardEvent;
+		}
+
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
 
-			content = new BoardEvent ();
+			if (content == null) {
+				content = new BoardEvent ();
+			}
 
 			LoadContent ();
 

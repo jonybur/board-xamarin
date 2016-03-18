@@ -197,8 +197,8 @@ namespace Board.Screens
 				pushRight = 23;
 			}
 
-			board.MainColor = AppDelegate.BoardOrange;
-			board.SecondaryColor = AppDelegate.BoardBlue;
+			board.MainColor = AppDelegate.BoardBlue;
+			board.SecondaryColor = AppDelegate.BoardOrange;
 
 			UIImageView color1 = CreateColorSquare (ColorSquareSize, 
 				ColorSquarePosition1,

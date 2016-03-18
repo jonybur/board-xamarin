@@ -50,7 +50,7 @@ namespace Board.Interface
 
 		public override void DidReceiveMemoryWarning ()
 		{
-			AppDelegate.NavigationController.PopViewController (true);
+			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 		}
 
 		public override void ViewDidLoad ()

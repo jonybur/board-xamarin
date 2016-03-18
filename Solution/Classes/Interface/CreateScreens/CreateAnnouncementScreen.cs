@@ -16,11 +16,22 @@ namespace Board.Interface.CreateScreens
 
 		float positionY;
 
+		public CreateAnnouncementScreen()
+		{
+		}
+
+		public CreateAnnouncementScreen(Announcement announcement)
+		{
+			content = announcement;
+		}
+
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
 
-			content = new Announcement ();
+			if (content == null) {
+				content = new Announcement ();
+			}
 
 			LoadContent ();
 
@@ -40,9 +51,7 @@ namespace Board.Interface.CreateScreens
 		private void LoadFromFacebookEvent(FacebookElement FBElement)
 		{
 			ShareButtons.ActivateFacebook ();
-
 			FacebookPost FBPost = (FacebookPost)FBElement;
-
 			content.FacebookId = FBPost.Id;
 			textview.SetText (FBPost.Message);
 		}
@@ -85,6 +94,8 @@ namespace Board.Interface.CreateScreens
 				ann.SocialChannel = ShareButtons.GetActiveSocialChannels ();
 				ann.CreationDate = DateTime.Now;
 
+				// TODO: only if this is a new announcement, else update the announcement
+
 				Preview.Initialize(ann);
 
 				// shows the image preview so that the user can position the image
@@ -113,6 +124,11 @@ namespace Board.Interface.CreateScreens
 			textview.AllowsEditingTextAttributes = true;
 			textview.BackgroundColor = UIColor.White;
 			textview.Font = AppDelegate.SystemFontOfSize18;
+
+			if (((Announcement)content).AttributedText != null) {
+				textview.AttributedText = (((Announcement)content).AttributedText);
+				textview.IsPlaceHolder = false;
+			}
 
 			UIImageView colorWhite = new UIImageView(new CGRect (0, 0, AppDelegate.ScreenWidth, frame.Bottom));
 			colorWhite.BackgroundColor = UIColor.White;
