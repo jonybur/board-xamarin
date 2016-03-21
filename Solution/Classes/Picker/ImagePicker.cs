@@ -6,10 +6,7 @@ using UIKit;
 using System;
 using Board.Schema;
 
-using MediaPlayer;
-
 using Board.Interface.CreateScreens;
-using Board.Interface;
 
 namespace Board.Picker
 {
@@ -154,23 +151,21 @@ namespace Board.Picker
 
 		private void LaunchVideoPreview(NSUrl url)
 		{
-			Video video = Preview.Initialize (url.ToString());
+			Video video = new Video ();
+			video.Url = url;
 
-			MPMoviePlayerController moviePlayer = new MPMoviePlayerController (url);
-
-			CreateMediaScreen shareScreen = new CreateMediaScreen(new UIImageView(moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact)), video);
-
-			moviePlayer.Pause ();
-			moviePlayer.Dispose ();
+			CreateMediaScreen shareScreen = new CreateMediaScreen(video);
 
 			AppDelegate.NavigationController.PushViewController(shareScreen, false);
 		}
 
 		private void LaunchPicturePreview(UIImage image)
-		{		
-			Picture picture = Preview.Initialize(image);
+		{	
+			Picture picture = new Picture ();
+			picture.ImageView = new UIImageView (image);
 
-			CreateMediaScreen shareScreen = new CreateMediaScreen(new UIImageView(image) , picture);
+
+			CreateMediaScreen shareScreen = new CreateMediaScreen(picture);
 
 			AppDelegate.NavigationController.PushViewController(shareScreen, false);
 		}

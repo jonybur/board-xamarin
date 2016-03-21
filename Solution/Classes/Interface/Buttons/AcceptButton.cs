@@ -57,6 +57,14 @@ namespace Board.Interface.Buttons
 						content = Preview.GetEvent();
 						break;
 
+					case (int)Preview.Type.Map:
+						content = Preview.GetMap();
+						break;
+
+					case (int)Preview.Type.Poll:
+						content = Preview.GetPoll();
+						break;
+
 					default:
 						content = new Content();
 						break;

@@ -114,6 +114,7 @@ namespace Board.Interface.Widgets
 			UIImageView eventPoster = new UIImageView (new CGRect(0, 0, imgw, imgh));
 			eventPoster.Image = boardEvent.ImageView.Image;
 			eventPoster.Center = new CGPoint (calendarBoxFrame.Width / 2, calendarBoxFrame.Height / 2);
+			eventPoster.Layer.AllowsEdgeAntialiasing = true;
 
 			box.AddSubview (eventPoster);
 

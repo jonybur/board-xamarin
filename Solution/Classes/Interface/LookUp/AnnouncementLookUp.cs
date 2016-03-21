@@ -3,7 +3,6 @@
 using Board.Schema;
 
 using CoreGraphics;
-using Facebook.CoreKit;
 using UIKit;
 
 namespace Board.Interface.LookUp

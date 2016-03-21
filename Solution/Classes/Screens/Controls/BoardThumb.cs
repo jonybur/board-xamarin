@@ -14,21 +14,10 @@ namespace Board.Screens.Controls
 
 		public BoardThumb (Board.Schema.Board board, CGPoint contentOffset)
 		{ 
-			
 			Board = board;
-			float imgx, imgy, imgw, imgh;
 
 			float autosize = Size;
-			float scale = (float)(board.ImageView.Frame.Height / board.ImageView.Frame.Width);
-
-			if (scale > 1) {
-				scale = (float)(board.ImageView.Frame.Width / board.ImageView.Frame.Height);
-				imgh = autosize;
-				imgw = autosize * scale;
-			} else {
-				imgw = autosize;
-				imgh = autosize * scale;	
-			}
+			float imgx, imgy;
 
 			imgx = (float)(contentOffset.X);
 
@@ -44,10 +33,12 @@ namespace Board.Screens.Controls
 			Frame = new CGRect (0, 0, autosize, autosize);
 			Center = new CGPoint (imgx, imgy);
 
-			CGSize iconsize = new CGSize (autosize * .75f, autosize * .75f);
+			CGSize iconsize = new CGSize (autosize * .7f, autosize * .7f);
 
-			UIImage img = board.ImageView.Image.ImageScaledToFitSize (iconsize);//CreateThumbImage (board.ImageView.Image, new CGSize(autosize, autosize));
-			img = CreateThumbImage(img, Frame.Size);
+			UIImage img = board.ImageView.Image.ImageScaledToFitSize (iconsize);
+			UIImage circle = CreateThumbImage(img, Frame.Size);
+
+			SetBackgroundImage (circle, UIControlState.Normal);
 			SetImage(img, UIControlState.Normal);
 
 			TouchEvent = (sender, e) => {
@@ -61,7 +52,6 @@ namespace Board.Screens.Controls
 			this.UserInteractionEnabled = true;
 		}
 
-		// TODO: implement this
 		private UIImage CreateThumbImage(UIImage logo, CGSize size)
 		{
 			UIGraphics.BeginImageContext (size);
@@ -69,9 +59,7 @@ namespace Board.Screens.Controls
 			CGContext current = UIGraphics.GetCurrentContext ();
 
 			current.SetFillColor (UIColor.White.CGColor);
-			current.FillEllipseInRect (new CGRect(0,0,size.Width, size.Height));
-
-			logo.Draw (new CGRect (size.Width / 2 - logo.Size.Width / 4, size.Height / 2 - logo.Size.Height / 4, logo.Size.Width / 2, logo.Size.Height/2));
+			current.FillEllipseInRect (new CGRect(0, 0, size.Width, size.Height));
 
 			return UIGraphics.GetImageFromCurrentImageContext ();
 		}

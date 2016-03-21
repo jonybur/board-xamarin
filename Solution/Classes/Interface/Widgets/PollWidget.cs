@@ -1,6 +1,7 @@
 ﻿using Board.Schema;
 using UIKit;
 using CoreGraphics;
+using Foundation;
 using System.Collections.Generic;
 
 namespace Board.Interface.Widgets
@@ -9,7 +10,6 @@ namespace Board.Interface.Widgets
 	{
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
-		private UITextView textview;
 		private static List<AnswerButton> lstAnswers;
 
 		public Poll poll
@@ -26,7 +26,7 @@ namespace Board.Interface.Widgets
 		{
 			content = poll;
 
-			UITextView insideText = CreateText ();
+			UILabel insideText = CreateQuestion ();
 			lstAnswers = new List<AnswerButton> ();
 
 			float height = (float)insideText.Frame.Height + 10;
@@ -48,7 +48,7 @@ namespace Board.Interface.Widgets
 				View.AddSubview (but);
 			}
 
-			View.Frame = new CGRect (poll.Position.X, poll.Position.Y, MountingView.Frame.Width, MountingView.Frame.Height);
+			View.Center = new CGPoint (poll.Position.X + View.Frame.Width / 2, poll.Position.Y + View.Frame.Height / 2);
 			View.Transform = CGAffineTransform.MakeRotation(poll.Rotation);
 
 			EyeOpen = false;
@@ -56,9 +56,60 @@ namespace Board.Interface.Widgets
 			CreateGestures ();
 		}
 
+		private UILabel CreateQuestion()
+		{
+			UILabel label = new UILabel ();
+			label.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
+			label.AttributedText = poll.Question;
+			label.TextColor = BoardInterface.board.MainColor;
+			label.Lines = 0;
+			label.Font = AppDelegate.SystemFontOfSize18;
+
+			NSString lorum = new NSString(poll.Question.Value);
+			UIStringAttributes stringAttributes = new UIStringAttributes ();
+			stringAttributes.Font = AppDelegate.SystemFontOfSize18;
+			CGRect labrect = lorum.GetBoundingRect(new CGSize(250,450), NSStringDrawingOptions.UsesLineFragmentOrigin, stringAttributes, null);
+
+			label.Frame = new CGRect (10, 10, 250, labrect.Size.Height);
+
+			return label;
+		}
+
+		private UITextView CreateText()
+		{
+			UITextView textview;
+			textview = new UITextView ();
+			textview.Editable = false;
+			textview.Selectable = false;
+			textview.ScrollEnabled = false;
+			textview.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
+			textview.DataDetectorTypes = UIDataDetectorType.Link;
+			textview.AttributedText = poll.Question;
+			textview.TextColor = BoardInterface.board.MainColor;
+			textview.Font = AppDelegate.SystemFontOfSize18;
+			textview.SizeToFit ();
+			textview.LayoutIfNeeded ();
+			int numLines = (int)(textview.Frame.Height / 18);
+
+			if (textview.Frame.Width < 160) {
+				textview.Frame = new CGRect (10, 10, 160, numLines * 30);
+			} else if (textview.Frame.Width > 250) {
+				textview.Frame = new CGRect (10, 10, 250, numLines * 30);
+			}
+
+			textview.ContentOffset = new CGPoint (0, 0);
+
+			return textview;
+		}
+
+		public void SetFrame(CGRect frame)
+		{
+			View.Frame = frame;
+		}
+
 		class AnswerButton : UIButton{
 
-			UIImageView ImageView;
+			UIImageView AnswerImageView;
 			UILabel label;
 
 			static UIImage EmptyRadio;
@@ -77,15 +128,15 @@ namespace Board.Interface.Widgets
 
 			private void SetEmptyImage()
 			{
-				ImageView = new UIImageView (EmptyRadio);
-				ImageView.Frame = new CGRect (0, 0, 20, 20);
-				ImageView.TintColor = BoardInterface.board.MainColor;
-				ImageView.Center = new CGPoint (15, Frame.Height / 2);
+				AnswerImageView = new UIImageView (EmptyRadio);
+				AnswerImageView.Frame = new CGRect (0, 0, 20, 20);
+				AnswerImageView.TintColor = BoardInterface.board.MainColor;
+				AnswerImageView.Center = new CGPoint (15, Frame.Height / 2);
 			}
 
 			private void SetFullImage()
 			{
-				ImageView.Image = FullRadio;
+				AnswerImageView.Image = FullRadio;
 			}
 
 			public AnswerButton(string answer, float yposition, float width)
@@ -103,7 +154,7 @@ namespace Board.Interface.Widgets
 
 				SetEmptyImage();
 
-				AddSubviews (label, ImageView);
+				AddSubviews (label, AnswerImageView);
 
 				TouchUpInside += (sender, e) => {
 					SetFullImage();
@@ -115,35 +166,6 @@ namespace Board.Interface.Widgets
 				};
 
 			}
-		}
-
-		private UITextView CreateText()
-		{
-			textview = new UITextView ();
-			textview.Editable = false;
-			textview.Selectable = false;
-			textview.ScrollEnabled = true;
-			textview.DataDetectorTypes = UIDataDetectorType.Link;
-			textview.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
-			textview.AttributedText = poll.Question;
-			textview.TextColor = BoardInterface.board.MainColor;
-			textview.Font = AppDelegate.SystemFontOfSize18;
-			textview.SizeToFit ();
-
-			if (textview.Frame.Width < 160) {
-				textview.Frame = new CGRect (10, 10, 160, textview.Frame.Height + 24);
-			} else if (textview.Frame.Width > 250) {
-				textview.Frame = new CGRect (10, 10, 250, textview.Frame.Height + 24);
-			}
-
-			textview.ContentOffset = new CGPoint (0, 0);
-
-			return textview;
-		}
-
-		public void SetFrame(CGRect frame)
-		{
-			View.Frame = frame;
 		}
 
 	}

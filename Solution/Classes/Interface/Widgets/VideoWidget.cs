@@ -44,6 +44,7 @@ namespace Board.Interface.Widgets
 			// picture
 			CGRect pictureFrame = new CGRect (MountingView.Frame.X + 10, 10, frame.Width, frame.Height);
 			AVPlayerLayer videoLayer = LoadVideoThumbnail (pictureFrame);
+			videoLayer.AllowsEdgeAntialiasing = true;
 			View.Layer.AddSublayer (videoLayer);
 
 			/*

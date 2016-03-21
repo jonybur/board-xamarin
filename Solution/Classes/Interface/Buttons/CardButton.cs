@@ -2,6 +2,7 @@ using CoreGraphics;
 using CoreAnimation;
 using Board.Interface.CreateScreens;
 using UIKit;
+using Board.Schema;
 
 namespace Board.Interface.Buttons
 {
@@ -26,7 +27,7 @@ namespace Board.Interface.Buttons
 				alert.AddAction (UIAlertAction.Create ("Announcement", UIAlertActionStyle.Default, CreateAnnouncement));
 				alert.AddAction (UIAlertAction.Create ("Event", UIAlertActionStyle.Default, CreateEvent));
 				alert.AddAction (UIAlertAction.Create ("Poll", UIAlertActionStyle.Default, CreatePoll));
-				alert.AddAction (UIAlertAction.Create ("Map (coming soon)", UIAlertActionStyle.Default, null));
+				alert.AddAction (UIAlertAction.Create ("Map", UIAlertActionStyle.Default, CreateMap));
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 
 				AppDelegate.boardInterface.NavigationController.PresentViewController (alert, true, null);
@@ -49,6 +50,11 @@ namespace Board.Interface.Buttons
 		{
 			CreatePollScreen pollScreen = new CreatePollScreen ();
 			AppDelegate.PushViewLikePresentView (pollScreen);
+		}
+
+		private static void CreateMap(UIAlertAction act)
+		{
+			Preview.Initialize (new Map ());
 		}
 	}
 }

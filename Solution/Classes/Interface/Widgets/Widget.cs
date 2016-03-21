@@ -63,6 +63,8 @@ namespace Board.Interface.Widgets
 			CreateLikeComponent ();
 			CreateTimeStamp ();
 
+			MountingView.Layer.AllowsEdgeAntialiasing = true;
+
 			MountingView.AddSubviews (LikeComponent, EyeView, TimeStamp);
 		}
 
@@ -233,7 +235,7 @@ namespace Board.Interface.Widgets
 						lookUp = new MapLookUp((Map)content);
 					}  else if (content is Poll)
 					{
-						return; // no poll
+						return; // no lookup for poll
 					}
 					else {
 						lookUp = new LookUp.LookUp();

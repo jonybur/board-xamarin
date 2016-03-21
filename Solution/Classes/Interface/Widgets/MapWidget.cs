@@ -4,6 +4,7 @@ using CoreLocation;
 using CoreGraphics;
 using System;
 using Board.Schema;
+using MGImageUtilitiesBinding;
 
 namespace Board.Interface.Widgets
 {
@@ -47,6 +48,7 @@ namespace Board.Interface.Widgets
 				var camera = CameraPosition.FromCamera (40, -100, -2);
 				mapView = MapView.FromCamera (new CGRect (10, 10, 250, 170), camera);
 				mapView.UserInteractionEnabled = false;
+				mapView.Layer.AllowsEdgeAntialiasing = true;
 				CreateMarker (new CLLocationCoordinate2D());
 			}
 
@@ -66,27 +68,24 @@ namespace Board.Interface.Widgets
 				mapView.Camera = CameraPosition.FromCamera (new CLLocationCoordinate2D(25.792826, -80.12994), 16);
 			}
 
-			// this one just creates a color square
+
 			private UIImage CreateMarkerImage(UIImage logo)
 			{
-				UIGraphics.BeginImageContext (new CGSize(44, 64));
+				UIGraphics.BeginImageContextWithOptions (new CGSize (44, 64), false, 2f);
 
-				using (UIImage circle = UIImage.FromFile ("./screens/main/map/marker_blue.png")) {
-					circle.Draw (new CGRect (0, 0, 44, 64));
+				using (UIImage container = UIImage.FromFile ("./screens/main/map/markercontainer.png")) {
+					container.Draw (new CGRect (0, 0, 44, 64));
 				}
 
-				float imgw, imgh;
+				float autosize = 25;
 
-				float scale = (float)(logo.Size.Height/logo.Size.Width);
-				imgw = 25;
-				imgh = imgw * scale;
+				logo = logo.ImageScaledToFitSize (new CGSize(autosize,autosize));
 
-				logo.Draw (new CGRect (22 - imgw / 2, 22 - imgh / 2, imgw, imgh));
+				logo.Draw (new CGRect (22 - logo.Size.Width / 2, 22 - logo.Size.Height / 2, logo.Size.Width, logo.Size.Height));
 
 				return UIGraphics.GetImageFromCurrentImageContext ();
 			}
 		}
-
 
 	}
 }

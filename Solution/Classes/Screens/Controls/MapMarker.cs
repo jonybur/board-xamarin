@@ -1,7 +1,8 @@
 ﻿using System;
 
-namespace board
+namespace Board.Screens.Controls
 {
+	// TODO: implement
 	public class MapMarker
 	{
 		public MapMarker ()

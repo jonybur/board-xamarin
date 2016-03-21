@@ -13,6 +13,7 @@ namespace Board.Interface.CreateScreens
 		public MenuBanner Banner;
 		public UIScrollView ScrollView;
 		public UIButton NextButton;
+		public UIButton SaveButton;
 		public PostToButtons ShareButtons;
 		public Content content;
 
@@ -25,11 +26,6 @@ namespace Board.Interface.CreateScreens
 		public override void ViewDidAppear (bool animated)
 		{
 			Banner.SuscribeToEvents ();
-		}
-
-		public override void ViewDidDisappear (bool animated)
-		{
-			Banner.UnsuscribeToEvents ();
 		}
 
 		protected void LoadContent()
@@ -70,12 +66,20 @@ namespace Board.Interface.CreateScreens
 			View.AddSubview (Banner);
 		}
 
-		protected void LoadNextButton()
+		protected void LoadNextButton(bool isEditing)
 		{
-			using (UIImage mapImage = UIImage.FromFile ("./boardinterface/screens/share/next/" + AppDelegate.PhoneVersion + ".jpg")) {
-				NextButton = new UIButton(new CGRect(0,AppDelegate.ScreenHeight - (mapImage.Size.Height / 2),
-					mapImage.Size.Width / 2, mapImage.Size.Height / 2));
-				NextButton.SetImage(mapImage, UIControlState.Normal);	
+			if (isEditing) {
+				using (UIImage mapImage = UIImage.FromFile ("./boardinterface/screens/share/save/" + AppDelegate.PhoneVersion + ".jpg")) {
+					NextButton = new UIButton (new CGRect (0, AppDelegate.ScreenHeight - (mapImage.Size.Height / 2),
+						mapImage.Size.Width / 2, mapImage.Size.Height / 2));
+					NextButton.SetImage (mapImage, UIControlState.Normal);	
+				}
+			} else {
+				using (UIImage mapImage = UIImage.FromFile ("./boardinterface/screens/share/next/" + AppDelegate.PhoneVersion + ".jpg")) {
+					NextButton = new UIButton (new CGRect (0, AppDelegate.ScreenHeight - (mapImage.Size.Height / 2),
+						mapImage.Size.Width / 2, mapImage.Size.Height / 2));
+					NextButton.SetImage (mapImage, UIControlState.Normal);	
+				}
 			}
 
 			NextButton.Alpha = .95f;

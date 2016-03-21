@@ -3,6 +3,7 @@ using System;
 using Foundation;
 using Google.Maps;
 using Board.Utilities;
+using MGImageUtilitiesBinding;
 using CoreLocation;
 using CoreGraphics;
 using UIKit;
@@ -89,25 +90,23 @@ namespace Board.Interface.LookUp
 			mapView.Camera = CameraPosition.FromCamera (new CLLocationCoordinate2D(25.792826, -80.129953), 16);
 		}
 
-		// this one just creates a color square
 		private UIImage CreateMarkerImage(UIImage logo)
 		{
-			UIGraphics.BeginImageContext (new CGSize(66, 96));
+			UIGraphics.BeginImageContextWithOptions (new CGSize (66, 96), false, 2f);
 
-			using (UIImage circle = UIImage.FromFile ("./screens/home/map/marker_blue.png")) {
-				circle.Draw (new CGRect (0, 0, 66, 96));
+			using (UIImage container = UIImage.FromFile ("./screens/main/map/markercontainer.png")) {
+				container.Draw (new CGRect (0, 0, 66, 96));
 			}
 
-			float imgw, imgh;
+			float autosize = 40;
 
-			float scale = (float)(logo.Size.Height/logo.Size.Width);
-			imgw = 40;
-			imgh = imgw * scale;
+			logo = logo.ImageScaledToFitSize (new CGSize(autosize,autosize));
 
-			logo.Draw (new CGRect (33 - imgw / 2, 33 - imgh / 2, imgw, imgh));
+			logo.Draw (new CGRect (33 - logo.Size.Width / 2, 33 - logo.Size.Height / 2, logo.Size.Width, logo.Size.Height));
 
 			return UIGraphics.GetImageFromCurrentImageContext ();
 		}
+
 	}
 }
 

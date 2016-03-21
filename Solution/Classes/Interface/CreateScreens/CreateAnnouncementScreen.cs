@@ -29,8 +29,11 @@ namespace Board.Interface.CreateScreens
 		{
 			base.ViewDidLoad ();
 
+			bool isEditing = true;
+
 			if (content == null) {
 				content = new Announcement ();
+				isEditing = false;
 			}
 
 			LoadContent ();
@@ -38,14 +41,14 @@ namespace Board.Interface.CreateScreens
 			string imagePath = "./boardinterface/screens/announcement/banner/" + AppDelegate.PhoneVersion + ".jpg";
 
 			LoadBanner (imagePath, "posts", LoadFromFacebookEvent);
-			LoadNextButton ();
+			LoadNextButton (isEditing);
 			LoadTextView ();
 
 			positionY = (float)textview.Frame.Bottom + 60;
 
 			LoadPostToButtons (positionY);
 
-			CreateGestures ();
+			CreateGestures (isEditing);
 		}
 
 		private void LoadFromFacebookEvent(FacebookElement FBElement)
@@ -55,23 +58,8 @@ namespace Board.Interface.CreateScreens
 			content.FacebookId = FBPost.Id;
 			textview.SetText (FBPost.Message);
 		}
-
-		public override void ViewDidAppear (bool animated)	
-		{
-			base.ViewDidAppear (animated);
-			ScrollView.AddGestureRecognizer (scrollViewTap);
-			NextButton.TouchUpInside += nextButtonTap;
-		}
-
-		public override void ViewDidDisappear (bool animated)
-		{
-			base.ViewDidDisappear (animated);
-			ScrollView.RemoveGestureRecognizer (scrollViewTap);
-			NextButton.TouchUpInside -= nextButtonTap;
-			MemoryUtility.ReleaseUIViewWithChildren (View, true);
-		}
-
-		private void CreateGestures()
+			
+		private void CreateGestures(bool isEditing)
 		{
 			scrollViewTap = new UITapGestureRecognizer (obj => textview.ResignFirstResponder ());
 
@@ -88,24 +76,41 @@ namespace Board.Interface.CreateScreens
 					return;
 				}
 
-				Announcement ann = (Announcement)content;
+				if (!isEditing)
+				{
+					Announcement ann = (Announcement)content;
 
-				ann.AttributedText = textview.AttributedText;
-				ann.SocialChannel = ShareButtons.GetActiveSocialChannels ();
-				ann.CreationDate = DateTime.Now;
+					ann.AttributedText = textview.AttributedText;
+					ann.SocialChannel = ShareButtons.GetActiveSocialChannels ();
+					ann.CreationDate = DateTime.Now;
 
-				// TODO: only if this is a new announcement, else update the announcement
+					// TODO: only if this is a new announcement, else update the announcement
 
-				Preview.Initialize(ann);
+					Preview.Initialize(ann);
+				} else {
 
-				// shows the image preview so that the user can position the image
-				BoardInterface.scrollView.AddSubview(Preview.View);
 
-				// switches to confbar
-				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
 
-				NavigationController.PopViewController(false);
+				}
+
+				ScrollView.RemoveGestureRecognizer (scrollViewTap);
+				NextButton.TouchUpInside -= nextButtonTap;
+				Banner.UnsuscribeToEvents();
+
+				MemoryUtility.ReleaseUIViewWithChildren (View, true);
+
+				if (!isEditing) {
+					NavigationController.PopViewController(false);
+				} else {
+					AppDelegate.PopViewLikeDismissView();
+				}
+				
 			};
+
+
+			ScrollView.AddGestureRecognizer (scrollViewTap);
+
+			NextButton.TouchUpInside += nextButtonTap;
 		}
 
 

@@ -98,8 +98,7 @@ namespace Board.Interface.LookUp
 			imgw = (float)posterSize.Width;
 			imgh = imgw * scale;
 
-			UIImageView box = new UIImageView (new CGRect (0, 0,
-				imgw, imgh));
+			UIImageView box = new UIImageView (new CGRect (0, 0, imgw, imgh));
 			box.Image = ((BoardEvent)content).ImageView.Image;
 
 			return box;
@@ -147,9 +146,6 @@ namespace Board.Interface.LookUp
 			endName.TextColor = color;
 			endName.AdjustsFontSizeToFitWidth = true;
 			endName.SizeToFit ();
-
-			// empieza en 105 termina en 135
-			/**/
 
 			// empieza en 105 termina en 135
 			UILabel addToCalendar = new UILabel (new CGRect (dayName.Frame.Left, endName.Frame.Bottom + 5, 100, 30));

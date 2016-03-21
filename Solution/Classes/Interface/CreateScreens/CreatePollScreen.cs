@@ -1,11 +1,10 @@
-﻿using Board.Interface.Buttons;
-using CoreGraphics;
-using UIKit;
-using Board.Utilities;
+﻿using System;
 using System.Collections.Generic;
 using Board.Schema;
+using Board.Utilities;
+using CoreGraphics;
 using Foundation;
-using System;
+using UIKit;
 
 namespace Board.Interface.CreateScreens
 {
@@ -30,7 +29,7 @@ namespace Board.Interface.CreateScreens
 			string imagePath = "./boardinterface/screens/poll/banner/" + AppDelegate.PhoneVersion + ".jpg";
 
 			LoadBanner (imagePath, null, null);
-			LoadNextButton ();
+			LoadNextButton (false);
 			LoadTextView ();
 			answerField1 = LoadAnswerField ((float)textview.Frame.Bottom + 20, 1);
 			answerField2 = LoadAnswerField ((float)answerField1.Frame.Bottom + 15, 2);
@@ -91,12 +90,6 @@ namespace Board.Interface.CreateScreens
 
 				Preview.Initialize (poll);
 
-				// shows the image preview so that the user can position the image
-				BoardInterface.scrollView.AddSubview (Preview.View);
-
-				// switches to confbar
-				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
-
 				NavigationController.PopViewController (false);
 			};
 		}
@@ -117,9 +110,7 @@ namespace Board.Interface.CreateScreens
 
 			answerField.TextColor = AppDelegate.BoardBlue;
 
-			answerField.Started += (object sender, EventArgs e) => {
-				ScrollView.SetContentOffset(new CGPoint(0, answerField.Frame.Y - 200), true);
-			};
+			answerField.Started += (sender, e) => ScrollView.SetContentOffset (new CGPoint (0, answerField.Frame.Y - 200), true);
 
 			answerField.ReturnKeyType = UIReturnKeyType.Done;
 			answerField.EnablesReturnKeyAutomatically = true;
@@ -151,9 +142,12 @@ namespace Board.Interface.CreateScreens
 			textview.Font = AppDelegate.SystemFontOfSize18;
 			textview.EnablesReturnKeyAutomatically = true;
 
-			textview.Started += (sender, e) => {
-				ScrollView.SetContentOffset(new CGPoint(0, -15), true);
-			};
+			textview.Started += (sender, e) => ScrollView.SetContentOffset (new CGPoint (0, -15), true);
+
+			textview.ShouldChangeText += ((textView, range, text) => {
+				var newLength = textview.Text.Length + text.Length - range.Length;
+				return newLength <= 140;
+			});
 		}
 	}
 }

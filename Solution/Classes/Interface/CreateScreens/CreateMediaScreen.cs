@@ -4,6 +4,7 @@ using UIKit;
 using Board.Utilities;
 using Board.Schema;
 
+using MediaPlayer;
 using System;
 using Board.Interface.Buttons;
 
@@ -12,15 +13,14 @@ namespace Board.Interface.CreateScreens
 	public class CreateMediaScreen : CreateScreen
 	{
 		PlaceholderTextView textview;
-		UIImageView imageView;
 
 		UITapGestureRecognizer scrollViewTap;
 		EventHandler nextButtonTap;
 
 		float positionY;
 
-		public CreateMediaScreen (UIImageView _imageView, Content _content){
-			imageView = _imageView; content = _content;
+		public CreateMediaScreen (Content _content){
+			content = _content;
 		}
 
 		public override void ViewDidLoad ()
@@ -32,7 +32,7 @@ namespace Board.Interface.CreateScreens
 			string imagePath = "./boardinterface/screens/share/banner/" + AppDelegate.PhoneVersion + ".jpg";
 
 			LoadBanner (imagePath, null, null);
-			LoadNextButton ();
+			LoadNextButton (false);
 			LoadTextView ();
 
 			positionY = (float)textview.Frame.Bottom + 60;
@@ -78,6 +78,18 @@ namespace Board.Interface.CreateScreens
 		{
 			float autosize = 50;
 			float imgw, imgh;
+
+			UIImageView imageView;
+			if (content is Picture) {
+				imageView = ((Picture)content).ImageView;
+			} else if (content is Video) {
+				MPMoviePlayerController moviePlayer = new MPMoviePlayerController (((Video)content).Url);
+				imageView = new UIImageView (moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact));
+				moviePlayer.Pause ();
+				moviePlayer.Dispose ();
+			} else {
+				imageView = new UIImageView ();
+			}
 
 			float scale = (float)(imageView.Frame.Height / imageView.Frame.Width);
 			imgw = autosize;

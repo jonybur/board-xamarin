@@ -134,9 +134,11 @@ namespace Board.Interface.LookUp
 			EditButton.UserInteractionEnabled = true;
 
 			editTap = new UITapGestureRecognizer (tg => {
-				if (content is Announcement)
-				{
+				if (content is Announcement) {
 					var screen = new CreateAnnouncementScreen((Announcement)content);
+					AppDelegate.PushViewLikePresentView(screen);	
+				} else if (content is BoardEvent) {
+					var screen = new CreateEventScreen((BoardEvent)content);
 					AppDelegate.PushViewLikePresentView(screen);	
 				}
 			});

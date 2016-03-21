@@ -160,13 +160,10 @@ namespace Board.Screens
 			// top image
 			UIImageView boardThumb;
 			using (UIImage image = UIImage.FromFile  ("./screens/create/2/icon.png"))
-			{
-				boardThumb = GenerateBoardThumb (image, new CGPoint (AppDelegate.ScreenWidth / 2, 220), true);
-			}
+			{ boardThumb = GenerateBoardThumb (image, new CGPoint (AppDelegate.ScreenWidth / 2, 220), true); }
 	
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				ImagePicker ip = new ImagePicker (boardThumb.Subviews[0] as UIImageView, preview_mainLogo, board);
-
 				NavigationController.PresentViewController (ip.UIImagePicker, true, null);
 			});
 
@@ -180,11 +177,9 @@ namespace Board.Screens
 			scrollView.AddSubview (boardThumb);
 
 			// color selectors + hex
-
 			GenerateColorSelectors ();
 
 			// bottom preview
-
 			UIImageView previewBoard = GeneratePreviewBoard ();
 			scrollView.AddSubview (previewBoard); 
 		}

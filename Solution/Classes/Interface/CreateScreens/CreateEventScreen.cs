@@ -37,9 +37,11 @@ namespace Board.Interface.CreateScreens
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
+			bool isEditing = true;
 
 			if (content == null) {
 				content = new BoardEvent ();
+				isEditing = false;
 			}
 
 			LoadContent ();
@@ -53,36 +55,25 @@ namespace Board.Interface.CreateScreens
 			LoadPictureBox ();
 			LoadNameLabel ((float) PictureBox.Frame.Bottom + 50);
 			LoadTextView ((float) NameLabel.Frame.Bottom + 10);
-			LoadStartDateView ((float) DescriptionView.Frame.Bottom + 30);
-			LoadEndDateView ((float) StartDateView.Frame.Bottom + 20);
+			LoadStartDateView ((float) DescriptionView.Frame.Bottom + 30, isEditing);
+			LoadEndDateView ((float) StartDateView.Frame.Bottom + 20, isEditing);
 			LoadPostToButtons ((float) EndDateView.Frame.Bottom + 60);
-			LoadNextButton ();
+			LoadNextButton (isEditing);
 
-			//AdjustContentSize ();
-
-			using (UIImage img = UIImage.FromFile ("./boardinterface/screens/event/placeholder.png")) {
-				SetImage (img);
+			if (((BoardEvent)content).ImageView != null && ((BoardEvent)content).ImageView.Image != null) {
+				SetImage (((BoardEvent)content).ImageView.Image);
+			} else {
+				using (UIImage img = UIImage.FromFile ("./boardinterface/screens/event/placeholder.png")) {
+					SetImage (img);
+				}
 			}
 
-			CreateGestures ();
+			CreateGestures (isEditing);
 
 			View.BackgroundColor = UIColor.White;
 		}
 
-		public override void ViewDidAppear(bool animated){
-			base.ViewDidAppear (animated);
-			NextButton.TouchUpInside += nextButtonTap;
-			ScrollView.AddGestureRecognizer (scrollViewTap);
-		}
-
-		public override void ViewDidDisappear(bool animated){
-			base.ViewDidDisappear (animated);
-			NextButton.TouchUpInside -= nextButtonTap;
-			ScrollView.RemoveGestureRecognizer (scrollViewTap);
-			MemoryUtility.ReleaseUIViewWithChildren (View, true);
-		}
-
-		private void LoadEndDateView(float yPosition)
+		private void LoadEndDateView(float yPosition, bool isEditing)
 		{
 			UIDatePicker DatePicker = new UIDatePicker (new CGRect (0, AppDelegate.ScreenHeight - 250, AppDelegate.ScreenWidth, 250));
 			DatePicker.TimeZone = NSTimeZone.SystemTimeZone;
@@ -90,7 +81,7 @@ namespace Board.Interface.CreateScreens
 			DatePicker.BackgroundColor = UIColor.White;
 			DatePicker.Mode = UIDatePickerMode.DateAndTime;
 			DatePicker.MinimumDate = (NSDate)DateTime.Now;
-			DatePicker.ValueChanged += (object sender, EventArgs e) => {
+			DatePicker.ValueChanged += (sender, e) => {
 				DateTime selectedDate = ((DateTime)DatePicker.Date).ToLocalTime();
 				EndDateView.Text = "Ends: " + selectedDate.ToString("g");
 				((BoardEvent)content).EndDate = selectedDate;
@@ -129,9 +120,14 @@ namespace Board.Interface.CreateScreens
 			};
 
 			ScrollView.AddSubview (EndDateView);
+
+			if (isEditing) {
+				EndDateView.Text = "Ends: " + ((BoardEvent)content).EndDate.ToString ("g");
+			}
+
 		}
 
-		private void LoadStartDateView(float yPosition)
+		private void LoadStartDateView(float yPosition, bool isEditing)
 		{
 			UIDatePicker DatePicker = new UIDatePicker (new CGRect (0, AppDelegate.ScreenHeight - 250, AppDelegate.ScreenWidth, 250));
 			DatePicker.TimeZone = NSTimeZone.LocalTimeZone;
@@ -172,13 +168,17 @@ namespace Board.Interface.CreateScreens
 			StartDateView.AttributedPlaceholder = prettyString;
 
 			StartDateView.TextColor = AppDelegate.BoardBlue;
-			StartDateView.Started += (object sender, EventArgs e) => {
+			StartDateView.Started += (sender, e) => {
 				toolbar.Alpha = 1f;
 				ScrollView.SetContentOffset(new CGPoint(0, StartDateView.Frame.Y - 200), true);
 			};
 
-
 			ScrollView.AddSubview (StartDateView);
+
+			if (isEditing) {
+				StartDateView.Text = "Starts: " + ((BoardEvent)content).StartDate.ToString ("g");
+			}
+
 		}
 
 		private void LoadNameLabel(float yPosition)
@@ -198,6 +198,10 @@ namespace Board.Interface.CreateScreens
 			NameLabel.KeyboardType = UIKeyboardType.Default;
 			NameLabel.ReturnKeyType = UIReturnKeyType.Done;
 			NameLabel.BackgroundColor = UIColor.White;
+
+			if (((BoardEvent)content).Name != null) {
+				NameLabel.Text = ((BoardEvent)content).Name;
+			}
 
 			NameLabel.ShouldReturn += (textField) => {
 				NameLabel.ResignFirstResponder();
@@ -222,6 +226,10 @@ namespace Board.Interface.CreateScreens
 			DescriptionView.AllowsEditingTextAttributes = true;
 			DescriptionView.BackgroundColor = UIColor.White;
 			DescriptionView.Font = AppDelegate.SystemFontOfSize18;
+
+			if (((BoardEvent)content).Description != null) {
+				DescriptionView.SetText (((BoardEvent)content).Description);
+			}
 
 			ScrollView.AddSubviews (DescriptionView);
 		}
@@ -340,7 +348,7 @@ namespace Board.Interface.CreateScreens
 			}
 		}
 
-		private void CreateGestures()
+		private void CreateGestures(bool isEditing)
 		{
 			scrollViewTap = new UITapGestureRecognizer (obj => {
 				DescriptionView.ResignFirstResponder ();
@@ -349,25 +357,39 @@ namespace Board.Interface.CreateScreens
 			});
 
 			nextButtonTap += (sender, e) => {
-				
 				content.SocialChannel = ShareButtons.GetActiveSocialChannels ();
 
-				BoardEvent boardEvent = (BoardEvent)content;
+				if (!isEditing)
+				{
+					BoardEvent boardEvent = (BoardEvent)content;
 
-				boardEvent.Description = DescriptionView.Text;
-				boardEvent.ImageView = new UIImageView(PictureBox.Image);
-				boardEvent.CreationDate = DateTime.Now;
+					boardEvent.Description = DescriptionView.Text;
+					boardEvent.ImageView = new UIImageView(PictureBox.Image);
+					boardEvent.CreationDate = DateTime.Now;
 
-				Preview.Initialize(boardEvent);
+					Preview.Initialize(boardEvent);
+				
+				} else {
 
-				// shows the image preview so that the user can position the image
-				BoardInterface.scrollView.AddSubview (Preview.View);
 
-				// switches to confbar
-				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
 
-				AppDelegate.NavigationController.PopViewController(false);
+				}
+
+				NextButton.TouchUpInside -= nextButtonTap;
+				ScrollView.RemoveGestureRecognizer (scrollViewTap);
+				Banner.UnsuscribeToEvents ();
+
+				MemoryUtility.ReleaseUIViewWithChildren (View, true);
+
+				if (!isEditing) {
+					NavigationController.PopViewController(false);
+				} else {
+					AppDelegate.PopViewLikeDismissView();
+				}
 			};
+
+			NextButton.TouchUpInside += nextButtonTap;
+			ScrollView.AddGestureRecognizer (scrollViewTap);
 
 
 		}

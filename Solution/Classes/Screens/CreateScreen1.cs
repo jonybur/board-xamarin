@@ -213,7 +213,7 @@ namespace Board.Screens
 			addressView.UserInteractionEnabled = false;
 			addressView.AdjustsFontSizeToFitWidth = true;
 
-			addressView.ShouldReturn += (textField) => {
+			addressView.ShouldReturn += textField => {
 				EndsEditingStreet();
 				return true;
 			};

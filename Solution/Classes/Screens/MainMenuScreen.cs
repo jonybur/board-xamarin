@@ -5,6 +5,7 @@ using CoreGraphics;
 using Foundation;
 using Board.Utilities;
 using Board.Interface;
+using MGImageUtilitiesBinding;
 using Google.Maps;
 using UIKit;
 using Board.Screens.Controls;
@@ -66,10 +67,12 @@ namespace Board.Screens
 
 		public void InitializeInterface()
 		{
-			LoadContent ();
 			LoadBanner ();
 			LoadMapButton ();
+			LoadContent ();
 			LoadMap ();
+
+			View.AddSubviews (Banner, map_button);
 		}
 
 		class LocationLabel : UILabel{
@@ -89,7 +92,7 @@ namespace Board.Screens
 		float yposition;
 		private void LoadContent()
 		{
-			BoardThumb.Size = AppDelegate.ScreenWidth / 4;
+			BoardThumb.Size = AppDelegate.ScreenWidth / 3.5f;
 
 			content = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			content.BackgroundColor = UIColor.White;
@@ -104,22 +107,19 @@ namespace Board.Screens
 			LocationLabel.font = AppDelegate.Narwhal20;
 
 			// starting point
-			bool newLine = false;
+			bool newLine = true;
 			int neighborhoodnumber = 0;
-			yposition = 15;
+			yposition = (float)Banner.Frame.Bottom + 10;
 			foreach (Board.Schema.Board b in boardList) {
 				if (location != b.Location) {
-					// draw new location string
-					if (!newLine) {
-						yposition += 60;
-					}
-
+					
 					if (neighborhoodnumber > 0) {
-						DrawTrendingBanner (neighborhoodnumber, false);
+						DrawTrendingBanner (neighborhoodnumber, false, newLine);
 					}
 
+					// draw new location string
 					LocationLabel locationLabel = new LocationLabel (yposition, b.Location);
-					yposition += (float)locationLabel.Frame.Height + BoardThumb.Size / 2 + 5;
+					yposition += (float)locationLabel.Frame.Height + BoardThumb.Size / 2 + 10;
 					location = b.Location;
 					content.AddSubview (locationLabel);
 
@@ -131,15 +131,17 @@ namespace Board.Screens
 				i++;
 				if (i >= 4) {
 					i = 1;
-					yposition += BoardThumb.Size + 6;
+					// nueva linea de thumbs
+					yposition += BoardThumb.Size + 10;
 					newLine = true;
-				} else { newLine = false; }
+				} else { 
+					newLine = false; 
+				}
 
 				ListThumbs.Add (boardThumb);
 				content.AddSubview (boardThumb);
 			}
-			yposition += 60;
-			DrawTrendingBanner (neighborhoodnumber, true);
+			DrawTrendingBanner (neighborhoodnumber, true, newLine);
 
 			content.ScrollEnabled = true;
 			content.UserInteractionEnabled = true;
@@ -149,9 +151,14 @@ namespace Board.Screens
 			View.AddSubview (content);
 		}
 
-		private void DrawTrendingBanner(int number, bool last)
+		private void DrawTrendingBanner(int number, bool last, bool newLine)
 		{
-			yposition += 15;
+			if (!newLine) {
+				yposition += (BoardThumb.Size + 10) - 20;
+			} else {
+				yposition -= 20;
+			}
+
 			UIImageView featuredBlock = new UIImageView(new CGRect(0, yposition, AppDelegate.ScreenWidth, 150));
 			using (UIImage img = UIImage.FromFile ("./demo/main/trending"+number+".jpg")) {
 				featuredBlock.Image = img;
@@ -161,7 +168,7 @@ namespace Board.Screens
 			yposition += (float)featuredBlock.Frame.Height;
 
 			if (!last) {
-				yposition += 40;
+				yposition += (float)map_button.Frame.Height;
 			}
 		}
 
@@ -176,8 +183,6 @@ namespace Board.Screens
 			});
 
 			Banner.AddTap (tap);
-
-			View.AddSubview (Banner);
 		}
 			
 		private void LoadMap()
@@ -225,7 +230,6 @@ namespace Board.Screens
 		private void GenerateMarkers(CoreLocation.CLLocationCoordinate2D location)
 		{
 			Random rnd = new Random ();
-			UIImage container = UIImage.FromFile ("./screens/main/map/marker_blue.png");
 
 			foreach (BoardThumb thumb in ListThumbs) {
 				double lat = rnd.NextDouble () - .5;
@@ -235,7 +239,7 @@ namespace Board.Screens
 				marker.AppearAnimation = MarkerAnimation.Pop;
 				marker.Position = new CoreLocation.CLLocationCoordinate2D (location.Latitude - (lat * .02), location.Longitude + (lon * .02));
 				marker.Map = map;
-				marker.Icon = CreateMarkerImage (container, thumb.Board.ImageView.Image);
+				marker.Icon = CreateMarkerImage (thumb.Board.ImageView.Image);
 				marker.Draggable = false;
 				marker.Title = thumb.Board.Name;
 				marker.Snippet = "2 Cooper Street, Wynwood, FL 33880" + "\n\nTAP TO ENTER BOARD";
@@ -245,20 +249,19 @@ namespace Board.Screens
 			}
 		}
 
-		// this one just creates a color square
-		private UIImage CreateMarkerImage(UIImage container, UIImage logo)
+		private UIImage CreateMarkerImage(UIImage logo)
 		{
-			UIGraphics.BeginImageContext (new CGSize(66, 96));
+			UIGraphics.BeginImageContextWithOptions (new CGSize (66, 96), false, 2f);
 
-			container.Draw (new CGRect (0, 0, 66, 96));
+			using (UIImage container = UIImage.FromFile ("./screens/main/map/markercontainer.png")) {
+				container.Draw (new CGRect (0, 0, 66, 96));
+			}
 
-			float imgw, imgh;
+			float autosize = 40;
 
-			float scale = (float)(logo.Size.Height/logo.Size.Width);
-			imgw = 40;
-			imgh = imgw * scale;
+			logo = logo.ImageScaledToFitSize (new CGSize(autosize,autosize));
 
-			logo.Draw (new CGRect (33 - imgw / 2, 33 - imgh / 2, imgw, imgh));
+			logo.Draw (new CGRect (33 - logo.Size.Width / 2, 33 - logo.Size.Height / 2, logo.Size.Width, logo.Size.Height));
 
 			return UIGraphics.GetImageFromCurrentImageContext ();
 		}
@@ -289,7 +292,6 @@ namespace Board.Screens
 			};
 
 			map_button.Alpha = .95f;
-			View.AddSubview (map_button);
 		}
 	}
 }

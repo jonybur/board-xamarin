@@ -19,7 +19,6 @@ namespace Board.Interface.Widgets
 
 		public AnnouncementWidget()
 		{
-
 		}
 
 		public AnnouncementWidget(Announcement ann)

@@ -39,6 +39,7 @@ namespace Board.Interface.Widgets
 			CGRect pictureFrame = new CGRect (MountingView.Frame.X + 10, 10, frame.Width, frame.Height);
 			UIImageView uiv = new UIImageView (pictureFrame);
 			uiv.Image = picture.ThumbnailView.Image;
+			uiv.Layer.AllowsEdgeAntialiasing = true;
 			View.AddSubview (uiv);
 
 			View.Frame = new CGRect (pic.Position.X, pic.Position.Y, MountingView.Frame.Width, MountingView.Frame.Height);
