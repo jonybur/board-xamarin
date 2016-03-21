@@ -4,12 +4,9 @@ using System.Threading;
 using AVFoundation;
 using Board.Schema;
 
-using Board.Utilities;
+using MGImageUtilitiesBinding;
 using CoreGraphics;
-using MediaPlayer;
 using CoreMedia;
-using Board.Interface.LookUp;
-using Foundation;
 using UIKit;
 
 namespace Board.Interface.Widgets
@@ -103,7 +100,7 @@ namespace Board.Interface.Widgets
 				imgh = autosize * scale;
 			}
 
-			vid.ThumbnailView = new UIImageView(CommonUtils.ResizeImage (vid.ThumbnailView.Image, new CGSize (imgw, imgh)));
+			vid.ThumbnailView = new UIImageView(vid.ThumbnailView.Image.ImageScaledToFitSize(new CGSize (imgw, imgh)));
 
 			CGRect frame = new CGRect (vid.Position.X, vid.Position.Y, imgw, imgh);
 

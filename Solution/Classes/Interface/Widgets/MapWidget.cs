@@ -1,10 +1,10 @@
-﻿using Google.Maps;
-using UIKit;
-using CoreLocation;
-using CoreGraphics;
-using System;
+﻿using System;
 using Board.Schema;
+using CoreGraphics;
+using CoreLocation;
+using Google.Maps;
 using MGImageUtilitiesBinding;
+using UIKit;
 
 namespace Board.Interface.Widgets
 {

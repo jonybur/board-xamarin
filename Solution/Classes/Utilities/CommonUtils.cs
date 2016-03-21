@@ -79,15 +79,6 @@ namespace Board.Utilities
 			return attstring;
 		}
 
-		public static UIImage ResizeImage(UIImage sourceImage, CGSize newSize)
-		{
-			UIGraphics.BeginImageContext(newSize);
-			sourceImage.Draw(new CGRect(0, 0, newSize.Width, newSize.Height));
-			var resultImage = UIGraphics.GetImageFromCurrentImageContext();
-			UIGraphics.EndImageContext();
-			return resultImage;
-		}
-
 		public static UIColor HexToUIColor(string hex)
 		{
 			if (hex.Length != 6) {

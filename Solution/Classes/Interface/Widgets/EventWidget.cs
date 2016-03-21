@@ -1,7 +1,8 @@
-﻿using Board.Schema;
-using System.Globalization;
+﻿using System.Globalization;
+using Board.Schema;
 using CoreGraphics;
 using UIKit;
+using MGImageUtilitiesBinding;
 
 namespace Board.Interface.Widgets
 {
@@ -112,7 +113,7 @@ namespace Board.Interface.Widgets
 			}
 
 			UIImageView eventPoster = new UIImageView (new CGRect(0, 0, imgw, imgh));
-			eventPoster.Image = boardEvent.ImageView.Image;
+			eventPoster.Image = boardEvent.ImageView.Image.ImageScaledToFitSize(eventPoster.Frame.Size);
 			eventPoster.Center = new CGPoint (calendarBoxFrame.Width / 2, calendarBoxFrame.Height / 2);
 			eventPoster.Layer.AllowsEdgeAntialiasing = true;
 

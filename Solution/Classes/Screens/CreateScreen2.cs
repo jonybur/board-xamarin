@@ -7,6 +7,7 @@ using CoreGraphics;
 using Foundation;
 using Board.Screens.Controls;
 using UIKit;
+using MGImageUtilitiesBinding;
 using BigTed;
 
 namespace Board.Screens
@@ -439,7 +440,7 @@ namespace Board.Screens
 
 			UIImageView boardImage = new UIImageView(new CGRect (0, 0, imgw * .8f, imgh * .8f));
 			boardImage.Center = new CGPoint (autosize/2, autosize/2);
-			UIImage img = CommonUtils.ResizeImage (image, boardIcon.Frame.Size);
+			UIImage img = image.ImageScaledToFitSize(boardIcon.Frame.Size);
 			boardImage.Image = img;
 
 			boardIcon.AddSubview (boardImage);

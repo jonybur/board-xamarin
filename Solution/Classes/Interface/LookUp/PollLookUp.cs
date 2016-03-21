@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Board.Interface.LookUp
+﻿namespace Board.Interface.LookUp
 {
 	public class PollLookUp : LookUp
 	{

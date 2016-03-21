@@ -197,10 +197,8 @@
     <BundleResource Include="Resources\demo\pictures\1.jpg" />
     <BundleResource Include="Resources\demo\pictures\2.jpg" />
     <BundleResource Include="Resources\demo\pictures\3.jpg" />
-    <BundleResource Include="Resources\demo\pictures\4.jpg" />
     <BundleResource Include="Resources\demo\pictures\5.jpg" />
     <BundleResource Include="Resources\demo\pictures\6.jpg" />
-    <BundleResource Include="Resources\demo\pictures\7.jpg" />
     <BundleResource Include="Resources\demo\events\0.jpg" />
     <BundleResource Include="Resources\demo\videos\0.mp4" />
     <BundleResource Include="Resources\demo\videos\1.mp4" />
@@ -296,6 +294,7 @@
     <BundleResource Include="Resources\screens\main\map\markercontainer.png" />
     <BundleResource Include="Resources\boardinterface\screens\share\save\6.jpg" />
     <BundleResource Include="Resources\boardinterface\screens\share\save\6plus.jpg" />
+    <BundleResource Include="Resources\demo\pictures\4.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -390,6 +389,7 @@
     <Compile Include="Classes\Infrastructure\JsonUtility.cs" />
     <Compile Include="Classes\Interface\Buttons\InfoButton.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Classes\Screens\Controls\TrendingBlock.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

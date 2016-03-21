@@ -17,6 +17,7 @@ namespace Board.Screens
 		MenuBanner Banner;
 		UIScrollView content;
 		List<BoardThumb> ListThumbs;
+		List<TrendingBlock> ListTrendingBlocks;
 
 		UIButton map_button;
 		EventHandler MapButtonEvent;
@@ -25,6 +26,8 @@ namespace Board.Screens
 		bool mapInfoTapped;
 		bool firstLocationUpdate;
 		bool generatedMarkers;
+
+		float yposition;
 
 		public override void DidReceiveMemoryWarning ()
 		{
@@ -36,6 +39,7 @@ namespace Board.Screens
 			base.ViewDidLoad ();
 
 			ListThumbs = new List<BoardThumb> ();
+			ListTrendingBlocks = new List<TrendingBlock> ();
 
 			InitializeInterface ();
 		}
@@ -89,7 +93,6 @@ namespace Board.Screens
 			}
 		}
 
-		float yposition;
 		private void LoadContent()
 		{
 			BoardThumb.Size = AppDelegate.ScreenWidth / 3.5f;
@@ -114,7 +117,7 @@ namespace Board.Screens
 				if (location != b.Location) {
 					
 					if (neighborhoodnumber > 0) {
-						DrawTrendingBanner (neighborhoodnumber, false, newLine);
+						DrawTrendingBanner (false, newLine);
 					}
 
 					// draw new location string
@@ -141,31 +144,42 @@ namespace Board.Screens
 				ListThumbs.Add (boardThumb);
 				content.AddSubview (boardThumb);
 			}
-			DrawTrendingBanner (neighborhoodnumber, true, newLine);
+			DrawTrendingBanner (true, newLine);
 
 			content.ScrollEnabled = true;
 			content.UserInteractionEnabled = true;
 
 			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, yposition + BoardThumb.Size + 5);
 
+			content.Scrolled += (sender, e) => {
+				// call from here "open eye" function
+
+				List<TrendingBlock> TrendingBlocksOnScreen = ListTrendingBlocks.FindAll(item => (content.ContentOffset.Y < item.Frame.Bottom) && 
+					((content.ContentOffset.Y + AppDelegate.ScreenHeight) > item.Frame.Top));
+				
+				foreach (TrendingBlock trendingBlock in TrendingBlocksOnScreen)
+				{
+					trendingBlock.ParallaxMove((float)content.ContentOffset.Y);
+				}
+			};
+
 			View.AddSubview (content);
 		}
 
-		private void DrawTrendingBanner(int number, bool last, bool newLine)
+		private void DrawTrendingBanner(bool last, bool newLine)
 		{
 			if (!newLine) {
-				yposition += (BoardThumb.Size + 10) - 20;
+				yposition += (BoardThumb.Size + 10) - 25;
 			} else {
-				yposition -= 20;
+				yposition -= 25;
 			}
 
-			UIImageView featuredBlock = new UIImageView(new CGRect(0, yposition, AppDelegate.ScreenWidth, 150));
-			using (UIImage img = UIImage.FromFile ("./demo/main/trending"+number+".jpg")) {
-				featuredBlock.Image = img;
-			}
-			content.AddSubview (featuredBlock);
+			TrendingBlock trendingBlock = new TrendingBlock (yposition);
+			ListTrendingBlocks.Add (trendingBlock);
 
-			yposition += (float)featuredBlock.Frame.Height;
+			content.AddSubview(trendingBlock);
+		
+			yposition += (float)trendingBlock.Frame.Height;
 
 			if (!last) {
 				yposition += (float)map_button.Frame.Height;

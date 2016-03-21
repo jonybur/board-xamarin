@@ -1,10 +1,9 @@
-﻿using CoreGraphics;
-using UIKit;
-using System;
-using Board.Schema;
-using Board.Utilities;
-using Board.Screens.Controls;
+﻿using System;
 using Board.Facebook;
+using Board.Schema;
+using Board.Screens.Controls;
+using CoreGraphics;
+using UIKit;
 
 namespace Board.Interface.CreateScreens
 {

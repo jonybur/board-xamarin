@@ -3,6 +3,7 @@ using Board.Utilities;
 using System;
 using CoreGraphics;
 using UIKit;
+using MGImageUtilitiesBinding;
 using Board.Interface.LookUp;
 
 namespace Board.Interface.Widgets
@@ -74,7 +75,7 @@ namespace Board.Interface.Widgets
 				imgh = autosize * scale;
 			}
 
-			picture.ThumbnailView = new UIImageView(CommonUtils.ResizeImage (picture.ImageView.Image, new CGSize (imgw, imgh)));
+			picture.ThumbnailView = new UIImageView(picture.ImageView.Image.ImageScaledToFitSize(new CGSize (imgw, imgh)));
 
 			CGRect frame = new CGRect (picture.Position.X, picture.Position.Y, imgw, imgh);
 

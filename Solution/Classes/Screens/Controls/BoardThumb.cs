@@ -36,7 +36,7 @@ namespace Board.Screens.Controls
 			CGSize iconsize = new CGSize (autosize * .7f, autosize * .7f);
 
 			UIImage img = board.ImageView.Image.ImageScaledToFitSize (iconsize);
-			UIImage circle = CreateThumbImage(img, Frame.Size);
+			UIImage circle = CreateThumbImage(Frame.Size);
 
 			SetBackgroundImage (circle, UIControlState.Normal);
 			SetImage(img, UIControlState.Normal);
@@ -52,7 +52,7 @@ namespace Board.Screens.Controls
 			this.UserInteractionEnabled = true;
 		}
 
-		private UIImage CreateThumbImage(UIImage logo, CGSize size)
+		private UIImage CreateThumbImage(CGSize size)
 		{
 			UIGraphics.BeginImageContext (size);
 

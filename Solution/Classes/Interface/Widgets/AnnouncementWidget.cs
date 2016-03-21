@@ -1,8 +1,6 @@
 ﻿using Board.Schema;
-using System;
 using CoreGraphics;
 using UIKit;
-using Board.Interface.LookUp;
 
 namespace Board.Interface.Widgets
 {

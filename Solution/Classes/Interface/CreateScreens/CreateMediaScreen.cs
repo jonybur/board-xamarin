@@ -1,12 +1,10 @@
-﻿using CoreGraphics;
-using UIKit;
-
-using Board.Utilities;
-using Board.Schema;
-
-using MediaPlayer;
-using System;
+﻿using System;
 using Board.Interface.Buttons;
+using Board.Schema;
+using Board.Utilities;
+using CoreGraphics;
+using MediaPlayer;
+using UIKit;
 
 namespace Board.Interface.CreateScreens
 {

@@ -1,14 +1,13 @@
-﻿using Board.Schema;
-using Board.Facebook;
-using UIKit;
-using CoreGraphics;
+﻿using System;
 using System.Collections.Generic;
-using System;
-using Board.Utilities;
-using Board.Interface.Buttons;
-using Foundation;
-using Board.Picker;
 using BigTed;
+using Board.Facebook;
+using Board.Picker;
+using Board.Schema;
+using Board.Utilities;
+using CoreGraphics;
+using Foundation;
+using UIKit;
 
 namespace Board.Interface.CreateScreens
 {
