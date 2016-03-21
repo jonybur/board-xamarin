@@ -1,6 +1,6 @@
 ﻿using System;
 using UIKit;
-using Board.Utilities;
+using MGImageUtilitiesBinding;
 using Board.Interface;
 using CoreGraphics;
 
@@ -14,6 +14,7 @@ namespace Board.Screens.Controls
 
 		public BoardThumb (Board.Schema.Board board, CGPoint contentOffset)
 		{ 
+			
 			Board = board;
 			float imgx, imgy, imgw, imgh;
 
@@ -43,7 +44,10 @@ namespace Board.Screens.Controls
 			Frame = new CGRect (0, 0, autosize, autosize);
 			Center = new CGPoint (imgx, imgy);
 
-			UIImage img = CreateThumbImage (board.ImageView.Image, new CGSize(autosize, autosize));
+			CGSize iconsize = new CGSize (autosize * .75f, autosize * .75f);
+
+			UIImage img = board.ImageView.Image.ImageScaledToFitSize (iconsize);//CreateThumbImage (board.ImageView.Image, new CGSize(autosize, autosize));
+			img = CreateThumbImage(img, Frame.Size);
 			SetImage(img, UIControlState.Normal);
 
 			TouchEvent = (sender, e) => {
@@ -67,13 +71,7 @@ namespace Board.Screens.Controls
 			current.SetFillColor (UIColor.White.CGColor);
 			current.FillEllipseInRect (new CGRect(0,0,size.Width, size.Height));
 
-			float imgw, imgh;
-
-			float scale = (float)(logo.Size.Height/logo.Size.Width);
-			imgw = (float)size.Width * .69f;
-			imgh = imgw * scale;
-
-			logo.Draw (new CGRect (size.Width / 2 - imgw / 2, size.Height / 2 - imgh / 2, imgw, imgh));
+			logo.Draw (new CGRect (size.Width / 2 - logo.Size.Width / 4, size.Height / 2 - logo.Size.Height / 4, logo.Size.Width / 2, logo.Size.Height/2));
 
 			return UIGraphics.GetImageFromCurrentImageContext ();
 		}

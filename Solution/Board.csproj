@@ -6,7 +6,7 @@
     <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <ProjectGuid>{D66F7267-6FD4-4FA9-89C0-580F47D22AD1}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>board</RootNamespace>
+    <RootNamespace>Board</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <TargetFrameworkIdentifier>Xamarin.iOS</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
@@ -24,7 +24,7 @@
     <MtouchDebug>true</MtouchDebug>
     <MtouchArch>i386</MtouchArch>
     <CodesignKey>iPhone Developer</CodesignKey>
-    <MtouchLink>Full</MtouchLink>
+    <MtouchLink>None</MtouchLink>
     <AssemblyName>Board</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
@@ -58,6 +58,8 @@
     <AssemblyName>Solution</AssemblyName>
     <CodesignProvision>8f509e24-323b-41ef-9c58-9acf693c9618</CodesignProvision>
     <MtouchProfiling>true</MtouchProfiling>
+    <MtouchLink>Full</MtouchLink>
+    <MtouchExtraArgs>-gcc_flags -ObjC</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>full</DebugType>
@@ -130,6 +132,12 @@
     </Reference>
     <Reference Include="Plugin.Share.Abstractions">
       <HintPath>..\packages\Plugin.Share.3.0.1\lib\Xamarin.iOS10\Plugin.Share.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Haneke">
+      <HintPath>..\Components\haneke-1.0.1\lib\ios-unified\Haneke.dll</HintPath>
+    </Reference>
+    <Reference Include="MGImageUtilitiesBinding">
+      <HintPath>..\Bindings\MGImageUtilitiesBinding.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -479,6 +487,10 @@
     </XamarinComponentReference>
     <XamarinComponentReference Include="SharePlugin">
       <Version>3.0.1</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="haneke">
+      <Version>1.0.1</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>
