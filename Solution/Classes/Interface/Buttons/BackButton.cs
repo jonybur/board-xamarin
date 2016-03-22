@@ -18,7 +18,11 @@ namespace Board.Interface.Buttons
 				AppDelegate.ScreenHeight - ButtonSize / 2);
 			
 			eventHandlers.Add ((sender, e) => {
-				((ContainerScreen)(AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 2])).LoadMainMenu();
+				var containerScreen = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 2] as ContainerScreen;
+				if (containerScreen!= null)
+				{
+					containerScreen.LoadMainMenu();
+				}
 				AppDelegate.NavigationController.PopViewController (true);
 				AppDelegate.ExitBoardInterface();
 			});

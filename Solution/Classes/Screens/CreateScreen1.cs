@@ -289,7 +289,13 @@ namespace Board.Screens
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					NavigationController.PopViewController(false);
+					
+					var containerScreen = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 2] as ContainerScreen;
+					if (containerScreen!= null)
+					{
+						containerScreen.LoadBusinessScreen();
+					}
+					AppDelegate.NavigationController.PopViewController (false);
 
 				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 4) * 3 && nextEnabled){
 					Board.Schema.Board newBoard = new Board.Schema.Board();

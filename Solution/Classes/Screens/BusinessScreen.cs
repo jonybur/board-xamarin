@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Board.Interface;
-using MGImageUtilitiesBinding;
+﻿using System.Collections.Generic;
 using Board.JsonResponses;
 using Board.Screens.Controls;
 using Board.Utilities;
+using System;
 using CoreGraphics;
 using UIKit;
 
@@ -16,23 +13,22 @@ namespace Board.Screens
 		MenuBanner Banner;
 		UIScrollView content;
 		List<Board.Schema.Board> boardList;
-		float thumbSize;
 
 		public override void ViewDidLoad ()
 		{
-			//base.ViewDidLoad ();
 			this.AutomaticallyAdjustsScrollViewInsets = false;
 
-			//NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
-			//NavigationController.NavigationBarHidden = true;
+			boardList = new List<Board.Schema.Board> ();
 			content = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
-			thumbSize = AppDelegate.ScreenWidth / 4;
+		
+			InitializeInterface ();
+			LoadBanner ();
+			Console.WriteLine ("DidLoad");
 		}
 
 		public override async void ViewDidAppear(bool animated)
 		{
-			boardList = new List<Board.Schema.Board> ();
-
+			Console.WriteLine ("DidAppear");
 			if (AppDelegate.ServerActive) {
 				string result = CommonUtils.JsonGETRequest ("http://192.168.1.101:5000/api/user/boards?authToken=" + AppDelegate.EncodedBoardToken);
 
@@ -56,9 +52,6 @@ namespace Board.Screens
 				}
 			}
 
-			InitializeInterface ();
-
-			LoadBanner ();
 			Banner.SuscribeToEvents ();
 		}
 
@@ -76,106 +69,8 @@ namespace Board.Screens
 
 			if (boardList.Count == 0) {
 				LoadNoContent ();
-			} else {
-				LoadContent ();
 			}
 		}
-
-		private void LoadContent()
-		{
-			boardList = boardList.OrderBy(o=>o.Location).ToList();
-
-			int i = 1;
-
-			string location = String.Empty;
-
-			// starting point
-			float yposition = 25;
-
-			foreach (Board.Schema.Board b in boardList) {
-				string hood = b.GeolocatorObject.results [0].address_components [2].long_name;
-				if (location != hood) {
-					// draw new location string
-					yposition += 70;
-					UILabel lblLocation = new UILabel(new CGRect(30, yposition, AppDelegate.ScreenWidth - 40, 24));
-					yposition += (float)lblLocation.Frame.Height + thumbSize / 2 + 10;
-					lblLocation.Font = AppDelegate.Narwhal20;
-					lblLocation.TextColor = UIColor.FromRGB (241, 93, 74);
-					location = hood;
-					lblLocation.Text = location.ToUpper();
-					lblLocation.AdjustsFontSizeToFitWidth = true;
-					content.AddSubview (lblLocation);
-					i = 1;
-				}
-
-				UIImageView igv = GenerateBoardThumb (b, new CGPoint ((AppDelegate.ScreenWidth/ 4) * i, yposition));
-				i++;
-				if (i >= 4) {
-					i = 1;
-					yposition += thumbSize + 6;
-				}
-				content.AddSubview (igv);
-			}
-
-			content.ScrollEnabled = true;
-			content.UserInteractionEnabled = true;
-
-			content.UserInteractionEnabled = true;
-			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, yposition + thumbSize);
-
-			View.AddSubview (content);
-		}
-
-		private UIImageView GenerateBoardThumb(Board.Schema.Board board, CGPoint ContentOffset)
-		{
-			float imgx, imgy, imgw, imgh;
-
-			float autosize = thumbSize;
-			float scale = (float)(board.ImageView.Frame.Height/board.ImageView.Frame.Width);
-
-			if (scale > 1) {
-				scale = (float)(board.ImageView.Frame.Width/board.ImageView.Frame.Height);
-				imgh = autosize;
-				imgw = autosize * scale;
-			}
-			else {
-				imgw = autosize;
-				imgh = autosize * scale;	
-			}
-
-			imgx = (float)(ContentOffset.X);
-
-			if (imgx < AppDelegate.ScreenWidth / 2) {
-				imgx -= autosize / 4;
-			} else if (AppDelegate.ScreenWidth / 2 < imgx) {
-				imgx += autosize / 4;
-			}
-
-			imgy = (float)(ContentOffset.Y);
-
-			// launches the image preview
-			UIImageView boardIcon = new UIImageView (new CGRect (0, 0, autosize, autosize));
-			boardIcon.Center = new CGPoint (imgx, imgy);
-			//boardIcon.BackgroundColor = UIColor.Black;
-
-			UIImageView boardImage = new UIImageView(new CGRect (0, 0, imgw* .8f, imgh* .8f));
-			boardImage.Center = new CGPoint (autosize/2, autosize/2);
-			UIImage img = board.ImageView.Image.ImageScaledToFitSize(boardIcon.Frame.Size);
-			boardImage.Image = img;
-
-			boardIcon.AddSubview (boardImage);
-
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				BoardInterface boardInterface = new BoardInterface(board, false);
-				NavigationController.PushViewController(boardInterface, true);
-			});
-
-			boardIcon.AddGestureRecognizer (tap);
-			boardIcon.UserInteractionEnabled = true;
-
-			return boardIcon;
-		}
-
 
 		private void LoadNoContent()
 		{
@@ -191,8 +86,7 @@ namespace Board.Screens
 			content.AddSubview (imgv);
 			content.ScrollEnabled = true;
 			content.UserInteractionEnabled = true;
-
-
+		
 			View.AddSubview (content);
 		}
 

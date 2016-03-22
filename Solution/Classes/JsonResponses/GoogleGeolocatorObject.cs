@@ -4,10 +4,11 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Foundation;
 
 namespace Board.JsonResponses
 {
-
+	[Preserve(AllMembers = true)]
 	public class AddressComponent
 	{
 		public string long_name { get; set; }
@@ -15,48 +16,56 @@ namespace Board.JsonResponses
 		public List<string> types { get; set; }
 	}
 
+	[Preserve(AllMembers = true)]
 	public class Location
 	{
 		public double lat { get; set; }
 		public double lng { get; set; }
 	}
 
+	[Preserve(AllMembers = true)]
 	public class Northeast
 	{
 		public double lat { get; set; }
 		public double lng { get; set; }
 	}
 
+	[Preserve(AllMembers = true)]
 	public class Southwest
 	{
 		public double lat { get; set; }
 		public double lng { get; set; }
 	}
 
+	[Preserve(AllMembers = true)]
 	public class Viewport
 	{
 		public Northeast northeast { get; set; }
 		public Southwest southwest { get; set; }
 	}
 
+	[Preserve(AllMembers = true)]
 	public class Northeast2
 	{
 		public double lat { get; set; }
 		public double lng { get; set; }
 	}
 
+	[Preserve(AllMembers = true)]
 	public class Southwest2
 	{
 		public double lat { get; set; }
 		public double lng { get; set; }
 	}
 
+	[Preserve(AllMembers = true)]
 	public class Bounds
 	{
 		public Northeast2 northeast { get; set; }
 		public Southwest2 southwest { get; set; }
 	}
 
+	[Preserve(AllMembers = true)]
 	public class Geometry
 	{
 		public Location location { get; set; }
@@ -65,6 +74,7 @@ namespace Board.JsonResponses
 		public Bounds bounds { get; set; }
 	}
 
+	[Preserve(AllMembers = true)]
 	public class Result
 	{
 		public List<AddressComponent> address_components { get; set; }
@@ -74,10 +84,14 @@ namespace Board.JsonResponses
 		public List<string> types { get; set; }
 	}
 
+	[Preserve(AllMembers = true)]
 	public class GoogleGeolocatorObject
 	{
 		public List<Result> results { get; set; }
 		public string status { get; set; }
+
+		[JsonConstructor]
+		public GoogleGeolocatorObject(){}
 	}
 
 	public static class JsonHandler

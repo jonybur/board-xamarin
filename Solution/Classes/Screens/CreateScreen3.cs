@@ -60,7 +60,7 @@ namespace Board.Screens
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					NavigationController.PopViewController(false);
+					AppDelegate.NavigationController.PopViewController(false);
 				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 4) * 3 && nextEnabled){
 
 					if (AppDelegate.ServerActive)
@@ -76,7 +76,13 @@ namespace Board.Screens
 
 					AppDelegate.ListNewBoards.Add(board);
 
-					NavigationController.PopToViewController(NavigationController.ViewControllers[NavigationController.ViewControllers.Length - 4], false);
+
+					var containerScreen = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 4] as ContainerScreen;
+					if (containerScreen!= null)
+					{
+						containerScreen.LoadBusinessScreen();
+					}
+					AppDelegate.NavigationController.PopViewController (false);
 				}
 			});
 

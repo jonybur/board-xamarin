@@ -8,6 +8,8 @@ namespace Board
 	public sealed class TrendingBlock : UIImageView
 	{
 		public UIImageView ParallaxBlock;
+		private UIImageView LikeComponent;
+		private const int iconSize = 35;
 
 		private float centerY;
 		private float offsetDelta;
@@ -65,24 +67,19 @@ namespace Board
 			AddSubview (LikeComponent);
 		}
 
-		protected UIImageView LikeComponent;
-		private UIImageView likeView;
-		private UILabel likeLabel;
-		private const int iconSize = 40;
-
 		private void CreateLikeComponent()
 		{
 			LikeComponent = new UIImageView (new CGRect (Frame.Width - 80,
 				Frame.Height - 40, 80, 40));
-
-			likeView = CreateLike (LikeComponent.Frame);
-			likeLabel = CreateLikeLabel (likeView.Center);
+			
+			UIImageView likeView = CreateLike (LikeComponent.Frame);
+			UILabel likeLabel = CreateLikeLabel (likeView.Center);
 
 			LikeComponent.AddSubviews (likeView, likeLabel);
 		}
 
 
-		protected UIImageView CreateLike(CGRect frame)
+		private UIImageView CreateLike(CGRect frame)
 		{
 			UIImageView likeView = new UIImageView(new CGRect(0, 0, iconSize, iconSize));
 
@@ -96,13 +93,13 @@ namespace Board
 			return likeView;
 		}
 
-		protected UILabel CreateLikeLabel(CGPoint center)
+		private UILabel CreateLikeLabel(CGPoint center)
 		{
-			int fontSize = 18;
+			const int fontSize = 18;
 
 			UIFont likeFont = UIFont.SystemFontOfSize (fontSize);
 			Random rand = new Random ();
-			int randomLike = rand.Next (16, 98);
+			int randomLike = rand.Next (102, 256);
 
 			string likeText = randomLike.ToString();
 			CGSize likeLabelSize = likeText.StringSize (likeFont);

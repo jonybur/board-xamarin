@@ -25,6 +25,13 @@ namespace Board.Screens
 			View.AddSubview (currentScreen.View);
 		}
 
+		public void LoadBusinessScreen()
+		{
+			currentScreen = new BusinessScreen ();
+			AddChildViewController (currentScreen);
+			View.AddSubview (currentScreen.View);
+		}
+
 		public override void ViewDidDisappear(bool animated)
 		{
 			currentScreen.ViewDidDisappear (animated);
