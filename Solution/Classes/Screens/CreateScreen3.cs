@@ -57,7 +57,7 @@ namespace Board.Screens
 		{
 			Banner = new MenuBanner ("./screens/create/3/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					AppDelegate.NavigationController.PopViewController(false);
@@ -76,13 +76,13 @@ namespace Board.Screens
 
 					AppDelegate.ListNewBoards.Add(board);
 
-
 					var containerScreen = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 4] as ContainerScreen;
 					if (containerScreen!= null)
 					{
 						containerScreen.LoadBusinessScreen();
 					}
-					AppDelegate.NavigationController.PopViewController (false);
+
+					AppDelegate.NavigationController.PopToViewController (containerScreen, false);
 				}
 			});
 
