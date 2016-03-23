@@ -8,15 +8,14 @@ namespace Board.Screens.Controls
 {
 	public sealed class BoardThumb : UIButton
 	{
-		public static float Size;
 		private EventHandler TouchEvent;
 		public Board.Schema.Board Board;
 
-		public BoardThumb (Board.Schema.Board board, CGPoint contentOffset)
+		public BoardThumb (Board.Schema.Board board, CGPoint contentOffset, float size)
 		{ 
 			Board = board;
 
-			float autosize = Size;
+			float autosize = size;
 			float imgx, imgy;
 
 			imgx = (float)(contentOffset.X);
@@ -54,7 +53,7 @@ namespace Board.Screens.Controls
 
 		private UIImage CreateThumbImage(CGSize size)
 		{
-			UIGraphics.BeginImageContext (size);
+			UIGraphics.BeginImageContextWithOptions (size, false, 2f);
 
 			CGContext current = UIGraphics.GetCurrentContext ();
 

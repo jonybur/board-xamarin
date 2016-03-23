@@ -3,7 +3,7 @@ using CoreGraphics;
 using System;
 using MGImageUtilitiesBinding;
 
-namespace Board
+namespace Board.Screens.Controls
 {
 	public sealed class TrendingBlock : UIImageView
 	{
@@ -23,7 +23,7 @@ namespace Board
 			ParallaxBlock.Center = new CGPoint (ParallaxBlock.Center.X, centerY - (yoffset - offsetDelta)/10);
 		}
 
-		public TrendingBlock(float yposition)
+		public TrendingBlock(float yposition, Board.Schema.Board board)
 		{
 			Frame = new CGRect (0, yposition, AppDelegate.ScreenWidth, 250);
 			BackgroundColor = UIColor.White;
@@ -65,6 +65,10 @@ namespace Board
 			CreateLikeComponent ();
 
 			AddSubview (LikeComponent);
+
+			BoardThumb thumb = new BoardThumb (board, new CGPoint (Frame.Width - 45, 35), 50);
+
+			AddSubview (thumb);
 		}
 
 		private void CreateLikeComponent()

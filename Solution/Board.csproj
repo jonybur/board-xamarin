@@ -59,7 +59,6 @@
     <CodesignProvision>8f509e24-323b-41ef-9c58-9acf693c9618</CodesignProvision>
     <MtouchProfiling>true</MtouchProfiling>
     <MtouchLink>Full</MtouchLink>
-    <MtouchExtraArgs>-gcc_flags -ObjC</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>full</DebugType>
@@ -141,6 +140,9 @@
     </Reference>
     <Reference Include="GPUImage">
       <HintPath>..\Components\GPUImage-0.1.7.0\lib\ios-unified\GPUImage.dll</HintPath>
+    </Reference>
+    <Reference Include="PNChartBinding">
+      <HintPath>..\Bindings\PNChartBinding\PNChartBinding.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

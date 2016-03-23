@@ -5,10 +5,11 @@ using CoreGraphics;
 using Foundation;
 using Board.Utilities;
 using Board.Interface;
-using MGImageUtilitiesBinding;
 using Google.Maps;
 using UIKit;
 using Board.Screens.Controls;
+using MGImageUtilitiesBinding;
+using PNChartBinding;
 
 namespace Board.Screens
 {
@@ -77,6 +78,18 @@ namespace Board.Screens
 			LoadMap ();
 
 			View.AddSubviews (Banner, map_button);
+
+			/*
+			PNBarChart pie = new PNBarChart ();
+			pie.Frame = new CGRect (0, 100, AppDelegate.ScreenWidth, 400);
+			pie.YValues= new []{new NSNumber(20), new NSNumber(50), new NSNumber(100), new NSNumber(25)};
+			pie.XLabels = new []{ new NSString ("SEP 1"), new NSString ("SEP 2"), new NSString ("SEP 3"), new NSString ("SEP 4")};
+			pie.ShowLabel = false;
+			pie.DisplayAnimated = true;
+			pie.StrokeChart ();
+
+			View.AddSubview (pie);
+			*/
 		}
 
 		class LocationLabel : UILabel{
@@ -85,7 +98,6 @@ namespace Board.Screens
 			public LocationLabel(float yposition, string location)
 			{
 				Frame = new CGRect(10, yposition, AppDelegate.ScreenWidth - 20, 24);
-				//Frame = new CGRect(30, yposition, AppDelegate.ScreenWidth - 40, 24);
 				Font = font;
 				TextAlignment = UITextAlignment.Center;
 				TextColor = AppDelegate.BoardOrange;
@@ -93,9 +105,10 @@ namespace Board.Screens
 			}
 		}
 
+		float thumbsize;
 		private void LoadContent()
 		{
-			BoardThumb.Size = AppDelegate.ScreenWidth / 3.5f;
+			thumbsize = AppDelegate.ScreenWidth / 3.5f;
 
 			content = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			content.BackgroundColor = UIColor.White;
@@ -103,39 +116,38 @@ namespace Board.Screens
 			List<Board.Schema.Board> boardList = GenerateBoardList ();
 			boardList = boardList.OrderBy(o=>o.Location).ToList();
 
-			int i = 1;
-
 			string location = String.Empty;
 
 			LocationLabel.font = AppDelegate.Narwhal20;
 
 			// starting point
 			bool newLine = true;
-			int neighborhoodnumber = 0;
+			int linecounter = 1, neighborhoodnumber = 0, i = 0;
 			yposition = (float)Banner.Frame.Bottom + 10;
+
 			foreach (Board.Schema.Board b in boardList) {
 				if (location != b.Location) {
 					
 					if (neighborhoodnumber > 0) {
-						DrawTrendingBanner (false, newLine);
+						DrawTrendingBanner (false, newLine, boardList[i - 1]);
 					}
 
 					// draw new location string
 					LocationLabel locationLabel = new LocationLabel (yposition, b.Location);
-					yposition += (float)locationLabel.Frame.Height + BoardThumb.Size / 2 + 10;
+					yposition += (float)locationLabel.Frame.Height + thumbsize / 2 + 10;
 					location = b.Location;
 					content.AddSubview (locationLabel);
 
-					i = 1;
+					linecounter = 1;
 					neighborhoodnumber++;
 				}
 				 
-				BoardThumb boardThumb = new BoardThumb (b, new CGPoint ((AppDelegate.ScreenWidth/ 4) * i, yposition));
-				i++;
-				if (i >= 4) {
-					i = 1;
+				BoardThumb boardThumb = new BoardThumb (b, new CGPoint ((AppDelegate.ScreenWidth/ 4) * linecounter, yposition), thumbsize);
+				linecounter++;
+				if (linecounter >= 4) {
+					linecounter = 1;
 					// nueva linea de thumbs
-					yposition += BoardThumb.Size + 10;
+					yposition += thumbsize+ 10;
 					newLine = true;
 				} else { 
 					newLine = false; 
@@ -143,13 +155,14 @@ namespace Board.Screens
 
 				ListThumbs.Add (boardThumb);
 				content.AddSubview (boardThumb);
+				i++;
 			}
-			DrawTrendingBanner (true, newLine);
+			DrawTrendingBanner (true, newLine, boardList[i - 1]);
 
 			content.ScrollEnabled = true;
 			content.UserInteractionEnabled = true;
 
-			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, yposition + BoardThumb.Size + 5);
+			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, yposition + thumbsize + 5);
 
 			content.Scrolled += (sender, e) => {
 				// call from here "open eye" function
@@ -166,15 +179,15 @@ namespace Board.Screens
 			View.AddSubview (content);
 		}
 
-		private void DrawTrendingBanner(bool last, bool newLine)
+		private void DrawTrendingBanner(bool last, bool newLine, Board.Schema.Board board)
 		{
 			if (!newLine) {
-				yposition += (BoardThumb.Size + 10) - 25;
+				yposition += (thumbsize + 10) - 25;
 			} else {
 				yposition -= 25;
 			}
 
-			TrendingBlock trendingBlock = new TrendingBlock (yposition);
+			TrendingBlock trendingBlock = new TrendingBlock (yposition, board);
 			ListTrendingBlocks.Add (trendingBlock);
 
 			content.AddSubview(trendingBlock);

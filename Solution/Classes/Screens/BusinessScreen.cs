@@ -23,12 +23,10 @@ namespace Board.Screens
 		
 			InitializeInterface ();
 			LoadBanner ();
-			Console.WriteLine ("DidLoad");
 		}
 
 		public override async void ViewDidAppear(bool animated)
 		{
-			Console.WriteLine ("DidAppear");
 			if (AppDelegate.ServerActive) {
 				string result = CommonUtils.JsonGETRequest ("http://192.168.1.101:5000/api/user/boards?authToken=" + AppDelegate.EncodedBoardToken);
 
