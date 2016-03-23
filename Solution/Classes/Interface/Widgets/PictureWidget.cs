@@ -43,7 +43,8 @@ namespace Board.Interface.Widgets
 			uiv.Layer.AllowsEdgeAntialiasing = true;
 			View.AddSubview (uiv);
 
-			View.Frame = new CGRect (pic.Position.X, pic.Position.Y, MountingView.Frame.Width, MountingView.Frame.Height);
+			View.Frame = new CGRect (0, 0, MountingView.Frame.Width, MountingView.Frame.Height);
+			View.Center = pic.Center;
 			View.Transform = CGAffineTransform.MakeRotation(pic.Rotation);
 
 			View.BackgroundColor = UIColor.FromRGB (250, 250, 250);
@@ -55,29 +56,11 @@ namespace Board.Interface.Widgets
 
 		private CGRect GetFrame(Picture picture)
 		{
-			float imgw, imgh;
-			float autosize = AppDelegate.Autosize;
+			float autosize = Widget.Autosize;
 
-			float scale = (float)(picture.ImageView.Frame.Width/picture.ImageView.Frame.Height);
+			picture.ThumbnailView = new UIImageView(picture.ImageView.Image.ImageScaledToFitSize(new CGSize (autosize, autosize)));
 
-			if (scale >= 1) {
-				imgw = autosize * scale;
-				imgh = autosize;
-
-				if (imgw > AppDelegate.ScreenWidth) {
-					scale = (float)(picture.ImageView.Frame.Height/picture.ImageView.Frame.Width);
-					imgw = AppDelegate.ScreenWidth;
-					imgh = imgw * scale;
-				}
-			} else {
-				scale = (float)(picture.ImageView.Frame.Height / picture.ImageView.Frame.Width);
-				imgw = autosize;
-				imgh = autosize * scale;
-			}
-
-			picture.ThumbnailView = new UIImageView(picture.ImageView.Image.ImageScaledToFitSize(new CGSize (imgw, imgh)));
-
-			CGRect frame = new CGRect (picture.Position.X, picture.Position.Y, imgw, imgh);
+			CGRect frame = new CGRect (0, 0, picture.ThumbnailView.Frame.Width, picture.ThumbnailView.Frame.Height);
 
 			return frame;
 		}

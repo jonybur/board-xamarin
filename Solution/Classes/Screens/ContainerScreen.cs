@@ -1,6 +1,7 @@
 ﻿using Board.Screens.Controls;
 using UIKit;
 using Board.Utilities;
+using Foundation;
 
 namespace Board.Screens
 {
@@ -16,6 +17,28 @@ namespace Board.Screens
 			NavigationController.NavigationBarHidden = true;
 
 			LoadMainMenu ();
+
+			LoadChangelogAlert ();
+		}
+
+		public void LoadChangelogAlert()
+		{
+			var defaults = NSUserDefaults.StandardUserDefaults;
+			const string key = "LaunchedBeforeKey";
+			if (!defaults.BoolForKey (key)) {
+				// First launch
+				NSUserDefaults.StandardUserDefaults.SetBool(true, key);
+				defaults.Synchronize ();
+
+				UIAlertController alert = UIAlertController.Create ("Welcome to Board 0.3.6", "Changelog\n" +
+					"· Analytics screen\n" +
+					"· Trending block finished\n" +
+					"· Bug fixes", UIAlertControllerStyle.Alert);
+
+				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));	
+
+				AppDelegate.NavigationController.PresentViewController (alert, true, null);
+			}
 		}
 
 		public void LoadMainMenu()

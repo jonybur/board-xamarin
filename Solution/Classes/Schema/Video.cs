@@ -19,13 +19,13 @@ namespace Board.Schema
 
 		public Video() { }
 
-		public Video(NSUrl url, UIImageView thumbnailView, float rotation, CGPoint position, string creatorid, DateTime creationdate)
+		public Video(NSUrl url, UIImageView thumbnailView, float rotation, CGPoint center, string creatorid, DateTime creationdate)
 		{
 			Url = url;
 			UrlText = url.AbsoluteString;
 			ThumbnailView = thumbnailView;
 			Rotation = rotation;
-			Position = position;
+			Center = center;
 			CreatorId = creatorid;
 			CreationDate = creationdate;
 		}

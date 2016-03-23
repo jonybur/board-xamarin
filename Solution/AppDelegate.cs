@@ -59,8 +59,6 @@ namespace Board
 		public static string BoardToken;
 		public static string EncodedBoardToken;
 	
-		public static int Autosize = 140;
-
 		public static ContainerScreen containerScreen;
 
 		/*
@@ -160,6 +158,7 @@ namespace Board
 			window.AddSubview (NavigationController.View);
 
 			window.MakeKeyAndVisible ();
+
 
 
 			/*

@@ -1,27 +1,21 @@
 using System;
-using CoreGraphics;
-
-using Foundation;
-using UIKit;
-
-using MediaPlayer;
-
-using Board.Interface.Buttons;
-using System.Collections.Generic;
 using Board.Interface;
+using Board.Interface.Buttons;
 
-using Facebook.CoreKit;
-using Board.Utilities;
-using Board.Schema;
 using Board.Interface.Widgets;
+using Board.Schema;
+
+using CoreGraphics;
+using Facebook.CoreKit;
+using UIKit;
 
 namespace Board.Interface
 {
 	public static class Preview
 	{
-		private static UIView uiView;
+		private static UIView view;
 		public static UIView View{
-			get { return uiView; }
+			get { return view; }
 		}
 		private static float Rotation;
 
@@ -32,6 +26,8 @@ namespace Board.Interface
 
 		public static void Initialize(Content content)
 		{
+			content.CreationDate = DateTime.Now;
+
 			if (content is Announcement) {
 
 				widget = new AnnouncementWidget ((Announcement)content);
@@ -71,13 +67,13 @@ namespace Board.Interface
 
 			CGRect frame = widget.View.Frame;
 
-			uiView = new UIView (new CGRect(BoardInterface.scrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
+			view = new UIView (new CGRect(BoardInterface.scrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
 				BoardInterface.scrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Board.Interface.Buttons.Button.ButtonSize / 2, frame.Width, frame.Height));
 
-			uiView.Alpha = .5f;
-			uiView.AddGestureRecognizer (SetNewPanGestureRecognizer());
-			uiView.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
-			uiView.AddSubviews(widget.View);
+			view.Alpha = .5f;
+			view.AddGestureRecognizer (SetNewPanGestureRecognizer());
+			view.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
+			view.AddSubviews(widget.View);
 
 			// shows the image preview so that the user can position the image
 			BoardInterface.scrollView.AddSubview(Preview.View);
@@ -94,17 +90,17 @@ namespace Board.Interface
 			UIPanGestureRecognizer panGesture = new UIPanGestureRecognizer ((pg) => {
 				if ((pg.State == UIGestureRecognizerState.Began || pg.State == UIGestureRecognizerState.Changed) && (pg.NumberOfTouches == 1)) {
 
-					var p0 = pg.LocationInView(uiView.Superview);
+					var p0 = pg.LocationInView(view.Superview);
 
 					if (dx == 0)
-						dx = (float)(p0.X - uiView.Center.X);
+						dx = (float)(p0.X - view.Center.X);
 
 					if (dy == 0)
-						dy = (float)(p0.Y - uiView.Center.Y);
+						dy = (float)(p0.Y - view.Center.Y);
 
 					var p1 = new CGPoint (p0.X - dx, p0.Y - dy);
 
-					uiView.Center = p1;
+					view.Center = p1;
 
 				} else if (pg.State == UIGestureRecognizerState.Ended) {
 					dx = 0;
@@ -123,12 +119,12 @@ namespace Board.Interface
 				Random rnd = new Random ();
 				r = (float)(rnd.NextDouble () / 3);
 				Rotation = r;
-				uiView.Transform = CGAffineTransform.MakeRotation (r);
+				view.Transform = CGAffineTransform.MakeRotation (r);
 			}
 
 			UIRotationGestureRecognizer rotateGesture = new UIRotationGestureRecognizer (rg => {
 				if ((rg.State == UIGestureRecognizerState.Began || rg.State == UIGestureRecognizerState.Changed) && (rg.NumberOfTouches == 2)) {
-					uiView.Transform = CGAffineTransform.MakeRotation (rg.Rotation + r);
+					view.Transform = CGAffineTransform.MakeRotation (rg.Rotation + r);
 					Rotation = (float)(rg.Rotation + r);
 				} else if (rg.State == UIGestureRecognizerState.Ended) {
 					r += (float)rg.Rotation;
@@ -139,37 +135,37 @@ namespace Board.Interface
 
 		public static void RemoveUserInteraction()
 		{
-			uiView.UserInteractionEnabled = false;
+			view.UserInteractionEnabled = false;
 		}
 
 		public static void RemoveFromSuperview()
 		{
-			uiView.RemoveFromSuperview ();
-			uiView.Dispose ();
-			uiView = null;
+			view.RemoveFromSuperview ();
+			view.Dispose ();
+			view = null;
 		}
 
 		public static Picture GetPicture()
 		{
-			uiView.Transform = CGAffineTransform.MakeRotation (0);
+			view.Transform = CGAffineTransform.MakeRotation (0);
 			PictureWidget pictureWidget = (PictureWidget)widget;
-			Picture p = new Picture (pictureWidget.picture.ImageView.Image, pictureWidget.picture.ThumbnailView.Image, Rotation, uiView.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
+			Picture p = new Picture (pictureWidget.picture.ImageView.Image, pictureWidget.picture.ThumbnailView.Image, Rotation, view.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
 			return p;
 		}
 
 		public static Video GetVideo()
 		{
-			uiView.Transform = CGAffineTransform.MakeRotation (0);
+			view.Transform = CGAffineTransform.MakeRotation (0);
 			VideoWidget videoWidget = (VideoWidget)widget;
-			Video v = new Video (videoWidget.video.Url, videoWidget.video.ThumbnailView, Rotation, uiView.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
+			Video v = new Video (videoWidget.video.Url, videoWidget.video.ThumbnailView, Rotation, view.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
 			return v;
 		}
 
 		public static Announcement GetAnnouncement()
 		{
-			uiView.Transform = CGAffineTransform.MakeRotation (0);
+			view.Transform = CGAffineTransform.MakeRotation (0);
 			AnnouncementWidget announcementWidget = (AnnouncementWidget)widget;
-			Announcement ann = new Announcement (announcementWidget.announcement.AttributedText, Rotation, uiView.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
+			Announcement ann = new Announcement (announcementWidget.announcement.AttributedText, Rotation, view.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
 			ann.FacebookId = announcementWidget.announcement.FacebookId;
 			ann.SocialChannel = announcementWidget.announcement.SocialChannel;
 			return ann;
@@ -177,9 +173,9 @@ namespace Board.Interface
 
 		public static BoardEvent GetEvent()
 		{
-			uiView.Transform = CGAffineTransform.MakeRotation (0);
+			view.Transform = CGAffineTransform.MakeRotation (0);
 			EventWidget eventWidget = (EventWidget)widget;
-			BoardEvent bve = new BoardEvent (eventWidget.boardEvent.Name, eventWidget.boardEvent.ImageView.Image, eventWidget.boardEvent.StartDate, eventWidget.boardEvent.EndDate, Rotation, uiView.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
+			BoardEvent bve = new BoardEvent (eventWidget.boardEvent.Name, eventWidget.boardEvent.ImageView.Image, eventWidget.boardEvent.StartDate, eventWidget.boardEvent.EndDate, Rotation, view.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
 			bve.Description = eventWidget.boardEvent.Description;
 			bve.FacebookId = eventWidget.boardEvent.FacebookId;
 			return bve;
@@ -187,16 +183,16 @@ namespace Board.Interface
 
 		public static Poll GetPoll()
 		{
-			uiView.Transform = CGAffineTransform.MakeRotation (0);
+			view.Transform = CGAffineTransform.MakeRotation (0);
 			PollWidget pollWidget = (PollWidget)widget;
-			Poll poll = new Poll (pollWidget.poll.Question, Rotation, uiView.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now, pollWidget.poll.Answers);
+			Poll poll = new Poll (pollWidget.poll.Question, Rotation, view.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now, pollWidget.poll.Answers);
 			return poll;
 		}
 
 		public static Map GetMap()
 		{
-			uiView.Transform = CGAffineTransform.MakeRotation (0);
-			Map map = new Map(Rotation, uiView.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
+			view.Transform = CGAffineTransform.MakeRotation (0);
+			Map map = new Map(Rotation, view.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
 			return map;
 		}
 	}

@@ -18,12 +18,12 @@ namespace Board.Schema
 		public Picture() {
 		}
 
-		public Picture(UIImage image, UIImage thumbnail, float rotation, CGPoint position, string creatorid, DateTime creationdate)
+		public Picture(UIImage image, UIImage thumbnail, float rotation, CGPoint center, string creatorid, DateTime creationdate)
 		{
 			ImageView = new UIImageView(image);
 			ThumbnailView = new UIImageView(thumbnail);
 			Rotation = rotation;
-			Position = position;
+			Center = center;
 			CreatorId = creatorid;
 			CreationDate = creationdate;
 		}

@@ -187,13 +187,20 @@ namespace Board.Interface.LookUp
 			if (widget != null) {
 				widget.UnsuscribeToEvents ();
 				widget.View.RemoveFromSuperview ();
+				MemoryUtility.ReleaseUIViewWithChildren (widget.View);
 				BoardInterface.DictionaryWidgets.Remove (content.Id);
 			}
 
 			string deleteJson = JsonUtilty.GenerateDeleteJson (content.Id);
 
-			AppDelegate.PopViewLikeDismissView ();
 			window.Hidden = true;
+
+			if (!(content is Map))
+			{
+				MemoryUtility.ReleaseUIViewWithChildren (View);
+			}
+
+			AppDelegate.PopViewLikeDismissView ();
 		}
 
 		private void HideWindow(UIAlertAction action)

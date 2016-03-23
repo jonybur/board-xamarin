@@ -33,6 +33,8 @@ namespace Board.Interface.Widgets
 		private UILabel likeLabel;
 
 		private const int iconSize = 30;
+		public static int Autosize = 220;
+
 		int randomLike;
 		bool liked;
 

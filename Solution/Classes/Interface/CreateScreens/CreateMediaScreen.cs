@@ -60,21 +60,17 @@ namespace Board.Interface.CreateScreens
 			scrollViewTap = new UITapGestureRecognizer (obj => textview.ResignFirstResponder ());
 
 			nextButtonTap += (sender, e) => {
-				AppDelegate.NavigationController.PopViewController (false);
+				Preview.Initialize(content);
 
 				content.SocialChannel = ShareButtons.GetActiveSocialChannels ();
 
-				// shows the image preview so that the user can position the image
-				BoardInterface.scrollView.AddSubview (Preview.View);
-
-				// switches to confbar
-				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
+				AppDelegate.NavigationController.PopViewController (false);
 			};
 		}
 
 		private void LoadTextView()
 		{
-			float autosize = 50;
+			const float autosize = 50;
 			float imgw, imgh;
 
 			UIImageView imageView;

@@ -395,6 +395,7 @@
     <Compile Include="Classes\Interface\Buttons\InfoButton.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Classes\Screens\Controls\TrendingBlock.cs" />
+    <Compile Include="Classes\Interface\SettingsScreen\AnalyticsScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

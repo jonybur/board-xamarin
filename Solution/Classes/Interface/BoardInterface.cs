@@ -8,6 +8,7 @@ using Board.Interface.Widgets;
 using Board.Infrastructure;
 using Board.Utilities;
 using Board.Schema;
+using MGImageUtilitiesBinding;
 using CoreGraphics;
 using Facebook.CoreKit;
 using UIKit;
@@ -388,7 +389,7 @@ namespace Board.Interface
 			imgy = (float)(ContentOffset.Y + AppDelegate.ScreenHeight / 2 - imgh / 2);
 
 			UIImageView circleBackground;
-			using (UIImage img =UIImage.FromFile ("./boardinterface/backgrounds/logobackground.png"))
+			using (UIImage img = UIImage.FromFile ("./boardinterface/backgrounds/logobackground.png"))
 			{
 				UIImage circle3 = img;
 				circleBackground = new UIImageView (circle3);
@@ -398,7 +399,7 @@ namespace Board.Interface
 			circleBackground.Tag = (int)Tags.Background;
 
 			UIImageView mainLogo = new UIImageView(new CGRect (imgx, imgy, imgw, imgh));
-			mainLogo.Image = image.Scale (new CGSize (imgw, imgh));
+			mainLogo.Image = image.ImageScaledToFitSize (new CGSize (imgw, imgh));
 			mainLogo.Tag = (int)Tags.Background;
 
 			scrollView.AddSubviews (circleBackground, mainLogo);

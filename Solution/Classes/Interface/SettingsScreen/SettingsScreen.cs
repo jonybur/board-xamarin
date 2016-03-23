@@ -7,15 +7,16 @@ namespace Board.Interface
 	public class SettingsScreen : UIViewController
 	{
 		MenuBanner Banner;
-		OneLineMenuButton SyncButton;
+		OneLineMenuButton SyncButton, AnalyticsButton;
 
 		public override void ViewDidLoad ()
 		{
 			LoadBanner ();
 
-			CreateSyncButton ((float)Banner.Frame.Bottom);
+			CreateAnalyticsButton ((float)Banner.Frame.Bottom);
+			CreateSyncButton ((float)AnalyticsButton.Frame.Bottom + 1);
 
-			View.AddSubview (SyncButton);
+			View.AddSubviews (SyncButton, AnalyticsButton);
 
 			View.BackgroundColor = UIColor.White;
 		}
@@ -28,9 +29,24 @@ namespace Board.Interface
 				SyncButton.SetLabel(string.Format ("Connected to {0}", BoardInterface.board.FBPage.Name));
 			}
 
+			AnalyticsButton.SetUnpressedColors ();
 			SyncButton.SetUnpressedColors ();
 			Banner.SuscribeToEvents ();
 		}
+
+		private void CreateAnalyticsButton(float yPosition)
+		{
+			AnalyticsButton = new OneLineMenuButton (yPosition);
+			AnalyticsButton.SetLabel ("Get Analytics >");
+
+			AnalyticsButton.TouchUpInside += (sender, e) => {
+				AnalyticsButton.SetPressedColors();
+				AnalyticsScreen analScreen = new AnalyticsScreen();
+				Banner.UnsuscribeToEvents ();
+				AppDelegate.NavigationController.PushViewController(analScreen, true);
+			};
+		}
+
 
 		private void CreateSyncButton(float yPosition)
 		{

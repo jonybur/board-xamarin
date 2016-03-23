@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading;
-
 using AVFoundation;
 using Board.Schema;
-
+using MediaPlayer;
 using MGImageUtilitiesBinding;
 using CoreGraphics;
 using CoreMedia;
@@ -54,7 +53,8 @@ namespace Board.Interface.Widgets
 			//View.AddSubview (playButton);
 			*/
 
-			View.Frame = new CGRect (vid.Position.X, vid.Position.Y, MountingView.Frame.Width, MountingView.Frame.Height);
+			View.Frame = new CGRect (0, 0, MountingView.Frame.Width, MountingView.Frame.Height);
+			View.Center = video.Center;
 			View.Transform = CGAffineTransform.MakeRotation(vid.Rotation);
 
 			EyeOpen = false;
@@ -80,29 +80,17 @@ namespace Board.Interface.Widgets
 
 		private CGRect GetFrame(Video vid)
 		{
-			float imgw, imgh;
-			float autosize = AppDelegate.Autosize;
+			float autosize = Widget.Autosize;
 
-			float scale = (float)(vid.ThumbnailView.Frame.Width/vid.ThumbnailView.Frame.Height);
-
-			if (scale >= 1) {
-				imgw = autosize * scale;
-				imgh = autosize;
-
-				if (imgw > AppDelegate.ScreenWidth) {
-					scale = (float)(vid.ThumbnailView.Frame.Height/vid.ThumbnailView.Frame.Width);
-					imgw = AppDelegate.ScreenWidth;
-					imgh = imgw * scale;
-				}
-			} else {
-				scale = (float)(vid.ThumbnailView.Frame.Height / vid.ThumbnailView.Frame.Width);
-				imgw = autosize;
-				imgh = autosize * scale;
+			using (MPMoviePlayerController moviePlayer = new MPMoviePlayerController (vid.Url)) {
+				vid.ThumbnailView = new UIImageView(moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact));
+				moviePlayer.Pause ();
+				moviePlayer.Dispose ();	
 			}
 
-			vid.ThumbnailView = new UIImageView(vid.ThumbnailView.Image.ImageScaledToFitSize(new CGSize (imgw, imgh)));
+			vid.ThumbnailView = new UIImageView(vid.ThumbnailView.Image.ImageScaledToFitSize(new CGSize (autosize, autosize)));
 
-			CGRect frame = new CGRect (vid.Position.X, vid.Position.Y, imgw, imgh);
+			CGRect frame = new CGRect (0, 0, vid.ThumbnailView.Frame.Width, vid.ThumbnailView.Frame.Height);
 
 			return frame;
 		}
@@ -125,7 +113,11 @@ namespace Board.Interface.Widgets
 					}
 
 					if (_player != null) {
-						View.InvokeOnMainThread (() => _player.Seek (new CMTime (0, 1000000000)));
+						try{
+							View.InvokeOnMainThread (() => _player.Seek (new CMTime (0, 1000000000)));
+						} catch (Exception ex) {
+							Console.WriteLine (ex.Message);
+						}
 					}
 				}
 			}

@@ -2,7 +2,6 @@
 using Board.Utilities;
 using System.Threading;
 using Board.Facebook;
-using System;
 using CoreGraphics;
 using UIKit;
 using Board.Screens.Controls;
@@ -37,9 +36,9 @@ namespace Board.Interface
 			FacebookUtils.MakeGraphRequest ("me", "accounts", Completion);
 		}
 
-		public override void ViewDidDisappear(bool animated)
+		public override void ViewDidDisappear (bool animated)
 		{
-			UnsuscribeToEvents ();
+			BTProgressHUD.Dismiss ();
 		}
 
 		private void SuscribeToEvents()
@@ -55,7 +54,6 @@ namespace Board.Interface
 				sb.UnsuscribeToEvent ();
 			}
 			Banner.UnsuscribeToEvents ();
-
 		}
 
 		private void Completion(List<FacebookElement> ElementList)
@@ -145,6 +143,7 @@ namespace Board.Interface
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
+					UnsuscribeToEvents ();
 					NavigationController.PopViewController(true);
 					MemoryUtility.ReleaseUIViewWithChildren (View);
 				}

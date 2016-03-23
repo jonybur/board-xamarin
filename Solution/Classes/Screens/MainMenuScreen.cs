@@ -6,6 +6,7 @@ using Foundation;
 using Board.Utilities;
 using Board.Interface;
 using Google.Maps;
+using Facebook.CoreKit;
 using UIKit;
 using Board.Screens.Controls;
 using MGImageUtilitiesBinding;
@@ -74,22 +75,12 @@ namespace Board.Screens
 		{
 			LoadBanner ();
 			LoadMapButton ();
-			LoadContent ();
+			if (Profile.CurrentProfile.UserID != null) {
+				LoadContent ();
+			}
 			LoadMap ();
 
 			View.AddSubviews (Banner, map_button);
-
-			/*
-			PNBarChart pie = new PNBarChart ();
-			pie.Frame = new CGRect (0, 100, AppDelegate.ScreenWidth, 400);
-			pie.YValues= new []{new NSNumber(20), new NSNumber(50), new NSNumber(100), new NSNumber(25)};
-			pie.XLabels = new []{ new NSString ("SEP 1"), new NSString ("SEP 2"), new NSString ("SEP 3"), new NSString ("SEP 4")};
-			pie.ShowLabel = false;
-			pie.DisplayAnimated = true;
-			pie.StrokeChart ();
-
-			View.AddSubview (pie);
-			*/
 		}
 
 		class LocationLabel : UILabel{

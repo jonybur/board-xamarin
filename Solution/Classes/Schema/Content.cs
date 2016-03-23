@@ -13,7 +13,7 @@ namespace Board.Schema
 		public string CreatorId;
 		public string FacebookId;
 
-		public CGPoint Position;
+		public CGPoint Center;
 		public DateTime CreationDate;
 
 		[IgnoreDataMember]

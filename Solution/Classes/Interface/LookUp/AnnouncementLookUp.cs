@@ -1,7 +1,5 @@
 ﻿using Board.Interface.Buttons;
-
 using Board.Schema;
-
 using CoreGraphics;
 using UIKit;
 

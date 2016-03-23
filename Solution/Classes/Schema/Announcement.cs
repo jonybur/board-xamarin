@@ -15,12 +15,12 @@ namespace Board.Schema
 
 		public Announcement() {}
 
-		public Announcement(NSAttributedString text, float rotation, CGPoint position, string creatorid, DateTime creationdate)
+		public Announcement(NSAttributedString text, float rotation, CGPoint center, string creatorid, DateTime creationdate)
 		{
 			Text = text.Value;
 			AttributedText = text;
 			Rotation = rotation;
-			Position = position;
+			Center = center;
 			CreatorId = creatorid;
 			CreationDate = creationdate;
 		}

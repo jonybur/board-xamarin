@@ -48,7 +48,7 @@ namespace Board.Interface.Widgets
 				View.AddSubview (but);
 			}
 
-			View.Center = new CGPoint (poll.Position.X + View.Frame.Width / 2, poll.Position.Y + View.Frame.Height / 2);
+			View.Center = poll.Center;
 			View.Transform = CGAffineTransform.MakeRotation(poll.Rotation);
 
 			EyeOpen = false;
