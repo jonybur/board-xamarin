@@ -235,9 +235,11 @@ namespace Board.Interface.Widgets
 					else if (content is Map)
 					{
 						lookUp = new MapLookUp((Map)content);
-					}  else if (content is Poll)
+					}
+					else if (content is Poll)
 					{
-						return; // no lookup for poll
+						return;
+						//lookUp = new PollLookUp((Poll)content);
 					}
 					else {
 						lookUp = new LookUp.LookUp();

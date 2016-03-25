@@ -10,6 +10,7 @@
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <TargetFrameworkIdentifier>Xamarin.iOS</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
+    <AssemblyName>Board</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,7 +26,6 @@
     <MtouchArch>i386</MtouchArch>
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchLink>None</MtouchLink>
-    <AssemblyName>Board</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>full</DebugType>
@@ -36,7 +36,6 @@
     <MtouchLink>None</MtouchLink>
     <ConsolePause>false</ConsolePause>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <AssemblyName>Board</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -55,7 +54,6 @@
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <BuildIpa>true</BuildIpa>
     <MtouchUseSGen>true</MtouchUseSGen>
-    <AssemblyName>Solution</AssemblyName>
     <CodesignProvision>8f509e24-323b-41ef-9c58-9acf693c9618</CodesignProvision>
     <MtouchProfiling>true</MtouchProfiling>
     <MtouchLink>Full</MtouchLink>
@@ -70,7 +68,6 @@
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchArch>ARMv7, ARM64</MtouchArch>
-    <AssemblyName>Solution</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>full</DebugType>
@@ -84,7 +81,6 @@
     <CodesignProvision>Automatic:AdHoc</CodesignProvision>
     <CodesignKey>iPhone Distribution</CodesignKey>
     <MtouchArch>ARMv7, ARM64</MtouchArch>
-    <AssemblyName>Solution</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
     <DebugType>full</DebugType>
@@ -97,7 +93,6 @@
     <ConsolePause>false</ConsolePause>
     <CodesignProvision>Automatic:AppStore</CodesignProvision>
     <MtouchArch>ARMv7, ARM64</MtouchArch>
-    <AssemblyName>Solution</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -142,7 +137,10 @@
       <HintPath>..\Components\GPUImage-0.1.7.0\lib\ios-unified\GPUImage.dll</HintPath>
     </Reference>
     <Reference Include="PNChartBinding">
-      <HintPath>..\Bindings\PNChartBinding\PNChartBinding.dll</HintPath>
+      <HintPath>..\Bindings\PNChartBinding.dll</HintPath>
+    </Reference>
+    <Reference Include="PBJVisionBinding">
+      <HintPath>..\Bindings\PBJVisionBinding.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -300,6 +298,8 @@
     <BundleResource Include="Resources\boardinterface\screens\share\save\6.jpg" />
     <BundleResource Include="Resources\boardinterface\screens\share\save\6plus.jpg" />
     <BundleResource Include="Resources\demo\pictures\4.jpg" />
+    <BundleResource Include="Resources\boardinterface\screens\analytics\banner\6.jpg" />
+    <BundleResource Include="Resources\boardinterface\screens\analytics\banner\6plus.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -475,6 +475,8 @@
     <Folder Include="Resources\demo\main\" />
     <Folder Include="Properties\" />
     <Folder Include="Resources\boardinterface\screens\share\save\" />
+    <Folder Include="Resources\boardinterface\screens\analytics\" />
+    <Folder Include="Resources\boardinterface\screens\analytics\banner\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

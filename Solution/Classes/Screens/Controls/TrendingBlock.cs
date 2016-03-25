@@ -14,6 +14,9 @@ namespace Board.Screens.Controls
 		private float centerY;
 		private float offsetDelta;
 
+		bool liked;
+		int randomLike;
+
 		public void ParallaxMove(float yoffset)
 		{
 			if (offsetDelta == 0f) {
@@ -72,6 +75,12 @@ namespace Board.Screens.Controls
 			UserInteractionEnabled = true;
 
 			AddSubview (thumb);
+
+			/* // bring Picture to trendingblock
+			var tap = new UITapGestureRecognizer ((UITapGestureRecognizer obj) => {
+				var lookup = new Board.Interface.LookUp.PictureLookUp(
+			});
+			AddGestureRecognizer (tap);*/
 		}
 
 		private void CreateLikeComponent()
@@ -85,7 +94,6 @@ namespace Board.Screens.Controls
 			LikeComponent.AddSubviews (likeView, likeLabel);
 		}
 
-
 		private UIImageView CreateLike(CGRect frame)
 		{
 			UIImageView likeView = new UIImageView(new CGRect(0, 0, iconSize, iconSize));
@@ -97,6 +105,7 @@ namespace Board.Screens.Controls
 
 			likeView.TintColor = UIColor.White;
 			likeView.Center = new CGPoint (frame.Width - 5 - iconSize / 2, frame.Height / 2);
+
 			return likeView;
 		}
 
@@ -120,8 +129,5 @@ namespace Board.Screens.Controls
 
 			return likeLabel;
 		}
-
-
 	}
 }
-

@@ -363,10 +363,9 @@ namespace Board.Interface
 
 		private void LoadMainLogo(UIImage image, CGPoint ContentOffset)
 		{
-			// the image is uploadable
-			// so now launch image preview to choose position in the board
-			float imgx, imgy, imgw, imgh;
 			float autosize = AppDelegate.ScreenWidth;
+			/*
+			float imgx, imgy, imgw, imgh;
 
 			float scale = (float)(image.Size.Width/image.Size.Height);
 
@@ -403,6 +402,24 @@ namespace Board.Interface
 			mainLogo.Tag = (int)Tags.Background;
 
 			scrollView.AddSubviews (circleBackground, mainLogo);
+			*/
+
+			UIImageView circleBackground;
+			using (UIImage img = UIImage.FromFile ("./boardinterface/backgrounds/logobackground.png"))
+			{
+				UIImage circle3 = img;
+				circleBackground = new UIImageView (circle3);
+			}
+			circleBackground.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
+			circleBackground.Tag = (int)Tags.Background;
+
+			UIImage logoImage = image.ImageScaledToFitSize  (new CGSize (autosize, autosize));
+			UIImageView mainLogo = new UIImageView(logoImage);
+			mainLogo.Center = new CGPoint (ScrollViewWidthSize / 2, scrollView.Frame.Height / 2);
+			mainLogo.Tag = (int)Tags.Background;
+
+			scrollView.AddSubviews (circleBackground, mainLogo);
+
 		}
 
 	}

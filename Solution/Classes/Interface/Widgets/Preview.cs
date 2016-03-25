@@ -65,13 +65,14 @@ namespace Board.Interface
 
 			}
 
-			CGRect frame = widget.View.Frame;
-
+			var frame = widget.View.Frame;
 			view = new UIView (new CGRect(BoardInterface.scrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
 				BoardInterface.scrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Board.Interface.Buttons.Button.ButtonSize / 2, frame.Width, frame.Height));
+			widget.View.Frame = new CGRect(0, 0, view.Frame.Width, view.Frame.Height);
 
 			view.Alpha = .5f;
 			view.AddGestureRecognizer (SetNewPanGestureRecognizer());
+			view.BackgroundColor = UIColor.Red;
 			view.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
 			view.AddSubviews(widget.View);
 
@@ -149,7 +150,7 @@ namespace Board.Interface
 		{
 			view.Transform = CGAffineTransform.MakeRotation (0);
 			PictureWidget pictureWidget = (PictureWidget)widget;
-			Picture p = new Picture (pictureWidget.picture.ImageView.Image, pictureWidget.picture.ThumbnailView.Image, Rotation, view.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
+			Picture p = new Picture (pictureWidget.picture.ImageView.Image, pictureWidget.picture.ThumbnailView.Image, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
 			return p;
 		}
 
@@ -157,7 +158,7 @@ namespace Board.Interface
 		{
 			view.Transform = CGAffineTransform.MakeRotation (0);
 			VideoWidget videoWidget = (VideoWidget)widget;
-			Video v = new Video (videoWidget.video.Url, videoWidget.video.ThumbnailView, Rotation, view.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
+			Video v = new Video (videoWidget.video.Url, videoWidget.video.ThumbnailView, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
 			return v;
 		}
 
@@ -165,7 +166,7 @@ namespace Board.Interface
 		{
 			view.Transform = CGAffineTransform.MakeRotation (0);
 			AnnouncementWidget announcementWidget = (AnnouncementWidget)widget;
-			Announcement ann = new Announcement (announcementWidget.announcement.AttributedText, Rotation, view.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
+			Announcement ann = new Announcement (announcementWidget.announcement.AttributedText, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
 			ann.FacebookId = announcementWidget.announcement.FacebookId;
 			ann.SocialChannel = announcementWidget.announcement.SocialChannel;
 			return ann;
@@ -175,7 +176,7 @@ namespace Board.Interface
 		{
 			view.Transform = CGAffineTransform.MakeRotation (0);
 			EventWidget eventWidget = (EventWidget)widget;
-			BoardEvent bve = new BoardEvent (eventWidget.boardEvent.Name, eventWidget.boardEvent.ImageView.Image, eventWidget.boardEvent.StartDate, eventWidget.boardEvent.EndDate, Rotation, view.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
+			BoardEvent bve = new BoardEvent (eventWidget.boardEvent.Name, eventWidget.boardEvent.ImageView.Image, eventWidget.boardEvent.StartDate, eventWidget.boardEvent.EndDate, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
 			bve.Description = eventWidget.boardEvent.Description;
 			bve.FacebookId = eventWidget.boardEvent.FacebookId;
 			return bve;
@@ -185,14 +186,14 @@ namespace Board.Interface
 		{
 			view.Transform = CGAffineTransform.MakeRotation (0);
 			PollWidget pollWidget = (PollWidget)widget;
-			Poll poll = new Poll (pollWidget.poll.Question, Rotation, view.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now, pollWidget.poll.Answers);
+			Poll poll = new Poll (pollWidget.poll.Question, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now, pollWidget.poll.Answers);
 			return poll;
 		}
 
 		public static Map GetMap()
 		{
 			view.Transform = CGAffineTransform.MakeRotation (0);
-			Map map = new Map(Rotation, view.Frame.Location, Profile.CurrentProfile.UserID, DateTime.Now);
+			Map map = new Map(Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
 			return map;
 		}
 	}

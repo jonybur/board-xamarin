@@ -3,6 +3,7 @@ using UIKit;
 using CoreGraphics;
 using Foundation;
 using System.Collections.Generic;
+using System;
 
 namespace Board.Interface.Widgets
 {
@@ -107,10 +108,13 @@ namespace Board.Interface.Widgets
 			View.Frame = frame;
 		}
 
-		class AnswerButton : UIButton{
+
+		public class AnswerButton : UIButton{
 
 			UIImageView AnswerImageView;
 			UILabel label;
+
+			EventHandler touchUpInside;
 
 			static UIImage EmptyRadio;
 			static UIImage FullRadio;
@@ -156,18 +160,21 @@ namespace Board.Interface.Widgets
 
 				AddSubviews (label, AnswerImageView);
 
-				TouchUpInside += (sender, e) => {
+				touchUpInside = (sender, e) => {
 					SetFullImage();
 					foreach (AnswerButton ansButton in lstAnswers)
 					{
 						ansButton.label.Text += " - 50%";
 						ansButton.UserInteractionEnabled = false;
+						ansButton.TouchUpInside -= ansButton.touchUpInside;
 					}
 				};
 
+				TouchUpInside += touchUpInside;
 			}
 		}
-
 	}
+
+
 }
 
