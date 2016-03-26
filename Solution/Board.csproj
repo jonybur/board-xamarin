@@ -115,9 +115,6 @@
       <HintPath>..\Components\btprogresshud-1.20\lib\ios-unified\BTProgressHUD.dll</HintPath>
     </Reference>
     <Reference Include="MonoTouch.Dialog-1" />
-    <Reference Include="Google.Maps">
-      <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.11.1.1\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
-    </Reference>
     <Reference Include="Haneke">
       <HintPath>..\Components\haneke-1.0.1\lib\ios-unified\Haneke.dll</HintPath>
     </Reference>
@@ -138,6 +135,9 @@
     </Reference>
     <Reference Include="PNChartBinding">
       <HintPath>..\Bindings\PNChartBinding.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Maps">
+      <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.11.1.1\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
     </Reference>
     <Reference Include="PBJVisionBinding">
       <HintPath>..\Bindings\PBJVisionBinding.dll</HintPath>
@@ -300,6 +300,8 @@
     <BundleResource Include="Resources\demo\pictures\4.jpg" />
     <BundleResource Include="Resources\boardinterface\screens\analytics\banner\6.jpg" />
     <BundleResource Include="Resources\boardinterface\screens\analytics\banner\6plus.jpg" />
+    <BundleResource Include="Resources\camera\cameraback.png" />
+    <BundleResource Include="Resources\camera\camerafront.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -396,6 +398,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Classes\Screens\Controls\TrendingBlock.cs" />
     <Compile Include="Classes\Interface\SettingsScreen\AnalyticsScreen.cs" />
+    <Compile Include="Classes\Infrastructure\CameraController.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -477,6 +480,7 @@
     <Folder Include="Resources\boardinterface\screens\share\save\" />
     <Folder Include="Resources\boardinterface\screens\analytics\" />
     <Folder Include="Resources\boardinterface\screens\analytics\banner\" />
+    <Folder Include="Resources\camera\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">
@@ -489,10 +493,6 @@
     </XamarinComponentReference>
     <XamarinComponentReference Include="advancedcolorpicker">
       <Version>2.0</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
-    <XamarinComponentReference Include="googleiosmaps">
-      <Version>1.11.1.0</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
     <XamarinComponentReference Include="btprogresshud">
@@ -509,6 +509,10 @@
     </XamarinComponentReference>
     <XamarinComponentReference Include="GPUImage">
       <Version>0.1.7.0</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="googleiosmaps">
+      <Version>1.11.1.1</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

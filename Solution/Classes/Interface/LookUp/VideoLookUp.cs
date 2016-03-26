@@ -79,7 +79,6 @@ namespace Board.Interface.LookUp
 			playerItem.AudioMix = new AVAudioMix ();
 			player = new AVPlayer (playerItem);
 			player.Seek (new CoreMedia.CMTime (0, 1000000000));
-
 			player.Play ();
 
 			return player;

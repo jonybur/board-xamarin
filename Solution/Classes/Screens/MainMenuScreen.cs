@@ -10,7 +10,6 @@ using Facebook.CoreKit;
 using UIKit;
 using Board.Screens.Controls;
 using MGImageUtilitiesBinding;
-using PBJVisionBinding;
 
 namespace Board.Screens
 {
@@ -293,29 +292,7 @@ namespace Board.Screens
 			}
 
 			MapButtonEvent = (sender, e) => {
-				/*
-				var previewView = new UIView();
-				previewView.BackgroundColor = UIColor.Black;
-				CGRect previewFrame = new CGRect(0,0,AppDelegate.ScreenWidth,AppDelegate.ScreenHeight);
-				previewView.Frame = previewFrame;
-				var previewLayer = PBJVision.SharedInstance.PreviewLayer;
-				previewLayer.Frame = previewView.Bounds;
-				previewLayer.VideoGravity = AVFoundation.AVLayerVideoGravity.ResizeAspectFill;
-				previewView.Layer.AddSublayer(previewLayer);
-				View.AddSubview(previewView);
-
-				var vision = PBJVision.SharedInstance;
-				vision.ThumbnailEnabled = true;
-				vision.CameraMode = PBJCameraMode.Video;
-				vision.CameraOrientation = PBJCameraOrientation.Portrait;
-				vision.FocusMode = PBJFocusMode.ContinuousAutoFocus;
-				vision.OutputFormat = PBJOutputFormat.Square;
-				// vision.MaximumCaptureDuration = 20segundos;
-				vision.StartPreview();
-
-				return;
-
-				*/
+				
 				if (map.Alpha == 0f)
 				{ 
 					map.Alpha = 1f; 
@@ -335,20 +312,5 @@ namespace Board.Screens
 			map_button.Alpha = .95f;
 		}
 
-		/*
-		- (void)_setup
-		{
-		    _longPressGestureRecognizer.enabled = YES;
-
-		    PBJVision *vision = [PBJVision sharedInstance];
-		    vision.delegate = self;
-		    vision.cameraMode = PBJCameraModeVideo;
-		    vision.cameraOrientation = PBJCameraOrientationPortrait;
-		    vision.focusMode = PBJFocusModeContinuousAutoFocus;
-		    vision.outputFormat = PBJOutputFormatSquare;
-
-		    [vision startPreview];
-		}
-		*/
 	}
 }

@@ -1,6 +1,7 @@
 using Board.Picker;
 using CoreGraphics;
 using UIKit;
+using Board.Infrastructure;
 
 namespace Board.Interface.Buttons
 {
@@ -40,9 +41,11 @@ namespace Board.Interface.Buttons
 
 		private void OpenCamera(UIAlertAction action)
 		{
-			ImagePicker ip = new ImagePicker (UIImagePickerControllerSourceType.Camera);
+			CameraController cameraController = new CameraController ();
+			AppDelegate.PushViewLikePresentView (cameraController);
 
-			AppDelegate.NavigationController.PresentViewController (ip.UIImagePicker, true, null);
+			//ImagePicker ip = new ImagePicker (UIImagePickerControllerSourceType.Camera);
+			//AppDelegate.NavigationController.PresentViewController (ip.UIImagePicker, true, null);
 		}
 	}
 }

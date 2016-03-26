@@ -30,9 +30,10 @@ namespace Board.Screens
 				NSUserDefaults.StandardUserDefaults.SetBool(true, key);
 				defaults.Synchronize ();
 
-				UIAlertController alert = UIAlertController.Create ("Welcome to Board 0.3.6", "Changelog\n" +
+				UIAlertController alert = UIAlertController.Create ("Welcome to Board 0.3.7", "Changelog:\n" +
 					"· Analytics screen\n" +
 					"· Trending block finished\n" +
+					"· Fixed crash from 0.3.6 that wouldn't allow the app to open\n"+
 					"· Bug fixes", UIAlertControllerStyle.Alert);
 
 				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));	

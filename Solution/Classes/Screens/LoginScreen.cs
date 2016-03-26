@@ -121,7 +121,7 @@ namespace Board.Screens
 				int time = 0;
 
 				while (time < 9) {
-					System.Threading.Thread.Sleep (1000);
+					Thread.Sleep (1000);
 					time++;
 				}
 
