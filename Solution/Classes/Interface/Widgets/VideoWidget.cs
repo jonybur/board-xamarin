@@ -114,6 +114,7 @@ namespace Board.Interface.Widgets
 
 					if (_player != null) {
 						try{
+							// TODO: fix bug that makes _player null
 							View.InvokeOnMainThread (() => _player.Seek (new CMTime (0, 1000000000)));
 						} catch (Exception ex) {
 							Console.WriteLine (ex.Message);

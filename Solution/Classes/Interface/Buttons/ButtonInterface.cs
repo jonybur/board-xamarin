@@ -15,10 +15,10 @@ namespace Board.Interface.Buttons
 		static ConfirmationButtonSet confirmationButtonSet;
 		public static NavigationButton navigationButton;
 
-		public static void Initialize(Action refreshContent)
+		public static void Initialize()
 		{
 			actionsButtonSet = new ActionsButtonSet ();
-			confirmationButtonSet = new ConfirmationButtonSet (refreshContent);
+			confirmationButtonSet = new ConfirmationButtonSet ();
 			navigationButton = new NavigationButton ();			
 		}
 

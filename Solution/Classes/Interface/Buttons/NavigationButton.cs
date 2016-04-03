@@ -101,8 +101,8 @@ namespace Board.Interface.Buttons
 				}
 			});
 
-			this.gestureRecognizers.Add (tapGesture);
-			this.gestureRecognizers.Add (longPressGesture);
+			gestureRecognizers.Add (tapGesture);
+			gestureRecognizers.Add (longPressGesture);
 
 			uiButton.UserInteractionEnabled = true;
 		}

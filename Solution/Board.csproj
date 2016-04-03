@@ -140,7 +140,7 @@
       <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.11.1.1\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
     </Reference>
     <Reference Include="PBJVisionBinding">
-      <HintPath>..\Bindings\PBJVisionBinding.dll</HintPath>
+      <HintPath>..\..\Libraries\XamarinBinding\PBJVisionBinding\PBJVisionBinding\bin\Release\PBJVisionBinding.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -302,6 +302,12 @@
     <BundleResource Include="Resources\boardinterface\screens\analytics\banner\6plus.jpg" />
     <BundleResource Include="Resources\camera\cameraback.png" />
     <BundleResource Include="Resources\camera\camerafront.png" />
+    <BundleResource Include="Resources\camera\flipcamera.png" />
+    <BundleResource Include="Resources\camera\flipcamera90.png" />
+    <BundleResource Include="Resources\camera\flipcamera75.png" />
+    <BundleResource Include="Resources\camera\flipcamera2.png" />
+    <BundleResource Include="Resources\camera\flipcamera21.png" />
+    <BundleResource Include="Resources\camera\nextbutton.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -398,7 +404,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Classes\Screens\Controls\TrendingBlock.cs" />
     <Compile Include="Classes\Interface\SettingsScreen\AnalyticsScreen.cs" />
-    <Compile Include="Classes\Infrastructure\CameraController.cs" />
+    <Compile Include="Classes\Interface\CameraScreen\CameraController.cs" />
+    <Compile Include="Classes\Interface\CameraScreen\CustomPBJVisionDelegate.cs" />
+    <Compile Include="Classes\Interface\CameraScreen\ShutterButton.cs" />
+    <Compile Include="Classes\Interface\CameraScreen\VideoPreview.cs" />
+    <Compile Include="Classes\Interface\CameraScreen\CameraPreview.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -481,6 +491,7 @@
     <Folder Include="Resources\boardinterface\screens\analytics\" />
     <Folder Include="Resources\boardinterface\screens\analytics\banner\" />
     <Folder Include="Resources\camera\" />
+    <Folder Include="Classes\Interface\CameraScreen\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

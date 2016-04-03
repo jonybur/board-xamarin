@@ -9,7 +9,7 @@ namespace Board.Interface.Buttons
 {
 	public class AcceptButton : Button
 	{
-		public AcceptButton (Action refreshPictures)
+		public AcceptButton ()
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
@@ -78,7 +78,7 @@ namespace Board.Interface.Buttons
 				Preview.RemoveFromSuperview ();
 
 				// refreshes the scrollview
-				refreshPictures ();
+				AppDelegate.boardInterface.AddWidgetToDictionaryFromContent (content);
 			});
 
 			uiButton.Alpha = 0f;

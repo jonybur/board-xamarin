@@ -5,7 +5,6 @@ using BigTed;
 using Board.Interface;
 using Board.Interface.Buttons;
 using Board.Interface.Widgets;
-using Board.Infrastructure;
 using Board.Utilities;
 using Board.Schema;
 using MGImageUtilitiesBinding;
@@ -21,22 +20,23 @@ namespace Board.Interface
 	{
 		private Gallery gallery;
 
-		const float buttonBar = 90;
+		const float buttonBarHeight = 90;
 
-		public static UIImageView CenterLogo;
+		public static UIImageView CenterLogo, TopBanner;
 		public static Board.Schema.Board board;
 
 		public static UIScrollView zoomingScrollView;
 		public static UIScrollView scrollView;
-		static float TempContentOffset;
+		static float TempContentOffset; 
 		bool galleryActive;
 
-		public enum Tags : byte {Background=1, Content};
+		public enum Tags : byte { Background = 1, Content };
 
-		public static int ScrollViewWidthSize = 2500;
+		public static int ScrollViewWidthSize = 2600;
 
 		public static Dictionary<string, Content> DictionaryContent;
 		public static Dictionary<string, Widget> DictionaryWidgets;
+		List<Widget> DrawnWidgets;
 
 		EventHandler scrolledEvent;
 		bool firstLoad;
@@ -74,6 +74,8 @@ namespace Board.Interface
 			DictionaryContent = new Dictionary<string, Content> ();
 
 			DictionaryWidgets = new Dictionary<string, Widget> ();
+
+			DrawnWidgets = new List<Widget> ();
 		}
 
 		public override void ViewDidAppear(bool animated)
@@ -82,9 +84,11 @@ namespace Board.Interface
 				
 				GenerateTestPictures ();
 
-				RefreshContent ();
+				GenerateWidgets ();
 
 				SuscribeToEvents ();
+
+				SelectiveRendering ();
 
 				firstLoad = false;
 
@@ -111,9 +115,10 @@ namespace Board.Interface
 
 				widget.Value.UnsuscribeToEvents ();
 				widget.Value.View.RemoveFromSuperview ();
+				MemoryUtility.ReleaseUIViewWithChildren (widget.Value.View, true);
 			}
 
-			DictionaryWidgets = null;
+			DictionaryWidgets = new Dictionary<string, Widget>();
 		}
 
 		// deprecated for now
@@ -198,27 +203,41 @@ namespace Board.Interface
 				// call from here "open eye" function
 				if (!scrollView.Dragging) { return; } 
 
-				if (!(DictionaryWidgets == null || DictionaryWidgets.Count == 0))
-				{
-					// the ones at the left ;; the ones at the right ;; if it doesnt have an open eye
-					Widget wid = DictionaryWidgets.Values.ToList().Find(item => ((item.View.Frame.X) > scrollView.ContentOffset.X) &&
-						((item.View.Frame.X + item.View.Frame.Width) < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth)) &&
-						!item.EyeOpen);
-					
-					if (wid != null)
-					{
-						OpenEye(wid);
-					}
-				}
-
+				SelectiveRendering();
 			};
 
 			zoomingScrollView = new UIScrollView (new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight));
+
+			LoadMainLogo ();
+
 			zoomingScrollView.AddSubview (scrollView);
 
 			View.AddSubview (zoomingScrollView);
 		}
 
+		private void SelectiveRendering(){
+			if (!(DictionaryWidgets == null || DictionaryWidgets.Count == 0))
+			{
+				List<Widget> WidgetsToDraw = DictionaryWidgets.Values.ToList().FindAll(item => ((item.View.Frame.X) > (scrollView.ContentOffset.X - AppDelegate.ScreenWidth)) &&
+					((item.View.Frame.X + item.View.Frame.Width) < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth + AppDelegate.ScreenWidth)));
+
+				// takes wids that are close
+				DrawWidgets(WidgetsToDraw);
+
+				// the ones at the left ;; the ones at the right ;; if it doesnt have an open eye
+				// checks only on the wids that are drawn
+				List<Widget> WidgetsToOpenEyes = WidgetsToDraw.FindAll(item => ((item.View.Frame.X) > scrollView.ContentOffset.X) &&
+					((item.View.Frame.X + item.View.Frame.Width) < (scrollView.ContentOffset.X + AppDelegate.ScreenWidth)) &&
+					!item.EyeOpen);
+
+				if (WidgetsToOpenEyes != null && WidgetsToOpenEyes.Count > 0)
+				{
+					foreach (var wid in WidgetsToOpenEyes) {
+						OpenEye(wid);
+					}
+				}
+			}
+		}
 
 		private void OpenEye(Widget widget)
 		{
@@ -228,58 +247,82 @@ namespace Board.Interface
 
 		public static void ZoomScrollview()
 		{
+			zoomingScrollView.AddSubview (TopBanner);
 			zoomingScrollView.SetZoomScale(1f, true);
 			scrollView.Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, scrollView.Frame.Height);
 			scrollView.SetContentOffset (new CGPoint (TempContentOffset, 0), false);
+			zoomingScrollView.SendSubviewToBack (TopBanner);
 		}
 
 		public static void UnzoomScrollview()
 		{
+			TopBanner.RemoveFromSuperview ();
+
 			// TODO: remove hardcode and programatically derive the correct zooming value (.15f is current)
 			TempContentOffset = (float)scrollView.ContentOffset.X;
-			scrollView.Frame = new CGRect(0, AppDelegate.ScreenHeight/2 - 70,
-												ScrollViewWidthSize, scrollView.Frame.Height);
-
+			scrollView.Frame = new CGRect(0, AppDelegate.ScreenHeight/2 - 70, ScrollViewWidthSize, scrollView.Frame.Height);
 			zoomingScrollView.SetZoomScale(.15f, true);
 		}
 
 		private void LoadButtons()
 		{
-			ButtonInterface.Initialize (RefreshContent);
+			ButtonInterface.Initialize ();
 
 			UIImageView buttonBackground = new UIImageView (new CGRect (0, 0, AppDelegate.ScreenWidth, 45));
 			buttonBackground.BackgroundColor = UIColor.FromRGBA (255, 255, 255, 240);
 			buttonBackground.Frame = new CGRect (0, AppDelegate.ScreenHeight - 45, AppDelegate.ScreenWidth, 45);
-			this.View.AddSubview (buttonBackground);
+
+			View.AddSubview (buttonBackground);
 
 			if (Profile.CurrentProfile.UserID == board.CreatorId) {
-				this.View.AddSubviews (ButtonInterface.GetCreatorButtons().ToArray());
+				View.AddSubviews (ButtonInterface.GetCreatorButtons().ToArray());
 			} else {
-				this.View.AddSubviews (ButtonInterface.GetUserButtons (board.FBPage != null).ToArray());
+				View.AddSubviews (ButtonInterface.GetUserButtons (board.FBPage != null).ToArray());
 			}
 
 			ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.NavigationBar);
 		}
 
-		public void RefreshContent()
+		public void DrawWidgets(List<Widget> WidgetsToDraw)
 		{
-			// RemoveAllContent ();
+			List<Widget> WidgetsToRemove = DrawnWidgets.FindAll (item => !WidgetsToDraw.Contains (item));
+
+			foreach (var wid in WidgetsToRemove) {
+				wid.View.RemoveFromSuperview ();
+				DrawnWidgets.Remove (wid);
+			}
+
+			foreach (var wid in WidgetsToDraw) {
+				// if the widget hasnt been drawn
+				if (wid.View.Superview != scrollView) {
+					// draw it!
+					scrollView.AddSubview (wid.View);
+					DrawnWidgets.Add (wid);
+				}
+			}
+
+		}
+
+		public void GenerateWidgets()
+		{
+			BTProgressHUD.Show ();
 
 			// looks for new keys in the DictionaryContent
 			// draws new widget in case new content is found
 
 			foreach (KeyValuePair<string, Content> c in DictionaryContent) {
 				if (!DictionaryWidgets.ContainsKey (c.Key)) {
-					DrawWidget (c.Value);
+					AddWidgetToDictionaryFromContent (c.Value);
 				}
 			}
 
 			//DictionaryWidgets = DictionaryWidgets.OrderBy(o=>o.View.Frame.X).ToList();
-
 			ButtonInterface.navigationButton.RefreshNavigationButtonText (DictionaryWidgets.Count);
+
+			BTProgressHUD.Dismiss ();
 		}
 
-		private void DrawWidget(Content content)
+		public void AddWidgetToDictionaryFromContent(Content content)
 		{
 			Widget widget;
 
@@ -299,54 +342,8 @@ namespace Board.Interface
 				widget = new Widget ();
 			}
 
-			scrollView.AddSubview (widget.View);
 			widget.SuscribeToEvents ();
 			DictionaryWidgets.Add (content.Id, widget);
-		}
-
-		private void LoadBackground()
-		{	
-			UIImage logo = board.ImageView.Image;
-			LoadMainLogo (logo, new CGPoint(ScrollViewWidthSize/2, 0));
-
-			scrollView.BackgroundColor = board.MainColor;
-
-			UIImageView circleTop, circleLower;
-
-			using (UIImage img = UIImage.FromFile ("./boardinterface/backgrounds/intern.png")){
-				UIImage circle1 = img;
-				circle1 = circle1.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-				circleTop = new UIImageView (circle1);
-			}
-
-			using (UIImage img = UIImage.FromFile ("./boardinterface/backgrounds/outer.png")) {
-				UIImage circle2 = img;
-				circle2 = circle2.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-				circleLower = new UIImageView (circle2);
-			}
-
-			circleTop.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
-			circleTop.Tag = (int)Tags.Background;
-
-			circleLower.Frame = circleTop.Frame;
-			circleLower.Tag = (int)Tags.Background;
-
-			circleTop.TintColor = board.MainColor;
-			circleLower.TintColor = board.SecondaryColor;
-
-			this.AutomaticallyAdjustsScrollViewInsets = false;
-
-			// this limits the size of the scrollview
-			scrollView.ContentSize = new CGSize(ScrollViewWidthSize, AppDelegate.ScreenHeight);
-			// sets the scrollview on the middle of the view
-			scrollView.SetContentOffset (new CGPoint(ScrollViewWidthSize/2 - AppDelegate.ScreenWidth/2, 0), false);
-			// adds the background
-			scrollView.AddSubviews (circleTop, circleLower);
-
-			zoomingScrollView.MaximumZoomScale = 1f;
-			zoomingScrollView.MinimumZoomScale = .15f;
-
-			zoomingScrollView.RemoveGestureRecognizer (zoomingScrollView.PinchGestureRecognizer);
 		}
 
 		private void SuscribeToEvents()
@@ -361,66 +358,40 @@ namespace Board.Interface
 			zoomingScrollView.ViewForZoomingInScrollView -= sv => zoomingScrollView.Subviews [0];
 		}
 
-		private void LoadMainLogo(UIImage image, CGPoint ContentOffset)
-		{
-			float autosize = AppDelegate.ScreenWidth;
-			/*
-			float imgx, imgy, imgw, imgh;
+		private void LoadBackground()
+		{	
+			scrollView.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 
-			float scale = (float)(image.Size.Width/image.Size.Height);
+			AutomaticallyAdjustsScrollViewInsets = false;
 
-			if (scale >= 1) {
-				imgw = autosize * scale;
-				imgh = autosize;
+			// this limits the size of the scrollview
+			scrollView.ContentSize = new CGSize(ScrollViewWidthSize, AppDelegate.ScreenHeight);
+			// sets the scrollview on the middle of the view
+			scrollView.SetContentOffset (new CGPoint(ScrollViewWidthSize/2 - AppDelegate.ScreenWidth/2, 0), false);
 
-				if (imgw > AppDelegate.ScreenWidth) {
-					scale = (float)(image.Size.Height/image.Size.Width);
-					imgw = AppDelegate.ScreenWidth;
-					imgh = imgw * scale;
-				}
-			} else {
-				scale = (float)(image.Size.Height / image.Size.Width);
-				imgw = autosize;
-				imgh = autosize * scale;
-			}
+			zoomingScrollView.MaximumZoomScale = 1f;
+			zoomingScrollView.MinimumZoomScale = .15f;
 
-			imgx = (float)(ContentOffset.X - imgw / 2);
-			imgy = (float)(ContentOffset.Y + AppDelegate.ScreenHeight / 2 - imgh / 2);
-
-			UIImageView circleBackground;
-			using (UIImage img = UIImage.FromFile ("./boardinterface/backgrounds/logobackground.png"))
-			{
-				UIImage circle3 = img;
-				circleBackground = new UIImageView (circle3);
-			}
-
-			circleBackground.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
-			circleBackground.Tag = (int)Tags.Background;
-
-			UIImageView mainLogo = new UIImageView(new CGRect (imgx, imgy, imgw, imgh));
-			mainLogo.Image = image.ImageScaledToFitSize (new CGSize (imgw, imgh));
-			mainLogo.Tag = (int)Tags.Background;
-
-			scrollView.AddSubviews (circleBackground, mainLogo);
-			*/
-
-			UIImageView circleBackground;
-			using (UIImage img = UIImage.FromFile ("./boardinterface/backgrounds/logobackground.png"))
-			{
-				UIImage circle3 = img;
-				circleBackground = new UIImageView (circle3);
-			}
-			circleBackground.Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
-			circleBackground.Tag = (int)Tags.Background;
-
-			UIImage logoImage = image.ImageScaledToFitSize  (new CGSize (autosize, autosize));
-			UIImageView mainLogo = new UIImageView(logoImage);
-			mainLogo.Center = new CGPoint (ScrollViewWidthSize / 2, scrollView.Frame.Height / 2);
-			mainLogo.Tag = (int)Tags.Background;
-
-			scrollView.AddSubviews (circleBackground, mainLogo);
-
+			zoomingScrollView.RemoveGestureRecognizer (zoomingScrollView.PinchGestureRecognizer);
 		}
 
+		private void LoadMainLogo()
+		{
+			TopBanner = new UIImageView (new CGRect(0, 0, AppDelegate.ScreenWidth, 132 / 2));
+			TopBanner.BackgroundColor = UIColor.White;
+
+			float autosize = (float)TopBanner.Frame.Height - 25;
+
+			UIImage logo = board.ImageView.Image;
+			UIImage logoImage = logo.ImageScaledToFitSize  (new CGSize (autosize, autosize));
+			UIImageView mainLogo = new UIImageView(logoImage);
+			mainLogo.Center = new CGPoint (TopBanner.Frame.Width / 2, TopBanner.Frame.Height / 2 + 10);
+
+			TopBanner.Tag = (int)Tags.Background;
+
+			TopBanner.AddSubview (mainLogo);
+
+			zoomingScrollView.AddSubview (TopBanner);
+		}
 	}
 }
