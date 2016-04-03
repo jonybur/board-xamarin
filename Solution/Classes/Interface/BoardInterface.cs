@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BigTed;
 using Board.Interface;
+using System.Threading;
 using Board.Interface.Buttons;
 using Board.Interface.Widgets;
 using Board.Utilities;
@@ -20,9 +21,10 @@ namespace Board.Interface
 	{
 		private Gallery gallery;
 
-		const float buttonBarHeight = 90;
+		public const int BannerHeight = 66;
+		public const int ButtonBarHeight = 45;
 
-		public static UIImageView CenterLogo, TopBanner;
+		private static UIImageView CenterLogo, TopBanner;
 		public static Board.Schema.Board board;
 
 		public static UIScrollView zoomingScrollView;
@@ -78,6 +80,11 @@ namespace Board.Interface
 			DrawnWidgets = new List<Widget> ();
 		}
 
+		public override void ViewDidDisappear(bool animated)
+		{
+			RemoveAllContent ();
+		}
+
 		public override void ViewDidAppear(bool animated)
 		{
 			if (firstLoad) {
@@ -88,18 +95,25 @@ namespace Board.Interface
 
 				SuscribeToEvents ();
 
-				SelectiveRendering ();
-
 				firstLoad = false;
 
 				BTProgressHUD.Dismiss ();
 			}
+
+			SelectiveRendering ();
+
+			if (Preview.IsAlive) {
+				scrollView.AddSubview (Preview.View);
+			}
+
+			var infoBox = new InfoBox (board);
+			scrollView.AddSubview (infoBox);
 		}
 
 		public void ExitBoard()
 		{
 			View.BackgroundColor = UIColor.Black;
-			RemoveAllContent ();
+			RemoveAndDisposeAllContent ();
 			MemoryUtility.ReleaseUIViewWithChildren (this.View, true);
 			ButtonInterface.DisableAllLayouts();
 			UnsuscribeToEvents ();
@@ -110,7 +124,21 @@ namespace Board.Interface
 			foreach(KeyValuePair<string, Widget> widget in DictionaryWidgets)
 			{
 				if (widget.Value is VideoWidget) {
-					(widget.Value as VideoWidget).KillVideo ();
+					Thread killVideoThread = new Thread (new ThreadStart((widget.Value as VideoWidget).KillVideo));
+					killVideoThread.Start ();
+				}
+
+				widget.Value.View.RemoveFromSuperview ();
+			}
+		}
+
+		public void RemoveAndDisposeAllContent()
+		{
+			foreach(KeyValuePair<string, Widget> widget in DictionaryWidgets)
+			{
+				if (widget.Value is VideoWidget) {
+					Thread killVideoThread = new Thread (new ThreadStart((widget.Value as VideoWidget).KillVideo));
+					killVideoThread.Start ();
 				}
 
 				widget.Value.UnsuscribeToEvents ();
@@ -215,7 +243,7 @@ namespace Board.Interface
 			View.AddSubview (zoomingScrollView);
 		}
 
-		private void SelectiveRendering(){
+		public void SelectiveRendering(){
 			if (!(DictionaryWidgets == null || DictionaryWidgets.Count == 0))
 			{
 				List<Widget> WidgetsToDraw = DictionaryWidgets.Values.ToList().FindAll(item => ((item.View.Frame.X) > (scrollView.ContentOffset.X - AppDelegate.ScreenWidth)) &&
@@ -268,9 +296,8 @@ namespace Board.Interface
 		{
 			ButtonInterface.Initialize ();
 
-			UIImageView buttonBackground = new UIImageView (new CGRect (0, 0, AppDelegate.ScreenWidth, 45));
+			UIImageView buttonBackground = new UIImageView (new CGRect (0, AppDelegate.ScreenHeight - 45, AppDelegate.ScreenWidth, ButtonBarHeight));
 			buttonBackground.BackgroundColor = UIColor.FromRGBA (255, 255, 255, 240);
-			buttonBackground.Frame = new CGRect (0, AppDelegate.ScreenHeight - 45, AppDelegate.ScreenWidth, 45);
 
 			View.AddSubview (buttonBackground);
 
@@ -377,7 +404,7 @@ namespace Board.Interface
 
 		private void LoadMainLogo()
 		{
-			TopBanner = new UIImageView (new CGRect(0, 0, AppDelegate.ScreenWidth, 132 / 2));
+			TopBanner = new UIImageView (new CGRect(0, 0, AppDelegate.ScreenWidth, BannerHeight));
 			TopBanner.BackgroundColor = UIColor.White;
 
 			float autosize = (float)TopBanner.Frame.Height - 25;

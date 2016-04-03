@@ -33,6 +33,7 @@ namespace Board.Interface.Widgets
 		private UILabel likeLabel;
 
 		private const int iconSize = 30;
+
 		public static int Autosize = 220;
 
 		int randomLike;
@@ -40,6 +41,12 @@ namespace Board.Interface.Widgets
 
 		public Widget()
 		{
+			if (AppDelegate.PhoneVersion == "6") {
+				Autosize = 220;
+			} else if (AppDelegate.PhoneVersion == "6plus") {
+				Autosize = 220;
+			}
+
 			if (ClosedEyeImageView == null) {
 				using (UIImage image = UIImage.FromFile ("./boardinterface/widget/closedeye.png")) {
 					ClosedEyeImageView = new UIImageView (image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate));
@@ -195,7 +202,7 @@ namespace Board.Interface.Widgets
 		protected void CreateGestures()
 		{
 			UITapGestureRecognizer doubleTap = new UITapGestureRecognizer (tg => {
-				if (Preview.View != null) { return; }
+				if (Preview.IsAlive) { return; }
 
 				Like();
 
@@ -205,7 +212,7 @@ namespace Board.Interface.Widgets
 			});
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
-				if (Preview.View != null) { return;	}
+				if (Preview.IsAlive) { return;	}
 
 				if (LikeComponent.Frame.Left < tg.LocationInView(this.View).X &&
 					LikeComponent.Frame.Top < tg.LocationInView(this.View).Y)

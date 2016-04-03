@@ -23,8 +23,8 @@ namespace Board.Interface.Buttons
 				{
 					containerScreen.LoadMainMenu();
 				}
-				AppDelegate.NavigationController.PopViewController (true);
-				AppDelegate.ExitBoardInterface();
+
+				AppDelegate.PopViewControllerWithCallback(AppDelegate.ExitBoardInterface);
 			});
 
 		}

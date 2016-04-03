@@ -159,8 +159,6 @@ namespace Board
 
 			window.MakeKeyAndVisible ();
 
-
-
 			/*
 			new System.Threading.Thread (() => 
 				{
@@ -186,6 +184,17 @@ namespace Board
 			boardInterface.Dispose ();
 			boardInterface = null;
 			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
+		}
+
+		public static void PopViewControllerWithCallback(Action callback)
+		{
+			CATransaction.Begin ();
+
+			CATransaction.CompletionBlock = callback;
+
+			NavigationController.PopViewController (true);
+
+			CATransaction.Begin ();
 		}
 
 		public static void PushViewLikePresentView(UIViewController screen)

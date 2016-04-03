@@ -7,6 +7,7 @@ using Board.Schema;
 
 using CoreGraphics;
 using Facebook.CoreKit;
+using Board.Utilities;
 using UIKit;
 
 namespace Board.Interface
@@ -19,10 +20,11 @@ namespace Board.Interface
 		}
 		private static float Rotation;
 
-		public enum Type {Picture = 1, Video, Announcement, Event, Poll, Map};
+		public enum Type { Picture = 1, Video, Announcement, Event, Poll, Map };
 		public static int TypeOfPreview;
 
 		public static Widget widget;
+		public static bool IsAlive;
 
 		public static void Initialize(Content content)
 		{
@@ -76,8 +78,10 @@ namespace Board.Interface
 			view.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
 			view.AddSubviews(widget.View);
 
+			IsAlive = true;
+
 			// shows the image preview so that the user can position the image
-			BoardInterface.scrollView.AddSubview(Preview.View);
+			BoardInterface.scrollView.AddSubview(View);
 
 			// switches to confbar
 			ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
@@ -142,8 +146,8 @@ namespace Board.Interface
 		public static void RemoveFromSuperview()
 		{
 			view.RemoveFromSuperview ();
-			view.Dispose ();
-			view = null;
+			IsAlive = false;
+			MemoryUtility.ReleaseUIViewWithChildren (view);
 		}
 
 		public static Picture GetPicture()

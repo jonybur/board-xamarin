@@ -1,13 +1,16 @@
 ﻿using UIKit;
 using CoreGraphics;
+using System.Threading;
 using PBJVisionBinding;
 
 namespace Board.Interface.Camera
 {
-	public class UIShutterButton : UIImageView{
+	public sealed class UIShutterButton : UIImageView{
 		public UIImageView RingView;
 		private UITapGestureRecognizer Tap;
 		private UILongPressGestureRecognizer LongPress;
+		private Thread thread;
+		bool timer;
 
 		public UIShutterButton()
 		{
@@ -28,23 +31,44 @@ namespace Board.Interface.Camera
 			RingView.TintColor = UIColor.White;
 			AddSubview(RingView);
 
-			Tap = new UITapGestureRecognizer (tg => CameraController.Vision.CapturePreviewPhoto ());
+			Tap = new UITapGestureRecognizer (tg => {
+				if (CameraController.Vision.FlashMode == PBJFlashMode.Auto){
+					CameraController.Vision.FlashMode = PBJFlashMode.On;
+					Thread.Sleep(300);
+
+					CameraController.Vision.FlashMode = PBJFlashMode.Off;
+					Thread.Sleep(100);
+
+					CameraController.Vision.FlashMode = PBJFlashMode.On;
+				}
+
+				CameraController.Vision.CapturePreviewPhoto ();
+			});
 
 			LongPress = new UILongPressGestureRecognizer(tg => {
 				switch (tg.State)
 				{
 					case UIGestureRecognizerState.Began:
-					if (!CameraController.Vision.Recording) {
+						if (CameraController.Vision.FlashMode == PBJFlashMode.Auto){
+							CameraController.Vision.FlashMode = PBJFlashMode.On;
+						}
+
+						if (!CameraController.Vision.Recording) {
 							CameraController.Vision.StartVideoCapture();
 						} else {
 							CameraController.Vision.ResumeVideoCapture();
 						}
 						RingView.TintColor = UIColor.Red;
+						timer = true;
+						thread = new Thread(new ThreadStart(Timer));
+						thread.Start();
 						break;
+
 					case UIGestureRecognizerState.Ended:
 					case UIGestureRecognizerState.Cancelled:
 					case UIGestureRecognizerState.Failed:
-						System.Threading.Thread.Sleep(1000);
+						timer = false;
+						Thread.Sleep(1000);
 						CameraController.Vision.EndVideoCapture();
 						RingView.TintColor = UIColor.White;
 						break;
@@ -53,6 +77,19 @@ namespace Board.Interface.Camera
 
 			LongPress.MinimumPressDuration = .3f;
 			UserInteractionEnabled = true;
+		}
+
+		private void Timer(){
+			int secondTimer = 0;
+
+			while (secondTimer < 19 && timer) {
+				secondTimer++;
+				Thread.Sleep (1000);
+			}
+
+			if (timer) {
+				Alpha = 0f;
+			}
 		}
 
 		public void EnableGestures()

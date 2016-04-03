@@ -175,9 +175,11 @@ namespace Board.Interface.Widgets
 		public void KillVideo()
 		{
 			PauseVideo ();
-			_player = null;
 			loop = false;
 			time = (int)videoDuration;
+			while (looper.IsAlive) {
+			}
+			_player = null;
 		}
 
 	}

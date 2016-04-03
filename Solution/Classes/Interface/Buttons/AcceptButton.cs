@@ -77,8 +77,11 @@ namespace Board.Interface.Buttons
 				// remove the preview imageview from the superview
 				Preview.RemoveFromSuperview ();
 
-				// refreshes the scrollview
+				// adds widget to dictionary
 				AppDelegate.boardInterface.AddWidgetToDictionaryFromContent (content);
+
+				// renders scrollview
+				AppDelegate.boardInterface.SelectiveRendering();
 			});
 
 			uiButton.Alpha = 0f;

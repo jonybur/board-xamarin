@@ -308,6 +308,10 @@
     <BundleResource Include="Resources\camera\flipcamera2.png" />
     <BundleResource Include="Resources\camera\flipcamera21.png" />
     <BundleResource Include="Resources\camera\nextbutton.png" />
+    <BundleResource Include="Resources\camera\flash_auto.png" />
+    <BundleResource Include="Resources\camera\flash_off.png" />
+    <BundleResource Include="Resources\camera\flash_on.png" />
+    <BundleResource Include="Resources\camera\focus.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -409,6 +413,7 @@
     <Compile Include="Classes\Interface\CameraScreen\ShutterButton.cs" />
     <Compile Include="Classes\Interface\CameraScreen\VideoPreview.cs" />
     <Compile Include="Classes\Interface\CameraScreen\CameraPreview.cs" />
+    <Compile Include="Classes\Interface\InfoBox.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

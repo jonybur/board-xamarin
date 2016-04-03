@@ -3,7 +3,10 @@ using System;
 using CoreGraphics;
 using UIKit;
 using Foundation;
+using Board.Schema;
 using PBJVisionBinding;
+using Board.Interface.CreateScreens;
+using System.Threading;
 
 namespace Board.Interface.Camera
 {
@@ -12,17 +15,22 @@ namespace Board.Interface.Camera
 		VideoPreview videoPreview;
 		UIImageView photoPreview;
 
-		UITapGestureRecognizer BackTap, TrashTap, FlipTap, FlashTap, NextTap;
-		UIImageView BackButton, TrashButton, FlipButton, FlashButton, NextButton;
+		UITapGestureRecognizer BackTap, TrashTap, FlipTap, FlashTap, NextTap, FocusTap;
+		UIImageView BackButton, TrashButton, FlipButton, FlashButton, NextButton, FocusImage;
 		UIShutterButton ShutterButton;
+
+		Content Media;
 
 		public static PBJVision Vision;
 		public static string CaptureDirectory;
+		bool isFocusing;
 
-		public override void ViewDidLoad ()
+		public override void ViewDidAppear (bool animated)
 		{ 
 			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
 			NavigationController.NavigationBarHidden = true;
+
+			View.UserInteractionEnabled = true;
 
 			CaptureDirectory = (NSFileManager.DefaultManager.GetUrls (
 				NSSearchPathDirectory.LibraryDirectory, 
@@ -37,16 +45,58 @@ namespace Board.Interface.Camera
 			CreateTrashButton (UIColor.White);
 			CreateNextButton (UIColor.White);
 			CreateFlipButton (UIColor.White);
+			CreateFlashButton (UIColor.White);
 
-			View.AddSubviews (cameraPreview, videoPreview, photoPreview, BackButton, TrashButton, FlipButton, NextButton, ShutterButton);
-		}
+			View.AddSubviews (cameraPreview, videoPreview, photoPreview, BackButton, TrashButton, FlipButton, NextButton, ShutterButton, FlashButton);
 
-		public override void ViewDidAppear(bool animated)
-		{
+			FocusImage = new UIImageView (new CGRect(0, 0, 50, 50));
+			using (UIImage img = UIImage.FromFile("./camera/focus.png")) {
+				FocusImage.Image = img;
+			}
+			FocusImage.Alpha = 0f;
+			cameraPreview.AddSubview(FocusImage);
+
+			FocusTap = new UITapGestureRecognizer (obj => {
+				if (!isFocusing)
+				{
+					isFocusing = true;
+
+					var position = obj.LocationInView(cameraPreview);
+					var converted = CameraPreview.ConvertToPointOfInterestFromViewCoordinates(position, cameraPreview.Frame);
+
+					CameraController.Vision.FocusAtAdjustedPointOfInterest (converted);
+					CameraController.Vision.ExposeAtAdjustedPointOfInterest (converted);
+
+					FocusImage.Center = position;
+					FocusImage.Alpha = .6f;
+
+					Thread thread = new Thread(new ThreadStart(Focusing));
+					thread.Start();
+				}
+			});
+
 			ShutterButton.EnableGestures ();
 			BackButton.AddGestureRecognizer (BackTap);
 			TrashButton.AddGestureRecognizer (TrashTap);
 			FlipButton.AddGestureRecognizer (FlipTap);
+			FlashButton.AddGestureRecognizer (FlashTap);
+			NextButton.AddGestureRecognizer (NextTap);
+			View.AddGestureRecognizer (FocusTap);
+		}
+
+		private void Focusing(){
+			bool hasAlpha = true;
+			Thread.Sleep (400);
+			while (hasAlpha) {
+				Thread.Sleep (3);
+				InvokeOnMainThread(() => {
+					FocusImage.Alpha -= .01f;
+					if (FocusImage.Alpha <= 0f){
+						hasAlpha = false;
+					}
+				});
+			}
+			isFocusing = false;
 		}
 
 		public override void ViewDidDisappear(bool animated)
@@ -55,6 +105,9 @@ namespace Board.Interface.Camera
 			BackButton.RemoveGestureRecognizer (BackTap);
 			TrashButton.RemoveGestureRecognizer (TrashTap);
 			FlipButton.RemoveGestureRecognizer (FlipTap);
+			FlashButton.RemoveGestureRecognizer (FlashTap);
+			NextButton.RemoveGestureRecognizer (NextTap);
+			View.RemoveGestureRecognizer (FocusTap);
 
 			videoPreview.KillVideo ();
 
@@ -82,6 +135,7 @@ namespace Board.Interface.Camera
 			ShutterButton.Alpha = 0f;
 			videoPreview.Alpha = 0f;
 			cameraPreview.Alpha = 0f;
+			FlashButton.Alpha = 0f;
 
 			photoPreview.Alpha = 1f;
 			NextButton.Alpha = 1f;
@@ -92,6 +146,10 @@ namespace Board.Interface.Camera
 			View.BringSubviewToFront (FlipButton);
 			View.BringSubviewToFront (NextButton);
 			View.BringSubviewToFront (TrashButton);
+
+			Media = new Picture ();
+			((Picture)Media).ImageView = new UIImageView (photoPreview.Image);
+			View.RemoveGestureRecognizer (FocusTap);
 		}
 
 		public void ImportVideo()
@@ -110,9 +168,14 @@ namespace Board.Interface.Camera
 			InvokeOnMainThread (() => videoPreview.LoadVideo (CustomPBJVisionDelegate.VideoPath));
 			InvokeOnMainThread (() => cameraPreview.Alpha = 0f);
 			InvokeOnMainThread (() => ShutterButton.Alpha = 0f);
+			InvokeOnMainThread (() => FlashButton.Alpha = 0f);
 			InvokeOnMainThread (() => FlipButton.Alpha = 0f);
 			InvokeOnMainThread (() => TrashButton.Alpha = 1f);
 			InvokeOnMainThread (() => NextButton.Alpha = 1f);
+			InvokeOnMainThread (() => View.RemoveGestureRecognizer (FocusTap));
+
+			Media = new Video ();
+			((Video)Media).Url = CustomPBJVisionDelegate.VideoPath;
 		}
 
 		private void CreateNextButton(UIColor buttonColor)
@@ -132,7 +195,8 @@ namespace Board.Interface.Camera
 			NextButton.UserInteractionEnabled = true;
 
 			NextTap = new UITapGestureRecognizer (tg => {
-					
+				var createScreen = new CreateMediaScreen(Media);
+				AppDelegate.NavigationController.PushViewController(createScreen, true);
 			});
 			NextButton.Alpha = 0f;
 		}
@@ -176,8 +240,10 @@ namespace Board.Interface.Camera
 			FlipTap = new UITapGestureRecognizer (async tg => {
 				if (Vision.CameraDevice == PBJCameraDevice.Back) {
 					Vision.CameraDevice = PBJCameraDevice.Front;
+					FlashButton.Alpha = 0f;
 				} else {
 					Vision.CameraDevice = PBJCameraDevice.Back;
+					FlashButton.Alpha = 1f;
 				}
 			});
 		}
@@ -208,10 +274,11 @@ namespace Board.Interface.Camera
 				TrashButton.Alpha = 0f;
 				photoPreview.Alpha = 0f;
 				NextButton.Alpha = 0f;
-
 				cameraPreview.Alpha = 1f;
 				ShutterButton.Alpha = 1f;
 				FlipButton.Alpha = 1f;
+				FlashButton.Alpha = 1f;
+				Media = null;
 
 				View.AddSubview(cameraPreview);
 				View.BringSubviewToFront(BackButton);
@@ -221,9 +288,52 @@ namespace Board.Interface.Camera
 
 				View.AddSubview(ShutterButton);
 				View.BringSubviewToFront(ShutterButton);
+
+				View.AddSubview(FlashButton);
+				View.BringSubviewToFront(FlashButton);
+
+				cameraPreview.AddSubview(FocusImage);
+
+				View.AddGestureRecognizer (FocusTap);
 			});
 
 			TrashButton.Alpha = 0f;
+		}
+
+		private void CreateFlashButton(UIColor buttonColor)
+		{
+			UIImageView subView;
+
+			using (UIImage img = UIImage.FromFile ("./camera/flash_off.png")) {
+				FlashButton = new UIImageView(new CGRect(0, 0, img.Size.Width * 2, img.Size.Height * 2));
+				Vision.FlashMode = PBJFlashMode.Off;
+
+				subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
+				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				subView.Center = new CGPoint (FlashButton.Frame.Width / 2, TrashButton.Frame.Height / 2);
+				subView.TintColor = buttonColor;
+
+				FlashButton.AddSubview (subView);
+				FlashButton.Center = new CGPoint (AppDelegate.ScreenWidth / 2, 35);
+			}
+
+			FlashButton.UserInteractionEnabled = true;
+
+			FlashTap = new UITapGestureRecognizer (tg => {
+				if (Vision.FlashMode == PBJFlashMode.Off){
+					Vision.FlashMode = PBJFlashMode.Auto;
+					using (UIImage img = UIImage.FromFile ("./camera/flash_on.png")) {
+						subView.Image = img;
+					}
+
+				} else if (Vision.FlashMode == PBJFlashMode.Auto){
+					Vision.FlashMode = PBJFlashMode.Off;
+					using (UIImage img = UIImage.FromFile ("./camera/flash_off.png")) {
+						subView.Image = img;
+					}
+
+				}
+			});
 		}
 
 	}

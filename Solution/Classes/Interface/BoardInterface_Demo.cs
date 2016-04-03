@@ -15,7 +15,7 @@ namespace Board.Interface
 		private void GenerateTestPictures()
 		{
 			const float fix = 100;
-			const float fix2 = 70;
+			const float fix2 = 90;
 
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/0.jpg")) {
 				AddTestPicture (img, new CGPoint(70+fix, 20+fix), -.03f, DateTime.Now.AddHours(-1));

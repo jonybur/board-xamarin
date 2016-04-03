@@ -1,8 +1,6 @@
-﻿using Foundation;
+﻿using AVFoundation;
+using Foundation;
 using PBJVisionBinding;
-using AVFoundation;
-using CoreGraphics;
-using System;
 using UIKit;
 
 namespace Board.Interface.Camera
@@ -18,6 +16,12 @@ namespace Board.Interface.Camera
 				return;
 			}
 
+			if (CameraController.Vision.FlashMode == PBJFlashMode.On) {
+				CameraController.Vision.FlashMode = PBJFlashMode.Auto;
+			}
+
+			vision.StopPreview ();
+
 			var cameraController = (CameraController)AppDelegate.NavigationController.TopViewController;
 
 			cameraController.ImportImage (image);
@@ -25,7 +29,11 @@ namespace Board.Interface.Camera
 
 		public override void VisionVideo (PBJVision vision, NSDictionary videoDict, NSError error)
 		{
-			//vision.StopPreview ();
+			if (CameraController.Vision.FlashMode == PBJFlashMode.On) {
+				CameraController.Vision.FlashMode = PBJFlashMode.Auto;
+			}
+
+			vision.StopPreview ();
 
 			NSString videoPath = videoDict.ObjectForKey (new NSString ("PBJVisionVideoPathKey")) as NSString;
 			NSUrl videoURL = NSUrl.FromFilename(videoPath);
@@ -43,36 +51,6 @@ namespace Board.Interface.Camera
 			var cameraController = (CameraController)AppDelegate.NavigationController.TopViewController;
 			session.ExportAsynchronously (cameraController.ImportVideo);
 		}
-			/*
-
-				encoder = SDAVAssetExportSession.ExportSessionWithAsset (asset) as SDAVAssetExportSession;
-
-				var codecsettings = new AVVideoCodecSettings ();
-				codecsettings.ProfileLevelH264 = AVVideoProfileLevelH264.HighAutoLevel;
-				codecsettings.AverageBitRate = 2300000;
-				//codecsettings.MaxKeyFrameInterval = 2;
-
-				var compressed = new AVVideoSettingsCompressed ();
-				compressed.Width = (int)AppDelegate.ScreenWidth;
-				compressed.Height = (int)AppDelegate.ScreenHeight;
-				compressed.Codec = AVVideoCodec.H264;
-				compressed.CodecSettings = codecsettings;
-
-				var audioSettings = new NSMutableDictionary();
-				audioSettings.Add(AVAudioSettings.AVFormatIDKey, new NSString("kAudioFormatMPEG4AAC"));
-				audioSettings.Add(AVAudioSettings.AVNumberOfChannelsKey, new NSNumber(2));
-				audioSettings.Add(AVAudioSettings.AVSampleRateKey, new NSNumber(44100));
-				audioSettings.Add(AVAudioSettings.AVEncoderBitRateKey, new NSNumber(128000));
-
-				encoder.OutputURL = NSUrl.FromFilename (vision.CaptureDirectory + "/");//+CommonUtils.GenerateGuid()+".mov");
-				encoder.OutputFileType = AVFileType.Mpeg4;
-				encoder.VideoSettings = compressed.Dictionary;
-				encoder.AudioSettings = audioSettings;
-				encoder.ShouldOptimizeForNetworkUse = true;
-
-				encoder.ExportAsynchronouslyWithCompletionHandler (Tasty);
-				
-			*/
 		
 	}
 }

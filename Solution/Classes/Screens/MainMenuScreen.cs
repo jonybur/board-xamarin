@@ -19,6 +19,7 @@ namespace Board.Screens
 		UIScrollView content;
 		List<BoardThumb> ListThumbs;
 		List<TrendingBlock> ListTrendingBlocks;
+		List<Marker> ListMapMarkers;
 
 		UIButton map_button;
 		EventHandler MapButtonEvent;
@@ -29,6 +30,7 @@ namespace Board.Screens
 		bool generatedMarkers;
 
 		float yposition;
+		float thumbsize;
 
 		public override void DidReceiveMemoryWarning ()
 		{
@@ -41,6 +43,7 @@ namespace Board.Screens
 
 			ListThumbs = new List<BoardThumb> ();
 			ListTrendingBlocks = new List<TrendingBlock> ();
+			ListMapMarkers = new List<Marker> ();
 
 			InitializeInterface ();
 		}
@@ -64,10 +67,25 @@ namespace Board.Screens
 			map_button.TouchUpInside -= MapButtonEvent;
 			foreach (BoardThumb bt in ListThumbs) {
 				bt.UnsuscribeToEvent ();
+				MemoryUtility.ReleaseUIViewWithChildren (bt, true);
 			}
+			foreach (TrendingBlock tb in ListTrendingBlocks) {
+				MemoryUtility.ReleaseUIViewWithChildren (tb, true);
+			}
+			foreach (Marker mark in ListMapMarkers) {
+				mark.Dispose ();
+			}
+
+			MemoryUtility.ReleaseUIViewWithChildren (map, true);
+
+			ListMapMarkers = null;
+			ListThumbs = null;
+			ListTrendingBlocks = null;
+
 			Banner.UnsuscribeToEvents ();
 
 			MemoryUtility.ReleaseUIViewWithChildren (View, true);
+			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 		}
 
 		public void InitializeInterface()
@@ -95,7 +113,6 @@ namespace Board.Screens
 			}
 		}
 
-		float thumbsize;
 		private void LoadContent()
 		{
 			thumbsize = AppDelegate.ScreenWidth / 3.5f;
@@ -263,6 +280,7 @@ namespace Board.Screens
 				marker.InfoWindowAnchor = new CGPoint (.5, .5);
 				marker.Tappable = true;
 				marker.UserData = new NSString(thumb.Board.Id);
+				ListMapMarkers.Add (marker);
 			}
 		}
 

@@ -64,7 +64,8 @@ namespace Board.Interface.CreateScreens
 
 				content.SocialChannel = ShareButtons.GetActiveSocialChannels ();
 
-				AppDelegate.NavigationController.PopViewController (false);
+				var boardInterface = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 3];
+				AppDelegate.NavigationController.PopToViewController (boardInterface, false);
 			};
 		}
 

@@ -46,18 +46,13 @@ namespace Board.Interface.Buttons
 		private void OpenCamera()
 		{
 			var cameraController = new CameraController ();
-			AppDelegate.boardInterface.RemoveAllContent();
 			AppDelegate.PushViewLikePresentView (cameraController);
 		}
 
 		private void OpenCamera(UIAlertAction action)
 		{
 			var cameraController = new CameraController ();
-			AppDelegate.boardInterface.RemoveAllContent();
 			AppDelegate.PushViewLikePresentView (cameraController);
-
-			//ImagePicker ip = new ImagePicker (UIImagePickerControllerSourceType.Camera);
-			//AppDelegate.NavigationController.PresentViewController (ip.UIImagePicker, true, null);
 		}
 	}
 }
