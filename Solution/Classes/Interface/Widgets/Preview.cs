@@ -68,8 +68,8 @@ namespace Board.Interface
 			}
 
 			var frame = widget.View.Frame;
-			view = new UIView (new CGRect(BoardInterface.scrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
-				BoardInterface.scrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Board.Interface.Buttons.Button.ButtonSize / 2, frame.Width, frame.Height));
+			view = new UIView (new CGRect(AppDelegate.boardInterface.BoardScroll.ScrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
+				AppDelegate.boardInterface.BoardScroll.ScrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Board.Interface.Buttons.Button.ButtonSize / 2, frame.Width, frame.Height));
 			widget.View.Frame = new CGRect(0, 0, view.Frame.Width, view.Frame.Height);
 
 			view.Alpha = .5f;
@@ -80,9 +80,6 @@ namespace Board.Interface
 
 			IsAlive = true;
 
-			// shows the image preview so that the user can position the image
-			BoardInterface.scrollView.AddSubview(View);
-
 			// switches to confbar
 			ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
 		}
@@ -92,7 +89,7 @@ namespace Board.Interface
 			float dx = 0;
 			float dy = 0;
 
-			UIPanGestureRecognizer panGesture = new UIPanGestureRecognizer ((pg) => {
+			UIPanGestureRecognizer panGesture = new UIPanGestureRecognizer (pg => {
 				if ((pg.State == UIGestureRecognizerState.Began || pg.State == UIGestureRecognizerState.Changed) && (pg.NumberOfTouches == 1)) {
 
 					var p0 = pg.LocationInView(view.Superview);

@@ -32,6 +32,8 @@ namespace Board.Interface.Camera
 			AddSubview(RingView);
 
 			Tap = new UITapGestureRecognizer (tg => {
+				// TODO: disable Tap
+
 				if (CameraController.Vision.FlashMode == PBJFlashMode.Auto){
 					CameraController.Vision.FlashMode = PBJFlashMode.On;
 					Thread.Sleep(300);
@@ -40,10 +42,13 @@ namespace Board.Interface.Camera
 					Thread.Sleep(100);
 
 					CameraController.Vision.FlashMode = PBJFlashMode.On;
+					Thread.Sleep(10);
+
+					CameraController.Vision.FlashMode = PBJFlashMode.Auto;
 				}
 
-				Thread.Sleep(800);
-
+				// photo correction
+				Thread.Sleep(1000);
 				CameraController.Vision.CapturePreviewPhoto ();
 			});
 
@@ -51,7 +56,7 @@ namespace Board.Interface.Camera
 				switch (tg.State)
 				{
 					case UIGestureRecognizerState.Began:
-						if (CameraController.Vision.FlashMode == PBJFlashMode.Auto){
+						if (CameraController.Vision.FlashMode == PBJFlashMode.Auto) {
 							CameraController.Vision.FlashMode = PBJFlashMode.On;
 						}
 

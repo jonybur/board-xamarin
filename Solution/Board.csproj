@@ -322,6 +322,7 @@
     <BundleResource Include="Resources\boardinterface\infobox\addstar3.png" />
     <BundleResource Include="Resources\boardinterface\infobox\addstar4.png" />
     <BundleResource Include="Resources\boardinterface\infobox\message2.png" />
+    <BundleResource Include="Resources\boardinterface\backgrounds\diamonds.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -424,6 +425,7 @@
     <Compile Include="Classes\Interface\CameraScreen\VideoPreview.cs" />
     <Compile Include="Classes\Interface\CameraScreen\CameraPreview.cs" />
     <Compile Include="Classes\Interface\InfoBox.cs" />
+    <Compile Include="Classes\Interface\BoardScroll.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

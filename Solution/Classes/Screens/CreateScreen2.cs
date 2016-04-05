@@ -97,7 +97,7 @@ namespace Board.Screens
 
 		private UIImageView GeneratePreviewBoard()
 		{
-			boardHeight = ((AppDelegate.ScreenWidth * AppDelegate.ScreenHeight) / BoardInterface.ScrollViewWidthSize);
+			boardHeight = ((AppDelegate.ScreenWidth * AppDelegate.ScreenHeight) / UIBoardScroll.ScrollViewWidthSize);
 
 			boardView = new UIImageView (new CGRect(0, AppDelegate.ScreenHeight - boardHeight, AppDelegate.ScreenWidth, boardHeight));
 

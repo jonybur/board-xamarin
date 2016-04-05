@@ -30,8 +30,8 @@ namespace Board.Interface
 	
 		public InfoBox (Board.Schema.Board board)
 		{
-			Frame = new CGRect (10, 0, AppDelegate.ScreenWidth - 20, AppDelegate.ScreenHeight - BoardInterface.BannerHeight - BoardInterface.ButtonBarHeight - 30);
-			Center = new CGPoint (BoardInterface.ScrollViewWidthSize / 2, AppDelegate.ScreenHeight / 2 + (BoardInterface.BannerHeight - BoardInterface.ButtonBarHeight) / 2);
+			Frame = new CGRect (10, 0, AppDelegate.ScreenWidth - 20, AppDelegate.ScreenHeight - UIBoardScroll.BannerHeight - UIBoardScroll.ButtonBarHeight - 30);
+			Center = new CGPoint (UIBoardScroll.ScrollViewWidthSize / 2, AppDelegate.ScreenHeight / 2 + (UIBoardScroll.BannerHeight - UIBoardScroll.ButtonBarHeight) / 2);
 			BackgroundColor = UIColor.FromRGBA (0, 0, 0, 100);
 			Layer.CornerRadius = 10;
 			ClipsToBounds = true;

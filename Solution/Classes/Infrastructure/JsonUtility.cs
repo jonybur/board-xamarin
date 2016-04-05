@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System;
+using Board.Utilities;
 using Newtonsoft.Json;
 using Board.Schema;
 
@@ -14,7 +14,7 @@ namespace Board.Infrastructure
 
 			FinalJson.Add ("updated", dictionary);
 
-			FinalJson.Add ("timestamp", GetUnixTimeStamp());
+			FinalJson.Add ("timestamp", CommonUtils.GetUnixTimeStamp());
 
 			return JsonConvert.SerializeObject (FinalJson);
 		}
@@ -29,7 +29,7 @@ namespace Board.Infrastructure
 
 			FinalJson.Add ("updated", singleContent);
 
-			FinalJson.Add ("timestamp", GetUnixTimeStamp ());
+			FinalJson.Add ("timestamp", CommonUtils.GetUnixTimeStamp ());
 
 			return JsonConvert.SerializeObject (FinalJson);
 		}
@@ -40,14 +40,11 @@ namespace Board.Infrastructure
 
 			FinalJson.Add ("deleted", contentids);
 
-			FinalJson.Add ("timestamp", GetUnixTimeStamp ());
+			FinalJson.Add ("timestamp", CommonUtils.GetUnixTimeStamp ());
 
 			return JsonConvert.SerializeObject (FinalJson);
 		}
 
-		private static Int32 GetUnixTimeStamp(){
-			return (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-		}
 	}
 }
 

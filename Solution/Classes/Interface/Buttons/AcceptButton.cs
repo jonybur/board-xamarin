@@ -81,7 +81,7 @@ namespace Board.Interface.Buttons
 				AppDelegate.boardInterface.AddWidgetToDictionaryFromContent (content);
 
 				// renders scrollview
-				AppDelegate.boardInterface.SelectiveRendering();
+				AppDelegate.boardInterface.BoardScroll.SelectiveRendering();
 			});
 
 			uiButton.Alpha = 0f;

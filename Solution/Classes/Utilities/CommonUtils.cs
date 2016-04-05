@@ -13,6 +13,10 @@ namespace Board.Utilities
 {
 	public static class CommonUtils
 	{
+		public static Int32 GetUnixTimeStamp(){
+			return (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+		}
+
 		public static async Task<UIImage> DownloadUIImageFromURL(string webAddress)
 		{
 			var webClient = new WebClient ();

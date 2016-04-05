@@ -36,12 +36,13 @@ namespace Board.Interface.Buttons
 			UITapGestureRecognizer doubletap = new UITapGestureRecognizer (tg => {
 				tg.NumberOfTapsRequired = 2;
 
-				BoardInterface.scrollView.SetContentOffset(new CGPoint(BoardInterface.ScrollViewWidthSize / 2 - AppDelegate.ScreenWidth / 2, 0), true);
+				//AppDelegate.boardInterface.BoardScroll.SetContentOffset(new CGPoint(BoardInterface.ScrollViewWidthSize / 2 - AppDelegate.ScreenWidth / 2, 0), true);
 			});
 
 			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer  (tg => {
 				tg.NumberOfTapsRequired = 1;
 
+				/*
 				if (BoardInterface.zoomingScrollView.ZoomScale < 1)
 				{
 					BoardInterface.ZoomScrollview();
@@ -87,16 +88,17 @@ namespace Board.Interface.Buttons
 
 				BoardInterface.scrollView.SetContentOffset (position, true);
 				highlitedContent++;
+				*/
 			});
 
 			// unzooms
 			UILongPressGestureRecognizer longPressGesture = new UILongPressGestureRecognizer ((tg) => {
-				if (tg.State == UIGestureRecognizerState.Began) {
+				/*if (tg.State == UIGestureRecognizerState.Began) {
 					BoardInterface.UnzoomScrollview();
 				}
 				else if (tg.State == UIGestureRecognizerState.Ended) {
 					BoardInterface.ZoomScrollview();
-				}
+				}*/
 			});
 
 			gestureRecognizers.Add (tapGesture);

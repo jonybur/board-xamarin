@@ -143,8 +143,8 @@ namespace Board.Interface
 			// set different ranges to different styling!
 			AddTestPoll (new CGPoint(1678+fix+fix2, 414+fix), -.03f, prettyString4, DateTime.Now.AddMinutes(-35), "The future", "The past");
 
-			AddTestMap (new CGPoint(1960+fix+fix2, 400+fix), -.01f, null, DateTime.Now);
-			AddTestMap (new CGPoint(988, 135), -.0245f, null, DateTime.Now);
+			//AddTestMap (new CGPoint(1960+fix+fix2, 400+fix), -.01f, null, DateTime.Now);
+			//AddTestMap (new CGPoint(988, 135), -.0245f, null, DateTime.Now);
 
 			AddTestVideo ("./demo/videos/3.mp4", new CGPoint(985, 335), -.04f, DateTime.Now.AddMinutes(-50));
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/1.jpg")) {

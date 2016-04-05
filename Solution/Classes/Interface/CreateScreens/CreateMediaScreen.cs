@@ -1,5 +1,4 @@
 ﻿using System;
-using Board.Interface.Buttons;
 using Board.Schema;
 using Board.Utilities;
 using CoreGraphics;
@@ -64,8 +63,12 @@ namespace Board.Interface.CreateScreens
 
 				content.SocialChannel = ShareButtons.GetActiveSocialChannels ();
 
-				var boardInterface = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 3];
-				AppDelegate.NavigationController.PopToViewController (boardInterface, false);
+				var mightBeBoardInterface = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 3];
+				if (mightBeBoardInterface is BoardInterface) {
+					AppDelegate.NavigationController.PopToViewController (mightBeBoardInterface, false);
+				} else {
+					AppDelegate.NavigationController.PopToViewController(AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 2], false);
+				}
 			};
 		}
 
