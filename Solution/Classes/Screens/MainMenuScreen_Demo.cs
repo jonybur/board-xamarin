@@ -10,26 +10,22 @@ namespace Board.Screens
 		{
 			List<Board.Schema.Board> boardList = new List<Board.Schema.Board> ();
 
-			using (UIImage img = UIImage.FromFile("./logos/americansocial.jpeg")){
-				Board.Schema.Board board = new Board.Schema.Board ("American Social", new UIImageView(img), UIColor.FromRGB (67, 15, 0), UIColor.FromRGB (221, 169, 91), "Brickell", Profile.CurrentProfile.UserID);
+			using (UIImage img = UIImage.FromFile("./logos/americansocial.png")){
+				Board.Schema.Board board = new Board.Schema.Board ("American Social", new UIImageView(img), UIColor.FromRGB (0, 6, 67), UIColor.FromRGB (177, 23, 0), "Brickell", Profile.CurrentProfile.UserID);
 				boardList.Add(board);
 			}
 			using (UIImage img = UIImage.FromFile("./logos/doghouse.jpeg")){
 				boardList.Add(new Board.Schema.Board ("Dog House", new UIImageView(img), UIColor.FromRGB (35, 32, 35), UIColor.FromRGB (220, 31, 24), "Brickell", string.Empty));
 			}
 			using (UIImage img = UIImage.FromFile("./logos/doloreslolita.jpg")){
-				
 				Board.Schema.Board demoboard = new Board.Schema.Board ("Dolores Lolita", new UIImageView(img), UIColor.FromRGB (185, 143, 6), UIColor.FromRGB (2, 0, 6), "Brickell", string.Empty);	
-				demoboard.FBPage = new Board.Facebook.FacebookPage ("DoloresLolitaMiami", null, null);
 				boardList.Add (demoboard);
-
 			}
 			using (UIImage img = UIImage.FromFile ("./logos/bluemartini.png")) {
 				boardList.Add (new Board.Schema.Board ("Blue Martini", new UIImageView(img), UIColor.FromRGB (0, 0, 0), UIColor.FromRGB (0, 165, 216), "Brickell", string.Empty));
 			}
 			using (UIImage img = UIImage.FromFile ("./logos/tavernopa.png")) {
 				Board.Schema.Board demoboard = new Board.Schema.Board ("Taverna Opa", new UIImageView(img), UIColor.FromRGB (140, 52, 50), UIColor.FromRGB (77, 185, 155), "Brickell", string.Empty);
-				demoboard.FBPage = new Board.Facebook.FacebookPage ("opadelray", null, null);
 				boardList.Add (demoboard);
 			}
 			using (UIImage img = UIImage.FromFile ("./logos/clevelander.png")) {

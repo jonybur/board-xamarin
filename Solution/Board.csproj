@@ -210,7 +210,6 @@
     <BundleResource Include="Resources\demo\videos\4.mp4" />
     <BundleResource Include="Resources\demo\videos\5.mp4" />
     <BundleResource Include="Resources\demo\videos\6.mp4" />
-    <BundleResource Include="Resources\logos\americansocial.jpeg" />
     <BundleResource Include="Resources\logos\bluemartini.png" />
     <BundleResource Include="Resources\logos\brickhouse.png" />
     <BundleResource Include="Resources\logos\clevelander.png" />
@@ -312,6 +311,17 @@
     <BundleResource Include="Resources\camera\flash_off.png" />
     <BundleResource Include="Resources\camera\flash_on.png" />
     <BundleResource Include="Resources\camera\focus.png" />
+    <BundleResource Include="Resources\logos\americansocial.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\call.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\message.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\addstar.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\removestar.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\call2.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\call3.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\addstar2.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\addstar3.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\addstar4.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\message2.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -497,6 +507,8 @@
     <Folder Include="Resources\boardinterface\screens\analytics\banner\" />
     <Folder Include="Resources\camera\" />
     <Folder Include="Classes\Interface\CameraScreen\" />
+    <Folder Include="Resources\boardinterface\infobox\" />
+    <Folder Include="Classes\Interface\InfoBox\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

@@ -88,14 +88,17 @@ namespace Board.Interface
 		public override void ViewDidAppear(bool animated)
 		{
 			if (firstLoad) {
-				
-				GenerateTestPictures ();
+
+				//GenerateTestPictures ();
 
 				GenerateWidgets ();
 
 				SuscribeToEvents ();
 
 				firstLoad = false;
+
+				var infoBox = new InfoBox (board);
+				scrollView.AddSubview (infoBox);
 
 				BTProgressHUD.Dismiss ();
 			}
@@ -105,9 +108,6 @@ namespace Board.Interface
 			if (Preview.IsAlive) {
 				scrollView.AddSubview (Preview.View);
 			}
-
-			var infoBox = new InfoBox (board);
-			scrollView.AddSubview (infoBox);
 		}
 
 		public void ExitBoard()

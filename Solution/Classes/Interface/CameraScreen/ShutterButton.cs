@@ -42,6 +42,8 @@ namespace Board.Interface.Camera
 					CameraController.Vision.FlashMode = PBJFlashMode.On;
 				}
 
+				Thread.Sleep(800);
+
 				CameraController.Vision.CapturePreviewPhoto ();
 			});
 

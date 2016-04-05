@@ -91,18 +91,16 @@ namespace Board.Interface.Buttons
 
 			// unzooms
 			UILongPressGestureRecognizer longPressGesture = new UILongPressGestureRecognizer ((tg) => {
-				if (tg.State == UIGestureRecognizerState.Began)
-				{
+				if (tg.State == UIGestureRecognizerState.Began) {
 					BoardInterface.UnzoomScrollview();
 				}
-				else if (tg.State == UIGestureRecognizerState.Ended)
-				{
+				else if (tg.State == UIGestureRecognizerState.Ended) {
 					BoardInterface.ZoomScrollview();
 				}
 			});
 
 			gestureRecognizers.Add (tapGesture);
-			gestureRecognizers.Add (longPressGesture);
+			//gestureRecognizers.Add (longPressGesture);
 
 			uiButton.UserInteractionEnabled = true;
 		}

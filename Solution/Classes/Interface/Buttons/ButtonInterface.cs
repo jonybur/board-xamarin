@@ -9,7 +9,7 @@ namespace Board.Interface.Buttons
 	{
 		// buttons are square-shaped and must be the same height all-around
 		// its height is hardcoded
-		public enum ButtonLayout : byte {NavigationBar=1, ConfirmationBar, Disable};
+		public enum ButtonLayout : byte { NavigationBar = 1, ConfirmationBar, Disable };
 
 		static ActionsButtonSet actionsButtonSet;
 		static ConfirmationButtonSet confirmationButtonSet;
@@ -26,11 +26,6 @@ namespace Board.Interface.Buttons
 		{
 			List<UIView> views = new List<UIView>();
 			views.Add(actionsButtonSet.arrayButtons [0].uiButton);
-
-			if (facebookPage) {
-				views.Add(actionsButtonSet.arrayButtons [4].uiButton);
-			}
-
 			views.Add(navigationButton.uiButton);
 
 			return views;
