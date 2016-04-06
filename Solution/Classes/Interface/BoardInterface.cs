@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using BigTed;
-using Foundation;
-using Board.Interface;
 using System.Threading;
+using BigTed;
+using Board.Interface;
 using Board.Interface.Buttons;
 using Board.Interface.Widgets;
-using Board.Utilities;
 using Board.Schema;
-using MGImageUtilitiesBinding;
+using Board.Utilities;
 using CoreGraphics;
 using Facebook.CoreKit;
 using UIKit;
@@ -20,14 +17,10 @@ namespace Board.Interface
 	// also called BoardView
 	public partial class BoardInterface : UIViewController
 	{
-		private Gallery gallery;
-
 		public const int BannerHeight = 66;
 		public const int ButtonBarHeight = 45;
 
 		public static Board.Schema.Board board;
-
-		bool galleryActive;
 
 		public UIBoardScroll BoardScroll;
 
@@ -76,6 +69,7 @@ namespace Board.Interface
 			View.BackgroundColor = board.MainColor;
 
 			BoardScroll = new UIBoardScroll ();
+			BoardScroll.Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
 
 			// generate the scrollview and the zoomingscrollview
 			View.AddSubview (BoardScroll);
@@ -150,121 +144,6 @@ namespace Board.Interface
 			DictionaryWidgets = new Dictionary<string, Widget>();
 		}
 
-		// deprecated for now
-		private void InitializeGallery() {
-			UIDevice.CurrentDevice.BeginGeneratingDeviceOrientationNotifications();
-
-			gallery = new Gallery ();
-			galleryActive = false;
-			View.AddSubview (gallery.GetScrollView ());
-
-			/*orientationObserver = UIDevice.Notifications.ObserveOrientationDidChange ((s, e) => {
-				
-				if (galleryActive)
-				{
-					if (UIDevice.CurrentDevice.Orientation == UIDeviceOrientation.Portrait)
-					{
-						BoardEnabled(true);
-						gallery.SetAlpha(0f);
-						galleryActive = false;
-					}	
-				}
-
-				else
-				{
-					if (UIDevice.CurrentDevice.Orientation == UIDeviceOrientation.LandscapeLeft)
-					{
-						gallery.SetOrientation(false);
-						ActivateGallery();
-					}
-					else if (UIDevice.CurrentDevice.Orientation == UIDeviceOrientation.LandscapeRight)
-					{
-						gallery.SetOrientation(true);
-						ActivateGallery();
-					}
-				}
-			});*/
-		}
-
-		private void ActivateGallery()
-		{
-			if (gallery.LoadGallery ()) {
-				BoardEnabled(false);
-				gallery.SetAlpha (1f);
-				galleryActive = true;
-			}
-		}
-
-		private void BoardEnabled(bool enabled)
-		{
-			float alpha = enabled ? 1f : 0f;
-
-			BoardScroll.Alpha = alpha;
-
-			if (enabled) {
-				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.NavigationBar);	
-			}
-			else{
-				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.Disable);
-			}
-		}
-
-
-		/*
-		 * 
-		 * 
-		DateTime lastOffsetCapture;
-		CGPoint lastOffset;
-		bool isScrollingFast;
-		float scrollSpeed;
-		
-		private void InfiniteScroll(){
-			float rightBound = (float)(scrollView.ContentOffset.X + AppDelegate.ScreenWidth);
-
-			if (rightBound >= ScrollViewWidthSize) {
-				scrollView.ContentOffset = new CGPoint (1, 0);
-				if (scrollSpeed > 0) {
-					scrollView.SetContentOffset (new CGPoint (scrollSpeed, 0), true);
-					scrollSpeed = 0;
-				}
-					
-			} else if (scrollView.ContentOffset.X <= 0) {
-				scrollView.SetContentOffset (new CGPoint ((ScrollViewWidthSize - AppDelegate.ScreenWidth) - 1, 0), false);
-			}
-		}
-
-		private void GetSpeed(){
-			if (!scrollView.Dragging) {
-				return;
-			}
-
-			var currentOffset = scrollView.ContentOffset;
-		
-			TimeSpan timeDiff = DateTime.Now.Subtract (lastOffsetCapture);
-			if (timeDiff.TotalMilliseconds > 1) {
-				float distance = (float)(currentOffset.X - lastOffset.X);
-
-				distance = Math.Abs (distance);
-
-				if (Math.Abs (distance) > 1000) {
-					return;
-				}
-
-				// pixel per second? 
-				scrollSpeed = ((float)distance * 10);
-
-				//Console.WriteLine ("DI: " + distance);
-				//Console.WriteLine ("SS: " + scrollSpeed);
-
-				if (scrollSpeed <= 5) {
-					scrollSpeed = 0f;
-				}
-
-				lastOffset = currentOffset;
-				lastOffsetCapture = DateTime.Now;
-			}
-		}
-		*/
 		private void LoadButtons()
 		{
 			ButtonInterface.Initialize ();

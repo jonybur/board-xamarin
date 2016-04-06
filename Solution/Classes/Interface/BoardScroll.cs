@@ -14,12 +14,12 @@ using CoreGraphics;
 using Facebook.CoreKit;
 using UIKit;
 
-namespace Board
+namespace Board.Interface
 {
 	public class UIBoardScroll : UIScrollView
 	{
 		public UIScrollView ScrollView;
-		private UIImageView CenterLogo, TopBanner;
+		private UIImageView TopBanner;
 
 		public static int BannerHeight = 66;
 		public static int ButtonBarHeight = 45;
@@ -28,13 +28,12 @@ namespace Board
 		public enum Tags : byte { Background = 1, Content };
 
 		public static int ScrollViewWidthSize = 2600;
-		List<Widget> DrawnWidgets;
+		readonly List<Widget> DrawnWidgets;
 		EventHandler ScrolledEvent;
 
 		public UIBoardScroll ()
 		{
 			DrawnWidgets = new List<Widget> ();
-
 			GenerateScrollViews ();
 
 			LoadBackground ();
@@ -49,13 +48,16 @@ namespace Board
 		{
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 
-			ScrollView.Bounces = false;
+			ScrollView.Bounces = true;
 
 			ScrolledEvent = (sender, e) => {
 				// call from here "open eye" function
-				//InfiniteScroll();
 
-				//GetSpeed();
+				GetSpeed();
+
+				Console.WriteLine(scrollSpeed);
+			
+				InfiniteScroll();
 
 				SelectiveRendering();
 			};
@@ -65,6 +67,34 @@ namespace Board
 			LoadMainLogo ();
 
 			AddSubview (ScrollView); 
+		}
+
+
+		DateTime lastOffsetCapture;
+		CGPoint lastOffset;
+		bool isScrollingFast;
+		float scrollSpeed;
+
+		private void GetSpeed(){
+			if (!ScrollView.Dragging) {
+				return;
+			}
+			var currentOffset = ScrollView.ContentOffset;
+
+			TimeSpan timeDiff = DateTime.Now.Subtract (lastOffsetCapture);
+			if (timeDiff.TotalMilliseconds > 1) {
+				float distance = (float)(currentOffset.X - lastOffset.X);
+				distance = Math.Abs (distance);
+				// pixel per second? 
+				scrollSpeed = ((float)distance * 10);
+				//Console.WriteLine ("DI: " + distance);
+				//Console.WriteLine ("SS: " + scrollSpeed);
+				if (scrollSpeed <= 5) {
+					scrollSpeed = 0f;
+				}
+				lastOffset = currentOffset;
+				lastOffsetCapture = DateTime.Now;
+			}
 		}
 
 		private void LoadBackground()
@@ -150,6 +180,19 @@ namespace Board
 				TopBanner.Alpha = alpha;
 			} else {
 				TopBanner.Alpha = 1f;
+			}
+		}
+
+		Thread scrolls;
+
+		private void InfiniteScroll(){
+			float rightBound = (float)(ScrollView.ContentOffset.X + AppDelegate.ScreenWidth);
+
+			if (rightBound >= ScrollViewWidthSize) {
+				// should allow moving frame with deaceleration value
+
+			} else if (ScrollView.ContentOffset.X <= 0) {
+				// should allow moving frame with deaceleration value
 			}
 		}
 

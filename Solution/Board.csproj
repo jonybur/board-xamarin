@@ -424,8 +424,8 @@
     <Compile Include="Classes\Interface\CameraScreen\ShutterButton.cs" />
     <Compile Include="Classes\Interface\CameraScreen\VideoPreview.cs" />
     <Compile Include="Classes\Interface\CameraScreen\CameraPreview.cs" />
-    <Compile Include="Classes\Interface\InfoBox.cs" />
     <Compile Include="Classes\Interface\BoardScroll.cs" />
+    <Compile Include="Classes\Interface\InfoBox\InfoBox.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
