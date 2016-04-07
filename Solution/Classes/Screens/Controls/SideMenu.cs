@@ -26,6 +26,7 @@ namespace Board.Screens.Controls
 			CABasicAnimation animation =  new CABasicAnimation();
 			animation.KeyPath = "position.x";
 			animation.From = new NSNumber(0);
+			animation.TimingFunction = CAMediaTimingFunction.FromName(CAMediaTimingFunction.EaseInEaseOut);
 			animation.To = new NSNumber(View.Frame.Width/2);
 			animation.Duration = .2f;
 			View.Layer.AddAnimation(animation, "basic");
@@ -133,6 +134,7 @@ namespace Board.Screens.Controls
 		{
 			View.Frame = new CGRect(- View.Frame.Width, View.Frame.Y, View.Frame.Width, View.Frame.Height);
 			CABasicAnimation closeanimation =  new CABasicAnimation();
+			closeanimation.TimingFunction = CAMediaTimingFunction.FromName(CAMediaTimingFunction.EaseInEaseOut);
 			closeanimation.KeyPath = "position.x";
 			closeanimation.From = new NSNumber(View.Frame.Width/2);
 			closeanimation.To = new NSNumber(0);
