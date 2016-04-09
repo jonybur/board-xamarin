@@ -95,6 +95,7 @@ namespace Board.Interface
 				Font = UIFont.BoldSystemFontOfSize (20)
 			};
 
+
 			// set different ranges to different styling!
 			var prettyString = new NSMutableAttributedString ("BOARD IS PRETTY!");
 			prettyString.SetAttributes (firstAttributes.Dictionary, new NSRange (0, 5));

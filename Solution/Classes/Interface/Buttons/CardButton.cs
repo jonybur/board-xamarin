@@ -27,8 +27,7 @@ namespace Board.Interface.Buttons
 				alert.AddAction (UIAlertAction.Create ("Announcement", UIAlertActionStyle.Default, CreateAnnouncement));
 				alert.AddAction (UIAlertAction.Create ("Event", UIAlertActionStyle.Default, CreateEvent));
 				alert.AddAction (UIAlertAction.Create ("Poll", UIAlertActionStyle.Default, CreatePoll));
-				//alert.AddAction (UIAlertAction.Create ("Map", UIAlertActionStyle.Default, CreateMap));
-				//alert.AddAction (UIAlertAction.Create ("Menu (coming soon)", UIAlertActionStyle.Default, null));
+				alert.AddAction (UIAlertAction.Create ("Promotion (coming soon)", UIAlertActionStyle.Default, null));
 				alert.AddAction (UIAlertAction.Create ("Spotify® Playlist (coming soon)", UIAlertActionStyle.Default, null));
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 

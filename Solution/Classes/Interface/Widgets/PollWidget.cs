@@ -42,15 +42,14 @@ namespace Board.Interface.Widgets
 
 			// mounting
 			CreateMounting (new CGRect(insideText.Frame.X, insideText.Frame.Y, insideText.Frame.Width, height));
-			View = new UIView(MountingView.Frame);
+			View = new UIView();
+
+			SetTransforms ();
 
 			View.AddSubviews (MountingView, insideText);
 			foreach (UIButton but in lstAnswers) {
 				View.AddSubview (but);
 			}
-
-			View.Center = poll.Center;
-			View.Transform = CGAffineTransform.MakeRotation(poll.Rotation);
 
 			EyeOpen = false;
 

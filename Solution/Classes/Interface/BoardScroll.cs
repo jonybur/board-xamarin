@@ -20,16 +20,26 @@ namespace Board.Interface
 
 		public static int BannerHeight = 66;
 		public static int ButtonBarHeight = 45;
-		private float TempContentOffset; 
-		bool isDragging;
+		private float TempContentOffset;
 
 		public enum Tags : byte { Background = 1, Content };
 
+		public static int ScrollViewTotalWidthSize = 2600 * 102;
 		public static int ScrollViewWidthSize = 2600;
 		readonly List<Widget> DrawnWidgets;
-		EventHandler ScrolledEvent, DragStartsEvent;
-		EventHandler<DraggingEventArgs> DragEndsEvent;
-		Thread scrolls;
+		EventHandler ScrolledEvent;
+		InfoBox infoBox;
+
+		//GetSpeedAttributes
+		DateTime lastOffsetCapture;
+		CGPoint lastOffset;
+		bool isScrollingFast;
+		float scrollSpeed;
+
+		//AnimationAttributes
+		bool isAnimating;
+		float frameWAfterAnimation;
+
 
 		public UIBoardScroll ()
 		{
@@ -38,7 +48,7 @@ namespace Board.Interface
 
 			LoadBackground ();
 
-			var infoBox = new InfoBox (BoardInterface.board);
+			infoBox = new InfoBox (BoardInterface.board);
 			ScrollView.AddSubview (infoBox);
 
 			SuscribeToEvents ();
@@ -47,38 +57,28 @@ namespace Board.Interface
 		private void GenerateScrollViews()
 		{
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			ScrollView.DecelerationRate = .5f;
 
 			ScrollView.Bounces = false;
-
-			DragStartsEvent = (delegate {
-				isDragging = true;
-			});
-
-			DragEndsEvent = (delegate { 
-				isDragging = false;
-			});
 
 			ScrolledEvent = (sender, e) => {
 
 				// call from here "open eye" function
-				if (!isanimating){ GetSpeed(); }
+				//if (!isAnimating){ GetSpeed(); }
 			
-				InfiniteScroll();
+				//InfiniteScroll();
 
 				SelectiveRendering();
 			};
 
-			Frame = new CGRect (0, 0, ScrollViewWidthSize, AppDelegate.ScreenHeight);
+			Frame = new CGRect (0, 0, ScrollViewTotalWidthSize, AppDelegate.ScreenHeight);
 
 			LoadMainLogo ();
 
 			AddSubview (ScrollView); 
-		}
 
-		DateTime lastOffsetCapture;
-		CGPoint lastOffset;
-		bool isScrollingFast;
-		float scrollSpeed;
+			ScrollView.SetNeedsDisplay ();
+		}
 
 		private void GetSpeed(){
 			if (!ScrollView.Dragging) {
@@ -106,9 +106,9 @@ namespace Board.Interface
 			ScrollView.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 
 			// this limits the size of the scrollview
-			ScrollView.ContentSize = new CGSize(ScrollViewWidthSize, AppDelegate.ScreenHeight);
+			ScrollView.ContentSize = new CGSize(ScrollViewTotalWidthSize, AppDelegate.ScreenHeight);
 			// sets the scrollview on the middle of the view
-			ScrollView.SetContentOffset (new CGPoint(ScrollViewWidthSize/2 - AppDelegate.ScreenWidth/2, 0), false);
+			ScrollView.SetContentOffset (new CGPoint(ScrollViewTotalWidthSize/2 + ScrollViewWidthSize / 2- AppDelegate.ScreenWidth/2, 0), false);
 
 			MaximumZoomScale = 1f;
 			MinimumZoomScale = .15f;
@@ -135,14 +135,39 @@ namespace Board.Interface
 			AddSubview (TopBanner);
 		}
 
+		float lastScreen = 0;
 		public void SelectiveRendering(){
+			Console.WriteLine (DrawnWidgets.Count);
+
+			float leftScreenNumber = 0;
+
 			if (!(BoardInterface.DictionaryWidgets == null || BoardInterface.DictionaryWidgets.Count == 0))
 			{
-				List<Widget> WidgetsToDraw = BoardInterface.DictionaryWidgets.Values.ToList().FindAll(item => ((item.View.Frame.X) > (ScrollView.ContentOffset.X - AppDelegate.ScreenWidth)) &&
-					((item.View.Frame.X + item.View.Frame.Width) < (ScrollView.ContentOffset.X + AppDelegate.ScreenWidth + AppDelegate.ScreenWidth)));
+				// clusterfuck start
+				float physicalRightBound = (float)(ScrollView.ContentOffset.X + AppDelegate.ScreenWidth);
+				float physicalLeftBound = (float)(ScrollView.ContentOffset.X);
+
+				float rightScreenNumber = (float)Math.Floor((physicalRightBound) / ScrollViewWidthSize);
+				float virtualRightBound = physicalRightBound - ScrollViewWidthSize * rightScreenNumber;
+				leftScreenNumber = (float)Math.Floor ((physicalLeftBound) / ScrollViewWidthSize);
+				float virtualLeftBound = physicalLeftBound - ScrollViewWidthSize * leftScreenNumber;
+
+				virtualRightBound = (virtualRightBound > 0) ? virtualRightBound : 0;
+				virtualLeftBound = (virtualLeftBound > 0) ? virtualLeftBound : 0;
+
+				List<Widget> WidgetsToDraw = BoardInterface.DictionaryWidgets.Values.ToList ().FindAll (item =>
+					((item.content.Center.X - item.View.Frame.Width / 2) > (virtualLeftBound - AppDelegate.ScreenWidth) &&
+                     (item.content.Center.X - item.View.Frame.Width / 2 < (virtualLeftBound + AppDelegate.ScreenWidth))) ||
+					((item.content.Center.X + item.View.Frame.Width / 2) < (virtualRightBound + AppDelegate.ScreenWidth) &&
+					 (item.content.Center.X + item.View.Frame.Width / 2 > (virtualRightBound - AppDelegate.ScreenWidth))));
+
+				rightScreenNumber = (float)Math.Floor((physicalRightBound + AppDelegate.ScreenWidth) / ScrollViewWidthSize);
+				virtualRightBound = physicalRightBound + AppDelegate.ScreenWidth - ScrollViewWidthSize * rightScreenNumber;
+				leftScreenNumber = (float)Math.Floor ((physicalLeftBound - AppDelegate.ScreenWidth) / ScrollViewWidthSize);
+				virtualLeftBound =  physicalLeftBound - AppDelegate.ScreenWidth - ScrollViewWidthSize * leftScreenNumber;
 
 				// takes wids that are close
-				DrawWidgets(WidgetsToDraw);
+				DrawWidgets(WidgetsToDraw, virtualLeftBound, virtualRightBound, leftScreenNumber, rightScreenNumber);
 
 				if (!ScrollView.Dragging) {
 
@@ -161,7 +186,8 @@ namespace Board.Interface
 				}
 			}
 
-			float midScroll = ScrollViewWidthSize / 2;
+			// manages topbanner opacity
+			float midScroll = (ScrollViewWidthSize * leftScreenNumber) + ScrollViewWidthSize / 2;
 			float midScreen = (float)ScrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2;
 			float absoluteDifference = Math.Abs (midScreen - midScroll);
 
@@ -173,18 +199,56 @@ namespace Board.Interface
 			} else {
 				TopBanner.Alpha = 1f;
 			}
+
+			if (leftScreenNumber != lastScreen) {
+				lastScreen = leftScreenNumber;
+				Console.WriteLine ("newscreen");
+			}
 		}
 
-		bool isanimating = false;
-		private void InfiniteScroll(){
-			float rightBound = (float)(ScrollView.ContentOffset.X + AppDelegate.ScreenWidth);
+		public void DrawWidgets(List<Widget> widgetsToDraw, float virtualLeftBound, float virtualRightBound, float leftScreenNumber, float rightScreenNumber) {
+			
+			List<Widget> WidgetsToRemove = DrawnWidgets.FindAll (item => !widgetsToDraw.Contains (item));
 
-			if (isanimating) {
+			foreach (var wid in WidgetsToRemove) {
+				wid.View.RemoveFromSuperview ();
+				DrawnWidgets.Remove (wid);
+			}
+
+			foreach (var wid in widgetsToDraw) {
+				// if the widget hasnt been drawn
+				if (wid.View.Superview != ScrollView) {
+
+					if (rightScreenNumber != leftScreenNumber) {
+
+						if (virtualLeftBound < wid.content.Center.X + wid.View.Frame.Width / 2) {
+							wid.SetTransforms (ScrollViewWidthSize * leftScreenNumber);
+						} else if (wid.content.Center.X - wid.View.Frame.Width / 2 < virtualRightBound) {
+							wid.SetTransforms (ScrollViewWidthSize * rightScreenNumber);
+						}
+							
+					} else {
+						// da igual, imprimo en la pantalla
+						wid.SetTransforms (ScrollViewWidthSize * rightScreenNumber);
+					}
+
+					//wid.SetTransforms (2600);
+					ScrollView.AddSubview (wid.View);
+					DrawnWidgets.Add (wid);
+				}
+			}
+		}
+
+		private void InfiniteScroll(){
+			float rightBound = (float)(ScrollView.ContentOffset.X + Frame.Width);
+
+			if (isAnimating) {
 				return;	
 			}
 
-			if (Frame.X < 0) {
-				Frame = new CGRect (frameXAfterAnimation + (ScrollViewWidthSize - rightBound), Frame.Y, Frame.Width, Frame.Height);
+			if (Frame.Width < AppDelegate.ScreenWidth) {
+				Frame = new CGRect (0, Frame.Y, frameWAfterAnimation + (ScrollViewWidthSize - rightBound), Frame.Height);
+				ScrollView.Frame = Frame;
 				if (0 < Frame.X) {
 					Frame = new CGRect (0, Frame.Y, Frame.Width, Frame.Height);
 				}
@@ -198,108 +262,26 @@ namespace Board.Interface
 			}*/
 		}
 
-		float frameXAfterAnimation;
-
-
-		/*
-transformAnimation.toValue=[NSValue valueWithCATransform3D:CATransform3DMakeScale(scaleFactorX, scaleFactorY, scaleFactorZ)];
-transformAnimation.removedOnCompletion = FALSE;
-
-[layer addAnimation:transformAnimation forKey:@"transform"];
-			*/
-
-
-
 		private void AnimateMovement()
 		{
 			ScrollView.UserInteractionEnabled = false;
-			isanimating = true;
-			BackgroundColor = UIColor.Red;
+			isAnimating = true;
 
-			CATransaction.Begin();
-
-			CATransaction.CompletionBlock = delegate {
-				ScrollView.UserInteractionEnabled = true;
-				//isanimating = false;
-				frameXAfterAnimation = (float)Frame.X;
-			};
-
-			//float exRight = (float)Frame.Right;
-			CABasicAnimation resizeAnimation =  new CABasicAnimation();
-			resizeAnimation.KeyPath = "bounds";
-			resizeAnimation.From = NSNumber.FromCGRect(new CGRect(0, 0, Bounds.Width, Bounds.Height));
-			resizeAnimation.To = NSNumber.FromCGRect(new CGRect(0, 0, 200, Bounds.Height));
-
-			CABasicAnimation repositionAnimation =  new CABasicAnimation();
-			repositionAnimation.KeyPath = "position.x";
-			repositionAnimation.To = NSNumber.FromFloat(100);
-
-			CAAnimationGroup animationGroup = new CAAnimationGroup ();
-			animationGroup.Duration = ScrollView.DecelerationRate;
-			animationGroup.TimingFunction = CAMediaTimingFunction.FromName(CAMediaTimingFunction.EaseOut);
-			animationGroup.RemovedOnCompletion = true;
-			animationGroup.Animations = new CAAnimation[]{ resizeAnimation, repositionAnimation };
-
-			Bounds = new CGRect(0, 0, 200, Bounds.Height);
-			Frame = new CGRect (0, 0, Bounds.Width, Bounds.Height);
-
-			//ScrollView.SetContentOffset(new CGPoint(ScrollViewWidthSize - Frame.Width, 0), true);
-
-			// TODO: estoy trabajando acá... probar hacer un uiview animate para el width del scrollview también
-
-			UIView.Animate (ScrollView.DecelerationRate, SetContentOffsetWithCustomDuration, () => ScrollView.Frame = Frame);
-			Layer.AddAnimation(animationGroup, "allanimations");
-
-			CATransaction.Commit();
+			UIView.Animate (ScrollView.DecelerationRate, SetContentOffsetWithCustomDuration, SetFinalAnimationValues);
 		}
 
 		private void SetContentOffsetWithCustomDuration(){
-			ScrollView.SetContentOffset (new CGPoint (ScrollView.ContentOffset.X + 300, 0), false);
+			Frame = new CGRect (-scrollSpeed, 0, Frame.Width, Frame.Height);
 		}
 
-		/*
+		private void SetFinalAnimationValues(){
+			Frame = new CGRect (0, 0, Frame.Width - scrollSpeed, Frame.Height);
+			ScrollView.Frame = Frame;
+			ScrollView.ContentOffset = new CGPoint (ScrollView.ContentSize.Width - Frame.Width, 0);
 
-		private void AnimateMovement()
-		{
-			CATransaction.Begin();
-
-			CATransaction.CompletionBlock = delegate {
-				isanimating = false;
-				frameXAfterAnimation = (float)Frame.X;
-			};
-
-			float exRight = (float)Frame.Right;
-			Frame = new CGRect(Frame.X - scrollSpeed, Frame.Y, Frame.Width, Frame.Height);
-			CABasicAnimation animation =  new CABasicAnimation();
-			isanimating = true;
-			animation.TimingFunction = CAMediaTimingFunction.FromName(CAMediaTimingFunction.EaseOut);
-			animation.KeyPath = "position.x";
-			animation.From = new NSNumber(exRight - Frame.Width / 2);
-			animation.To = new NSNumber(exRight - Frame.Width / 2 - scrollSpeed);
-			animation.Duration = ScrollView.DecelerationRate;
-			Layer.AddAnimation(animation, "basic");
-
-			CATransaction.Commit();
-		}
-
-		*/
-
-		public void DrawWidgets(List<Widget> widgetsToDraw) {
-			List<Widget> WidgetsToRemove = DrawnWidgets.FindAll (item => !widgetsToDraw.Contains (item));
-
-			foreach (var wid in WidgetsToRemove) {
-				wid.View.RemoveFromSuperview ();
-				DrawnWidgets.Remove (wid);
-			}
-
-			foreach (var wid in widgetsToDraw) {
-				// if the widget hasnt been drawn
-				if (wid.View.Superview != ScrollView) {
-					// draw it!
-					ScrollView.AddSubview (wid.View);
-					DrawnWidgets.Add (wid);
-				}
-			}
+			frameWAfterAnimation = (float)Frame.Width;
+			ScrollView.UserInteractionEnabled = true;
+			isAnimating = false;
 		}
 
 		private void OpenEye(Widget widget) {
@@ -329,16 +311,12 @@ transformAnimation.removedOnCompletion = FALSE;
 		private void SuscribeToEvents()
 		{
 			ScrollView.Scrolled += ScrolledEvent;
-			ScrollView.DraggingStarted += DragStartsEvent;
-			ScrollView.DraggingEnded += DragEndsEvent;
 			ViewForZoomingInScrollView += sv => Subviews [0];
 		}
 
 		private void UnsuscribeToEvents()
 		{
 			ScrollView.Scrolled -= ScrolledEvent;
-			ScrollView.DraggingStarted -= DragStartsEvent;
-			ScrollView.DraggingEnded -= DragEndsEvent;
 			ViewForZoomingInScrollView -= sv => Subviews [0];
 		}
 

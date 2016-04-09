@@ -35,9 +35,7 @@ namespace Board.Interface.Widgets
 			View = new UIView(MountingView.Frame);
 			View.AddSubviews (MountingView, calendarBox, pictureBox);
 
-			View.Frame = new CGRect (0, 0, MountingView.Frame.Width, MountingView.Frame.Height);
-			View.Center = ev.Center;
-			View.Transform = CGAffineTransform.MakeRotation(boardEvent.Rotation);
+			SetTransforms ();
 
 			EyeOpen = false;
 

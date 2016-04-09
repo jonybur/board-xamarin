@@ -43,9 +43,7 @@ namespace Board.Interface.Widgets
 			uiv.Layer.AllowsEdgeAntialiasing = true;
 			View.AddSubview (uiv);
 
-			View.Frame = new CGRect (0, 0, MountingView.Frame.Width, MountingView.Frame.Height);
-			View.Center = pic.Center;
-			View.Transform = CGAffineTransform.MakeRotation(pic.Rotation);
+			SetTransforms ();
 
 			View.BackgroundColor = UIColor.FromRGB (250, 250, 250);
 		

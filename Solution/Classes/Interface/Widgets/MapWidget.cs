@@ -29,9 +29,7 @@ namespace Board.Interface.Widgets
 			View = new UIView(MountingView.Frame);
 			View.AddSubviews (MountingView, container.mapView);
 
-			View.Frame = new CGRect (0, 0, MountingView.Frame.Width, MountingView.Frame.Height);
-			View.Center = _map.Center;
-			View.Transform = CGAffineTransform.MakeRotation(_map.Rotation);
+			SetTransforms ();
 
 			EyeOpen = false;
 

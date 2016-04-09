@@ -63,6 +63,18 @@ namespace Board.Interface.Widgets
 			GestureRecognizers = new List<UIGestureRecognizer> ();
 		}
 
+		public void SetTransforms(){
+			View.Frame = new CGRect (0, 0, MountingView.Frame.Width, MountingView.Frame.Height);
+			View.Center = content.Center;
+			View.Transform = CGAffineTransform.MakeRotation(content.Rotation);
+		}
+
+		public void SetTransforms(float xOffset){
+			View.Frame = new CGRect (0, 0, MountingView.Frame.Width, MountingView.Frame.Height);
+			View.Center = new CGPoint (content.Center.X + xOffset, content.Center.Y);
+			View.Transform = CGAffineTransform.MakeRotation(content.Rotation);
+		}
+
 		protected void CreateMounting(CGRect frame)
 		{
 			MountingView = new UIImageView (new CGRect (0, 0, frame.Width + 20, frame.Height + 50));

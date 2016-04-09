@@ -53,9 +53,7 @@ namespace Board.Interface.Widgets
 			//View.AddSubview (playButton);
 			*/
 
-			View.Frame = new CGRect (0, 0, MountingView.Frame.Width, MountingView.Frame.Height);
-			View.Center = video.Center;
-			View.Transform = CGAffineTransform.MakeRotation(vid.Rotation);
+			SetTransforms ();
 
 			EyeOpen = false;
 
