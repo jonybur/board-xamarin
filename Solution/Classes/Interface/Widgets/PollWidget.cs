@@ -44,8 +44,6 @@ namespace Board.Interface.Widgets
 			CreateMounting (new CGRect(insideText.Frame.X, insideText.Frame.Y, insideText.Frame.Width, height));
 			View = new UIView();
 
-			SetTransforms ();
-
 			View.AddSubviews (MountingView, insideText);
 			foreach (UIButton but in lstAnswers) {
 				View.AddSubview (but);

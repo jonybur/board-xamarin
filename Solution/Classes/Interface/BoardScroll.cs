@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Board.Interface;
 using Board.Interface.Buttons;
 using Board.Interface.Widgets;
-using Foundation;
 using CoreGraphics;
-using CoreAnimation;
 using MGImageUtilitiesBinding;
 using UIKit;
 
@@ -18,6 +15,7 @@ namespace Board.Interface
 		public UIScrollView ScrollView;
 		private UIImageView TopBanner;
 
+		public float LastScreen;
 		public static int BannerHeight = 66;
 		public static int ButtonBarHeight = 45;
 		private float TempContentOffset;
@@ -27,8 +25,10 @@ namespace Board.Interface
 		public static int ScrollViewTotalWidthSize = 2600 * 102;
 		public static int ScrollViewWidthSize = 2600;
 		readonly List<Widget> DrawnWidgets;
-		EventHandler ScrolledEvent;
+		EventHandler DragStartsEvent, ScrolledEvent;
+		EventHandler<DraggingEventArgs> DragEndsEvent;
 		InfoBox infoBox;
+		bool isDragging;
 
 		//GetSpeedAttributes
 		DateTime lastOffsetCapture;
@@ -57,11 +57,29 @@ namespace Board.Interface
 		private void GenerateScrollViews()
 		{
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
-			ScrollView.DecelerationRate = .4f;
+			//ScrollView.DecelerationRate = .4f;
 
 			ScrollView.Bounces = false;
 
+			bool isSnapping = false;
+			CGPoint target = new CGPoint();
+
 			ScrolledEvent = (sender, e) => {
+				
+				if (isSnapping){
+					if (ScrollView.ContentOffset == target || isDragging){
+						isSnapping = false;
+					}
+
+				} else if (!isDragging){
+					Console.WriteLine("SEP:" + Math.Abs ((ScrollView.ContentOffset.X + Frame.Width / 2) - infoBox.Center.X));
+					if (Math.Abs ((ScrollView.ContentOffset.X + Frame.Width / 2) - infoBox.Center.X) < 100)
+					{
+						target = new CGPoint(infoBox.Center.X - infoBox.Frame.Width / 2 - 10, 0);
+						ScrollView.SetContentOffset (target, true);
+						isSnapping = true;
+					}
+				}
 
 				// call from here "open eye" function
 				//if (!isAnimating){ GetSpeed(); }
@@ -70,6 +88,26 @@ namespace Board.Interface
 
 				SelectiveRendering();
 			};
+
+			DragStartsEvent = (delegate {
+				isDragging = true;
+			});
+
+			DragEndsEvent = (delegate { 
+				isDragging = false;
+			});
+
+
+			/*
+			ScrollView.WillEndDragging += (sender, e) => {
+				Console.WriteLine(e.TargetContentOffset.X - LastScreen * ScrollViewWidthSize);
+				if (Math.Abs ((e.TargetContentOffset.X + Frame.Width / 2) - infoBox.Center.X) > 200)
+					{ return; }
+					
+				var target = new CGPoint(infoBox.Center.X - infoBox.Frame.Width / 2 - 10, 0);
+				ScrollView.SetContentOffset (target, true);
+			};
+			*/
 
 			Frame = new CGRect (0, 0, ScrollViewTotalWidthSize, AppDelegate.ScreenHeight);
 
@@ -135,7 +173,6 @@ namespace Board.Interface
 			AddSubview (TopBanner);
 		}
 
-		public float LastScreen = 0;
 		public void SelectiveRendering(){
 			float leftScreenNumber = 0;
 
@@ -201,7 +238,6 @@ namespace Board.Interface
 			if (leftScreenNumber != LastScreen) {
 				LastScreen = leftScreenNumber;
 				infoBox.Center = new CGPoint (midScroll, infoBox.Center.Y);
-				Console.WriteLine ("newscreen");
 			}
 		}
 
@@ -238,29 +274,6 @@ namespace Board.Interface
 			}
 		}
 
-		private void InfiniteScroll(){
-			float rightBound = (float)(ScrollView.ContentOffset.X + Frame.Width);
-
-			if (isAnimating) {
-				return;	
-			}
-
-			if (Frame.Width < AppDelegate.ScreenWidth) {
-				Frame = new CGRect (0, Frame.Y, frameWAfterAnimation + (ScrollViewWidthSize - rightBound), Frame.Height);
-				ScrollView.Frame = Frame;
-				if (0 < Frame.X) {
-					Frame = new CGRect (0, Frame.Y, Frame.Width, Frame.Height);
-				}
-			} else if (rightBound >= ScrollViewWidthSize){// || (Frame.X <0 && isDragging)){
-				// should allow moving frame with deaceleration value
-				AnimateMovement();
-				// ScrollView.Frame = new CGRect(ScrollView.Frame.X - scrollSpeed, ScrollView.Frame.Y, ScrollView.Frame.Width, ScrollView.Frame.Height);
-
-			}/* else if (ScrollView.ContentOffset.X <= 0) {
-				// should allow moving frame with deaceleration value
-			}*/
-		}
-
 		private void AnimateMovement()
 		{
 			ScrollView.UserInteractionEnabled = false;
@@ -288,8 +301,7 @@ namespace Board.Interface
 			ButtonInterface.navigationButton.SubtractNavigationButtonText();
 		}
 
-		public void ZoomScrollview()
-		{
+		public void ZoomScrollview() {
 			AddSubview (TopBanner);
 			SetZoomScale(1f, true);
 			ScrollView.Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, ScrollView.Frame.Height);
@@ -310,12 +322,16 @@ namespace Board.Interface
 		private void SuscribeToEvents()
 		{
 			ScrollView.Scrolled += ScrolledEvent;
+			ScrollView.DraggingStarted += DragStartsEvent;
+			ScrollView.DraggingEnded += DragEndsEvent;
 			ViewForZoomingInScrollView += sv => Subviews [0];
 		}
 
 		private void UnsuscribeToEvents()
 		{
 			ScrollView.Scrolled -= ScrolledEvent;
+			ScrollView.DraggingStarted -= DragStartsEvent;
+			ScrollView.DraggingEnded -= DragEndsEvent;
 			ViewForZoomingInScrollView -= sv => Subviews [0];
 		}
 

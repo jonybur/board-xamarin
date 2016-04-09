@@ -5,6 +5,9 @@ using CoreGraphics;
 using Board.Schema;
 using System.Threading;
 using Board.Interface.LookUp;
+using Board.Infrastructure;
+using Facebook.CoreKit;
+using Board.Utilities;
 
 namespace Board.Interface.Widgets
 {
@@ -63,16 +66,16 @@ namespace Board.Interface.Widgets
 			GestureRecognizers = new List<UIGestureRecognizer> ();
 		}
 
-		public void SetTransforms(){
-			View.Frame = new CGRect (0, 0, MountingView.Frame.Width, MountingView.Frame.Height);
-			View.Center = content.Center;
-			View.Transform = CGAffineTransform.MakeRotation(content.Rotation);
-		}
+		public void SetTransforms(float xOffset = 0){
 
-		public void SetTransforms(float xOffset){
+			View.Transform = CGAffineTransform.MakeRotation(0);
+			MountingView.Transform = CGAffineTransform.MakeRotation(0);
+
 			View.Frame = new CGRect (0, 0, MountingView.Frame.Width, MountingView.Frame.Height);
 			View.Center = new CGPoint (content.Center.X + xOffset, content.Center.Y);
 			View.Transform = CGAffineTransform.MakeRotation(content.Rotation);
+
+			View.BackgroundColor = UIColor.Red;
 		}
 
 		protected void CreateMounting(CGRect frame)
@@ -269,6 +272,15 @@ namespace Board.Interface.Widgets
 				}
 			});
 
+			UILongPressGestureRecognizer longPress = new UILongPressGestureRecognizer (tg => {
+				UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
+
+				alert.AddAction (UIAlertAction.Create ("Remove Widget", UIAlertActionStyle.Default, RemoveWidget));
+				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));	
+
+				AppDelegate.NavigationController.PresentViewController(alert, true, null);	
+			});
+
 			tap.NumberOfTapsRequired = 1;
 			doubleTap.NumberOfTapsRequired = 2;
 
@@ -279,6 +291,18 @@ namespace Board.Interface.Widgets
 
 			GestureRecognizers.Add (tap);
 			GestureRecognizers.Add (doubleTap);
+
+			if (BoardInterface.board.CreatorId == Profile.CurrentProfile.UserID) {
+				GestureRecognizers.Add (longPress);
+			}
+		}
+
+		private void RemoveWidget(UIAlertAction alertAction){
+			UnsuscribeToEvents ();
+			View.RemoveFromSuperview ();
+			MemoryUtility.ReleaseUIViewWithChildren (View);
+			BoardInterface.DictionaryWidgets.Remove (content.Id);
+			string deleteJson = JsonUtilty.GenerateDeleteJson (content.Id);
 		}
 
 		public void Like()

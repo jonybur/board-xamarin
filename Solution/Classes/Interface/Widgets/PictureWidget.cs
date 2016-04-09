@@ -43,10 +43,6 @@ namespace Board.Interface.Widgets
 			uiv.Layer.AllowsEdgeAntialiasing = true;
 			View.AddSubview (uiv);
 
-			SetTransforms ();
-
-			//View.BackgroundColor = UIColor.FromRGB (250, 250, 250);
-		
 			EyeOpen = false;
 
 			CreateGestures ();

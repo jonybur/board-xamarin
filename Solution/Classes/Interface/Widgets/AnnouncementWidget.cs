@@ -27,11 +27,9 @@ namespace Board.Interface.Widgets
 
 			// mounting
 			CreateMounting (insideText.Frame);
-			View = new UIView(MountingView.Frame);
+			View = new UIView (MountingView.Frame);
 
 			View.AddSubviews (MountingView, insideText);
-
-			SetTransforms ();
 
 			EyeOpen = false;
 

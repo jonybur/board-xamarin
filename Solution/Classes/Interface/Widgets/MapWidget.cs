@@ -29,8 +29,6 @@ namespace Board.Interface.Widgets
 			View = new UIView(MountingView.Frame);
 			View.AddSubviews (MountingView, container.mapView);
 
-			SetTransforms ();
-
 			EyeOpen = false;
 
 			CreateGestures ();

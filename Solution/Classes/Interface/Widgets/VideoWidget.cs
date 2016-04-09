@@ -53,8 +53,6 @@ namespace Board.Interface.Widgets
 			//View.AddSubview (playButton);
 			*/
 
-			SetTransforms ();
-
 			EyeOpen = false;
 
 			CreateGestures ();

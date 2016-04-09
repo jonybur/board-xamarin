@@ -35,8 +35,6 @@ namespace Board.Interface.Widgets
 			View = new UIView(MountingView.Frame);
 			View.AddSubviews (MountingView, calendarBox, pictureBox);
 
-			SetTransforms ();
-
 			EyeOpen = false;
 
 			CreateGestures ();
