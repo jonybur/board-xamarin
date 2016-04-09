@@ -10,15 +10,15 @@ using UIKit;
 
 namespace Board.Interface.LookUp
 {
-	public class MapLookUp : LookUp
+	public class MapLookUp : UILookUp
 	{
 		MapView mapView;
 		bool firstLocationUpdate;
 
 		public MapLookUp(Map map)
 		{
-			this.content = map;
-
+			content = map;
+			
 			UIColor frontColor = UIColor.FromRGB(250,250,250);
 			UIColor backColor = UIColor.Black;
 

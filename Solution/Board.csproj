@@ -377,7 +377,6 @@
     <Compile Include="Classes\Interface\Widgets\Widget.cs" />
     <Compile Include="Classes\Interface\BoardInterface_Demo.cs" />
     <Compile Include="Classes\Interface\LookUp\PictureLookUp.cs" />
-    <Compile Include="Classes\Interface\LookUp\Lookup.cs" />
     <Compile Include="Classes\Interface\LookUp\VideoLookUp.cs" />
     <Compile Include="Classes\Interface\LookUp\AnnouncementLookUp.cs" />
     <Compile Include="Classes\Interface\LookUp\EventLookUp.cs" />
@@ -426,6 +425,7 @@
     <Compile Include="Classes\Interface\CameraScreen\CameraPreview.cs" />
     <Compile Include="Classes\Interface\BoardScroll.cs" />
     <Compile Include="Classes\Interface\InfoBox\InfoBox.cs" />
+    <Compile Include="Classes\Interface\LookUp\UILookUP.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

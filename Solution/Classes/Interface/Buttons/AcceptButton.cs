@@ -29,45 +29,16 @@ namespace Board.Interface.Buttons
 				// takes out the confirmation bar and resets navigation
 				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.NavigationBar);
 
-				Content content;
+				Content content = Preview.GetContent();
 
-				switch (Preview.TypeOfPreview) {
-
-					case (int)Preview.Type.Picture:
-						content = Preview.GetPicture ();
-						break;
-
-					case (int)Preview.Type.Video:
-						content = Preview.GetVideo ();
-						break;
-
-					case (int)Preview.Type.Announcement:
-						content = Preview.GetAnnouncement ();
-							
-						if (AppDelegate.ServerActive && content.SocialChannel != null && content.SocialChannel.Count > 0) {
-								if (content.SocialChannel.Contains (0)) {
-								string json = "{ \"text\": \"" + ((Announcement)content).AttributedText + "\", " + "\"socialChannel\": \"" + "0" + "\" }";
-									string result = CommonUtils.JsonPOSTRequest ("http://192.168.1.101:5000/api/publications?authToken=" + AppDelegate.EncodedBoardToken, json);
-									Console.WriteLine (result);
-								}
-							}
-						break;
-
-					case (int)Preview.Type.Event:
-						content = Preview.GetEvent();
-						break;
-
-					case (int)Preview.Type.Map:
-						content = Preview.GetMap();
-						break;
-
-					case (int)Preview.Type.Poll:
-						content = Preview.GetPoll();
-						break;
-
-					default:
-						content = new Content();
-						break;
+				if (content is Announcement){
+					if (AppDelegate.ServerActive && content.SocialChannel != null && content.SocialChannel.Count > 0) {
+						if (content.SocialChannel.Contains (0)) {
+						string json = "{ \"text\": \"" + ((Announcement)content).AttributedText + "\", " + "\"socialChannel\": \"" + "0" + "\" }";
+							string result = CommonUtils.JsonPOSTRequest ("http://192.168.1.101:5000/api/publications?authToken=" + AppDelegate.EncodedBoardToken, json);
+							Console.WriteLine (result);
+						}
+					}
 				}
 
 				string jsonString = JsonUtilty.GenerateUpdateJson(content);

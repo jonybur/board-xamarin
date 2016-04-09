@@ -109,7 +109,6 @@ namespace Board.Interface.Widgets
 				TimeStamp.Text = (timeDifference.Days/7) + "w";
 			}
 
-
 			TimeStamp.TextAlignment = UITextAlignment.Center;
 			TimeStamp.TextColor = UIColor.FromRGB (140, 140, 140);
 		}
@@ -233,7 +232,7 @@ namespace Board.Interface.Widgets
 				}
 				else{
 
-					LookUp.LookUp lookUp;
+					UILookUp lookUp;
 
 					if (content is Video)
 					{
@@ -253,7 +252,7 @@ namespace Board.Interface.Widgets
 					}
 					else if (content is Map)
 					{
-						lookUp = new MapLookUp((Map)content);
+						lookUp = new MapLookUp(new Map());
 					}
 					else if (content is Poll)
 					{
@@ -261,7 +260,7 @@ namespace Board.Interface.Widgets
 						//lookUp = new PollLookUp((Poll)content);
 					}
 					else {
-						lookUp = new LookUp.LookUp();
+						lookUp = new UILookUp();
 					}
 
 

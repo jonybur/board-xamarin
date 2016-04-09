@@ -7,7 +7,7 @@ using AVKit;
 
 namespace Board.Interface.LookUp
 {
-	public class VideoLookUp : LookUp
+	public class VideoLookUp : UILookUp
 	{
 		AVPlayerViewController playerView;
 		AVPlayer player;

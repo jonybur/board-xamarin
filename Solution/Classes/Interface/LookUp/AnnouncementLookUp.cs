@@ -1,15 +1,14 @@
-﻿using Board.Interface.Buttons;
-using Board.Schema;
+﻿using Board.Schema;
 using CoreGraphics;
 using UIKit;
 
 namespace Board.Interface.LookUp
 {
-	public class AnnouncementLookUp : LookUp
+	public class AnnouncementLookUp : UILookUp
 	{
 		public AnnouncementLookUp(Announcement announcement)
 		{
-			this.content = announcement;
+			content = announcement;
 
 			UIColor backColor = UIColor.FromRGB(250,250,250);
 			UIColor frontColor = AppDelegate.BoardBlack;

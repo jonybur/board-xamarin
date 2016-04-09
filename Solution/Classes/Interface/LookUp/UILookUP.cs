@@ -13,7 +13,7 @@ using Plugin.Share;
 
 namespace Board.Interface.LookUp
 {
-	public class LookUp : UIViewController
+	public class UILookUp : UIViewController
 	{
 		public Content content;
 
@@ -39,7 +39,7 @@ namespace Board.Interface.LookUp
 
 		UIWindow window;
 
-		public LookUp()
+		public UILookUp()
 		{
 			AutomaticallyAdjustsScrollViewInsets = false;
 			View = new UIView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));

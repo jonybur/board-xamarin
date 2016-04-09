@@ -57,7 +57,7 @@ namespace Board.Interface
 		private void GenerateScrollViews()
 		{
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
-			ScrollView.DecelerationRate = .5f;
+			ScrollView.DecelerationRate = .4f;
 
 			ScrollView.Bounces = false;
 
@@ -135,15 +135,13 @@ namespace Board.Interface
 			AddSubview (TopBanner);
 		}
 
-		float lastScreen = 0;
+		public float LastScreen = 0;
 		public void SelectiveRendering(){
-			Console.WriteLine (DrawnWidgets.Count);
-
 			float leftScreenNumber = 0;
 
 			if (!(BoardInterface.DictionaryWidgets == null || BoardInterface.DictionaryWidgets.Count == 0))
 			{
-				// clusterfuck start
+				// clusterfuck
 				float physicalRightBound = (float)(ScrollView.ContentOffset.X + AppDelegate.ScreenWidth);
 				float physicalLeftBound = (float)(ScrollView.ContentOffset.X);
 
@@ -200,8 +198,9 @@ namespace Board.Interface
 				TopBanner.Alpha = 1f;
 			}
 
-			if (leftScreenNumber != lastScreen) {
-				lastScreen = leftScreenNumber;
+			if (leftScreenNumber != LastScreen) {
+				LastScreen = leftScreenNumber;
+				infoBox.Center = new CGPoint (midScroll, infoBox.Center.Y);
 				Console.WriteLine ("newscreen");
 			}
 		}

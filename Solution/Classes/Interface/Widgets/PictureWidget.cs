@@ -45,7 +45,7 @@ namespace Board.Interface.Widgets
 
 			SetTransforms ();
 
-			View.BackgroundColor = UIColor.FromRGB (250, 250, 250);
+			//View.BackgroundColor = UIColor.FromRGB (250, 250, 250);
 		
 			EyeOpen = false;
 

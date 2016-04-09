@@ -9,7 +9,7 @@ using EventKitUI;
 
 namespace Board.Interface.LookUp
 {
-	public class EventLookUp : LookUp
+	public class EventLookUp : UILookUp
 	{
 		UIImageView PictureBox;
 		UILabel NameLabel;

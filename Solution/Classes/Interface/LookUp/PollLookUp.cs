@@ -1,15 +1,13 @@
-﻿using Board.Interface.Buttons;
-using Board.Schema;
+﻿using Board.Schema;
 using CoreGraphics;
 using UIKit;
 using Foundation;
-using Board.Interface.Widgets;
 using System;
 using System.Collections.Generic;
 
 namespace Board.Interface.LookUp
 {
-	public class PollLookUp : LookUp
+	public class PollLookUp : UILookUp
 	{
 		private static List<AnswerButton> lstAnswers;
 

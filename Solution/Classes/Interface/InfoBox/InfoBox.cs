@@ -5,6 +5,8 @@ using CoreLocation;
 using Google.Maps;
 using MGImageUtilitiesBinding;
 using UIKit;
+using Board.Schema;
+using Board.Interface.LookUp;
 
 namespace Board.Interface
 {
@@ -15,6 +17,8 @@ namespace Board.Interface
 		UILabel NameLabel, AddressLabel, PhoneLabel, OpenLabel;
 		UIActionButton[] ActionButtons;
 		GalleryScrollView GallerySV;
+		UITapGestureRecognizer MapTap;
+
 		int CantActionButtons = 3;
 
 		class UIActionButton : UIButton{
@@ -26,6 +30,12 @@ namespace Board.Interface
 					SetImage(img, UIControlState.Normal);
 				}
 			}
+		}
+
+		public override void RemoveFromSuperview ()
+		{
+			Container.button.RemoveGestureRecognizer (MapTap);
+			base.RemoveFromSuperview ();
 		}
 	
 		public InfoBox (Board.Schema.Board board)
@@ -76,9 +86,16 @@ namespace Board.Interface
 
 			Container = new MapContainer ();
 			Container.CreateMap ((float)Frame.Width);
-			Container.mapView.Center = new CGPoint (Frame.Width / 2, Frame.Height - Container.mapView.Frame.Height / 2);
 
-			AddSubviews (NameLabel, Line1, DescriptionBox, Container.mapView, GallerySV);
+			MapTap = new UITapGestureRecognizer(obj => {
+				UILookUp lookUp = new MapLookUp(new Map());
+				AppDelegate.PushViewLikePresentView(lookUp);
+			});
+
+			Container.button.AddGestureRecognizer (MapTap);
+			Container.button.Center = new CGPoint (Frame.Width / 2, Frame.Height - Container.button.Frame.Height / 2);
+
+			AddSubviews (NameLabel, Line1, DescriptionBox, Container.button, GallerySV);
 		}
 
 		protected class GalleryScrollView : UIScrollView {
@@ -144,20 +161,22 @@ namespace Board.Interface
 		}
 
 		private class MapContainer : UIViewController{
-			public MapView mapView;
+			private MapView mapView;
+			public UIButton button;
 			bool firstLocationUpdate;
 
-			public void CreateMap(float width)
-			{
+			public void CreateMap(float width) {
 				var camera = CameraPosition.FromCamera (40, -100, -2);
-				mapView = MapView.FromCamera (new CGRect (00, 0, width, 130), camera);
+				mapView = MapView.FromCamera (new CGRect (0, 0, width, 130), camera);
 				mapView.UserInteractionEnabled = false;
 				mapView.Layer.AllowsEdgeAntialiasing = true;
 				CreateMarker (new CLLocationCoordinate2D());
+
+				button = new UIButton (new CGRect (0, 0, mapView.Frame.Width, mapView.Frame.Height));
+				button.AddSubview (mapView);
 			}
 
-			private void CreateMarker(CLLocationCoordinate2D location)
-			{
+			private void CreateMarker(CLLocationCoordinate2D location) {
 				Random rnd = new Random ();
 				double lat = rnd.NextDouble () - .5;
 				double lon = rnd.NextDouble () - .5;
@@ -171,7 +190,6 @@ namespace Board.Interface
 				marker.Draggable = false;
 				mapView.Camera = CameraPosition.FromCamera (new CLLocationCoordinate2D(25.792826, -80.12994), 16);
 			}
-
 
 			private UIImage CreateMarkerImage(UIImage logo)
 			{

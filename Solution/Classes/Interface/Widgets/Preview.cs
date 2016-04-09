@@ -68,8 +68,11 @@ namespace Board.Interface
 			}
 
 			var frame = widget.View.Frame;
-			view = new UIView (new CGRect(AppDelegate.boardInterface.BoardScroll.ScrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
-				AppDelegate.boardInterface.BoardScroll.ScrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Board.Interface.Buttons.Button.ButtonSize / 2, frame.Width, frame.Height));
+
+			var boardScroll = AppDelegate.boardInterface.BoardScroll;
+
+			view = new UIView (new CGRect (boardScroll.ScrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
+				boardScroll.ScrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Board.Interface.Buttons.Button.ButtonSize / 2, frame.Width, frame.Height));
 			widget.View.Frame = new CGRect(0, 0, view.Frame.Width, view.Frame.Height);
 
 			view.Alpha = .5f;
@@ -147,55 +150,54 @@ namespace Board.Interface
 			MemoryUtility.ReleaseUIViewWithChildren (view);
 		}
 
-		public static Picture GetPicture()
-		{
-			view.Transform = CGAffineTransform.MakeRotation (0);
-			PictureWidget pictureWidget = (PictureWidget)widget;
-			Picture p = new Picture (pictureWidget.picture.ImageView.Image, pictureWidget.picture.ThumbnailView.Image, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
-			return p;
-		}
+		public static Content GetContent(){
+			var boardScroll = AppDelegate.boardInterface.BoardScroll;
 
-		public static Video GetVideo()
-		{
 			view.Transform = CGAffineTransform.MakeRotation (0);
-			VideoWidget videoWidget = (VideoWidget)widget;
-			Video v = new Video (videoWidget.video.Url, videoWidget.video.ThumbnailView, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
-			return v;
-		}
+			view.Center = new CGPoint (view.Center.X - boardScroll.LastScreen * UIBoardScroll.ScrollViewWidthSize, view.Center.Y);
 
-		public static Announcement GetAnnouncement()
-		{
-			view.Transform = CGAffineTransform.MakeRotation (0);
-			AnnouncementWidget announcementWidget = (AnnouncementWidget)widget;
-			Announcement ann = new Announcement (announcementWidget.announcement.AttributedText, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
-			ann.FacebookId = announcementWidget.announcement.FacebookId;
-			ann.SocialChannel = announcementWidget.announcement.SocialChannel;
-			return ann;
-		}
+			Content content;
 
-		public static BoardEvent GetEvent()
-		{
-			view.Transform = CGAffineTransform.MakeRotation (0);
-			EventWidget eventWidget = (EventWidget)widget;
-			BoardEvent bve = new BoardEvent (eventWidget.boardEvent.Name, eventWidget.boardEvent.ImageView.Image, eventWidget.boardEvent.StartDate, eventWidget.boardEvent.EndDate, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
-			bve.Description = eventWidget.boardEvent.Description;
-			bve.FacebookId = eventWidget.boardEvent.FacebookId;
-			return bve;
-		}
+			if (widget is PictureWidget) {
+				
+				var pictureWidget = (PictureWidget)widget;
+				content = new Picture (pictureWidget.picture.ImageView.Image, pictureWidget.picture.ThumbnailView.Image, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
 
-		public static Poll GetPoll()
-		{
-			view.Transform = CGAffineTransform.MakeRotation (0);
-			PollWidget pollWidget = (PollWidget)widget;
-			Poll poll = new Poll (pollWidget.poll.Question, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now, pollWidget.poll.Answers);
-			return poll;
-		}
+			} else if (widget is VideoWidget) {
+				
+				var videoWidget = (VideoWidget)widget;
+				content = new Video (videoWidget.video.Url, videoWidget.video.ThumbnailView, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
 
-		public static Map GetMap()
-		{
-			view.Transform = CGAffineTransform.MakeRotation (0);
-			Map map = new Map(Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
-			return map;
+			} else if (widget is AnnouncementWidget) {
+				
+				var announcementWidget = (AnnouncementWidget)widget;
+				content = new Announcement (announcementWidget.announcement.AttributedText, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
+				content.FacebookId = announcementWidget.announcement.FacebookId;
+				content.SocialChannel = announcementWidget.announcement.SocialChannel;
+
+			} else if (widget is EventWidget) {
+				
+				var eventWidget = (EventWidget)widget;
+				content = new BoardEvent (eventWidget.boardEvent.Name, eventWidget.boardEvent.ImageView.Image, eventWidget.boardEvent.StartDate, eventWidget.boardEvent.EndDate, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
+				((BoardEvent)content).Description = eventWidget.boardEvent.Description;
+				content.FacebookId = eventWidget.boardEvent.FacebookId;
+
+			} else if (widget is PollWidget) {
+				
+				var pollWidget = (PollWidget)widget;
+				content = new Poll (pollWidget.poll.Question, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now, pollWidget.poll.Answers);
+				
+			} else if (widget is MapWidget) {
+				
+				content = new Map(Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
+
+			} else {
+				
+				content = new Content ();
+
+			}
+
+			return content;
 		}
 	}
 }

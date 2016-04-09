@@ -5,7 +5,7 @@ using UIKit;
 
 namespace Board.Interface.LookUp
 {
-	public class PictureLookUp : LookUp
+	public class PictureLookUp : UILookUp
 	{
 		UITapGestureRecognizer doubletap;
 		UILongPressGestureRecognizer longpress;
