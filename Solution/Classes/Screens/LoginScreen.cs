@@ -6,8 +6,10 @@ using Board.JsonResponses;
 
 using Board.Utilities;
 using CoreGraphics;
+using Board.Infrastructure;
 using CoreMedia;
 using Facebook.CoreKit;
+using Newtonsoft.Json;
 using Facebook.LoginKit;
 
 using Foundation;
@@ -26,14 +28,7 @@ namespace Board.Screens
 
 		LoginButton logInButton;
 
-		string responseError;
-
 		public LoginScreen (){
-			responseError = null;
-		}
-
-		public LoginScreen (string error){
-			responseError = error;	
 		}
 
 		public override void ViewDidLoad ()
@@ -45,12 +40,6 @@ namespace Board.Screens
 			NavigationController.NavigationBarHidden = true;
 
 			InitializeInterface ();
-
-			if (responseError != null) {
-				UIAlertController alert = UIAlertController.Create(responseError, null, UIAlertControllerStyle.Alert);
-				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
-				NavigationController.PresentViewController (alert, true, null);
-			}
 		}
 
 		private void LoadFBButton()
@@ -66,37 +55,22 @@ namespace Board.Screens
 					return;
 				}
 
-				if (AccessToken.CurrentAccessToken != null) {
+				bool result = CloudController.LogIn();
 
-					if (AppDelegate.ServerActive)
-					{
-						string json = "{ \"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\", " +
-							"\"accessToken\": \"" + AccessToken.CurrentAccessToken.TokenString + "\" }";
-
-						string result = CommonUtils.JsonPOSTRequest ("http://192.168.1.101:5000/api/account/login", json);
-
-						TokenResponse tk = TokenResponse.Deserialize (result);
-
-						if (result != "InternalServerError" && result != "ConnectFailure" && tk != null && tk.authToken != null & tk.authToken != string.Empty) {
-							AppDelegate.BoardToken = tk.authToken;
-							AppDelegate.containerScreen = new ContainerScreen ();
-							AppDelegate.NavigationController.PushViewController(AppDelegate.containerScreen, true);
-						} else {
-							responseError = result;
-							UIAlertController alert = UIAlertController.Create(responseError, null, UIAlertControllerStyle.Alert);
-							alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
-							NavigationController.PresentViewController (alert, true, null);
-						}
-					} else {
-						AppDelegate.containerScreen = new ContainerScreen ();
-						AppDelegate.NavigationController.PushViewController(AppDelegate.containerScreen, true);
-					}
+				if (result) {
+					AppDelegate.containerScreen = new ContainerScreen ();
+					AppDelegate.NavigationController.PushViewController(AppDelegate.containerScreen, true);
+				} else {
+					UIAlertController alert = UIAlertController.Create("Couldn't connect to server", "Please try again later", UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+					NavigationController.PresentViewController (alert, true, null);
 				}
 			};
 
 			// Handle actions once the user is logged out
 			logInButton.LoggedOut += (sender, e) => {
 				// Handle your logout
+				CloudController.LogOut();
 			};
 
 			View.AddSubview (logInButton);

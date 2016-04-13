@@ -34,9 +34,9 @@ namespace Board.Interface.LookUp
 					ScrollView.SetZoomScale(1f, true);
 				else
 					ScrollView.SetZoomScale(3f, true);
-
-				tg.NumberOfTapsRequired = 2;
 			});
+
+			doubletap.NumberOfTapsRequired = 2;
 
 			longpress = new UILongPressGestureRecognizer (tg => {
 				UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);

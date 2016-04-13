@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using Foundation;
 
 namespace Board.JsonResponses
 {
+	[Preserve(AllMembers = true)]
 	public class BoardResponse
 	{
 		public static BoardResponse Deserialize (string json)
@@ -14,8 +16,7 @@ namespace Board.JsonResponses
 			}
 		}
 
-		public List<Datum> data { get; set; }
-
+		[Preserve(AllMembers = true)]
 		public class Datum
 		{
 			public string uuid { get; set; }
@@ -28,6 +29,8 @@ namespace Board.JsonResponses
 			public string secondaryColorCode { get; set; }
 			public string logoURL { get; set; }
 		}
+
+		public List<Datum> data { get; set; }
 	}
 }
 

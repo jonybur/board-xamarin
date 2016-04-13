@@ -3,6 +3,7 @@ using System.Net;
 using System.Collections.Generic;
 
 using Foundation;
+using Newtonsoft.Json;
 using UIKit;
 using Facebook.CoreKit;
 
@@ -12,6 +13,7 @@ using CoreAnimation;
 using Board.JsonResponses;
 using Board.Interface;
 using Board.Screens;
+using Board.Infrastructure;
 using Board.Facebook;
 
 namespace Board
@@ -27,8 +29,6 @@ namespace Board
 		UIWindow window;
 
 		// until we get backend support and we can actually store new boards online
-		public static List<Board.Schema.Board> ListNewBoards;
-
 		public static UINavigationController NavigationController;
 
 		public static float ScreenWidth;
@@ -41,6 +41,7 @@ namespace Board
 
 		public static UIFont Narwhal20;
 		public static UIFont Narwhal24;
+		public static UIFont Narwhal30;
 		public static UIFont SystemFontOfSize16;
 		public static UIFont SystemFontOfSize18;
 		public static UIFont SystemFontOfSize20;
@@ -52,6 +53,7 @@ namespace Board
 
 		public static string PhoneVersion;
 
+		public const string APIAddress = "45.55.232.144";
 		public const string FacebookAppId = "793699580736093";
 		public const string GoogleMapsAPIKey = "AIzaSyAUO-UX9QKVWK421yjXqoo02N5TYrG_hY8";
 		public const string FacebookDisplayName = "Board Alpha - Deve­l­o­p­ment";
@@ -74,9 +76,6 @@ namespace Board
 		//
 		const string MapsApiKey = "AIzaSyAyjPtEvhmhHHa5_aPiZPiPN3GUtIXxO6I";
 
-		public const bool ServerActive = false;
-
-
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
 			BoardOrange = UIColor.FromRGB(244, 108, 85);
@@ -85,6 +84,7 @@ namespace Board
 			BoardBlack = UIColor.FromRGB (40, 40, 40);
 			Narwhal20 = UIFont.FromName ("narwhal-bold", 20);
 			Narwhal24 = UIFont.FromName ("narwhal-bold", 24);
+			Narwhal30 = UIFont.FromName ("narwhal-bold", 29);
 			SystemFontOfSize16 = UIFont.SystemFontOfSize (16);
 			SystemFontOfSize18 = UIFont.SystemFontOfSize (18);
 			SystemFontOfSize20 = UIFont.SystemFontOfSize (20);
@@ -93,11 +93,8 @@ namespace Board
 
 			Latitude = 0;
 			Longitude = 0;
-
-			ListNewBoards = new List<Board.Schema.Board> ();
-
+	
 			// FACEBOOK
-
 			Profile.EnableUpdatesOnAccessTokenChange (true);
 			Settings.AppID = FacebookAppId;
 			Settings.DisplayName = FacebookDisplayName;
@@ -116,37 +113,16 @@ namespace Board
 
 			UIViewController screen;
 
-			// cxreate a new window instance based on the screen size
+			// create a new window instance based on the screen size
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
 
-			if (ServerActive) {
-				if (AccessToken.CurrentAccessToken != null) {
-					string json = "{ \"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\", " +
-					              "\"accessToken\": \"" + AccessToken.CurrentAccessToken.TokenString + "\" }";
+			bool result = CloudController.LogIn();
 
-					string result = CommonUtils.JsonPOSTRequest ("http://192.168.1.114:5000/api/account/login", json);
-			
-					TokenResponse tk = TokenResponse.Deserialize (result);
-
-					if (Profile.CurrentProfile != null && result != "InternalServerError" && result != "ConnectFailure" && tk != null && tk.authToken != null & tk.authToken != string.Empty) {
-						BoardToken = tk.authToken;
-						EncodedBoardToken = WebUtility.UrlEncode(AppDelegate.BoardToken);
-
-						containerScreen = new ContainerScreen ();
-						screen = containerScreen;
-					} else {
-						screen = new LoginScreen (result);	
-					}
-				} else {
-					screen = new LoginScreen ();
-				}
+			if (result) {
+				containerScreen = new ContainerScreen ();
+				screen = containerScreen;
 			} else {
-				if (Profile.CurrentProfile != null && AccessToken.CurrentAccessToken != null && FacebookUtils.HasPermission("public_profile")) {
-					containerScreen = new ContainerScreen ();
-					screen = containerScreen;
-				} else {
-					screen = new LoginScreen ();	
-				}
+				screen = new LoginScreen ();
 			}
 
 			NavigationController = new UINavigationController();

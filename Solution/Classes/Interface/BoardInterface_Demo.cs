@@ -14,6 +14,8 @@ namespace Board.Interface
 
 		private void GenerateTestPictures()
 		{
+			board.FBPage = new Board.Facebook.FacebookPage("SatelitesOficial", "Satelites Oficial", "Music Band");
+
 			const float fix = 100;
 			const float fix2 = 90;
 

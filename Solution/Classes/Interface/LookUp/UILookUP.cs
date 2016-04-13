@@ -290,10 +290,9 @@ namespace Board.Interface.LookUp
 				NSUrl url = new NSUrl("waze://");
 
 				if (UIApplication.SharedApplication.CanOpenUrl(url)) {
-					double latitude = 25.792826, longitude = -80.129943;
-
-					// TODO: fix this
-					NSUrl uberRequest = new NSUrl("waze://?ll="+latitude+","+longitude+"&z=10&navigate=yes");
+					
+					
+					NSUrl uberRequest = new NSUrl("waze://?ll="+BoardInterface.board.GeolocatorObject.results [0].geometry.location.lat+","+BoardInterface.board.GeolocatorObject.results [0].geometry.location.lng+"&z=10&navigate=yes");
 
 					UIApplication.SharedApplication.OpenUrl(uberRequest);
 				}
@@ -332,15 +331,24 @@ namespace Board.Interface.LookUp
 				NSUrl url = new NSUrl("uber://");
 
 				if (UIApplication.SharedApplication.CanOpenUrl(url)) {
-					double latitude = 25.792826, longitude = -80.129943;
 
-					// TODO: fix this
-					NSUrl uberRequest = new NSUrl("uber://?action=setPickup&pickup=my_location&dropoff[latitude]="+ latitude +"&dropoff[longitude]="+longitude+ "&product_id=7-UVBjdHfUrKKeZU9nDlP_HktFs3iWVT");//+"&dropoff[nickname]=" + BoardInterface.board.Name);
+					double lat = BoardInterface.board.GeolocatorObject.results [0].geometry.location.lat;
+					double lng = BoardInterface.board.GeolocatorObject.results [0].geometry.location.lng;
+
+					string product_id = CloudController.GetUberProduct(lat, lng);
+
+					NSUrl uberRequest = new NSUrl("uber://?" +
+						"client_id=7-UVBjdHfUrKKeZU9nDlP_HktFs3iWVT&" +
+						"product_id=" + product_id + "&" +
+						"action=setPickup&" +
+						"pickup=my_location&" +
+						"dropoff[latitude]=" + lat + "&" +
+						"dropoff[longitude]=" + lng);
 
 					UIApplication.SharedApplication.OpenUrl(uberRequest);
 				}
 				else {
-					// No Uber app! Open mobile website.
+					// No Uber app!
 				}
 			});
 		}

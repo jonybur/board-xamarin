@@ -1,8 +1,10 @@
 ﻿using System.Drawing;
+using Board.Infrastructure;
+using Board.Screens.Controls;
 using Board.Utilities;
 using CoreGraphics;
+using BigTed;
 using UIKit;
-using Board.Screens.Controls;
 
 namespace Board.Screens
 {
@@ -60,29 +62,30 @@ namespace Board.Screens
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
+					
 					AppDelegate.NavigationController.PopViewController(false);
+
 				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 4) * 3 && nextEnabled){
 
-					if (AppDelegate.ServerActive)
-					{
-						string json = "{ \"name\": \"" + board.Name + "\", " +
-							"\"address\": \"" + board.Location  + "\", " +
-							"\"logoURL\": \"" + "http://www.getonboard.us/wp-content/uploads/2016/02/orange_60.png" + "\", " +
-							"\"mainColorCode\": \"" + CommonUtils.UIColorToHex(board.MainColor)  + "\", " +
-							"\"secondaryColorCode\": \"" + CommonUtils.UIColorToHex(board.SecondaryColor)   +"\" }";
+					BTProgressHUD.Show();
+					bool result = CloudController.CreateBoard(board);
+					BTProgressHUD.Dismiss();
 
-						string result = CommonUtils.JsonPOSTRequest ("http://192.168.1.101:5000/api/board?authToken=" + AppDelegate.EncodedBoardToken, json);
+					if (result){
+						
+						var containerScreen = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 4] as ContainerScreen;
+
+						if (containerScreen!= null) {
+							containerScreen.LoadBusinessScreen();
+						}
+
+						AppDelegate.NavigationController.PopToViewController (containerScreen, false);
+
+					} else {
+						UIAlertController alert = UIAlertController.Create("Couldn't create Board", "Please try again", UIAlertControllerStyle.Alert);
+						alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+						NavigationController.PresentViewController (alert, true, null);
 					}
-
-					AppDelegate.ListNewBoards.Add(board);
-
-					var containerScreen = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 4] as ContainerScreen;
-					if (containerScreen!= null)
-					{
-						containerScreen.LoadBusinessScreen();
-					}
-
-					AppDelegate.NavigationController.PopToViewController (containerScreen, false);
 				}
 			});
 

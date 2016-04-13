@@ -52,7 +52,7 @@ namespace Board.Interface.CreateScreens
 					} else { 
 						UIAlertController alert = UIAlertController.Create("Board not connected to a page", "Do you wish to go to settings to connect to a Facebook page?", UIAlertControllerStyle.Alert);
 						alert.AddAction (UIAlertAction.Create ("Later", UIAlertActionStyle.Cancel, null));
-						alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate(UIAlertAction obj) {
+						alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate {
 							SettingsScreen settingsScreen = new SettingsScreen();
 							AppDelegate.PushViewLikePresentView(settingsScreen);
 						}));

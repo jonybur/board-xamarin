@@ -4,6 +4,7 @@ using Foundation;
 using Google.Maps;
 using Board.Utilities;
 using MGImageUtilitiesBinding;
+using Board.JsonResponses;
 using CoreLocation;
 using CoreGraphics;
 using UIKit;
@@ -14,11 +15,14 @@ namespace Board.Interface.LookUp
 	{
 		MapView mapView;
 		bool firstLocationUpdate;
+		GoogleGeolocatorObject GeolocatorObject;
 
-		public MapLookUp(Map map)
-		{
-			content = map;
-			
+		public MapLookUp(GoogleGeolocatorObject geolocatorObject)
+		{	
+			content = new Map ();
+
+			GeolocatorObject = geolocatorObject;
+
 			UIColor frontColor = UIColor.FromRGB(250,250,250);
 			UIColor backColor = UIColor.Black;
 
@@ -32,7 +36,7 @@ namespace Board.Interface.LookUp
 			LoadMap ();
 			ScrollView.AddSubview (mapView);
 
-			View.AddSubviews (ScrollView, BackButton, LikeButton, WazeButton, TrashButton);
+			View.AddSubviews (ScrollView, BackButton, LikeButton, UberButton, TrashButton);
 		}
 
 		public override void ViewDidDisappear(bool animated)
@@ -46,7 +50,8 @@ namespace Board.Interface.LookUp
 
 		private void LoadMap()
 		{
-			var camera = CameraPosition.FromCamera (40, -100, -2);
+			var camera = CameraPosition.FromCamera (new CLLocationCoordinate2D(GeolocatorObject.results [0].geometry.location.lat,
+				GeolocatorObject.results [0].geometry.location.lng), 16);
 
 			mapView = MapView.FromCamera (new CGRect (0,
 				TrashButton.Frame.Bottom,
@@ -64,30 +69,29 @@ namespace Board.Interface.LookUp
 		{
 			if (!firstLocationUpdate) {
 				firstLocationUpdate = true; 
-
-				var location = change.ObjectForKey (NSObject.ChangeNewKey) as CLLocation;
-				CreateMarker (location.Coordinate);
+				CreateMarker ();
 			}
 		}
 
-		private void CreateMarker(CLLocationCoordinate2D location)
+		private void CreateMarker()
 		{
-			Random rnd = new Random ();
-			double lat = rnd.NextDouble () - .5;
-			double lon = rnd.NextDouble () - .5;
-
 			Marker marker = new Marker ();
 			marker.AppearAnimation = MarkerAnimation.Pop;
-			CLLocationCoordinate2D markerLocation = new CLLocationCoordinate2D (25.792826, -80.129943);
+			var markerLocation = new CLLocationCoordinate2D(GeolocatorObject.results [0].geometry.location.lat,
+				GeolocatorObject.results [0].geometry.location.lng);
+			
 			marker.Position = markerLocation;
 			marker.Map = mapView;
 			marker.Icon = CreateMarkerImage (BoardInterface.board.ImageView.Image);
 			marker.Draggable = false;
 			marker.Title = BoardInterface.board.Name;
-			marker.Snippet = "2 Cooper Street, Wynwood, FL 33880";
+			try{
+				marker.Snippet = GeolocatorObject.results [0].address_components [0].long_name + " " +
+					GeolocatorObject.results [0].address_components [1].short_name;
+			}catch{
+			}
 			marker.InfoWindowAnchor = new CGPoint (.5, .5);
 			marker.Tappable = true;
-			mapView.Camera = CameraPosition.FromCamera (new CLLocationCoordinate2D(25.792826, -80.129953), 16);
 		}
 
 		private UIImage CreateMarkerImage(UIImage logo)

@@ -109,8 +109,8 @@ namespace Board.Interface
 		{
 			View.BackgroundColor = UIColor.Black;
 			RemoveAndDisposeAllContent ();
-			MemoryUtility.ReleaseUIViewWithChildren (BoardScroll, true);
-			MemoryUtility.ReleaseUIViewWithChildren (View, true);
+			MemoryUtility.ReleaseUIViewWithChildren (BoardScroll);
+			MemoryUtility.ReleaseUIViewWithChildren (View);
 			ButtonInterface.DisableAllLayouts();
 		}
 

@@ -369,8 +369,7 @@ namespace Board.Interface.CreateScreens
 					Preview.Initialize(boardEvent);
 				
 				} else {
-
-
+					
 
 				}
 

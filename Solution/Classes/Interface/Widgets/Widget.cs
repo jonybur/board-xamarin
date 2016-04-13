@@ -255,7 +255,7 @@ namespace Board.Interface.Widgets
 					}
 					else if (content is Map)
 					{
-						lookUp = new MapLookUp(new Map());
+						lookUp = new MapLookUp(BoardInterface.board.GeolocatorObject);
 					}
 					else if (content is Poll)
 					{

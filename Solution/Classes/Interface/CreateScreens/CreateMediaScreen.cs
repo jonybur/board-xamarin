@@ -51,7 +51,7 @@ namespace Board.Interface.CreateScreens
 			base.ViewDidDisappear (animated);
 			ScrollView.RemoveGestureRecognizer (scrollViewTap);
 			NextButton.TouchUpInside -= nextButtonTap;
-			MemoryUtility.ReleaseUIViewWithChildren (View, true);
+			MemoryUtility.ReleaseUIViewWithChildren (View);
 		}
 
 		private void CreateGestures()
@@ -59,6 +59,12 @@ namespace Board.Interface.CreateScreens
 			scrollViewTap = new UITapGestureRecognizer (obj => textview.ResignFirstResponder ());
 
 			nextButtonTap += (sender, e) => {
+				if (content is Picture){
+					((Picture)content).Description = textview.Text;
+				} else if (content is Video){
+					((Video)content).Description = textview.Text;
+				}
+
 				Preview.Initialize(content);
 
 				content.SocialChannel = ShareButtons.GetActiveSocialChannels ();

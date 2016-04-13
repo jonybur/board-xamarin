@@ -57,7 +57,7 @@ namespace Board.Interface.Widgets
 
 				Marker marker = new Marker ();
 				marker.AppearAnimation = MarkerAnimation.Pop;
-				CLLocationCoordinate2D markerLocation = new CLLocationCoordinate2D (25.792826, -80.12994);
+				var markerLocation = new CLLocationCoordinate2D (25.792826, -80.12994);
 				marker.Position = markerLocation;
 				marker.Map = mapView;
 				marker.Icon = CreateMarkerImage (BoardInterface.board.ImageView.Image);

@@ -227,7 +227,7 @@ namespace Board.Interface.LookUp
 				}
 					
 				newEvent.Notes = boardEvent.Description + signature;
-				newEvent.Location = BoardInterface.board.Location;
+				newEvent.Location = BoardInterface.board.Address;
 
 				eventController.Event = newEvent;
 

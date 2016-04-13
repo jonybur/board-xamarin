@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using Board.Screens.Controls;
 using CoreGraphics;
 using CoreLocation;
 using Google.Maps;
@@ -80,15 +80,20 @@ namespace Board.Interface
 			AddSubviews (ActionButtons);
 
 			GallerySV = new GalleryScrollView ((float)Frame.Width);
-			GallerySV.BackgroundColor = UIColor.FromRGBA(0,0,0,50);
+			GallerySV.SetDemoImages ();
+			GallerySV.BackgroundColor = UIColor.FromRGBA(0, 0, 0, 50);
 			GallerySV.Center = new CGPoint (Frame.Width / 2, actionButtonsY + GallerySV.Frame.Height / 2 + 35);
-			GallerySV.Fill ();
+			GallerySV.Fill (true, 0);
 
 			Container = new MapContainer ();
-			Container.CreateMap ((float)Frame.Width);
+
+			var location = new CLLocationCoordinate2D(board.GeolocatorObject.results [0].geometry.location.lat,
+													board.GeolocatorObject.results [0].geometry.location.lng);
+
+			Container.CreateMap ((float)Frame.Width, location);
 
 			MapTap = new UITapGestureRecognizer(obj => {
-				UILookUp lookUp = new MapLookUp(new Map());
+				var lookUp = new MapLookUp(BoardInterface.board.GeolocatorObject);
 				AppDelegate.PushViewLikePresentView(lookUp);
 			});
 
@@ -97,61 +102,6 @@ namespace Board.Interface
 
 			AddSubviews (NameLabel, Line1, DescriptionBox, Container.button, GallerySV);
 		}
-
-		protected class GalleryScrollView : UIScrollView {
-			readonly List<UIButton> Pictures;
-			float ButtonSize;
-
-			public GalleryScrollView(float width) {
-				Frame = new CGRect (0, 0, width, 200);
-				Pictures = new List<UIButton>();
-				ScrollEnabled = true;
-				UserInteractionEnabled = true;
-				ButtonSize = (width / 4 - 2);
-
-				int j = 0;
-
-				for (int i = 0; i < 15; i++) {
-
-					var button = new UIButton(new CGRect (0, 0, ButtonSize, ButtonSize));
-					button.BackgroundColor = UIColor.Black;
-
-					using (UIImage img = UIImage.FromFile("./demo/pictures/"+j+".jpg")) {
-						UIImage fixedImg = img.ImageCroppedToFitSize(button.Frame.Size);
-						button.SetImage (fixedImg, UIControlState.Normal);
-					}
-					Pictures.Add(button);
-
-					j++;
-
-					if (7 <= j)
-					{
-						j = 0;
-					}
-				}
-			}
-
-			public void Fill(){
-				int x = 1; float y = 1;
-				float lastBottom = 0;
-				foreach (var button in Pictures) {
-					button.Center = new CGPoint ((Frame.Width / 8) * x, (ButtonSize + 2) * y - ButtonSize / 2);
-
-					x += 2;
-
-					if (x >= 8) {
-						x = 1;
-						y ++;
-					}
-
-					AddSubview (button);
-					lastBottom = (float)button.Frame.Bottom;
-				}
-				ContentSize = new CGSize (Frame.Width, (float)lastBottom + 1);
-				ContentOffset = new CGPoint (0, ContentSize.Height - Frame.Size.Height);
-			}
-		}
-
 	
 		private UIImageView CreateLine(UIColor color, float yposition){
 			var line = new UIImageView (new CGRect (0, yposition, Frame.Width, 1));
@@ -160,35 +110,31 @@ namespace Board.Interface
 			return line;
 		}
 
+
 		private class MapContainer : UIViewController{
 			private MapView mapView;
 			public UIButton button;
-			bool firstLocationUpdate;
 
-			public void CreateMap(float width) {
+			public void CreateMap(float width, CLLocationCoordinate2D location) {
 				var camera = CameraPosition.FromCamera (40, -100, -2);
 				mapView = MapView.FromCamera (new CGRect (0, 0, width, 130), camera);
 				mapView.UserInteractionEnabled = false;
 				mapView.Layer.AllowsEdgeAntialiasing = true;
-				CreateMarker (new CLLocationCoordinate2D());
+				CreateMarker (location);
 
 				button = new UIButton (new CGRect (0, 0, mapView.Frame.Width, mapView.Frame.Height));
 				button.AddSubview (mapView);
 			}
 
 			private void CreateMarker(CLLocationCoordinate2D location) {
-				Random rnd = new Random ();
-				double lat = rnd.NextDouble () - .5;
-				double lon = rnd.NextDouble () - .5;
-
 				Marker marker = new Marker ();
 				marker.AppearAnimation = MarkerAnimation.Pop;
-				CLLocationCoordinate2D markerLocation = new CLLocationCoordinate2D (25.792826, -80.12994);
+				CLLocationCoordinate2D markerLocation = location;
 				marker.Position = markerLocation;
 				marker.Map = mapView;
 				marker.Icon = CreateMarkerImage (BoardInterface.board.ImageView.Image);
 				marker.Draggable = false;
-				mapView.Camera = CameraPosition.FromCamera (new CLLocationCoordinate2D(25.792826, -80.12994), 16);
+				mapView.Camera = CameraPosition.FromCamera (location, 16);
 			}
 
 			private UIImage CreateMarkerImage(UIImage logo)

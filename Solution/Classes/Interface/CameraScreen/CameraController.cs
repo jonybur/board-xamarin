@@ -15,7 +15,7 @@ namespace Board.Interface.Camera
 		VideoPreview videoPreview;
 		UIImageView photoPreview;
 
-		UITapGestureRecognizer BackTap, TrashTap, FlipTap, FlashTap, NextTap, FocusTap;
+		UITapGestureRecognizer BackTap, TrashTap, FlipTap, FlashTap, NextTap, FocusTap, DoubleTap;
 		UIImageView BackButton, TrashButton, FlipButton, FlashButton, NextButton, FocusImage;
 		UIShutterButton ShutterButton;
 
@@ -75,6 +75,17 @@ namespace Board.Interface.Camera
 				}
 			});
 
+			DoubleTap = new UITapGestureRecognizer (obj => {
+				if (Vision.CameraDevice == PBJCameraDevice.Back) {
+					Vision.CameraDevice = PBJCameraDevice.Front;
+					FlashButton.Alpha = 0f;
+				} else {
+					Vision.CameraDevice = PBJCameraDevice.Back;
+					FlashButton.Alpha = 1f;
+				}
+			});
+			DoubleTap.NumberOfTapsRequired = 2;
+
 			ShutterButton.EnableGestures ();
 			BackButton.AddGestureRecognizer (BackTap);
 			TrashButton.AddGestureRecognizer (TrashTap);
@@ -82,6 +93,7 @@ namespace Board.Interface.Camera
 			FlashButton.AddGestureRecognizer (FlashTap);
 			NextButton.AddGestureRecognizer (NextTap);
 			View.AddGestureRecognizer (FocusTap);
+			View.AddGestureRecognizer (DoubleTap);
 		}
 
 		private void Focusing(){
@@ -108,6 +120,7 @@ namespace Board.Interface.Camera
 			FlashButton.RemoveGestureRecognizer (FlashTap);
 			NextButton.RemoveGestureRecognizer (NextTap);
 			View.RemoveGestureRecognizer (FocusTap);
+			View.RemoveGestureRecognizer (DoubleTap);
 
 			videoPreview.KillVideo ();
 
@@ -237,7 +250,7 @@ namespace Board.Interface.Camera
 
 			FlipButton.UserInteractionEnabled = true;
 
-			FlipTap = new UITapGestureRecognizer (async tg => {
+			FlipTap = new UITapGestureRecognizer (tg => {
 				if (Vision.CameraDevice == PBJCameraDevice.Back) {
 					Vision.CameraDevice = PBJCameraDevice.Front;
 					FlashButton.Alpha = 0f;

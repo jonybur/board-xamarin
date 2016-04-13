@@ -15,6 +15,8 @@ namespace Board.Schema
 
 		public string ImageUrl;
 
+		public string Description;
+
 		public Picture() {
 		}
 

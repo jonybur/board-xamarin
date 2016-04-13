@@ -323,6 +323,10 @@
     <BundleResource Include="Resources\boardinterface\infobox\addstar4.png" />
     <BundleResource Include="Resources\boardinterface\infobox\message2.png" />
     <BundleResource Include="Resources\boardinterface\backgrounds\diamonds.png" />
+    <BundleResource Include="Resources\boardinterface\screens\albums\banner\6.jpg" />
+    <BundleResource Include="Resources\boardinterface\screens\albums\banner\6plus.jpg" />
+    <BundleResource Include="Resources\boardinterface\screens\photos\banner\6.jpg" />
+    <BundleResource Include="Resources\boardinterface\screens\photos\banner\6plus.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -426,6 +430,15 @@
     <Compile Include="Classes\Interface\BoardScroll.cs" />
     <Compile Include="Classes\Interface\InfoBox\InfoBox.cs" />
     <Compile Include="Classes\Interface\LookUp\UILookUP.cs" />
+    <Compile Include="Classes\Interface\FacebookImport\AlbumsScreen.cs" />
+    <Compile Include="Classes\Facebook\FacebookAlbum.cs" />
+    <Compile Include="Classes\Interface\FacebookImport\PhotosScreen.cs" />
+    <Compile Include="Classes\Facebook\FacebookPhoto.cs" />
+    <Compile Include="Classes\Facebook\FacebookVideo.cs" />
+    <Compile Include="Classes\Screens\Controls\GalleryScrollView.cs" />
+    <Compile Include="Classes\Infrastructure\CloudController.cs" />
+    <Compile Include="Classes\Screens\Controls\LocationLabel.cs" />
+    <Compile Include="Classes\JsonResponses\UberProductResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -511,6 +524,11 @@
     <Folder Include="Classes\Interface\CameraScreen\" />
     <Folder Include="Resources\boardinterface\infobox\" />
     <Folder Include="Classes\Interface\InfoBox\" />
+    <Folder Include="Classes\Interface\FacebookImport\" />
+    <Folder Include="Resources\boardinterface\screens\albums\" />
+    <Folder Include="Resources\boardinterface\screens\photos\" />
+    <Folder Include="Resources\boardinterface\screens\albums\banner\" />
+    <Folder Include="Resources\boardinterface\screens\photos\banner\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

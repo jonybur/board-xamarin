@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Board.Infrastructure;
 using System.Linq;
 using CoreGraphics;
 using Foundation;
@@ -10,6 +11,7 @@ using Facebook.CoreKit;
 using UIKit;
 using Board.Screens.Controls;
 using MGImageUtilitiesBinding;
+using BigTed;
 
 namespace Board.Screens
 {
@@ -45,11 +47,24 @@ namespace Board.Screens
 			ListTrendingBlocks = new List<TrendingBlock> ();
 			ListMapMarkers = new List<Marker> ();
 
-			InitializeInterface ();
+			if (Profile.CurrentProfile == null) {
+				AppDelegate.NavigationController.PopViewController (true);
+			}
+
+			content = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+
+			LoadMapButton ();
+			LoadBanner ();
+			LoadMap ();
+
+			View.AddSubviews (content, map, Banner, map_button);
 		}
 
-		public override void ViewDidAppear(bool animated)
+		public override async void ViewDidAppear(bool animated)
 		{
+			BTProgressHUD.Show ();
+			await InitializeInterface ();
+
 			// suscribe to observers, gesture recgonizers, events
 			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
 			map_button.TouchUpInside += MapButtonEvent;	
@@ -58,6 +73,7 @@ namespace Board.Screens
 			}
 			mapInfoTapped = false;
 			Banner.SuscribeToEvents ();
+			BTProgressHUD.Dismiss ();
 		}
 
 		public override void ViewDidDisappear(bool animated)
@@ -88,40 +104,20 @@ namespace Board.Screens
 			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 		}
 
-		public void InitializeInterface()
+		public async System.Threading.Tasks.Task InitializeInterface()
 		{
-			LoadBanner ();
-			LoadMapButton ();
-			if (Profile.CurrentProfile.UserID != null) {
-				LoadContent ();
-			}
-			LoadMap ();
-
-			View.AddSubviews (Banner, map_button);
+			await LoadContent ();
 		}
 
-		class LocationLabel : UILabel{
-			public static UIFont font;
-		
-			public LocationLabel(float yposition, string location)
-			{
-				Frame = new CGRect(10, yposition, AppDelegate.ScreenWidth - 20, 24);
-				Font = font;
-				TextAlignment = UITextAlignment.Center;
-				TextColor = AppDelegate.BoardOrange;
-				Text = location;
-			}
-		}
-
-		private void LoadContent()
+		private async System.Threading.Tasks.Task LoadContent()
 		{
 			thumbsize = AppDelegate.ScreenWidth / 3.5f;
 
-			content = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			content.BackgroundColor = UIColor.White;
 
-			List<Board.Schema.Board> boardList = GenerateBoardList ();
-			boardList = boardList.OrderBy(o=>o.Location).ToList();
+			// = GenerateBoardList ();
+			var boardList = await CloudController.GetUserBoards ();
+			boardList = boardList.OrderBy(o=>o.Neighborhood).ToList();
 
 			string location = String.Empty;
 
@@ -133,16 +129,16 @@ namespace Board.Screens
 			yposition = (float)Banner.Frame.Bottom + 10;
 
 			foreach (Board.Schema.Board b in boardList) {
-				if (location != b.Location) {
+				if (location != b.Neighborhood) {
 					
 					if (neighborhoodnumber > 0) {
 						DrawTrendingBanner (false, newLine, boardList[i - 1]);
 					}
 
 					// draw new location string
-					LocationLabel locationLabel = new LocationLabel (yposition, b.Location);
+					LocationLabel locationLabel = new LocationLabel (yposition, b.Neighborhood);
 					yposition += (float)locationLabel.Frame.Height + thumbsize / 2 + 10;
-					location = b.Location;
+					location = b.Neighborhood;
 					content.AddSubview (locationLabel);
 
 					linecounter = 1;
@@ -164,7 +160,9 @@ namespace Board.Screens
 				content.AddSubview (boardThumb);
 				i++;
 			}
-			DrawTrendingBanner (true, newLine, boardList[i - 1]);
+			if (boardList.Count > 0) {
+				DrawTrendingBanner (true, newLine, boardList [i - 1]);
+			}
 
 			content.ScrollEnabled = true;
 			content.UserInteractionEnabled = true;
@@ -182,8 +180,6 @@ namespace Board.Screens
 					trendingBlock.ParallaxMove((float)content.ContentOffset.Y);
 				}
 			};
-
-			View.AddSubview (content);
 		}
 
 		private void DrawTrendingBanner(bool last, bool newLine, Board.Schema.Board board)
@@ -221,10 +217,10 @@ namespace Board.Screens
 			
 		private void LoadMap()
 		{
-			var camera = CameraPosition.FromCamera (40, -100, -2);
 
 			firstLocationUpdate = false;
 
+			var camera = CameraPosition.FromCamera (40, -100, -2);
 			map = MapView.FromCamera (new CGRect (0, Banner.Frame.Bottom, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight - Banner.Frame.Height - map_button.Frame.Height), camera);
 			map.Alpha = 0f;
 			map.Settings.CompassButton = true;
@@ -240,8 +236,6 @@ namespace Board.Screens
 					mapInfoTapped = true;
 				}
 			};
-
-			View.AddSubview (map);
 
 			InvokeOnMainThread (()=> map.MyLocationEnabled = true);
 		}
@@ -263,20 +257,15 @@ namespace Board.Screens
 
 		private void GenerateMarkers(CoreLocation.CLLocationCoordinate2D location)
 		{
-			Random rnd = new Random ();
-
 			foreach (BoardThumb thumb in ListThumbs) {
-				double lat = rnd.NextDouble () - .5;
-				double lon = rnd.NextDouble () - .5;
-
 				Marker marker = new Marker ();
 				marker.AppearAnimation = MarkerAnimation.Pop;
-				marker.Position = new CoreLocation.CLLocationCoordinate2D (location.Latitude - (lat * .02), location.Longitude + (lon * .02));
+				marker.Position = thumb.Board.Coordinate;
 				marker.Map = map;
 				marker.Icon = CreateMarkerImage (thumb.Board.ImageView.Image);
 				marker.Draggable = false;
 				marker.Title = thumb.Board.Name;
-				marker.Snippet = "2 Cooper Street, Wynwood, FL 33880" + "\n\nTAP TO ENTER BOARD";
+				marker.Snippet = thumb.Board.Address;
 				marker.InfoWindowAnchor = new CGPoint (.5, .5);
 				marker.Tappable = true;
 				marker.UserData = new NSString(thumb.Board.Id);

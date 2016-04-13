@@ -15,14 +15,14 @@ namespace Board.Interface
 		public UIScrollView ScrollView;
 		private UIImageView TopBanner;
 
-		public float LastScreen;
+		public int LastScreen;
 		public static int BannerHeight = 66;
 		public static int ButtonBarHeight = 45;
 		private float TempContentOffset;
 
 		public enum Tags : byte { Background = 1, Content };
 
-		public static int ScrollViewTotalWidthSize = 2600 * 102;
+		public static int ScrollViewTotalWidthSize = 2600 * 52;
 		public static int ScrollViewWidthSize = 2600;
 		readonly List<Widget> DrawnWidgets;
 		EventHandler DragStartsEvent, ScrolledEvent;
@@ -40,7 +40,6 @@ namespace Board.Interface
 		bool isAnimating;
 		float frameWAfterAnimation;
 
-
 		public UIBoardScroll ()
 		{
 			DrawnWidgets = new List<Widget> ();
@@ -57,7 +56,6 @@ namespace Board.Interface
 		private void GenerateScrollViews()
 		{
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
-			//ScrollView.DecelerationRate = .4f;
 
 			ScrollView.Bounces = false;
 
@@ -67,24 +65,21 @@ namespace Board.Interface
 			ScrolledEvent = (sender, e) => {
 				
 				if (isSnapping){
+					
 					if (ScrollView.ContentOffset == target || isDragging){
 						isSnapping = false;
 					}
 
 				} else if (!isDragging){
-					Console.WriteLine("SEP:" + Math.Abs ((ScrollView.ContentOffset.X + Frame.Width / 2) - infoBox.Center.X));
+					
 					if (Math.Abs ((ScrollView.ContentOffset.X + Frame.Width / 2) - infoBox.Center.X) < 100)
 					{
 						target = new CGPoint(infoBox.Center.X - infoBox.Frame.Width / 2 - 10, 0);
 						ScrollView.SetContentOffset (target, true);
 						isSnapping = true;
 					}
-				}
 
-				// call from here "open eye" function
-				//if (!isAnimating){ GetSpeed(); }
-			
-				//InfiniteScroll();
+				}
 
 				SelectiveRendering();
 			};
@@ -97,18 +92,6 @@ namespace Board.Interface
 				isDragging = false;
 			});
 
-
-			/*
-			ScrollView.WillEndDragging += (sender, e) => {
-				Console.WriteLine(e.TargetContentOffset.X - LastScreen * ScrollViewWidthSize);
-				if (Math.Abs ((e.TargetContentOffset.X + Frame.Width / 2) - infoBox.Center.X) > 200)
-					{ return; }
-					
-				var target = new CGPoint(infoBox.Center.X - infoBox.Frame.Width / 2 - 10, 0);
-				ScrollView.SetContentOffset (target, true);
-			};
-			*/
-
 			Frame = new CGRect (0, 0, ScrollViewTotalWidthSize, AppDelegate.ScreenHeight);
 
 			LoadMainLogo ();
@@ -116,27 +99,6 @@ namespace Board.Interface
 			AddSubview (ScrollView); 
 
 			ScrollView.SetNeedsDisplay ();
-		}
-
-		private void GetSpeed(){
-			if (!ScrollView.Dragging) {
-				return;
-			}
-			var currentOffset = ScrollView.ContentOffset;
-
-			TimeSpan timeDiff = DateTime.Now.Subtract (lastOffsetCapture);
-			if (timeDiff.TotalMilliseconds > 1) {
-				float distance = (float)(currentOffset.X - lastOffset.X);
-
-				distance = Math.Abs (distance);
-				scrollSpeed = ((float)distance * 15);
-
-				if (scrollSpeed <= 5) {
-					scrollSpeed = 0f;
-				}
-				lastOffset = currentOffset;
-				lastOffsetCapture = DateTime.Now;
-			}
 		}
 
 		private void LoadBackground()
@@ -174,7 +136,7 @@ namespace Board.Interface
 		}
 
 		public void SelectiveRendering(){
-			float leftScreenNumber = 0;
+			int leftScreenNumber = 0;
 
 			if (!(BoardInterface.DictionaryWidgets == null || BoardInterface.DictionaryWidgets.Count == 0))
 			{
@@ -182,9 +144,9 @@ namespace Board.Interface
 				float physicalRightBound = (float)(ScrollView.ContentOffset.X + AppDelegate.ScreenWidth);
 				float physicalLeftBound = (float)(ScrollView.ContentOffset.X);
 
-				float rightScreenNumber = (float)Math.Floor((physicalRightBound) / ScrollViewWidthSize);
+				int rightScreenNumber = (int)Math.Floor((physicalRightBound) / ScrollViewWidthSize);
 				float virtualRightBound = physicalRightBound - ScrollViewWidthSize * rightScreenNumber;
-				leftScreenNumber = (float)Math.Floor ((physicalLeftBound) / ScrollViewWidthSize);
+				leftScreenNumber = (int)Math.Floor ((physicalLeftBound) / ScrollViewWidthSize);
 				float virtualLeftBound = physicalLeftBound - ScrollViewWidthSize * leftScreenNumber;
 
 				virtualRightBound = (virtualRightBound > 0) ? virtualRightBound : 0;
@@ -196,9 +158,9 @@ namespace Board.Interface
 					((item.content.Center.X + item.View.Frame.Width / 2) < (virtualRightBound + AppDelegate.ScreenWidth) &&
 					 (item.content.Center.X + item.View.Frame.Width / 2 > (virtualRightBound - AppDelegate.ScreenWidth))));
 
-				rightScreenNumber = (float)Math.Floor((physicalRightBound + AppDelegate.ScreenWidth) / ScrollViewWidthSize);
+				rightScreenNumber = (int)Math.Floor((physicalRightBound + AppDelegate.ScreenWidth) / ScrollViewWidthSize);
 				virtualRightBound = physicalRightBound + AppDelegate.ScreenWidth - ScrollViewWidthSize * rightScreenNumber;
-				leftScreenNumber = (float)Math.Floor ((physicalLeftBound - AppDelegate.ScreenWidth) / ScrollViewWidthSize);
+				leftScreenNumber = (int)Math.Floor ((physicalLeftBound - AppDelegate.ScreenWidth) / ScrollViewWidthSize);
 				virtualLeftBound =  physicalLeftBound - AppDelegate.ScreenWidth - ScrollViewWidthSize * leftScreenNumber;
 
 				// takes wids that are close
@@ -208,8 +170,9 @@ namespace Board.Interface
 
 					// the ones at the left ;; the ones at the right ;; if it doesnt have an open eye
 					// checks only on the wids that are drawn
-					List<Widget> WidgetsToOpenEyes = WidgetsToDraw.FindAll (item => ((item.View.Frame.X) > ScrollView.ContentOffset.X) &&
-						((item.View.Frame.X + item.View.Frame.Width) < (ScrollView.ContentOffset.X + AppDelegate.ScreenWidth)) &&
+					List<Widget> WidgetsToOpenEyes = WidgetsToDraw.FindAll (item =>
+						((item.content.Center.X - item.View.Frame.Width / 2) > virtualRightBound) &&
+						((item.content.Center.X + item.View.Frame.Width / 2) < (virtualLeftBound)) &&
 						!item.EyeOpen);
 
 					if (WidgetsToOpenEyes != null && WidgetsToOpenEyes.Count > 0) {

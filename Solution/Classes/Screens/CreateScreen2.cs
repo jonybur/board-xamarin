@@ -29,10 +29,6 @@ namespace Board.Screens
 
 		UIScrollView scrollView;
 
-		// previewboard
-		UIImageView boardView, circleTop, circleLower, logoBackground;
-		UIImageView preview_mainLogo;
-
 		bool firstAppear;
 
 		public CreateScreen2 (Board.Schema.Board _board){
@@ -42,8 +38,6 @@ namespace Board.Screens
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
-
-			BTProgressHUD.Show (null, -1, ProgressHUD.MaskType.Black);
 
 			View.BackgroundColor = UIColor.White;
 
@@ -60,7 +54,6 @@ namespace Board.Screens
 			if (!firstAppear) {
 				InitializeScrollView ();
 				firstAppear = true;
-				BTProgressHUD.Dismiss ();
 			}
 
 			SuscribeToEvents ();
@@ -95,51 +88,6 @@ namespace Board.Screens
 			Banner.UnsuscribeToEvents ();
 		}
 
-		private UIImageView GeneratePreviewBoard()
-		{
-			boardHeight = ((AppDelegate.ScreenWidth * AppDelegate.ScreenHeight) / UIBoardScroll.ScrollViewWidthSize);
-
-			boardView = new UIImageView (new CGRect(0, AppDelegate.ScreenHeight - boardHeight, AppDelegate.ScreenWidth, boardHeight));
-
-			using (UIImage img = UIImage.FromFile ("./boardinterface/backgrounds/intern.png")){
-				UIImage tmp = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-				circleTop = new UIImageView (tmp);
-			}
-
-			using (UIImage img = UIImage.FromFile ("./boardinterface/backgrounds/outer.png")) {
-				UIImage tmp = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-				circleLower = new UIImageView (tmp);
-			}
-
-			using (UIImage img = UIImage.FromFile ("./boardinterface/backgrounds/logobackground.png")) {
-				UIImage tmp = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-				logoBackground = new UIImageView (tmp);
-			}
-
-			circleTop.Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, boardHeight);
-			circleLower.Frame = circleTop.Frame;
-			logoBackground.Frame = circleTop.Frame;
-
-			boardView.BackgroundColor = board.MainColor;
-			circleTop.TintColor = board.MainColor;
-			circleLower.TintColor = board.SecondaryColor;
-			logoBackground.TintColor = UIColor.White;
-
-			preview_mainLogo = GenerateBoardThumb (board.ImageView.Image, new CGPoint (boardView.Frame.Width / 2, boardView.Frame.Height / 2), false);
-
-			boardView.AddSubviews (logoBackground, preview_mainLogo, circleTop, circleLower);
-
-			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
-				AppDelegate.boardInterface = new BoardInterface(board, true);
-				NavigationController.PushViewController(AppDelegate.boardInterface, true);
-			});
-
-			boardView.AddGestureRecognizer (tap);
-			boardView.UserInteractionEnabled = true;
-
-			return boardView;
-		}
-
 		private void InitializeScrollView()
 		{
 			ColorSquareSize = new CGSize (230, 40);
@@ -163,8 +111,8 @@ namespace Board.Screens
 			using (UIImage image = UIImage.FromFile  ("./screens/create/2/icon.png"))
 			{ boardThumb = GenerateBoardThumb (image, new CGPoint (AppDelegate.ScreenWidth / 2, 220), true); }
 	
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
-				ImagePicker ip = new ImagePicker (boardThumb.Subviews[0] as UIImageView, preview_mainLogo, board);
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
+				ImagePicker ip = new ImagePicker (boardThumb.Subviews[0] as UIImageView, board);
 				NavigationController.PresentViewController (ip.UIImagePicker, true, null);
 			});
 
@@ -179,10 +127,6 @@ namespace Board.Screens
 
 			// color selectors + hex
 			GenerateColorSelectors ();
-
-			// bottom preview
-			UIImageView previewBoard = GeneratePreviewBoard ();
-			scrollView.AddSubview (previewBoard); 
 		}
 
 		private void GenerateColorSelectors()
@@ -237,9 +181,6 @@ namespace Board.Screens
 				scrollView.AddSubview(color1);
 
 				board.MainColor = color;
-				boardView.BackgroundColor = color;
-
-				circleTop.TintColor = board.MainColor;
 
 				textField.ResignFirstResponder();
 
@@ -287,8 +228,6 @@ namespace Board.Screens
 				scrollView.AddSubview(color2);
 
 				board.SecondaryColor = color;
-
-				circleLower.TintColor = board.SecondaryColor;
 
 				textField.ResignFirstResponder();
 
@@ -357,16 +296,12 @@ namespace Board.Screens
 					board.MainColor = color;
 
 					hexView1.Text = CommonUtils.UIColorToHex(color);
-
-					boardView.BackgroundColor = board.MainColor;
-					circleTop.TintColor = board.MainColor;
 					break;
 				case 2:
 					board.SecondaryColor = color;
 
 					hexView2.Text = CommonUtils.UIColorToHex(color);
 
-					circleLower.TintColor = board.SecondaryColor;
 					break;
 				}
 

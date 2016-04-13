@@ -92,7 +92,7 @@ namespace Board.Picker
 			imagePickerController.Canceled += (sender, e) => imagePickerController.DismissViewController (true, onDismiss);
 		}
 
-		public ImagePicker (UIImageView icon, UIImageView preview_icon, Board.Schema.Board board)
+		public ImagePicker (UIImageView icon, Board.Schema.Board board)
 		{
 			imagePickerController = new UIImagePickerController();
 
@@ -132,10 +132,6 @@ namespace Board.Picker
 						icon.Frame = new CGRect (0, 0, imgw * .8f, imgh * .8f);
 						icon.Center = new CGPoint(autosize/2, autosize/2);
 						icon.Image = image;
-
-						(preview_icon.Subviews[0] as UIImageView).Frame = new CGRect(0, 0, icon.Frame.Width * .6f, icon.Frame.Height * .6f);
-						(preview_icon.Subviews[0] as UIImageView).Center = new CGPoint(preview_icon.Frame.Width / 2, preview_icon.Frame.Height / 2);
-						(preview_icon.Subviews[0] as UIImageView).Image = image;
 
 						board.ImageView = new UIImageView(image);
 

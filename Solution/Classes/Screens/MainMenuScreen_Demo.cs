@@ -9,9 +9,9 @@ namespace Board.Screens
 		private static List<Board.Schema.Board> GenerateBoardList()
 		{
 			List<Board.Schema.Board> boardList = new List<Board.Schema.Board> ();
-
+			/*
 			using (UIImage img = UIImage.FromFile("./logos/americansocial.png")){
-				Board.Schema.Board board = new Board.Schema.Board ("American Social", new UIImageView(img), UIColor.FromRGB (0, 6, 67), UIColor.FromRGB (177, 23, 0), "Brickell", Profile.CurrentProfile.UserID);
+				Board.Schema.Board board = new Board.Schema.Board ("American Social", new UIImageView(img), UIColor.FromRGB (0, 6, 67), UIColor.FromRGB (177, 23, 0), "Brickell", string.Empty);
 				boardList.Add(board);
 			}
 			using (UIImage img = UIImage.FromFile("./logos/doghouse.jpeg")){
@@ -46,9 +46,6 @@ namespace Board.Screens
 			using (UIImage img = UIImage.FromFile ("./logos/mansion.jpg")) {
 				boardList.Add (new Board.Schema.Board ("Mansion", new UIImageView(img), UIColor.Black, UIColor.FromRGB (20, 20, 20), "South Beach", string.Empty));
 			}
-			/*using (UIImage img = UIImage.FromFile ("./logos/nikki.jpg")) {
-				boardList.Add (new Board.Schema.Board ("Nikki Beach", img, UIColor.FromRGB (1, 73, 159), UIColor.White, "South Beach", string.Empty));
-			}*/
 			using (UIImage img = UIImage.FromFile ("./logos/wetwillies.jpg")) {
 				boardList.Add (new Board.Schema.Board ("Wet Willies", new UIImageView(img), UIColor.Black, UIColor.White, "South Beach", string.Empty));	
 			}
@@ -63,7 +60,7 @@ namespace Board.Screens
 			}
 			using (UIImage img = UIImage.FromFile ("./logos/electricpickle.jpg")) {
 				boardList.Add (new Board.Schema.Board ("Electric Pickle", new UIImageView(img), UIColor.Black, UIColor.FromRGB (20, 20, 20), "Wynwood", string.Empty));	
-			}
+			}*/
 
 			return boardList;
 		}  

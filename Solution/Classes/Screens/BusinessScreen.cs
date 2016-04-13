@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
-using Board.JsonResponses;
+using System.Linq;
 using Board.Screens.Controls;
+using BigTed;
 using Board.Utilities;
-using System;
+using Board.Infrastructure;
 using CoreGraphics;
 using UIKit;
 
@@ -13,50 +14,54 @@ namespace Board.Screens
 		MenuBanner Banner;
 		UIScrollView content;
 		List<Board.Schema.Board> boardList;
+		List<BoardThumb> ListThumbs;
+
+		float yposition;
+		float thumbsize;
 
 		public override void ViewDidLoad ()
 		{
-			this.AutomaticallyAdjustsScrollViewInsets = false;
+			AutomaticallyAdjustsScrollViewInsets = false;
+
+			BTProgressHUD.Show ();
 
 			boardList = new List<Board.Schema.Board> ();
 			content = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
-		
-			InitializeInterface ();
+			content.BackgroundColor = UIColor.White;
+
+			View.AddSubview (content);
+
 			LoadBanner ();
+
+			ListThumbs = new List<BoardThumb> ();
 		}
 
 		public override async void ViewDidAppear(bool animated)
 		{
-			if (AppDelegate.ServerActive) {
-				string result = CommonUtils.JsonGETRequest ("http://192.168.1.101:5000/api/user/boards?authToken=" + AppDelegate.EncodedBoardToken);
+			BTProgressHUD.Show ();
 
-				BoardResponse response = BoardResponse.Deserialize (result);
+			boardList = await CloudController.GetUserBoards ();
 
-				if (response != null) {
-					foreach (BoardResponse.Datum r in response.data) {
-						// gets image from url
-						UIImage boardImage = await CommonUtils.DownloadUIImageFromURL (r.logoURL);
-
-						// gets address
-						string jsonobj = JsonHandler.GET ("https://maps.googleapis.com/maps/api/geocode/json?address=" + r.address + "&key=" + AppDelegate.GoogleMapsAPIKey);
-						GoogleGeolocatorObject geolocatorObject = JsonHandler.DeserializeObject (jsonobj);
-
-						// compiles the board, adds the geolocator object for further reference
-						Board.Schema.Board board = new Board.Schema.Board (r.name, new UIImageView(boardImage), CommonUtils.HexToUIColor (r.mainColorCode), CommonUtils.HexToUIColor (r.secondaryColorCode), r.address, null);
-						board.GeolocatorObject = geolocatorObject;
-
-						boardList.Add (board);
-					}
-				}
-			}
+			InitializeInterface ();
 
 			Banner.SuscribeToEvents ();
+
+			foreach (var thumb in ListThumbs) {
+				thumb.SuscribeToEvent ();
+			}
+
+			BTProgressHUD.Dismiss ();
 		}
 
 		public override void ViewDidDisappear(bool animated)
 		{
 			Banner.UnsuscribeToEvents ();
-			MemoryUtility.ReleaseUIViewWithChildren (View, true);
+
+			foreach (var thumb in ListThumbs) {
+				thumb.UnsuscribeToEvent ();
+			}
+
+			MemoryUtility.ReleaseUIViewWithChildren (View);
 		}
 
 		private void InitializeInterface()
@@ -67,7 +72,59 @@ namespace Board.Screens
 
 			if (boardList.Count == 0) {
 				LoadNoContent ();
+			} else {
+				LoadContent ();
 			}
+		}
+
+		private void LoadContent()
+		{
+			thumbsize = AppDelegate.ScreenWidth / 3.5f;
+
+			boardList = boardList.OrderBy(o=>o.Neighborhood).ToList();
+
+			string location = string.Empty;
+
+			LocationLabel.font = AppDelegate.Narwhal20;
+
+			// starting point
+			int linecounter = 1, neighborhoodnumber = 0, i = 0;
+			yposition = (float)Banner.Frame.Bottom + 20;
+
+			foreach (Board.Schema.Board b in boardList) {
+				if (location != b.Neighborhood) {
+
+					if (neighborhoodnumber > 0) {
+						yposition += thumbsize / 2 + 10;
+					}
+
+					// draw new location string
+					LocationLabel locationLabel = new LocationLabel (yposition, b.Neighborhood);
+					yposition += (float)locationLabel.Frame.Height + thumbsize / 2 + 10;
+					location = b.Neighborhood;
+					content.AddSubview (locationLabel);
+
+					linecounter = 1;
+					neighborhoodnumber++;
+				}
+
+				var boardThumb = new BoardThumb (b, new CGPoint ((AppDelegate.ScreenWidth/ 4) * linecounter, yposition), thumbsize);
+				linecounter++;
+				if (linecounter >= 4) {
+					linecounter = 1;
+					// nueva linea de thumbs
+					yposition += thumbsize+ 10;
+				}
+
+				ListThumbs.Add (boardThumb);
+				content.AddSubview (boardThumb);
+				i++;
+			}
+
+			content.ScrollEnabled = true;
+			content.UserInteractionEnabled = true;
+
+			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, yposition + thumbsize * 2 / 3);
 		}
 
 		private void LoadNoContent()
@@ -92,7 +149,7 @@ namespace Board.Screens
 		{
 			Banner = new MenuBanner ("./screens/business/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					AppDelegate.containerScreen.BringSideMenuUp("business");
 				}

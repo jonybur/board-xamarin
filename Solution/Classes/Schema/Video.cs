@@ -17,6 +17,8 @@ namespace Board.Schema
 		[IgnoreDataMember]
 		public UIImageView ThumbnailView;
 
+		public string Description;
+
 		public Video() { }
 
 		public Video(NSUrl url, UIImageView thumbnailView, float rotation, CGPoint center, string creatorid, DateTime creationdate)

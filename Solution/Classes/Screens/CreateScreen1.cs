@@ -18,6 +18,7 @@ namespace Board.Screens
 		UITextField nameView;
 		UIImageView whiteRectangle;
 		UIImageView orangeRectangle;
+		GoogleGeolocatorObject geolocatorObject;
 		Result resultAddress;
 
 		bool nextEnabled;
@@ -111,7 +112,7 @@ namespace Board.Screens
 				addressView.Text = string.Empty;
 
 				string jsonobj = JsonHandler.GET("https://maps.googleapis.com/maps/api/geocode/json?address=" + e.Coordinate.Latitude + "," + e.Coordinate.Longitude + "&key=" + AppDelegate.GoogleMapsAPIKey);
-				GoogleGeolocatorObject geolocatorObject = JsonHandler.DeserializeObject(jsonobj);
+				geolocatorObject = JsonHandler.DeserializeObject(jsonobj);
 
 				try{
 					if (geolocatorObject.results.Count > 0)
@@ -156,7 +157,7 @@ namespace Board.Screens
 				}
 			}
 
-			if (resultAddress == null) {
+			if (geolocatorObject == null) {
 				nextEnabled = false;
 				orangeRectangle.Alpha = .5f;
 				return;
@@ -238,7 +239,7 @@ namespace Board.Screens
 			addressToSend = addressToSend.Replace(" ", "+");
 
 			string jsonobj = JsonHandler.GET("https://maps.googleapis.com/maps/api/geocode/json?address=" + addressToSend + "&key=" + AppDelegate.GoogleMapsAPIKey);
-			GoogleGeolocatorObject geolocatorObject = JsonHandler.DeserializeObject(jsonobj);
+			geolocatorObject = JsonHandler.DeserializeObject(jsonobj);
 
 			if (geolocatorObject.results.Count == 0 || addressView.Text.Length == 0)
 			{
@@ -287,7 +288,7 @@ namespace Board.Screens
 		{
 			Banner = new MenuBanner ("./screens/create/1/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					
 					var containerScreen = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 2] as ContainerScreen;
@@ -299,7 +300,7 @@ namespace Board.Screens
 
 				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 4) * 3 && nextEnabled){
 					Board.Schema.Board newBoard = new Board.Schema.Board();
-					newBoard.Location = resultAddress.formatted_address;
+					newBoard.GeolocatorObject = geolocatorObject;
 					newBoard.Name = nameView.Text;
 
 					CreateScreen2 createScreen2 = new CreateScreen2(newBoard);
