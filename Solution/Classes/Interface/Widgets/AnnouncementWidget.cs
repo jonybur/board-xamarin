@@ -54,20 +54,20 @@ namespace Board.Interface.Widgets
 			textview.SizeToFit ();
 
 			if (textview.Frame.Width < 160) {
-				textview.Frame = new CGRect (10, 10, 160, textview.Frame.Height);
+				textview.Frame = new CGRect (SideMargin, TopMargin, 160, textview.Frame.Height);
 			} else if (textview.Frame.Width > 250) {
-				textview.Frame = new CGRect (10, 10, 250, textview.Frame.Height);
+				textview.Frame = new CGRect (SideMargin, TopMargin, 250, textview.Frame.Height);
 			}
 
 			if (textview.Frame.Height < 80) {
-				textview.Frame = new CGRect (10, 10, textview.Frame.Width, 80);
+				textview.Frame = new CGRect (SideMargin, TopMargin, textview.Frame.Width, 80);
 			} else if (textview.Frame.Height > 180) {
-				textview.Frame = new CGRect (10, 10, textview.Frame.Width, 180);
+				textview.Frame = new CGRect (SideMargin, TopMargin, textview.Frame.Width, 180);
 			}
 
 			if (textview.Frame.Height < 81 && textview.Text.Length > 90) {
 				float height = ((textview.Text.Length - 90) / 30) * 20 + 80;
-				textview.Frame = new CGRect (10, 10, textview.Frame.Width, height);
+				textview.Frame = new CGRect (SideMargin, TopMargin, textview.Frame.Width, height);
 			}
 
 			textview.ContentOffset = new CGPoint (0, 0);

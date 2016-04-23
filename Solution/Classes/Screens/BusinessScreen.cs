@@ -81,7 +81,7 @@ namespace Board.Screens
 		{
 			thumbsize = AppDelegate.ScreenWidth / 3.5f;
 
-			boardList = boardList.OrderBy(o=>o.Neighborhood).ToList();
+			boardList = boardList.OrderBy(o=>o.GeolocatorObject.Neighborhood).ToList();
 
 			string location = string.Empty;
 
@@ -92,16 +92,16 @@ namespace Board.Screens
 			yposition = (float)Banner.Frame.Bottom + 20;
 
 			foreach (Board.Schema.Board b in boardList) {
-				if (location != b.Neighborhood) {
+				if (location != b.GeolocatorObject.Neighborhood) {
 
 					if (neighborhoodnumber > 0) {
 						yposition += thumbsize / 2 + 10;
 					}
 
 					// draw new location string
-					LocationLabel locationLabel = new LocationLabel (yposition, b.Neighborhood);
+					LocationLabel locationLabel = new LocationLabel (yposition, b.GeolocatorObject.Neighborhood);
 					yposition += (float)locationLabel.Frame.Height + thumbsize / 2 + 10;
-					location = b.Neighborhood;
+					location = b.GeolocatorObject.Neighborhood;
 					content.AddSubview (locationLabel);
 
 					linecounter = 1;

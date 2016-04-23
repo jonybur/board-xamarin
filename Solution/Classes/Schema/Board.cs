@@ -13,47 +13,6 @@ namespace Board.Schema
 		public UIColor MainColor;
 		public UIColor SecondaryColor;
 		public GoogleGeolocatorObject GeolocatorObject;
-		public string Neighborhood{
-			get {
-				string hood = "<ERROR>";
-				try{
-					hood = GeolocatorObject.results [0].address_components [2].long_name; 
-				} catch {
-					hood = "<ERROR>";
-				}
-				return hood;
-			}	
-		}
-		public string Address{
-			get {
-				string hood = "<ERROR>";
-				try{
-					hood = GeolocatorObject.results [0].address_components [0].long_name + " " +
-						GeolocatorObject.results [0].address_components [1].short_name; 
-				} catch {
-					hood = "<ERROR>";
-				}
-				return hood;
-			}	
-		}
-		public string FullAddress{
-			get {
-				string hood = "<ERROR>";
-				try{
-					hood = GeolocatorObject.results [0].formatted_address; 
-				} catch {
-					hood = "<ERROR>";
-				}
-				return hood;
-			}	
-		}
-		public CLLocationCoordinate2D Coordinate{
-			get {
-				return new CLLocationCoordinate2D (GeolocatorObject.results [0].geometry.location.lat,
-					GeolocatorObject.results [0].geometry.location.lng);
-			}
-		}
-
 		public string Name;
 		public string CreatorId;
 		public FacebookPage FBPage;

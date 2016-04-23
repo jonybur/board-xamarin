@@ -117,7 +117,7 @@ namespace Board.Screens
 
 			// = GenerateBoardList ();
 			var boardList = await CloudController.GetUserBoards ();
-			boardList = boardList.OrderBy(o=>o.Neighborhood).ToList();
+			boardList = boardList.OrderBy(o=>o.GeolocatorObject.Neighborhood).ToList();
 
 			string location = String.Empty;
 
@@ -129,16 +129,16 @@ namespace Board.Screens
 			yposition = (float)Banner.Frame.Bottom + 10;
 
 			foreach (Board.Schema.Board b in boardList) {
-				if (location != b.Neighborhood) {
+				if (location != b.GeolocatorObject.Neighborhood) {
 					
 					if (neighborhoodnumber > 0) {
 						DrawTrendingBanner (false, newLine, boardList[i - 1]);
 					}
 
 					// draw new location string
-					LocationLabel locationLabel = new LocationLabel (yposition, b.Neighborhood);
+					LocationLabel locationLabel = new LocationLabel (yposition, b.GeolocatorObject.Neighborhood);
 					yposition += (float)locationLabel.Frame.Height + thumbsize / 2 + 10;
-					location = b.Neighborhood;
+					location = b.GeolocatorObject.Neighborhood;
 					content.AddSubview (locationLabel);
 
 					linecounter = 1;
@@ -260,12 +260,12 @@ namespace Board.Screens
 			foreach (BoardThumb thumb in ListThumbs) {
 				Marker marker = new Marker ();
 				marker.AppearAnimation = MarkerAnimation.Pop;
-				marker.Position = thumb.Board.Coordinate;
+				marker.Position = thumb.Board.GeolocatorObject.Coordinate;
 				marker.Map = map;
 				marker.Icon = CreateMarkerImage (thumb.Board.ImageView.Image);
 				marker.Draggable = false;
 				marker.Title = thumb.Board.Name;
-				marker.Snippet = thumb.Board.Address;
+				marker.Snippet = thumb.Board.GeolocatorObject.Address;
 				marker.InfoWindowAnchor = new CGPoint (.5, .5);
 				marker.Tappable = true;
 				marker.UserData = new NSString(thumb.Board.Id);

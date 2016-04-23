@@ -87,8 +87,13 @@ namespace Board.Interface
 
 			Container = new MapContainer ();
 
-			var location = new CLLocationCoordinate2D(board.GeolocatorObject.results [0].geometry.location.lat,
-													board.GeolocatorObject.results [0].geometry.location.lng);
+			CLLocationCoordinate2D location;
+			try {
+				location = new CLLocationCoordinate2D(board.GeolocatorObject.results [0].geometry.location.lat,
+														board.GeolocatorObject.results [0].geometry.location.lng);
+			} catch {
+				location = new CLLocationCoordinate2D();
+			}
 
 			Container.CreateMap ((float)Frame.Width, location);
 

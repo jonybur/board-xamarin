@@ -1,20 +1,12 @@
 ﻿using System;
-using System.Net;
-using System.Collections.Generic;
-
-using Foundation;
-using Newtonsoft.Json;
-using UIKit;
-using Facebook.CoreKit;
-
-using Google.Maps;
-using Board.Utilities;
-using CoreAnimation;
-using Board.JsonResponses;
+using Board.Infrastructure;
 using Board.Interface;
 using Board.Screens;
-using Board.Infrastructure;
-using Board.Facebook;
+using CoreAnimation;
+using Facebook.CoreKit;
+using Foundation;
+using Google.Maps;
+using UIKit;
 
 namespace Board
 {
@@ -55,18 +47,14 @@ namespace Board
 
 		public const string APIAddress = "45.55.232.144";
 		public const string FacebookAppId = "793699580736093";
-		public const string GoogleMapsAPIKey = "AIzaSyAUO-UX9QKVWK421yjXqoo02N5TYrG_hY8";
 		public const string FacebookDisplayName = "Board Alpha - Deve­l­o­p­ment";
+		public const string GoogleMapsAPIKey = "AIzaSyAUO-UX9QKVWK421yjXqoo02N5TYrG_hY8";
+		public const string UberServerToken = "4y1kRu3Kt-LWdTeXcktgphAN7qZlltsTRTbvwIQ_";
 
 		public static string BoardToken;
 		public static string EncodedBoardToken;
 	
 		public static ContainerScreen containerScreen;
-
-		/*
-		public const string FacebookAppId = "761616930611025";
-		public const string FacebookDisplayName = "Board";
-		*/
 
 		// This method is invoked when the application hqas loaded and is ready to run. In this
 		// method you should instantiate the window, load the UI into it and then make the window
@@ -162,6 +150,7 @@ namespace Board
 			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 		}
 
+		// TODO: use to kill screens (memoryutility) after popping them
 		public static void PopViewControllerWithCallback(Action callback)
 		{
 			CATransaction.Begin ();

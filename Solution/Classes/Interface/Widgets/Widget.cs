@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using CoreGraphics;
+using Board.Interface.Buttons;
 using Board.Schema;
 using System.Threading;
 using Board.Interface.LookUp;
@@ -35,8 +36,10 @@ namespace Board.Interface.Widgets
 		private UIImageView likeView;
 		private UILabel likeLabel;
 
-		private const int iconSize = 30;
+		private const int IconSize = 30;
 
+		public const int TopMargin = 5;
+		public const int SideMargin = 5;
 		public static int Autosize = 220;
 
 		int randomLike;
@@ -80,7 +83,7 @@ namespace Board.Interface.Widgets
 
 		protected void CreateMounting(CGRect frame)
 		{
-			MountingView = new UIImageView (new CGRect (0, 0, frame.Width + 20, frame.Height + 50));
+			MountingView = new UIImageView (new CGRect (0, 0, frame.Width + 10, frame.Height + 45));
 			MountingView.BackgroundColor = UIColor.FromRGB(250,250,250);
 
 			CreateEye ();
@@ -159,7 +162,7 @@ namespace Board.Interface.Widgets
 	
 		protected UIImageView CreateLike(CGRect frame)
 		{
-			UIImageView likeView = new UIImageView(new CGRect(0, 0, iconSize, iconSize));
+			UIImageView likeView = new UIImageView(new CGRect(0, 0, IconSize, IconSize));
 
 			using (UIImage img = UIImage.FromFile ("./boardinterface/widget/like.png")) {
 				likeView.Image = img;
@@ -167,7 +170,7 @@ namespace Board.Interface.Widgets
 			}
 
 			likeView.TintColor = UIColor.FromRGB(140,140,140);
-			likeView.Center = new CGPoint (frame.Width - 5 - iconSize / 2, frame.Height / 2);
+			likeView.Center = new CGPoint (frame.Width - 5 - IconSize / 2, frame.Height / 2);
 			return likeView;
 		}
 
@@ -194,7 +197,7 @@ namespace Board.Interface.Widgets
 
 		protected void CreateEye()
 		{
-			EyeView = new UIImageView(new CGRect (MountingView.Frame.X + 10, MountingView.Frame.Height - iconSize - 5, iconSize, iconSize));
+			EyeView = new UIImageView(new CGRect (MountingView.Frame.X + 10, MountingView.Frame.Height - IconSize - 5, IconSize, IconSize));
 			EyeView.Image = ClosedEyeImageView.Image;
 			EyeView.TintColor = UIColor.FromRGB(140,140,140);
 		}
@@ -329,6 +332,7 @@ namespace Board.Interface.Widgets
 			EyeView.Image = OpenEyeImageView.Image;
 			EyeView.TintColor = BoardInterface.board.MainColor;
 			EyeOpen = true;
+			ButtonInterface.navigationButton.SubtractNavigationButtonText();
 		}
 	}
 }

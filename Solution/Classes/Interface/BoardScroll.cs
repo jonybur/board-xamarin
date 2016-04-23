@@ -22,7 +22,7 @@ namespace Board.Interface
 
 		public enum Tags : byte { Background = 1, Content };
 
-		public static int ScrollViewTotalWidthSize = 2600 * 52;
+		public static int ScrollViewTotalWidthSize = 2600 * 53;
 		public static int ScrollViewWidthSize = 2600;
 		readonly List<Widget> DrawnWidgets;
 		EventHandler DragStartsEvent, ScrolledEvent;
@@ -108,7 +108,7 @@ namespace Board.Interface
 			// this limits the size of the scrollview
 			ScrollView.ContentSize = new CGSize(ScrollViewTotalWidthSize, AppDelegate.ScreenHeight);
 			// sets the scrollview on the middle of the view
-			ScrollView.SetContentOffset (new CGPoint(ScrollViewTotalWidthSize/2 + ScrollViewWidthSize / 2- AppDelegate.ScreenWidth/2, 0), false);
+			ScrollView.SetContentOffset (new CGPoint(ScrollViewTotalWidthSize / 2 - AppDelegate.ScreenWidth/2, 0), false);
 
 			MaximumZoomScale = 1f;
 			MinimumZoomScale = .15f;
@@ -166,21 +166,29 @@ namespace Board.Interface
 				// takes wids that are close
 				DrawWidgets(WidgetsToDraw, virtualLeftBound, virtualRightBound, leftScreenNumber, rightScreenNumber);
 
-				if (!ScrollView.Dragging) {
+				// the ones at the left ;; the ones at the right ;; if it doesnt have an open eye
+				// checks only on the wids that are drawn
 
-					// the ones at the left ;; the ones at the right ;; if it doesnt have an open eye
-					// checks only on the wids that are drawn
-					List<Widget> WidgetsToOpenEyes = WidgetsToDraw.FindAll (item =>
-						((item.content.Center.X - item.View.Frame.Width / 2) > virtualRightBound) &&
-						((item.content.Center.X + item.View.Frame.Width / 2) < (virtualLeftBound)) &&
-						!item.EyeOpen);
+				rightScreenNumber = (int)Math.Floor((physicalRightBound) / ScrollViewWidthSize);
+				leftScreenNumber = (int)Math.Floor ((physicalLeftBound) / ScrollViewWidthSize);
+				virtualRightBound = physicalRightBound - ScrollViewWidthSize * rightScreenNumber;
+				virtualLeftBound = physicalLeftBound - ScrollViewWidthSize * leftScreenNumber;
 
-					if (WidgetsToOpenEyes != null && WidgetsToOpenEyes.Count > 0) {
-						foreach (var wid in WidgetsToOpenEyes) {
-							OpenEye (wid);
-						}
+				List<Widget> WidgetsToOpenEyes = WidgetsToDraw.FindAll (item => !item.EyeOpen && 
+					((item.content.Center.X - item.View.Frame.Width / 2 > virtualLeftBound &&
+					item.content.Center.X - item.View.Frame.Width / 2 < virtualLeftBound + AppDelegate.ScreenWidth &&
+					item.content.Center.X + item.View.Frame.Width / 2 < virtualRightBound &&
+					item.content.Center.X + item.View.Frame.Width / 2 > virtualRightBound - AppDelegate.ScreenWidth &&
+						leftScreenNumber == rightScreenNumber) || (leftScreenNumber != rightScreenNumber &&
+							(item.content.Center.X + item.View.Frame.Width / 2 < virtualRightBound ||
+							item.content.Center.X - item.View.Frame.Width / 2 > virtualLeftBound))));
+				
+				
+				if (WidgetsToOpenEyes != null && WidgetsToOpenEyes.Count > 0) {
+					foreach (var wid in WidgetsToOpenEyes) {
+						Console.WriteLine ("opens eye!" + wid.content.Center.X);
+						wid.OpenEye ();
 					}
-
 				}
 			}
 
@@ -259,11 +267,6 @@ namespace Board.Interface
 			isAnimating = false;
 		}
 
-		private void OpenEye(Widget widget) {
-			widget.OpenEye();
-			ButtonInterface.navigationButton.SubtractNavigationButtonText();
-		}
-
 		public void ZoomScrollview() {
 			AddSubview (TopBanner);
 			SetZoomScale(1f, true);
@@ -272,11 +275,10 @@ namespace Board.Interface
 			SendSubviewToBack (TopBanner);
 		}
 
+		// TODO: change this to work with transform, probably even kill ZoomingScrollView (!)
 		public void UnzoomScrollview()
 		{
 			TopBanner.RemoveFromSuperview ();
-
-			// TODO: remove hardcode and programatically derive the correct zooming value (.15f is current)
 			TempContentOffset = (float)ScrollView.ContentOffset.X;
 			ScrollView.Frame = new CGRect(0, AppDelegate.ScreenHeight/2 - 70, ScrollViewWidthSize, ScrollView.Frame.Height);
 			SetZoomScale(.15f, true);

@@ -28,7 +28,7 @@ namespace Board.Interface.LookUp
 
 			View.BackgroundColor = backColor;
 
-			CreateButtons (frontColor);
+			CreateButtons (UIColor.Black);
 
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			ScrollView.UserInteractionEnabled = true;
@@ -36,7 +36,7 @@ namespace Board.Interface.LookUp
 			LoadMap ();
 			ScrollView.AddSubview (mapView);
 
-			View.AddSubviews (ScrollView, BackButton, LikeButton, UberButton, TrashButton);
+			View.AddSubviews (ScrollView, BackButton, UberButton);
 		}
 
 		public override void ViewDidDisappear(bool animated)
@@ -53,10 +53,7 @@ namespace Board.Interface.LookUp
 			var camera = CameraPosition.FromCamera (new CLLocationCoordinate2D(GeolocatorObject.results [0].geometry.location.lat,
 				GeolocatorObject.results [0].geometry.location.lng), 16);
 
-			mapView = MapView.FromCamera (new CGRect (0,
-				TrashButton.Frame.Bottom,
-				AppDelegate.ScreenWidth,
-				AppDelegate.ScreenHeight - TrashButton.Frame.Bottom - LikeButton.Frame.Height), camera);
+			mapView = MapView.FromCamera (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight), camera);
 			mapView.Settings.CompassButton = true;
 			mapView.Settings.MyLocationButton = true;
 			mapView.UserInteractionEnabled = true;

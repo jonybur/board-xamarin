@@ -38,10 +38,12 @@ namespace Board.Interface.Widgets
 			View.AddSubview (MountingView);
 
 			// picture
-			CGRect pictureFrame = new CGRect (MountingView.Frame.X + 10, 10, frame.Width, frame.Height);
+			CGRect pictureFrame = new CGRect (MountingView.Frame.X + SideMargin, TopMargin, frame.Width, frame.Height);
 			AVPlayerLayer videoLayer = LoadVideoThumbnail (pictureFrame);
-			videoLayer.AllowsEdgeAntialiasing = true;
 			View.Layer.AddSublayer (videoLayer);
+			videoLayer.AllowsEdgeAntialiasing = true;
+			videoLayer.ModelLayer.AllowsEdgeAntialiasing = true;
+			View.Layer.AllowsEdgeAntialiasing = true;
 
 			/*
 			UIImageView uiv = new UIImageView (pictureFrame);
@@ -110,7 +112,7 @@ namespace Board.Interface.Widgets
 
 					if (_player != null) {
 						try{
-							// TODO: fix bug that makes _player null
+							// TODO: wait until loopermethod is dead before disposing videowidget
 							View.InvokeOnMainThread (() => _player.Seek (new CMTime (0, 1000000000)));
 						} catch (Exception ex) {
 							Console.WriteLine (ex.Message);

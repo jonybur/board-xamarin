@@ -28,12 +28,18 @@ namespace Board.Interface.Widgets
 			UIImageView calendarBox = CreateCalendarBox();
 			UIImageView pictureBox = CreatePictureBox (calendarBox.Frame);
 
-			CGRect totalRect = new CGRect (calendarBox.Frame.X, calendarBox.Frame.Y, calendarBox.Frame.Width + pictureBox.Frame.Width + 10, calendarBox.Frame.Height);
+			var totalRect = new CGRect (calendarBox.Frame.X, calendarBox.Frame.Y, calendarBox.Frame.Width + pictureBox.Frame.Width + 5, calendarBox.Frame.Height);
 
 			// mounting
 			CreateMounting (totalRect);
+
+			pictureBox.Center = new CGPoint (MountingView.Frame.Width - pictureBox.Frame.Width / 2 - SideMargin * 2, pictureBox.Center.Y);
+
 			View = new UIView(MountingView.Frame);
-			View.AddSubviews (MountingView, calendarBox, pictureBox);
+
+			MountingView.AddSubviews (calendarBox, pictureBox);
+
+			View.AddSubviews (MountingView);
 
 			EyeOpen = false;
 
@@ -42,7 +48,7 @@ namespace Board.Interface.Widgets
 
 		private UIImageView CreateCalendarBox()
 		{
-			UIImageView box = new UIImageView (new CGRect(10, 10, 100, 140));
+			var box = new UIImageView (new CGRect(SideMargin, TopMargin, 100, 140));
 
 			// empieza en 0 termina en 24
 			UILabel dayName = new UILabel (new CGRect (10, 0, 80, 30));
@@ -92,10 +98,11 @@ namespace Board.Interface.Widgets
 
 		private UIImageView CreatePictureBox(CGRect calendarBoxFrame)
 		{
-			UIImageView box = new UIImageView (new CGRect (calendarBoxFrame.Right + 10, calendarBoxFrame.Top, 100, calendarBoxFrame.Height));
+			var box = new UIImageView (new CGRect (calendarBoxFrame.Right + 10, calendarBoxFrame.Top, 100, calendarBoxFrame.Height));
+			box.BackgroundColor = UIColor.White;
 
 			float imgw, imgh;
-			float autosize = (float)box.Frame.Width;
+			const float autosize = 100;
 
 			float scale = (float)(boardEvent.ImageView.Frame.Width/boardEvent.ImageView.Frame.Height);
 
@@ -109,9 +116,9 @@ namespace Board.Interface.Widgets
 				imgw = imgh * scale;
 			}
 
-			UIImageView eventPoster = new UIImageView (new CGRect(0, 0, imgw, imgh));
+			var eventPoster = new UIImageView (new CGRect(0, 0, imgw, imgh));
 			eventPoster.Image = boardEvent.ImageView.Image.ImageScaledToFitSize(eventPoster.Frame.Size);
-			eventPoster.Center = new CGPoint (calendarBoxFrame.Width / 2, calendarBoxFrame.Height / 2);
+			eventPoster.Center = new CGPoint (box.Frame.Width / 2, box.Frame.Height / 2);
 			eventPoster.Layer.AllowsEdgeAntialiasing = true;
 
 			box.AddSubview (eventPoster);

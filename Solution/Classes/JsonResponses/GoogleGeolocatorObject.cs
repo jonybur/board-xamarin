@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
+using CoreLocation;
 using Newtonsoft.Json;
 using Foundation;
 
@@ -89,6 +90,52 @@ namespace Board.JsonResponses
 	{
 		public List<Result> results { get; set; }
 		public string status { get; set; }
+
+
+		public string Neighborhood{
+			get {
+				string hood = "<ERROR>";
+				try{
+					hood = results [0].address_components [2].long_name; 
+				} catch {
+					hood = "<ERROR>";
+				}
+				return hood;
+			}	
+		}
+		public string Address{
+			get {
+				string hood = "<ERROR>";
+				try{
+					hood = results [0].address_components [0].long_name + " " +
+						results [0].address_components [1].short_name; 
+				} catch {
+					hood = "<ERROR>";
+				}
+				return hood;
+			}	
+		}
+		public string FullAddress{
+			get {
+				string hood = "<ERROR>";
+				try{
+					hood = results [0].formatted_address; 
+				} catch {
+					hood = "<ERROR>";
+				}
+				return hood;
+			}	
+		}
+		public CLLocationCoordinate2D Coordinate{
+			get {
+				try {
+					return new CLLocationCoordinate2D (results [0].geometry.location.lat,
+							results [0].geometry.location.lng);
+				} catch {
+					return new CLLocationCoordinate2D ();
+				}
+			}
+		}
 
 		[JsonConstructor]
 		public GoogleGeolocatorObject(){}

@@ -21,7 +21,7 @@ namespace Board.Infrastructure
 
 			string json = "{\"accessToken\": \"" + AccessToken.CurrentAccessToken.TokenString + "\", " +
 				"\"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\" }";
-
+			
 			string result = JsonPOSTRequest ("http://"+AppDelegate.APIAddress+"/api/account/login", json);
 
 			TokenResponse tk = JsonConvert.DeserializeObject<TokenResponse> (result);
@@ -38,7 +38,7 @@ namespace Board.Infrastructure
 		public static bool CreateBoard(Board.Schema.Board board){
 			
 			string json = "{\"uuid\": \"" + board.Id  + "\", " + 
-				"\"address\": \"" + board.FullAddress  + "\", " +
+				"\"address\": \"" + board.GeolocatorObject.FullAddress  + "\", " +
 				"\"name\": \"" + board.Name + "\", " +
 				"\"mainColorCode\": \"" + CommonUtils.UIColorToHex(board.MainColor)  + "\", " +
 				"\"secondaryColorCode\": \"" + CommonUtils.UIColorToHex(board.SecondaryColor) + "\", " +
@@ -92,12 +92,13 @@ namespace Board.Infrastructure
 		}
 
 		public static string GetUberProduct(double lat, double lng){
-			string result = JsonGETRequest("https://api.uber.com/v1/products?latitude="+lat+"&longitude="+lng+"&server_token=4y1kRu3Kt-LWdTeXcktgphAN7qZlltsTRTbvwIQ_");
+			string result = JsonGETRequest("https://api.uber.com/v1/products?latitude="+lat+"&longitude="+lng+"&server_token="+AppDelegate.UberServerToken);
 
 			var productResponse = JsonConvert.DeserializeObject<UberProductResponse> (result);
 
 			if (productResponse != null) {
 				if (productResponse.products.Count > 0) {
+					// always gets first product (luckily it will always be uberX)
 					return productResponse.products [0].product_id;
 				}
 			}

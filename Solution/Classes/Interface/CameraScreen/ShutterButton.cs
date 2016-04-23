@@ -75,6 +75,7 @@ namespace Board.Interface.Camera
 					case UIGestureRecognizerState.Cancelled:
 					case UIGestureRecognizerState.Failed:
 						timer = false;
+
 						Thread.Sleep(1000);
 						CameraController.Vision.EndVideoCapture();
 						RingView.TintColor = UIColor.White;
