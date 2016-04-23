@@ -1,33 +1,36 @@
-using System.IO;
-using SQLite;
-using Foundation;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using Board.JsonResponses;
 using Board.Schema;
+using Foundation;
+using SQLite;
 using UIKit;
-using Board.Utilities;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Board.Infrastructure
 {
+	[Preserve(AllMembers = true)]
 	public static class StorageController
-	{
-		[Table("Announcements")]
-		private class AnnouncementL {
-			[PrimaryKey]
+	{	
+		[Preserve(AllMembers = true)]
+		[Table("Boards")]
+		private class BoardL {
+			[PrimaryKey, Column("id")]
 			public string Id { get; set; }
 
-			public AnnouncementL(){}
+			[Column("geolocatorJson")]
+			public string GeolocatorJson { get; set; }
 
-			public AnnouncementL(string id){
+			public BoardL(){}
+
+			public BoardL(string id, string geolocatorJson){
 				Id = id;
+				GeolocatorJson = geolocatorJson;
 			}
 		}
 
 		private static string dbPath;
 		private static string docsPath;
-
 		private static SQLiteConnection database;
 
 		public static void Initialize () {
@@ -39,69 +42,41 @@ namespace Board.Infrastructure
 			dbPath = Path.Combine (docsPath, "localdb.db3");
 
 			database = new SQLiteConnection (dbPath);
-			database.CreateTable<AnnouncementL> ();
+			database.CreateTable<BoardL> ();
 		}
 
-		public static void InsertContent(Content content)
-		{
-			if (content is Announcement) {
-				BinarySerialize ((Announcement)content);
+		public static Board.Schema.Board BoardIsStored(string id){
+			var boardL = database.Query<BoardL> ("SELECT * FROM Boards WHERE id = ?", id);
 
-				AnnouncementL anl = new AnnouncementL (content.Id);
-				database.Insert (anl);
-			}
-		}
-
-		public static void RemoveContent(Content content)
-		{
-			if (content is Announcement) {
-				// searches in DB, if uid found then kill .bin
-
-				File.Delete (docsPath + content.Id + ".bin");
-			}
-		}
-
-		// returns all stored content dictionary
-		public static Dictionary<string, Content> ReturnAllStoredContent()
-		{
-			Dictionary<string, Content> dicContent = new Dictionary<string, Content>();
-			var table = database.Table<AnnouncementL> ();
-
-			foreach (AnnouncementL anl in table) {
+			if (boardL.Count > 0) {
 				
-				string filename = Path.Combine (docsPath, anl.Id + ".bin"); 
+				// gets image and location from storage
+				string imgPath = Path.Combine (docsPath, id + ".jpg"); 
+				var image = UIImage.FromBundle (imgPath);
 
-				Announcement an = BinaryDeserialize (filename);
+				var board = new Board.Schema.Board();
+				board.ImageView = new UIImageView(image);
+				board.GeolocatorObject = JsonHandler.DeserializeObject (boardL[0].GeolocatorJson);
 
-				dicContent.Add (anl.Id, an);
-			}
-
-			return dicContent;
-		}
-
-		// serializes object and saves it in file
-		private static void BinarySerialize(Announcement obj){
-			IFormatter formatter = new BinaryFormatter();
-
-			string filename = Path.Combine (docsPath, obj.Id + ".bin"); 
-
-			using (Stream stream = new FileStream (filename, FileMode.Create, FileAccess.Write, FileShare.None)) {
-				formatter.Serialize (stream, obj);
-				stream.Close ();
+				return board;
+			} else {
+				return null;
 			}
 		}
 
-		// deserializes, returns object
-		private static Announcement BinaryDeserialize(string url)
-		{
-			IFormatter formatter = new BinaryFormatter();
+		public static void StoreBoard(Board.Schema.Board board, string geolocationJson){
+			var boardL = new BoardL (board.Id, geolocationJson);
+				
+			string imgFilename = Path.Combine (docsPath, board.Id + ".jpg"); 
+			NSData imgData = board.ImageView.Image.AsJPEG ();
 
-			Announcement obj;
-			using (Stream stream = new FileStream (url, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-				obj = (Announcement)formatter.Deserialize (stream);
-				stream.Close ();
+			NSError err = null;
+			if (imgData.Save (imgFilename, false, out err) && imgData.Save (imgFilename, false, out err)) {
+				database.Insert (boardL);
+			} else {
+				Console.WriteLine ("ERROR : picture hasnt been saved " + err.LocalizedDescription);
 			}
-			return obj;
+
 		}
 	}
 }

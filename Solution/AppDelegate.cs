@@ -77,6 +77,8 @@ namespace Board
 			SystemFontOfSize18 = UIFont.SystemFontOfSize (18);
 			SystemFontOfSize20 = UIFont.SystemFontOfSize (20);
 
+			StorageController.Initialize ();
+
 			MapServices.ProvideAPIKey (MapsApiKey);
 
 			Latitude = 0;

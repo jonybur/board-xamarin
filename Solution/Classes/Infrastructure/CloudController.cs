@@ -54,35 +54,44 @@ namespace Board.Infrastructure
 		}
 
 		public static async Task<List<Board.Schema.Board>> GetUserBoards(){
-
-			Console.WriteLine ("starts...");
+			
 			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/user/boards?authToken=" + AppDelegate.EncodedBoardToken);
-			Console.WriteLine ("got result!");
 
 			BoardResponse response = BoardResponse.Deserialize (result);
 			var boards = new List<Board.Schema.Board> ();
 
 			if (response != null) {
 				foreach (BoardResponse.Datum r in response.data) {
-					// gets image from url
-					Console.WriteLine ("starts download...");
-					UIImage boardImage = await CommonUtils.DownloadUIImageFromURL (r.logoURL);
-					Console.WriteLine ("downloaded!");
 
-					// gets address
-					Console.WriteLine ("gets address...");
-					string jsonobj = JsonHandler.GET ("https://maps.googleapis.com/maps/api/geocode/json?address=" + r.address + "&key=" + AppDelegate.GoogleMapsAPIKey);
-					GoogleGeolocatorObject geolocatorObject = JsonHandler.DeserializeObject (jsonobj);
-					Console.WriteLine ("got address");
+					UIImage boardImage;
+					GoogleGeolocatorObject geolocatorObject;
 
-					// compiles the board, adds the geolocator object for further reference
-					var board = new Board.Schema.Board (r.name,
-						new UIImageView(boardImage),
-						CommonUtils.HexToUIColor (r.mainColorCode),
-						CommonUtils.HexToUIColor (r.secondaryColorCode),
-						geolocatorObject,
-						r.userId);
-					
+					Board.Schema.Board board = StorageController.BoardIsStored(r.uuid);
+
+					if (board == null) {
+						board = new Board.Schema.Board ();
+
+						// gets image and location from cloud
+						boardImage = await CommonUtils.DownloadUIImageFromURL (r.logoURL);
+
+						string jsonobj = JsonHandler.GET ("https://maps.googleapis.com/maps/api/geocode/json?address=" + r.address + "&key=" + AppDelegate.GoogleMapsAPIKey);
+						geolocatorObject = JsonHandler.DeserializeObject (jsonobj);
+
+						// saves it to storage
+						board.ImageView = new UIImageView (boardImage);
+						board.GeolocatorObject = geolocatorObject;
+
+						board.Id = r.uuid;
+
+						StorageController.StoreBoard (board, jsonobj);
+					}
+
+					// finishes compiling board
+					board.Name = r.name;
+					board.MainColor = CommonUtils.HexToUIColor (r.mainColorCode);
+					board.SecondaryColor = CommonUtils.HexToUIColor (r.secondaryColorCode);
+					board.CreatorId = r.userId;
+
 					boards.Add (board);
 
 				}

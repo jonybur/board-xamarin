@@ -42,13 +42,6 @@ namespace Board.Interface.Buttons
 			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer  (tg => {
 				tg.NumberOfTapsRequired = 1;
 
-				/*
-				if (BoardInterface.zoomingScrollView.ZoomScale < 1)
-				{
-					BoardInterface.ZoomScrollview();
-					return;
-				}
-
 				if (BoardInterface.DictionaryWidgets == null)
 				{ return; }
 
@@ -86,9 +79,8 @@ namespace Board.Interface.Buttons
 				widget.Highlight();
 				highLighted = widget;
 
-				BoardInterface.scrollView.SetContentOffset (position, true);
+				AppDelegate.boardInterface.BoardScroll.ScrollView.SetContentOffset (position, true);
 				highlitedContent++;
-				*/
 			});
 
 			// unzooms

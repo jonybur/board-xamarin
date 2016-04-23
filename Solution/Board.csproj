@@ -56,7 +56,6 @@
     <MtouchUseSGen>true</MtouchUseSGen>
     <CodesignProvision>8f509e24-323b-41ef-9c58-9acf693c9618</CodesignProvision>
     <MtouchProfiling>true</MtouchProfiling>
-    <MtouchLink>Full</MtouchLink>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>full</DebugType>
@@ -136,11 +135,11 @@
     <Reference Include="PNChartBinding">
       <HintPath>..\Bindings\PNChartBinding.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Maps">
-      <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.11.1.1\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
-    </Reference>
     <Reference Include="PBJVisionBinding">
       <HintPath>..\..\Libraries\XamarinBinding\PBJVisionBinding\PBJVisionBinding\bin\Release\PBJVisionBinding.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Maps">
+      <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.11.1.2\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -567,9 +566,9 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Import Project="..\packages\SQLitePCL.raw.0.8.6\build\Xamarin.iOS10\SQLitePCL.raw.targets" Condition="Exists('..\packages\SQLitePCL.raw.0.8.6\build\Xamarin.iOS10\SQLitePCL.raw.targets')" />
-  <Import Project="..\packages\Xamarin.Build.Download.0.2.0\build\Xamarin.Build.Download.targets" Condition="Exists('..\packages\Xamarin.Build.Download.0.2.0\build\Xamarin.Build.Download.targets')" />
-  <Import Project="..\packages\Xamarin.Build.Download.0.2.0\build\Xamarin.Build.Download.props" Condition="Exists('..\packages\Xamarin.Build.Download.0.2.0\build\Xamarin.Build.Download.props')" />
-  <Import Project="..\packages\Xamarin.Google.iOS.Maps.1.11.1.1\build\Xamarin.Google.iOS.Maps.targets" Condition="Exists('..\packages\Xamarin.Google.iOS.Maps.1.11.1.1\build\Xamarin.Google.iOS.Maps.targets')" />
+  <Import Project="..\packages\Xamarin.Build.Download.0.2.1\build\Xamarin.Build.Download.targets" Condition="Exists('..\packages\Xamarin.Build.Download.0.2.1\build\Xamarin.Build.Download.targets')" />
+  <Import Project="..\packages\Xamarin.Build.Download.0.2.1\build\Xamarin.Build.Download.props" Condition="Exists('..\packages\Xamarin.Build.Download.0.2.1\build\Xamarin.Build.Download.props')" />
+  <Import Project="..\packages\Xamarin.Google.iOS.Maps.1.11.1.2\build\Xamarin.Google.iOS.Maps.targets" Condition="Exists('..\packages\Xamarin.Google.iOS.Maps.1.11.1.2\build\Xamarin.Google.iOS.Maps.targets')" />
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork.png" />
     <ITunesArtwork Include="iTunesArtwork%402x.png" />
