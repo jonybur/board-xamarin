@@ -23,6 +23,11 @@ namespace Board.Screens.Controls
 
 		public override void ViewDidLoad()
 		{
+			View.Layer.ShadowOffset = new CGSize (1, 0);
+			View.Layer.ShadowRadius = 5f;
+			View.Layer.ShadowColor = UIColor.Black.CGColor;
+			View.Layer.ShadowOpacity = .75f;
+
 			CABasicAnimation animation =  new CABasicAnimation();
 			animation.KeyPath = "position.x";
 			animation.From = new NSNumber(0);

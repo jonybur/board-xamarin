@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using CoreGraphics;
+using CoreAnimation;
 using Board.Interface.Buttons;
 using Board.Schema;
+using Foundation;
 using System.Threading;
 using Board.Interface.LookUp;
 using Board.Infrastructure;
@@ -24,8 +26,7 @@ namespace Board.Interface.Widgets
 		public List<UIGestureRecognizer> GestureRecognizers;
 
 		public bool EyeOpen;
-
-		private bool highlighted;
+		public static bool Highlighted;
 
 		// mounting, likeheart, likelabel and eye
 		protected UIImageView MountingView;
@@ -66,6 +67,12 @@ namespace Board.Interface.Widgets
 			}
 
 			View = new UIButton ();
+
+			View.Layer.ShadowOffset = new CGSize (0, 0);
+			View.Layer.ShadowRadius = 10f;
+			View.Layer.ShadowColor = UIColor.Black.CGColor;
+			View.Layer.ShadowOpacity = 0f;
+
 			GestureRecognizers = new List<UIGestureRecognizer> ();
 		}
 
@@ -131,11 +138,26 @@ namespace Board.Interface.Widgets
 		}
 
 		public void Highlight(){
-			if (!highlighted)
+			if (!Highlighted)
 			{
-				highlighted = true;
+				Highlighted = true;
 
-				MountingView.BackgroundColor = UIColor.FromRGB (80, 80, 80);
+				CAKeyFrameAnimation scale = new CAKeyFrameAnimation ();
+				scale.KeyPath = "transform";
+
+				CATransform3D t1 = CATransform3D.Identity;
+				t1 = CATransform3D.MakeScale (1.25f, 1.25f, 1.25f);
+
+				CATransform3D t2 = CATransform3D.Identity;
+
+				scale.Values = new NSObject[]{NSValue.FromCATransform3D (t2), NSValue.FromCATransform3D (t1), NSValue.FromCATransform3D (t2)};
+				scale.KeyTimes = new NSNumber[]{0f, .5f, 1f};
+				scale.Duration = .5f;
+
+				scale.RemovedOnCompletion = true;
+				View.Layer.AddAnimation (scale, "highlight");
+				View.Layer.ZPosition = 1;
+				View.Layer.ShadowOpacity = .75f;
 
 				Thread thread = new Thread (new ThreadStart (Unhighlight));
 				thread.Start ();
@@ -144,9 +166,12 @@ namespace Board.Interface.Widgets
 
 		private void Unhighlight()
 		{
-			Thread.Sleep (1000);
+			Thread.Sleep (500);
 
-			highlighted = false;
+			View.Layer.ZPosition = 0;
+			View.Layer.ShadowOpacity = 0f;
+
+			Highlighted = false;
 			View.InvokeOnMainThread (() => {
 				MountingView.BackgroundColor = UIColor.FromRGB (250, 250, 250);
 			});
@@ -154,7 +179,11 @@ namespace Board.Interface.Widgets
 
 		public void InstantUnhighlight()
 		{
-			highlighted = false;
+			Highlighted = false;
+
+			View.Layer.ZPosition = 0;
+			View.Layer.ShadowOpacity = 0f;
+
 			View.InvokeOnMainThread (() => {
 				MountingView.BackgroundColor = UIColor.FromRGB (250, 250, 250);
 			});	

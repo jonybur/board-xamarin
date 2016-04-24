@@ -70,7 +70,7 @@ namespace Board.Interface
 						isSnapping = false;
 					}
 
-				} else if (!isDragging){
+				} else if (!isDragging && !Widget.Highlighted){
 					
 					if (Math.Abs ((ScrollView.ContentOffset.X + Frame.Width / 2) - infoBox.Center.X) < 100)
 					{
