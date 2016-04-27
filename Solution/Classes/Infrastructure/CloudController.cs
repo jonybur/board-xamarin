@@ -21,10 +21,17 @@ namespace Board.Infrastructure
 
 			string json = "{\"accessToken\": \"" + AccessToken.CurrentAccessToken.TokenString + "\", " +
 				"\"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\" }";
-			
+
+
 			string result = JsonPOSTRequest ("http://"+AppDelegate.APIAddress+"/api/account/login", json);
 
-			TokenResponse tk = JsonConvert.DeserializeObject<TokenResponse> (result);
+			TokenResponse tk;
+			try{
+				tk = JsonConvert.DeserializeObject<TokenResponse> (result);
+			} catch {
+				// TODO: handle connect failure or something
+				tk = null;
+			}
 
 			if (tk != null && tk.authToken != null & tk.authToken != string.Empty) {
 				AppDelegate.BoardToken = tk.authToken;

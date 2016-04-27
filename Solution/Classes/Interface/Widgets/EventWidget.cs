@@ -55,7 +55,7 @@ namespace Board.Interface.Widgets
 			dayName.Font = AppDelegate.SystemFontOfSize18;
 			dayName.Text = boardEvent.StartDate.DayOfWeek.ToString();
 			dayName.TextAlignment = UITextAlignment.Center;
-			dayName.TextColor = BoardInterface.board.MainColor;
+			dayName.TextColor = Widget.HighlightColor;
 			dayName.AdjustsFontSizeToFitWidth = true;
 
 			// empieza en 26 termina en 56
@@ -64,13 +64,13 @@ namespace Board.Interface.Widgets
 			timeLabel.Text = boardEvent.StartDate.ToString("t");
 			timeLabel.TextAlignment = UITextAlignment.Center;
 			timeLabel.SizeToFit ();
-			timeLabel.TextColor = BoardInterface.board.MainColor;
+			timeLabel.TextColor = Widget.HighlightColor;
 			timeLabel.AdjustsFontSizeToFitWidth = true;
 
 			UIImageView timeView = new UIImageView (new CGRect (0, 0, 10, 10));
 			using (UIImage img = UIImage.FromFile ("./boardinterface/widget/time.png")) {
 				timeView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-				timeView.TintColor = BoardInterface.board.MainColor;
+				timeView.TintColor = Widget.HighlightColor;
 				timeView.Center = new CGPoint (timeLabel.Frame.Left - 10, timeLabel.Center.Y);
 			}
 
@@ -79,7 +79,7 @@ namespace Board.Interface.Widgets
 			dayNumber.Font = UIFont.SystemFontOfSize (60);
 			dayNumber.Text = boardEvent.StartDate.Day.ToString();
 			dayNumber.AdjustsFontSizeToFitWidth = true;
-			dayNumber.TextColor = BoardInterface.board.MainColor;
+			dayNumber.TextColor = Widget.HighlightColor;
 			dayNumber.TextAlignment = UITextAlignment.Center;
 
 			// empieza en 105 termina en 135
@@ -88,7 +88,7 @@ namespace Board.Interface.Widgets
 			int monthNumber = boardEvent.StartDate.Month;
 			monthName.Text = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNumber).ToUpper();
 			monthName.TextAlignment = UITextAlignment.Center;
-			monthName.TextColor = BoardInterface.board.MainColor;
+			monthName.TextColor = Widget.HighlightColor;
 			monthName.AdjustsFontSizeToFitWidth = true;
 
 			box.AddSubviews (dayName, timeView, timeLabel, dayNumber, monthName);

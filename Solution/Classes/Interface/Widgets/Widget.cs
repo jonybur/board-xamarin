@@ -21,6 +21,8 @@ namespace Board.Interface.Widgets
 
 		public UIView View;
 
+		public static UIColor HighlightColor;
+
 		public Content content;
 
 		public List<UIGestureRecognizer> GestureRecognizers;
@@ -48,6 +50,8 @@ namespace Board.Interface.Widgets
 
 		public Widget()
 		{
+			HighlightColor = AppDelegate.BoardBlack;
+
 			if (AppDelegate.PhoneVersion == "6") {
 				Autosize = 220;
 			} else if (AppDelegate.PhoneVersion == "6plus") {
@@ -142,51 +146,44 @@ namespace Board.Interface.Widgets
 			{
 				Highlighted = true;
 
+				CATransaction.Begin();
+
+				CATransaction.CompletionBlock = delegate {
+					Unhighlight();
+				};
+
 				CAKeyFrameAnimation scale = new CAKeyFrameAnimation ();
 				scale.KeyPath = "transform";
 
-				CATransform3D t1 = CATransform3D.Identity;
-				t1 = CATransform3D.MakeScale (1.25f, 1.25f, 1.25f);
+				var identity = CATransform3D.Identity;
+				var scaled = CATransform3D.MakeScale (1.3f, 1.3f, 1.3f);
 
-				CATransform3D t2 = CATransform3D.Identity;
+				scale.Values = new NSObject[]{ 
+					NSValue.FromCATransform3D (identity),
+					NSValue.FromCATransform3D (scaled),
+					NSValue.FromCATransform3D (identity)
+				};
 
-				scale.Values = new NSObject[]{NSValue.FromCATransform3D (t2), NSValue.FromCATransform3D (t1), NSValue.FromCATransform3D (t2)};
-				scale.KeyTimes = new NSNumber[]{0f, .5f, 1f};
-				scale.Duration = .5f;
+				scale.KeyTimes = new NSNumber[]{1/2, 6/8, 1};
+				scale.Duration = .8f;
+				scale.RemovedOnCompletion = false;
 
-				scale.RemovedOnCompletion = true;
 				View.Layer.AddAnimation (scale, "highlight");
 				View.Layer.ZPosition = 1;
 				View.Layer.ShadowOpacity = .75f;
 
-				Thread thread = new Thread (new ThreadStart (Unhighlight));
-				thread.Start ();
+				CATransaction.Commit();
 			}
 		}
 
-		private void Unhighlight()
-		{
-			Thread.Sleep (500);
-
-			View.Layer.ZPosition = 0;
-			View.Layer.ShadowOpacity = 0f;
-
-			Highlighted = false;
-			View.InvokeOnMainThread (() => {
-				MountingView.BackgroundColor = UIColor.FromRGB (250, 250, 250);
-			});
-		}
-
-		public void InstantUnhighlight()
+		public void Unhighlight()
 		{
 			Highlighted = false;
 
-			View.Layer.ZPosition = 0;
-			View.Layer.ShadowOpacity = 0f;
-
-			View.InvokeOnMainThread (() => {
-				MountingView.BackgroundColor = UIColor.FromRGB (250, 250, 250);
-			});	
+			if (View.Layer != null) {
+				View.Layer.ZPosition = 0;
+				View.Layer.ShadowOpacity = 0f;
+			}
 		}
 	
 		protected UIImageView CreateLike(CGRect frame)

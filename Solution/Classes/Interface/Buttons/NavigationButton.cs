@@ -39,7 +39,7 @@ namespace Board.Interface.Buttons
 				//AppDelegate.boardInterface.BoardScroll.SetContentOffset(new CGPoint(BoardInterface.ScrollViewWidthSize / 2 - AppDelegate.ScreenWidth / 2, 0), true);
 			});
 
-			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer  (tg => {
+			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer (tg => {
 				tg.NumberOfTapsRequired = 1;
 
 				if (BoardInterface.DictionaryWidgets == null)
@@ -68,18 +68,56 @@ namespace Board.Interface.Buttons
 					SubtractNavigationButtonText();
 				}
 
-				position = new PointF ((float)(widget.View.Frame.X - AppDelegate.ScreenWidth/2 + widget.View.Frame.Width/2), 0f);
+				var scrollOffset = AppDelegate.boardInterface.BoardScroll.VirtualLeftBound + AppDelegate.ScreenWidth / 2;
+				var widgetPosition = widget.content.Center.X - AppDelegate.ScreenWidth / 2;
+
+				int rightScreenNumber, leftScreenNumber, rightCurrentScreenNumber, leftCurrentScreenNumber;
+				leftScreenNumber = AppDelegate.boardInterface.BoardScroll.LeftScreenNumber;
+				rightScreenNumber = AppDelegate.boardInterface.BoardScroll.RightScreenNumber;
+				rightCurrentScreenNumber = AppDelegate.boardInterface.BoardScroll.CurrentRightScreenNumber;
+				leftCurrentScreenNumber = AppDelegate.boardInterface.BoardScroll.CurrentLeftScreenNumber;
+
+				float scrollViewOffsetToPan = UIBoardScroll.ScrollViewWidthSize;
+
+				// el offset está en la mitad derecha del scroll
+				if (scrollOffset > 1300){
+					
+					if (widgetPosition > 1300){
+						// los dos a la derecha
+						// mismo board
+						scrollViewOffsetToPan = scrollViewOffsetToPan * leftCurrentScreenNumber;
+					} else {
+						// widget está del otro lado del infobox
+						// board derecho
+						scrollViewOffsetToPan = scrollViewOffsetToPan * rightScreenNumber;
+					}
+
+				} else {
+
+					if (widgetPosition > 1300){
+						// widget está del otro lado del infobox 
+						// board izquierdo
+						scrollViewOffsetToPan = scrollViewOffsetToPan * leftScreenNumber;
+					} else {
+						// los dos a la izquierda
+						// mismo board
+						scrollViewOffsetToPan = scrollViewOffsetToPan * rightCurrentScreenNumber;
+					}
+
+				}
+
+				position = new PointF ((float)(widgetPosition + scrollViewOffsetToPan), 0f);
 
 				if (highLighted != null)
 				{
-					highLighted.InstantUnhighlight();
+					highLighted.Unhighlight();
 					highLighted = null;
 				}
 
+				AppDelegate.boardInterface.BoardScroll.ScrollView.SetContentOffset (position, true); 
+
 				widget.Highlight();
 				highLighted = widget;
-
-				AppDelegate.boardInterface.BoardScroll.ScrollView.SetContentOffset (position, true);
 				highlitedContent++;
 			});
 

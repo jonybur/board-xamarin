@@ -50,7 +50,7 @@ namespace Board.Interface.Widgets
 			textview.DataDetectorTypes = UIDataDetectorType.Link;
 			textview.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 			textview.AttributedText = announcement.AttributedText;
-			textview.TextColor = BoardInterface.board.MainColor;
+			textview.TextColor = Widget.HighlightColor;
 			textview.SizeToFit ();
 
 			if (textview.Frame.Width < 160) {

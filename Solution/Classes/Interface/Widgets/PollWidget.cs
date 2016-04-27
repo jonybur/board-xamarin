@@ -59,7 +59,7 @@ namespace Board.Interface.Widgets
 			UILabel label = new UILabel ();
 			label.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 			label.AttributedText = poll.Question;
-			label.TextColor = BoardInterface.board.MainColor;
+			label.TextColor = Widget.HighlightColor;
 			label.Lines = 0;
 			label.Font = AppDelegate.SystemFontOfSize18;
 
@@ -83,7 +83,7 @@ namespace Board.Interface.Widgets
 			textview.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 			textview.DataDetectorTypes = UIDataDetectorType.Link;
 			textview.AttributedText = poll.Question;
-			textview.TextColor = BoardInterface.board.MainColor;
+			textview.TextColor = Widget.HighlightColor;
 			textview.Font = AppDelegate.SystemFontOfSize18;
 			textview.SizeToFit ();
 			textview.LayoutIfNeeded ();
@@ -131,7 +131,7 @@ namespace Board.Interface.Widgets
 			{
 				AnswerImageView = new UIImageView (EmptyRadio);
 				AnswerImageView.Frame = new CGRect (0, 0, 20, 20);
-				AnswerImageView.TintColor = BoardInterface.board.MainColor;
+				AnswerImageView.TintColor = Widget.HighlightColor;
 				AnswerImageView.Center = new CGPoint (15, Frame.Height / 2);
 			}
 
@@ -151,7 +151,7 @@ namespace Board.Interface.Widgets
 				label.Font = AppDelegate.SystemFontOfSize16;
 				label.AdjustsFontSizeToFitWidth = true;
 				label.Text = answer;
-				label.TextColor = BoardInterface.board.MainColor;
+				label.TextColor = Widget.HighlightColor;
 
 				SetEmptyImage();
 

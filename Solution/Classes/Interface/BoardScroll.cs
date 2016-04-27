@@ -12,13 +12,51 @@ namespace Board.Interface
 {
 	public class UIBoardScroll : UIScrollView
 	{
+		public static int BannerHeight = 66, ButtonBarHeight = 45;
+
 		public UIScrollView ScrollView;
 		private UIImageView TopBanner;
-
 		public int LastScreen;
-		public static int BannerHeight = 66;
-		public static int ButtonBarHeight = 45;
+
 		private float TempContentOffset;
+
+		public float VirtualLeftBound{
+			get { 
+				return virtualLeftBound;
+			}	
+		}
+
+		public int LeftScreenNumber{
+			get{ 
+				int leftscreen = leftScreenNumber;
+				if (leftScreenNumber == rightScreenNumber) {
+					leftscreen--;
+				}
+				return leftscreen;
+			}
+		}
+
+		public int CurrentLeftScreenNumber{
+			get {
+				return leftScreenNumber;
+			}
+		}
+
+		public int CurrentRightScreenNumber{
+			get {
+				return rightScreenNumber;
+			}
+		}
+
+		public int RightScreenNumber{
+			get{ 
+				int rightscreen = rightScreenNumber;
+				if (rightScreenNumber == leftScreenNumber) {
+					rightscreen++;
+				}
+				return rightscreen;
+			}
+		}
 
 		public enum Tags : byte { Background = 1, Content };
 
@@ -29,16 +67,6 @@ namespace Board.Interface
 		EventHandler<DraggingEventArgs> DragEndsEvent;
 		InfoBox infoBox;
 		bool isDragging;
-
-		//GetSpeedAttributes
-		DateTime lastOffsetCapture;
-		CGPoint lastOffset;
-		bool isScrollingFast;
-		float scrollSpeed;
-
-		//AnimationAttributes
-		bool isAnimating;
-		float frameWAfterAnimation;
 
 		public UIBoardScroll ()
 		{
@@ -135,8 +163,10 @@ namespace Board.Interface
 			AddSubview (TopBanner);
 		}
 
+		float virtualLeftBound;
+		int leftScreenNumber = 0, rightScreenNumber = 0;
+
 		public void SelectiveRendering(){
-			int leftScreenNumber = 0;
 
 			if (!(BoardInterface.DictionaryWidgets == null || BoardInterface.DictionaryWidgets.Count == 0))
 			{
@@ -144,10 +174,10 @@ namespace Board.Interface
 				float physicalRightBound = (float)(ScrollView.ContentOffset.X + AppDelegate.ScreenWidth);
 				float physicalLeftBound = (float)(ScrollView.ContentOffset.X);
 
-				int rightScreenNumber = (int)Math.Floor((physicalRightBound) / ScrollViewWidthSize);
+				rightScreenNumber = (int)Math.Floor((physicalRightBound) / ScrollViewWidthSize);
 				float virtualRightBound = physicalRightBound - ScrollViewWidthSize * rightScreenNumber;
 				leftScreenNumber = (int)Math.Floor ((physicalLeftBound) / ScrollViewWidthSize);
-				float virtualLeftBound = physicalLeftBound - ScrollViewWidthSize * leftScreenNumber;
+				virtualLeftBound = physicalLeftBound - ScrollViewWidthSize * leftScreenNumber;
 
 				virtualRightBound = (virtualRightBound > 0) ? virtualRightBound : 0;
 				virtualLeftBound = (virtualLeftBound > 0) ? virtualLeftBound : 0;
@@ -186,7 +216,6 @@ namespace Board.Interface
 				
 				if (WidgetsToOpenEyes != null && WidgetsToOpenEyes.Count > 0) {
 					foreach (var wid in WidgetsToOpenEyes) {
-						Console.WriteLine ("opens eye!" + wid.content.Center.X);
 						wid.OpenEye ();
 					}
 				}
@@ -243,28 +272,6 @@ namespace Board.Interface
 					DrawnWidgets.Add (wid);
 				}
 			}
-		}
-
-		private void AnimateMovement()
-		{
-			ScrollView.UserInteractionEnabled = false;
-			isAnimating = true;
-
-			UIView.Animate (ScrollView.DecelerationRate, SetContentOffsetWithCustomDuration, SetFinalAnimationValues);
-		}
-
-		private void SetContentOffsetWithCustomDuration(){
-			Frame = new CGRect (-scrollSpeed, 0, Frame.Width, Frame.Height);
-		}
-
-		private void SetFinalAnimationValues(){
-			Frame = new CGRect (0, 0, Frame.Width - scrollSpeed, Frame.Height);
-			ScrollView.Frame = Frame;
-			ScrollView.ContentOffset = new CGPoint (ScrollView.ContentSize.Width - Frame.Width, 0);
-
-			frameWAfterAnimation = (float)Frame.Width;
-			ScrollView.UserInteractionEnabled = true;
-			isAnimating = false;
 		}
 
 		public void ZoomScrollview() {
