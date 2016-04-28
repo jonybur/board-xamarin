@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Board.Interface;
-using Board.Interface.Buttons;
 using Board.Interface.Widgets;
+using Board.Interface.Buttons;
 using CoreGraphics;
 using MGImageUtilitiesBinding;
 using UIKit;
@@ -13,12 +13,23 @@ namespace Board.Interface
 	public class UIBoardScroll : UIScrollView
 	{
 		public static int BannerHeight = 66, ButtonBarHeight = 45;
+		public static int ScrollViewTotalWidthSize = 2600 * 53;
+		public static int ScrollViewWidthSize = 2600;
+
+		float virtualLeftBound;
+		int leftScreenNumber = 0, rightScreenNumber = 0;
 
 		public UIScrollView ScrollView;
 		private UIImageView TopBanner;
-		public int LastScreen;
-
+		readonly List<Widget> DrawnWidgets;
+		EventHandler DragStartsEvent, ScrolledEvent, DecelerationStartsEvent, DecelerationEndsEvent;
+		EventHandler<WillEndDraggingEventArgs> WillEndDragEvent;
+		EventHandler<DraggingEventArgs> DragEndsEvent;
+		InfoBox infoBox;
 		private float TempContentOffset;
+		public int LastScreen;
+		public bool IsHighlighting;
+		private bool IsDragging, ShouldOpenEyes;
 
 		public float VirtualLeftBound{
 			get { 
@@ -58,15 +69,9 @@ namespace Board.Interface
 			}
 		}
 
-		public enum Tags : byte { Background = 1, Content };
-
-		public static int ScrollViewTotalWidthSize = 2600 * 53;
-		public static int ScrollViewWidthSize = 2600;
-		readonly List<Widget> DrawnWidgets;
-		EventHandler DragStartsEvent, ScrolledEvent;
-		EventHandler<DraggingEventArgs> DragEndsEvent;
-		InfoBox infoBox;
-		bool isDragging;
+		public enum Tags : byte { 
+			Background = 1, Content
+		};
 
 		public UIBoardScroll ()
 		{
@@ -94,11 +99,11 @@ namespace Board.Interface
 				
 				if (isSnapping){
 					
-					if (ScrollView.ContentOffset == target || isDragging){
+					if (ScrollView.ContentOffset == target || IsDragging){
 						isSnapping = false;
 					}
 
-				} else if (!isDragging && !Widget.Highlighted){
+				} else if (!IsHighlighting) {
 					
 					if (Math.Abs ((ScrollView.ContentOffset.X + Frame.Width / 2) - infoBox.Center.X) < 100)
 					{
@@ -113,11 +118,28 @@ namespace Board.Interface
 			};
 
 			DragStartsEvent = (delegate {
-				isDragging = true;
+				IsDragging = true;
+				IsHighlighting = true;
+				ShouldOpenEyes = true;
 			});
 
 			DragEndsEvent = (delegate { 
-				isDragging = false;
+				IsDragging = false;
+				IsHighlighting = false;
+				Console.WriteLine("false!");
+				ShouldOpenEyes = false;
+			});
+
+			DecelerationStartsEvent = (delegate {
+				ShouldOpenEyes = true;
+			});
+
+			DecelerationEndsEvent = (delegate {
+				ShouldOpenEyes = false;	
+			});
+
+			WillEndDragEvent = (delegate {
+				ShouldOpenEyes = true;	
 			});
 
 			Frame = new CGRect (0, 0, ScrollViewTotalWidthSize, AppDelegate.ScreenHeight);
@@ -163,9 +185,6 @@ namespace Board.Interface
 			AddSubview (TopBanner);
 		}
 
-		float virtualLeftBound;
-		int leftScreenNumber = 0, rightScreenNumber = 0;
-
 		public void SelectiveRendering(){
 
 			if (!(BoardInterface.DictionaryWidgets == null || BoardInterface.DictionaryWidgets.Count == 0))
@@ -204,19 +223,21 @@ namespace Board.Interface
 				virtualRightBound = physicalRightBound - ScrollViewWidthSize * rightScreenNumber;
 				virtualLeftBound = physicalLeftBound - ScrollViewWidthSize * leftScreenNumber;
 
-				List<Widget> WidgetsToOpenEyes = WidgetsToDraw.FindAll (item => !item.EyeOpen && 
-					((item.content.Center.X - item.View.Frame.Width / 2 > virtualLeftBound &&
-					item.content.Center.X - item.View.Frame.Width / 2 < virtualLeftBound + AppDelegate.ScreenWidth &&
-					item.content.Center.X + item.View.Frame.Width / 2 < virtualRightBound &&
-					item.content.Center.X + item.View.Frame.Width / 2 > virtualRightBound - AppDelegate.ScreenWidth &&
-						leftScreenNumber == rightScreenNumber) || (leftScreenNumber != rightScreenNumber &&
-							(item.content.Center.X + item.View.Frame.Width / 2 < virtualRightBound ||
-							item.content.Center.X - item.View.Frame.Width / 2 > virtualLeftBound))));
-				
-				
-				if (WidgetsToOpenEyes != null && WidgetsToOpenEyes.Count > 0) {
-					foreach (var wid in WidgetsToOpenEyes) {
-						wid.OpenEye ();
+				if (ShouldOpenEyes) {
+					List<Widget> WidgetsToOpenEyes = WidgetsToDraw.FindAll (item => !item.EyeOpen &&
+					                                ((item.content.Center.X - item.View.Frame.Width / 2 > virtualLeftBound &&
+					                                item.content.Center.X - item.View.Frame.Width / 2 < virtualLeftBound + AppDelegate.ScreenWidth &&
+					                                item.content.Center.X + item.View.Frame.Width / 2 < virtualRightBound &&
+					                                item.content.Center.X + item.View.Frame.Width / 2 > virtualRightBound - AppDelegate.ScreenWidth &&
+					                                leftScreenNumber == rightScreenNumber) || (leftScreenNumber != rightScreenNumber &&
+					                                (item.content.Center.X + item.View.Frame.Width / 2 < virtualRightBound ||
+					                                item.content.Center.X - item.View.Frame.Width / 2 > virtualLeftBound))));
+			
+			
+					if (WidgetsToOpenEyes != null && WidgetsToOpenEyes.Count > 0) {
+						foreach (var wid in WidgetsToOpenEyes) {
+							wid.OpenEye ();
+						}
 					}
 				}
 			}
@@ -296,15 +317,24 @@ namespace Board.Interface
 			ScrollView.Scrolled += ScrolledEvent;
 			ScrollView.DraggingStarted += DragStartsEvent;
 			ScrollView.DraggingEnded += DragEndsEvent;
+			ScrollView.DecelerationStarted += DecelerationStartsEvent;
+			ScrollView.DecelerationEnded += DecelerationEndsEvent;
+			ScrollView.WillEndDragging += WillEndDragEvent;
+
 			ViewForZoomingInScrollView += sv => Subviews [0];
 		}
 
 		private void UnsuscribeToEvents()
 		{
 			ScrollView.Scrolled -= ScrolledEvent;
+
 			ScrollView.DraggingStarted -= DragStartsEvent;
 			ScrollView.DraggingEnded -= DragEndsEvent;
 			ViewForZoomingInScrollView -= sv => Subviews [0];
+
+			ScrollView.DecelerationStarted -= DecelerationStartsEvent;
+			ScrollView.DecelerationEnded -= DecelerationEndsEvent;
+			ScrollView.WillEndDragging -= WillEndDragEvent;
 		}
 
 	}

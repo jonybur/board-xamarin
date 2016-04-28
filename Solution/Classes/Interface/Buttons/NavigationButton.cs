@@ -11,7 +11,7 @@ namespace Board.Interface.Buttons
 	public class NavigationButton : Button
 	{
 		private static UILabel numberLabel;
-		private static Widget highLighted;
+		public static Widget HighlightedWidget;
 		private static int contentAmmount;
 
 		private void SetImage (string buttonName)
@@ -54,28 +54,26 @@ namespace Board.Interface.Buttons
 				}
 
 				List<Widget> NavigationList = BoardInterface.DictionaryWidgets.Values.OrderBy(o=>o.EyeOpen).ToList();
-				if(!NavigationList[0].EyeOpen)
-				{
+				if(!NavigationList[0].EyeOpen) {
 					highlitedContent = 0;
 				}
 
 				PointF position = new PointF(0,0);
 
 				Widget widget = NavigationList[highlitedContent];
-				if (!widget.EyeOpen)
-				{
+				if (!widget.EyeOpen) {
 					widget.OpenEye();
-					SubtractNavigationButtonText();
 				}
 
-				var scrollOffset = AppDelegate.boardInterface.BoardScroll.VirtualLeftBound + AppDelegate.ScreenWidth / 2;
+				var boardScroll = AppDelegate.boardInterface.BoardScroll;
+				var scrollOffset = boardScroll.VirtualLeftBound + AppDelegate.ScreenWidth / 2;
 				var widgetPosition = widget.content.Center.X - AppDelegate.ScreenWidth / 2;
 
 				int rightScreenNumber, leftScreenNumber, rightCurrentScreenNumber, leftCurrentScreenNumber;
-				leftScreenNumber = AppDelegate.boardInterface.BoardScroll.LeftScreenNumber;
-				rightScreenNumber = AppDelegate.boardInterface.BoardScroll.RightScreenNumber;
-				rightCurrentScreenNumber = AppDelegate.boardInterface.BoardScroll.CurrentRightScreenNumber;
-				leftCurrentScreenNumber = AppDelegate.boardInterface.BoardScroll.CurrentLeftScreenNumber;
+				leftScreenNumber = boardScroll.LeftScreenNumber;
+				rightScreenNumber = boardScroll.RightScreenNumber;
+				rightCurrentScreenNumber = boardScroll.CurrentRightScreenNumber;
+				leftCurrentScreenNumber = boardScroll.CurrentLeftScreenNumber;
 
 				float scrollViewOffsetToPan = UIBoardScroll.ScrollViewWidthSize;
 
@@ -108,17 +106,18 @@ namespace Board.Interface.Buttons
 
 				position = new PointF ((float)(widgetPosition + scrollViewOffsetToPan), 0f);
 
-				if (highLighted != null)
-				{
-					highLighted.Unhighlight();
-					highLighted = null;
+				// unhighlights the one highlighted
+				if (HighlightedWidget != null) {
+					HighlightedWidget.Unhighlight();
 				}
 
-				AppDelegate.boardInterface.BoardScroll.ScrollView.SetContentOffset (position, true); 
-
+				// highlights the new widget
 				widget.Highlight();
-				highLighted = widget;
+				HighlightedWidget = widget;
 				highlitedContent++;
+
+				boardScroll.IsHighlighting = true;
+				boardScroll.ScrollView.SetContentOffset (position, true); 
 			});
 
 			// unzooms

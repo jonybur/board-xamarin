@@ -176,9 +176,9 @@ namespace Board.Interface.Widgets
 			}
 		}
 
-		public void Unhighlight()
-		{
+		public void Unhighlight() {
 			Highlighted = false;
+			NavigationButton.HighlightedWidget = null;
 
 			if (View.Layer != null) {
 				View.Layer.ZPosition = 0;
@@ -188,7 +188,7 @@ namespace Board.Interface.Widgets
 	
 		protected UIImageView CreateLike(CGRect frame)
 		{
-			UIImageView likeView = new UIImageView(new CGRect(0, 0, IconSize, IconSize));
+			var likeView = new UIImageView(new CGRect(0, 0, IconSize, IconSize));
 
 			using (UIImage img = UIImage.FromFile ("./boardinterface/widget/like.png")) {
 				likeView.Image = img;
