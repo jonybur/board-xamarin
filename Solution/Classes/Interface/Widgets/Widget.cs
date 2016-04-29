@@ -6,7 +6,6 @@ using CoreAnimation;
 using Board.Interface.Buttons;
 using Board.Schema;
 using Foundation;
-using System.Threading;
 using Board.Interface.LookUp;
 using Board.Infrastructure;
 using Facebook.CoreKit;
@@ -342,6 +341,25 @@ namespace Board.Interface.Widgets
 				likeLabel.Text = randomLike.ToString();
 				likeView.TintColor = AppDelegate.BoardOrange;
 				likeLabel.TextColor = AppDelegate.BoardOrange;
+
+				CAKeyFrameAnimation scale = new CAKeyFrameAnimation ();
+				scale.KeyPath = "transform";
+
+				var identity = CATransform3D.Identity;
+				var scaled = CATransform3D.MakeScale (1.4f, 1.4f, 1.4f);
+
+				scale.Values = new NSObject[]{ 
+					NSValue.FromCATransform3D (identity),
+					NSValue.FromCATransform3D (scaled),
+					NSValue.FromCATransform3D (identity)
+				};
+
+				scale.KeyTimes = new NSNumber[]{1/2, 6/8, 1};
+				scale.Duration = .5f;
+				scale.RemovedOnCompletion = false;
+
+				likeView.Layer.AddAnimation (scale, "highlight");
+
 				liked = true;
 			}
 			else {
@@ -358,6 +376,25 @@ namespace Board.Interface.Widgets
 			EyeView.Image = OpenEyeImageView.Image;
 			EyeView.TintColor = BoardInterface.board.MainColor;
 			EyeOpen = true;
+
+			CAKeyFrameAnimation scale = new CAKeyFrameAnimation ();
+			scale.KeyPath = "transform";
+
+			var identity = CATransform3D.Identity;
+			var scaled = CATransform3D.MakeScale (1.3f, 1.3f, 1.3f);
+
+			scale.Values = new NSObject[]{ 
+				NSValue.FromCATransform3D (identity),
+				NSValue.FromCATransform3D (scaled),
+				NSValue.FromCATransform3D (identity)
+			};
+
+			scale.KeyTimes = new NSNumber[]{1/2, 6/8, 1};
+			scale.Duration = .8f;
+			scale.RemovedOnCompletion = false;
+
+			EyeView.Layer.AddAnimation (scale, "highlight");
+
 			ButtonInterface.navigationButton.SubtractNavigationButtonText();
 		}
 	}

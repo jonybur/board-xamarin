@@ -8,6 +8,8 @@ namespace Board.Screens.Controls
 	{
 		List<UITapGestureRecognizer> taps;
 
+		public const int MenuHeight = 66;
+
 		public MenuBanner (string imagePath)
 		{
 			taps = new List<UITapGestureRecognizer> ();
@@ -19,7 +21,7 @@ namespace Board.Screens.Controls
 				Image = bannerImage;
 				Alpha = .95f;
 			}
-			//Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, 90);
+			//Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, MenuHeight);
 			//BackgroundColor = AppDelegate.BoardOrange;
 
 			//var background = GenerateBackground ();

@@ -14,6 +14,8 @@ namespace Board.Screens
 		{
 			View.BackgroundColor = UIColor.White;
 
+			AutomaticallyAdjustsScrollViewInsets = false;
+
 			NavigationController.NavigationBarHidden = true;
 
 			LoadMainMenu ();

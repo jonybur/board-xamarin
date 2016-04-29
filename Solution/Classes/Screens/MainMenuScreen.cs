@@ -20,7 +20,6 @@ namespace Board.Screens
 		MenuBanner Banner;
 		UIScrollView content;
 		List<BoardThumb> ListThumbs;
-		List<TrendingBlock> ListTrendingBlocks;
 		List<Marker> ListMapMarkers;
 
 		UIButton map_button;
@@ -44,7 +43,6 @@ namespace Board.Screens
 			base.ViewDidLoad ();
 
 			ListThumbs = new List<BoardThumb> ();
-			ListTrendingBlocks = new List<TrendingBlock> ();
 			ListMapMarkers = new List<Marker> ();
 
 			if (Profile.CurrentProfile == null) {
@@ -62,7 +60,6 @@ namespace Board.Screens
 
 		public override async void ViewDidAppear(bool animated)
 		{
-			BTProgressHUD.Show ();
 			await InitializeInterface ();
 
 			// suscribe to observers, gesture recgonizers, events
@@ -73,7 +70,6 @@ namespace Board.Screens
 			}
 			mapInfoTapped = false;
 			Banner.SuscribeToEvents ();
-			BTProgressHUD.Dismiss ();
 		}
 
 		public override void ViewDidDisappear(bool animated)
@@ -85,9 +81,6 @@ namespace Board.Screens
 				bt.UnsuscribeToEvent ();
 				MemoryUtility.ReleaseUIViewWithChildren (bt, true);
 			}
-			foreach (TrendingBlock tb in ListTrendingBlocks) {
-				MemoryUtility.ReleaseUIViewWithChildren (tb, true);
-			}
 			foreach (Marker mark in ListMapMarkers) {
 				mark.Dispose ();
 			}
@@ -96,7 +89,6 @@ namespace Board.Screens
 
 			ListMapMarkers = null;
 			ListThumbs = null;
-			ListTrendingBlocks = null;
 
 			Banner.UnsuscribeToEvents ();
 
@@ -115,91 +107,31 @@ namespace Board.Screens
 
 			content.BackgroundColor = UIColor.White;
 
-			// = GenerateBoardList ();
+			var magazineBanner = new MagazineBanner ();
+			content.AddSubview (magazineBanner);
+
+			// GenerateBoardList()
 			var boardList = await CloudController.GetUserBoards ();
 			boardList = boardList.OrderBy(o=>o.GeolocatorObject.Neighborhood).ToList();
-
-			string location = String.Empty;
 
 			LocationLabel.font = AppDelegate.Narwhal20;
 
 			// starting point
-			bool newLine = true;
-			int linecounter = 1, neighborhoodnumber = 0, i = 0;
 			yposition = (float)Banner.Frame.Bottom + 10;
-
-			foreach (Board.Schema.Board b in boardList) {
-				if (location != b.GeolocatorObject.Neighborhood) {
-					
-					if (neighborhoodnumber > 0) {
-						DrawTrendingBanner (false, newLine, boardList[i - 1]);
-					}
-
-					// draw new location string
-					LocationLabel locationLabel = new LocationLabel (yposition, b.GeolocatorObject.Neighborhood);
-					yposition += (float)locationLabel.Frame.Height + thumbsize / 2 + 10;
-					location = b.GeolocatorObject.Neighborhood;
-					content.AddSubview (locationLabel);
-
-					linecounter = 1;
-					neighborhoodnumber++;
-				}
-				 
-				BoardThumb boardThumb = new BoardThumb (b, new CGPoint ((AppDelegate.ScreenWidth/ 4) * linecounter, yposition), thumbsize);
-				linecounter++;
-				if (linecounter >= 4) {
-					linecounter = 1;
-					// nueva linea de thumbs
-					yposition += thumbsize+ 10;
-					newLine = true;
-				} else { 
-					newLine = false; 
-				}
-
-				ListThumbs.Add (boardThumb);
-				content.AddSubview (boardThumb);
-				i++;
-			}
-			if (boardList.Count > 0) {
-				DrawTrendingBanner (true, newLine, boardList [i - 1]);
-			}
 
 			content.ScrollEnabled = true;
 			content.UserInteractionEnabled = true;
 
 			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, yposition + thumbsize + 5);
 
-			content.Scrolled += (sender, e) => {
-				// call from here "open eye" function
+			/*content.Scrolled += (sender, e) => {
 
-				List<TrendingBlock> TrendingBlocksOnScreen = ListTrendingBlocks.FindAll(item => (content.ContentOffset.Y < item.Frame.Bottom) && 
-					((content.ContentOffset.Y + AppDelegate.ScreenHeight) > item.Frame.Top));
-				
-				foreach (TrendingBlock trendingBlock in TrendingBlocksOnScreen)
-				{
-					trendingBlock.ParallaxMove((float)content.ContentOffset.Y);
+				if (content.ContentOffset.Y < magazineBanner.Frame.Bottom &&
+					content.ContentOffset.Y + AppDelegate.ScreenHeight > magazineBanner.Frame.Top) {
+					magazineBanner.ParallaxMove((float)content.ContentOffset.Y);
 				}
-			};
-		}
 
-		private void DrawTrendingBanner(bool last, bool newLine, Board.Schema.Board board)
-		{
-			if (!newLine) {
-				yposition += (thumbsize + 10) - 25;
-			} else {
-				yposition -= 25;
-			}
-
-			TrendingBlock trendingBlock = new TrendingBlock (yposition, board);
-			ListTrendingBlocks.Add (trendingBlock);
-
-			content.AddSubview(trendingBlock);
-		
-			yposition += (float)trendingBlock.Frame.Height;
-
-			if (!last) {
-				yposition += (float)map_button.Frame.Height;
-			}
+			};*/
 		}
 
 		private void LoadBanner()
@@ -217,7 +149,6 @@ namespace Board.Screens
 			
 		private void LoadMap()
 		{
-
 			firstLocationUpdate = false;
 
 			var camera = CameraPosition.FromCamera (40, -100, -2);
@@ -249,13 +180,13 @@ namespace Board.Screens
 				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
 
 				if (!generatedMarkers) {
-					GenerateMarkers (location.Coordinate);
+					GenerateMarkers ();
 					generatedMarkers = true;
 				}
 			}
 		}
 
-		private void GenerateMarkers(CoreLocation.CLLocationCoordinate2D location)
+		private void GenerateMarkers()
 		{
 			foreach (BoardThumb thumb in ListThumbs) {
 				Marker marker = new Marker ();

@@ -21,8 +21,6 @@ namespace Board.Screens
 
 		public override void ViewDidLoad ()
 		{
-			AutomaticallyAdjustsScrollViewInsets = false;
-
 			BTProgressHUD.Show ();
 
 			boardList = new List<Board.Schema.Board> ();

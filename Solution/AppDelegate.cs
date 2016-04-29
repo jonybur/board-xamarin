@@ -31,6 +31,8 @@ namespace Board
 		public static UIColor BoardLightBlue;
 		public static UIColor BoardBlack;
 
+		public static UIFont Narwhal14;
+		public static UIFont Narwhal18;
 		public static UIFont Narwhal20;
 		public static UIFont Narwhal24;
 		public static UIFont Narwhal30;
@@ -70,6 +72,8 @@ namespace Board
 			BoardBlue = UIColor.FromRGB(38, 106, 154);
 			BoardLightBlue = UIColor.FromRGB(45, 121, 180);
 			BoardBlack = UIColor.FromRGB (40, 40, 40);
+			Narwhal14 = UIFont.FromName ("narwhal-bold", 14);
+			Narwhal18 = UIFont.FromName ("narwhal-bold", 18);
 			Narwhal20 = UIFont.FromName ("narwhal-bold", 20);
 			Narwhal24 = UIFont.FromName ("narwhal-bold", 24);
 			Narwhal30 = UIFont.FromName ("narwhal-bold", 29);
