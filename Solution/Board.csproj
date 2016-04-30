@@ -327,8 +327,8 @@
     <BundleResource Include="Resources\boardinterface\screens\photos\banner\6.jpg" />
     <BundleResource Include="Resources\boardinterface\screens\photos\banner\6plus.jpg" />
     <BundleResource Include="Resources\logos\table26.jpg" />
-    <BundleResource Include="Resources\screens\magazine\wpb_banner.png" />
-    <BundleResource Include="Resources\screens\magazine\pin.png" />
+    <BundleResource Include="Resources\screens\main\magazine\westpalmbeach.png" />
+    <BundleResource Include="Resources\screens\main\magazine\pin.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -441,8 +441,9 @@
     <Compile Include="Classes\Infrastructure\CloudController.cs" />
     <Compile Include="Classes\Screens\Controls\LocationLabel.cs" />
     <Compile Include="Classes\JsonResponses\UberProductResponse.cs" />
-    <Compile Include="Classes\Screens\Controls\MagazineBanner.cs" />
     <Compile Include="Classes\Screens\Controls\ThumbSidescroller.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBannerPage.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -533,7 +534,7 @@
     <Folder Include="Resources\boardinterface\screens\photos\" />
     <Folder Include="Resources\boardinterface\screens\albums\banner\" />
     <Folder Include="Resources\boardinterface\screens\photos\banner\" />
-    <Folder Include="Resources\screens\magazine\" />
+    <Folder Include="Resources\screens\main\magazine\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">
@@ -565,7 +566,7 @@
       <Visible>False</Visible>
     </XamarinComponentReference>
     <XamarinComponentReference Include="googleiosmaps">
-      <Version>1.11.1.1</Version>
+      <Version>1.11.1.2</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

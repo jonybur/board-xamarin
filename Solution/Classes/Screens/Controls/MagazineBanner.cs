@@ -1,97 +1,73 @@
-﻿using UIKit;
+﻿using System;
 using CoreGraphics;
-using System;
 using MGImageUtilitiesBinding;
+using UIKit;
 
 namespace Board.Screens.Controls
 {
-	public class MagazineBanner : UIImageView
+	public class MagazineBanner : UIViewController
 	{
-		public UIImageView ParallaxBlock;
-		private float centerY;
-		private float offsetDelta;
+		UIPageViewController pageViewController;
 
-		public void ParallaxMove(float yoffset)
+		public MagazineBanner ()
 		{
-			if (offsetDelta == 0f) {
-				offsetDelta = yoffset;
-			}
+			pageViewController = new UIPageViewController (UIPageViewControllerTransitionStyle.Scroll,
+				UIPageViewControllerNavigationOrientation.Horizontal);
 
-			Console.WriteLine (centerY - (yoffset - offsetDelta) / 10);
+			/*var controllers = new UIViewController[2];
+			var imageView = new MagazineBannerPage ();
 
-			ParallaxBlock.Center = new CGPoint (ParallaxBlock.Center.X, centerY - (yoffset + 10 - offsetDelta)/10);
+			var controller = new UIViewController ();
+			var controller2 = new UIViewController ();
+
+			controller.Add (imageView);
+			controller2.Add (imageView);
+
+			controllers [0] = controller;
+			controllers [1] = controller2;*/
+
+			pageViewController.DataSource = new PageViewControllerDataSource (this);
+
+			//SetViewControllers (controllers, UIPageViewControllerNavigationDirection.Forward, true, null);
 		}
 
-		public MagazineBanner()
-		{
-			Frame = new CGRect (0, MenuBanner.MenuHeight, AppDelegate.ScreenWidth, 175);
-			BackgroundColor = UIColor.White;
+		class PageViewControllerDataSource : UIPageViewControllerDataSource{
+			private MagazineBanner _parentViewController;
+			private int cantPaginas = 3;
 
-			ClipsToBounds = true;
-
-			using (UIImage img = UIImage.FromFile ("./screens/magazine/wpb_banner.png")) {
-				float scale = (float)(img.Size.Width/img.Size.Height);
-				float imgw, imgh, autosize;
-				autosize = (float)Frame.Width;
-
-				imgw = autosize * scale;
-				imgh = autosize;
-
-				UIImage scaledImage = img.ImageScaledToFitSize (Frame.Size);
-
-				ParallaxBlock = new UIImageView (scaledImage);
+			public PageViewControllerDataSource (UIViewController parentViewController)
+			{
+				_parentViewController = parentViewController as MagazineBanner;
 			}
 
-			ParallaxBlock.ClipsToBounds = true;
-
-			centerY = (float)ParallaxBlock.Center.Y;
-			offsetDelta = 0f;
-
-			var flagView = GenerateFlag ();
-			ParallaxBlock.AddSubview (flagView);
-
-			AddSubview (ParallaxBlock);
-		}
-
-		private UIImageView GenerateFlag(){
-			var flagView = new UIImageView ();
-			flagView.Frame = new CGRect (0, 0, 200, 100);
-
-			var flagBackground = new UIImageView ();
-			flagBackground.Alpha = .95f;
-			flagBackground.Frame = flagView.Frame;
-			flagBackground.BackgroundColor = AppDelegate.BoardOrange;
-			flagBackground.Center = ParallaxBlock.Center;
-
-			var pin = new UIImageView();
-			pin.Frame = flagView.Frame;
-			pin.Center = flagBackground.Center;
-			using (var img = UIImage.FromFile ("./screens/magazine/pin.png")) {
-				pin.Image = img;
+			public override UIViewController GetPreviousViewController (UIPageViewController pageViewController, UIViewController referenceViewController)
+			{
+				var imageView = new MagazineBannerPage ();
+				var controller = new UIViewController ();
+				controller.Add (imageView);
+				return controller;
 			}
 
-			var placeName = new UILabel ();
-			placeName.Frame = new CGRect (5, 0, flagView.Frame.Width-10, 20);
-			placeName.Font = AppDelegate.Narwhal18;
-			placeName.Text = "WEST PALM BEACH";
-			placeName.TextColor = UIColor.White;
-			placeName.AdjustsFontSizeToFitWidth = true;
-			placeName.Center = new CGPoint(flagBackground.Center.X, flagBackground.Center.Y + 15);
-			placeName.TextAlignment = UITextAlignment.Center;
+			public override UIViewController GetNextViewController (UIPageViewController pageViewController, UIViewController referenceViewController)
+			{
+				var imageView = new MagazineBannerPage ();
+				var controller = new UIViewController ();
+				controller.Add (imageView);
+				return controller;
+			}
 
-			var subtitle = new UILabel ();
-			subtitle.Frame = new CGRect (5, 0, flagView.Frame.Width-10, 20);
-			subtitle.Font = AppDelegate.Narwhal14;
-			subtitle.Text = "RIGHT NOW";
-			subtitle.TextColor = UIColor.White;
-			subtitle.AdjustsFontSizeToFitWidth = true;
-			subtitle.Center = new CGPoint(flagBackground.Center.X, placeName.Center.Y + 20);
-			subtitle.TextAlignment = UITextAlignment.Center;
+			public override nint GetPresentationCount (UIPageViewController pageViewController)
+			{
+				return cantPaginas;
+			}
 
-			flagView.AddSubviews (flagBackground, pin, placeName, subtitle);
-
-			return flagView;
+			public override nint GetPresentationIndex (UIPageViewController pageViewController)
+			{
+				return 0;
+			}	
 		}
 	}
+
+
 }
 

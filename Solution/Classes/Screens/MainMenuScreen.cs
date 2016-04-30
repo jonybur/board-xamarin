@@ -108,7 +108,7 @@ namespace Board.Screens
 			content.BackgroundColor = UIColor.White;
 
 			var magazineBanner = new MagazineBanner ();
-			content.AddSubview (magazineBanner);
+			content.AddSubview (magazineBanner.View);
 
 			// GenerateBoardList()
 			var boardList = await CloudController.GetUserBoards ();
