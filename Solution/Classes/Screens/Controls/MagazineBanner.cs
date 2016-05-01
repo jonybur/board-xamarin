@@ -5,67 +5,77 @@ using UIKit;
 
 namespace Board.Screens.Controls
 {
-	public class MagazineBanner : UIViewController
+	public class MagazineBanner : UIPageViewController
 	{
-		UIPageViewController pageViewController;
+		public static UIViewController[] _viewControllers;
 
 		public MagazineBanner ()
 		{
-			pageViewController = new UIPageViewController (UIPageViewControllerTransitionStyle.Scroll,
-				UIPageViewControllerNavigationOrientation.Horizontal);
+		}
 
-			/*var controllers = new UIViewController[2];
-			var imageView = new MagazineBannerPage ();
+		public override void ViewDidLoad ()
+		{
+			_viewControllers = GenerateControllers ();
+
+			/*
+			this.Delegate = new CustomDelegate ();
+			this.DataSource = new CustomDataSource ();
+			*/
+
+			SetupPageViewController ();
+
+			Console.WriteLine ("didload");
+		}
+
+		private void SetupPageViewController(){
+			SetViewControllers (new [] { _viewControllers [0] }, UIPageViewControllerNavigationDirection.Forward, true, null);
+		}
+
+		private UIViewController[] GenerateControllers(){
 
 			var controller = new UIViewController ();
 			var controller2 = new UIViewController ();
+			var imageView = new MagazineBannerPage ();
 
 			controller.Add (imageView);
 			controller2.Add (imageView);
 
+			var controllers = new UIViewController[2];
+
 			controllers [0] = controller;
-			controllers [1] = controller2;*/
+			controllers [1] = controller2;
 
-			pageViewController.DataSource = new PageViewControllerDataSource (this);
-
-			//SetViewControllers (controllers, UIPageViewControllerNavigationDirection.Forward, true, null);
+			return controllers;
 		}
 
-		class PageViewControllerDataSource : UIPageViewControllerDataSource{
-			private MagazineBanner _parentViewController;
-			private int cantPaginas = 3;
-
-			public PageViewControllerDataSource (UIViewController parentViewController)
+		private class CustomDelegate : UIPageViewControllerDelegate{
+			public override void DidFinishAnimating (UIPageViewController pageViewController, bool finished, UIViewController[] previousViewControllers, bool completed)
 			{
-				_parentViewController = parentViewController as MagazineBanner;
+				if (!completed) {
+					return;
+				}	
+
+				var newViewController = MagazineBanner._viewControllers[0];
+				// page control shiet
+			}	
+		}
+
+		private class CustomDataSource : UIPageViewControllerDataSource{
+			
+			public override UIViewController GetNextViewController (UIPageViewController pageViewController, UIViewController referenceViewController)
+			{
+				int indexOfCurrentViewController = Array.IndexOf (MagazineBanner._viewControllers, pageViewController);
+				return indexOfCurrentViewController > 0 ? MagazineBanner._viewControllers [indexOfCurrentViewController - 1] : null;
 			}
 
 			public override UIViewController GetPreviousViewController (UIPageViewController pageViewController, UIViewController referenceViewController)
 			{
-				var imageView = new MagazineBannerPage ();
-				var controller = new UIViewController ();
-				controller.Add (imageView);
-				return controller;
+				int indexOfCurrentViewController = Array.IndexOf (MagazineBanner._viewControllers, pageViewController);
+				return indexOfCurrentViewController < indexOfCurrentViewController - 1 ? MagazineBanner._viewControllers [indexOfCurrentViewController + 1] : null;				
 			}
-
-			public override UIViewController GetNextViewController (UIPageViewController pageViewController, UIViewController referenceViewController)
-			{
-				var imageView = new MagazineBannerPage ();
-				var controller = new UIViewController ();
-				controller.Add (imageView);
-				return controller;
-			}
-
-			public override nint GetPresentationCount (UIPageViewController pageViewController)
-			{
-				return cantPaginas;
-			}
-
-			public override nint GetPresentationIndex (UIPageViewController pageViewController)
-			{
-				return 0;
-			}	
 		}
+
+		 
 	}
 
 

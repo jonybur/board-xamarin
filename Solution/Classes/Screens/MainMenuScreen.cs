@@ -108,6 +108,7 @@ namespace Board.Screens
 			content.BackgroundColor = UIColor.White;
 
 			var magazineBanner = new MagazineBanner ();
+			AddChildViewController (magazineBanner); 
 			content.AddSubview (magazineBanner.View);
 
 			// GenerateBoardList()
