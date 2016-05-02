@@ -41,7 +41,6 @@ namespace Board.Screens.Controls
 				sidemenu.Image = bannerImage;
 			}
 
-
 			float[] buttonLocations = new float[4];
 			if (AppDelegate.PhoneVersion == "6") {
 				buttonLocations [0] = 350;

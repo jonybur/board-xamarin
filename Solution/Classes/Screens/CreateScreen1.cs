@@ -11,7 +11,7 @@ namespace Board.Screens
 {
 	public class CreateScreen1 : UIViewController
 	{
-		MenuBanner Banner;
+		UIMenuBanner Banner;
 		MapView map;
 		Marker marker;
 		UITextField addressView;
@@ -286,7 +286,7 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			Banner = new MenuBanner ("./screens/create/1/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new UIMenuBanner ("./screens/create/1/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){

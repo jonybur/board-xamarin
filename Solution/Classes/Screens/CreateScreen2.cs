@@ -14,7 +14,7 @@ namespace Board.Screens
 {
 	public class CreateScreen2 : UIViewController
 	{
-		MenuBanner Banner;
+		UIMenuBanner Banner;
 		Board.Schema.Board board;
 
 		CGSize ColorSquareSize;
@@ -315,7 +315,7 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			Banner = new MenuBanner("./screens/create/2/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new UIMenuBanner("./screens/create/2/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				

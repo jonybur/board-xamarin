@@ -1,81 +1,27 @@
-﻿using System;
-using CoreGraphics;
-using MGImageUtilitiesBinding;
+﻿using CoreGraphics;
 using UIKit;
+using MGImageUtilitiesBinding;
 
 namespace Board.Screens.Controls
 {
-	public class MagazineBanner : UIPageViewController
+	public class UIMagazineBanner : UIView
 	{
-		public static UIViewController[] _viewControllers;
-
-		public MagazineBanner ()
+		public UIMagazineBanner ()
 		{
-		}
+			Frame = new CGRect(0, UIMenuBanner.MenuHeight, AppDelegate.ScreenWidth, MagazineBannerPage.Height);
 
-		public override void ViewDidLoad ()
-		{
-			_viewControllers = GenerateControllers ();
+			BackgroundColor = UIColor.FromRGBA(0,0,0,0);
 
-			/*
-			this.Delegate = new CustomDelegate ();
-			this.DataSource = new CustomDataSource ();
-			*/
-
-			SetupPageViewController ();
-
-			Console.WriteLine ("didload");
-		}
-
-		private void SetupPageViewController(){
-			SetViewControllers (new [] { _viewControllers [0] }, UIPageViewControllerNavigationDirection.Forward, true, null);
-		}
-
-		private UIViewController[] GenerateControllers(){
-
-			var controller = new UIViewController ();
-			var controller2 = new UIViewController ();
-			var imageView = new MagazineBannerPage ();
-
-			controller.Add (imageView);
-			controller2.Add (imageView);
-
-			var controllers = new UIViewController[2];
-
-			controllers [0] = controller;
-			controllers [1] = controller2;
-
-			return controllers;
-		}
-
-		private class CustomDelegate : UIPageViewControllerDelegate{
-			public override void DidFinishAnimating (UIPageViewController pageViewController, bool finished, UIViewController[] previousViewControllers, bool completed)
-			{
-				if (!completed) {
-					return;
-				}	
-
-				var newViewController = MagazineBanner._viewControllers[0];
-				// page control shiet
-			}	
-		}
-
-		private class CustomDataSource : UIPageViewControllerDataSource{
-			
-			public override UIViewController GetNextViewController (UIPageViewController pageViewController, UIViewController referenceViewController)
-			{
-				int indexOfCurrentViewController = Array.IndexOf (MagazineBanner._viewControllers, pageViewController);
-				return indexOfCurrentViewController > 0 ? MagazineBanner._viewControllers [indexOfCurrentViewController - 1] : null;
+			var backgroundImage = new UIImageView (new CGRect(0,0,Frame.Width, Frame.Height));
+			using (UIImage img = UIImage.FromFile ("./screens/main/magazine/westpalmbeach.png")) {
+				UIImage scaledImage = img.ImageScaledToFitSize (Frame.Size);
+				backgroundImage.Image = scaledImage;
 			}
 
-			public override UIViewController GetPreviousViewController (UIPageViewController pageViewController, UIViewController referenceViewController)
-			{
-				int indexOfCurrentViewController = Array.IndexOf (MagazineBanner._viewControllers, pageViewController);
-				return indexOfCurrentViewController < indexOfCurrentViewController - 1 ? MagazineBanner._viewControllers [indexOfCurrentViewController + 1] : null;				
-			}
-		}
+			var bannerPageController = new MagazineBannerPageController (UIPageViewControllerTransitionStyle.Scroll, UIPageViewControllerNavigationOrientation.Horizontal, Frame.Size);
 
-		 
+			AddSubviews (backgroundImage, bannerPageController.View);
+		}
 	}
 
 

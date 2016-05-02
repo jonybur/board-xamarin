@@ -13,10 +13,10 @@ namespace Board.Interface.FacebookImport
 {
 	public class PhotosScreen : UIViewController
 	{
-		MenuBanner Banner;
+		UIMenuBanner Banner;
 		string AlbumID;
 
-		GalleryScrollView GallerySV;
+		UIGalleryScrollView GallerySV;
 		List<FacebookImage> FacebookImages;
 
 		public PhotosScreen(string albumid){
@@ -28,7 +28,7 @@ namespace Board.Interface.FacebookImport
 
 			LoadBanner ();
 
-			GallerySV = new GalleryScrollView (AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
+			GallerySV = new UIGalleryScrollView (AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
 			GallerySV.Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight / 2);
 			View.AddSubview (GallerySV);
 
@@ -90,7 +90,7 @@ namespace Board.Interface.FacebookImport
 			
 		private void LoadBanner()
 		{
-			Banner = new MenuBanner ("./boardinterface/screens/photos/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new UIMenuBanner ("./boardinterface/screens/photos/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (!CanGoBack){

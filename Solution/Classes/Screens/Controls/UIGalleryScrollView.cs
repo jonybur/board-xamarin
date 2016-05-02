@@ -5,7 +5,7 @@ using MGImageUtilitiesBinding;
 
 namespace Board.Screens.Controls
 {
-	public class GalleryScrollView : UIScrollView {
+	public class UIGalleryScrollView : UIScrollView {
 		private List<UIButton> Pictures;
 		float ButtonSize;
 
@@ -50,7 +50,7 @@ namespace Board.Screens.Controls
 			}
 		}
 
-		public GalleryScrollView(float width, float height = 200) {
+		public UIGalleryScrollView(float width, float height = 200) {
 			Frame = new CGRect (0, 0, width, height);
 			Pictures = new List<UIButton>();
 			ScrollEnabled = true;

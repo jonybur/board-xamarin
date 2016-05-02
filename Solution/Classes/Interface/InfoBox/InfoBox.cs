@@ -16,7 +16,7 @@ namespace Board.Interface
 		MapContainer Container;
 		UILabel NameLabel, AddressLabel, PhoneLabel, OpenLabel;
 		UIActionButton[] ActionButtons;
-		GalleryScrollView GallerySV;
+		UIGalleryScrollView GallerySV;
 		UITapGestureRecognizer MapTap;
 
 		int CantActionButtons = 3;
@@ -79,7 +79,7 @@ namespace Board.Interface
 			ActionButtons [2].Center = new CGPoint ((Frame.Width / 8) * 7, actionButtonsY);
 			AddSubviews (ActionButtons);
 
-			GallerySV = new GalleryScrollView ((float)Frame.Width);
+			GallerySV = new UIGalleryScrollView ((float)Frame.Width);
 			GallerySV.SetDemoImages ();
 			GallerySV.BackgroundColor = UIColor.FromRGBA(0, 0, 0, 50);
 			GallerySV.Center = new CGPoint (Frame.Width / 2, actionButtonsY + GallerySV.Frame.Height / 2 + 35);

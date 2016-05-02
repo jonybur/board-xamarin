@@ -69,7 +69,7 @@ namespace Board.Screens.Controls
 
 			AddSubview (LikeComponent);
 
-			BoardThumb thumb = new BoardThumb (board, new CGPoint (Frame.Width - 45, 35), 50);
+			UIBoardThumb thumb = new UIBoardThumb (board, new CGPoint (Frame.Width - 45, 35), 50);
 			thumb.UserInteractionEnabled = true;
 			thumb.SuscribeToEvent ();
 			UserInteractionEnabled = true;

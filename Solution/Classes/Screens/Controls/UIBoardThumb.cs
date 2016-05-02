@@ -6,12 +6,12 @@ using CoreGraphics;
 
 namespace Board.Screens.Controls
 {
-	public sealed class BoardThumb : UIButton
+	public sealed class UIBoardThumb : UIButton
 	{
 		private EventHandler TouchEvent;
 		public Board.Schema.Board Board;
 
-		public BoardThumb (Board.Schema.Board board, CGPoint contentOffset, float size)
+		public UIBoardThumb (Board.Schema.Board board, CGPoint contentOffset, float size)
 		{ 
 			Board = board;
 

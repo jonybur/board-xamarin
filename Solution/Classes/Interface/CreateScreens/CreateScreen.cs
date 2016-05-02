@@ -9,7 +9,7 @@ namespace Board.Interface.CreateScreens
 {
 	public class CreateScreen : UIViewController
 	{
-		public MenuBanner Banner;
+		public UIMenuBanner Banner;
 		public UIScrollView ScrollView;
 		public UIButton NextButton;
 		public UIButton SaveButton;
@@ -38,7 +38,7 @@ namespace Board.Interface.CreateScreens
 
 		protected void LoadBanner(string imagePath, string toImport, Action<FacebookElement> onReturn)
 		{
-			Banner = new MenuBanner (imagePath);
+			Banner = new UIMenuBanner (imagePath);
 
 			var leftTap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4) {

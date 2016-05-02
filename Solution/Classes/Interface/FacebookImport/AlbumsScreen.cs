@@ -10,7 +10,7 @@ namespace Board.Interface.FacebookImport
 {
 	public class AlbumsScreen : UIViewController
 	{
-		MenuBanner Banner;
+		UIMenuBanner Banner;
 		UIScrollView ScrollView;
 		List<MenuButton> Buttons;
 
@@ -97,7 +97,7 @@ namespace Board.Interface.FacebookImport
 
 		private void LoadBanner()
 		{
-			Banner = new MenuBanner ("./boardinterface/screens/albums/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new UIMenuBanner ("./boardinterface/screens/albums/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){

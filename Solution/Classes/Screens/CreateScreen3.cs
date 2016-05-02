@@ -17,7 +17,7 @@ namespace Board.Screens
 		Board.Schema.Board board;
 
 		UIImageView orangeRectangle;
-		MenuBanner Banner;
+		UIMenuBanner Banner;
 
 		int? selectedIndex;
 
@@ -57,7 +57,7 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			Banner = new MenuBanner ("./screens/create/3/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new UIMenuBanner ("./screens/create/3/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 

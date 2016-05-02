@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 namespace Board.Screens.Controls
 {
-	public class MenuBanner : UIImageView
+	public class UIMenuBanner : UIImageView
 	{
 		List<UITapGestureRecognizer> taps;
 
 		public const int MenuHeight = 66;
 
-		public MenuBanner (string imagePath)
+		public UIMenuBanner (string imagePath)
 		{
 			taps = new List<UITapGestureRecognizer> ();
 

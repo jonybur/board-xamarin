@@ -11,10 +11,10 @@ namespace Board.Screens
 {
 	public class BusinessScreen : UIViewController
 	{
-		MenuBanner Banner;
+		UIMenuBanner Banner;
 		UIScrollView content;
 		List<Board.Schema.Board> boardList;
-		List<BoardThumb> ListThumbs;
+		List<UIBoardThumb> ListThumbs;
 
 		float yposition;
 		float thumbsize;
@@ -31,7 +31,7 @@ namespace Board.Screens
 
 			LoadBanner ();
 
-			ListThumbs = new List<BoardThumb> ();
+			ListThumbs = new List<UIBoardThumb> ();
 		}
 
 		public override async void ViewDidAppear(bool animated)
@@ -83,8 +83,6 @@ namespace Board.Screens
 
 			string location = string.Empty;
 
-			LocationLabel.font = AppDelegate.Narwhal20;
-
 			// starting point
 			int linecounter = 1, neighborhoodnumber = 0, i = 0;
 			yposition = (float)Banner.Frame.Bottom + 20;
@@ -97,7 +95,7 @@ namespace Board.Screens
 					}
 
 					// draw new location string
-					LocationLabel locationLabel = new LocationLabel (yposition, b.GeolocatorObject.Neighborhood);
+					UILocationLabel locationLabel = new UILocationLabel (yposition, b.GeolocatorObject.Neighborhood);
 					yposition += (float)locationLabel.Frame.Height + thumbsize / 2 + 10;
 					location = b.GeolocatorObject.Neighborhood;
 					content.AddSubview (locationLabel);
@@ -106,7 +104,7 @@ namespace Board.Screens
 					neighborhoodnumber++;
 				}
 
-				var boardThumb = new BoardThumb (b, new CGPoint ((AppDelegate.ScreenWidth/ 4) * linecounter, yposition), thumbsize);
+				var boardThumb = new UIBoardThumb (b, new CGPoint ((AppDelegate.ScreenWidth/ 4) * linecounter, yposition), thumbsize);
 				linecounter++;
 				if (linecounter >= 4) {
 					linecounter = 1;
@@ -145,7 +143,7 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			Banner = new MenuBanner ("./screens/business/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new UIMenuBanner ("./screens/business/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){

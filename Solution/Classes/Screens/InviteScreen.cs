@@ -9,7 +9,7 @@ namespace Board.Screens
 {
 	public class InviteScreen : UIViewController
 	{
-		MenuBanner Banner;
+		UIMenuBanner Banner;
 		UIWindow window;
 		const int hborder = 65;
 		float yposition;
@@ -131,7 +131,7 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			Banner = new MenuBanner ("./screens/invite/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new UIMenuBanner ("./screens/invite/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){

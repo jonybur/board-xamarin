@@ -6,7 +6,7 @@ namespace Board.Interface
 {
 	public class SettingsScreen : UIViewController
 	{
-		MenuBanner Banner;
+		UIMenuBanner Banner;
 		OneLineMenuButton SyncButton, AnalyticsButton;
 
 		public override void ViewDidLoad ()
@@ -62,7 +62,7 @@ namespace Board.Interface
 
 		private void LoadBanner()
 		{
-			Banner = new MenuBanner ("./boardinterface/screens/settings/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new UIMenuBanner ("./boardinterface/screens/settings/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){

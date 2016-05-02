@@ -11,7 +11,7 @@ namespace Board.Interface.CreateScreens
 {
 	public class ImportScreen : UIViewController
 	{
-		MenuBanner Banner;
+		UIMenuBanner Banner;
 		UIScrollView ScrollView;
 		List<MenuButton> Buttons;
 		string TypeOfImport;
@@ -126,7 +126,7 @@ namespace Board.Interface.CreateScreens
 
 		protected void LoadBanner()
 		{
-			Banner = new MenuBanner ("./boardinterface/screens/import/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new UIMenuBanner ("./boardinterface/screens/import/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			var tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4) {

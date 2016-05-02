@@ -1,59 +1,27 @@
-﻿using System;
-using CoreGraphics;
-using MGImageUtilitiesBinding;
+﻿using CoreGraphics;
 using UIKit;
 
 namespace Board.Screens.Controls
 {
-	public class MagazineBannerPage : UIImageView
+	public sealed class MagazineBannerPage : UIImageView
 	{
-		public UIImageView ParallaxBlock;
-		private float centerY;
-		private float offsetDelta;
+		public const int Height = 175;
 
-		public void ParallaxMove(float yoffset)
+		public MagazineBannerPage(string subtitleText)
 		{
-			if (offsetDelta == 0f) {
-				offsetDelta = yoffset;
-			}
-
-			Console.WriteLine (centerY - (yoffset - offsetDelta) / 10);
-
-			ParallaxBlock.Center = new CGPoint (ParallaxBlock.Center.X, centerY - (yoffset + 10 - offsetDelta)/10);
-		}
-
-		public MagazineBannerPage()
-		{
-			Frame = new CGRect (0, MenuBanner.MenuHeight, AppDelegate.ScreenWidth, 175);
+			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, Height);
 			BackgroundColor = UIColor.White;
 
 			ClipsToBounds = true;
 
-			using (UIImage img = UIImage.FromFile ("./screens/main/magazine/westpalmbeach.png")) {
-				float scale = (float)(img.Size.Width/img.Size.Height);
-				float imgw, imgh, autosize;
-				autosize = (float)Frame.Width;
+			var flagView = GenerateFlag (subtitleText);
 
-				imgw = autosize * scale;
-				imgh = autosize;
+			BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 
-				UIImage scaledImage = img.ImageScaledToFitSize (Frame.Size);
-
-				ParallaxBlock = new UIImageView (scaledImage);
-			}
-
-			ParallaxBlock.ClipsToBounds = true;
-
-			centerY = (float)ParallaxBlock.Center.Y;
-			offsetDelta = 0f;
-
-			var flagView = GenerateFlag ();
-			ParallaxBlock.AddSubview (flagView);
-
-			AddSubview (ParallaxBlock);
+			AddSubview (flagView);
 		}
 
-		private UIImageView GenerateFlag(){
+		private UIImageView GenerateFlag(string subtitleText){
 			var flagView = new UIImageView ();
 			flagView.Frame = new CGRect (0, 0, 200, 110);
 
@@ -61,7 +29,7 @@ namespace Board.Screens.Controls
 			flagBackground.Alpha = .95f;
 			flagBackground.Frame = flagView.Frame;
 			flagBackground.BackgroundColor = AppDelegate.BoardOrange;
-			flagBackground.Center = ParallaxBlock.Center;
+			flagBackground.Center = Center;
 
 			var pin = new UIImageView();
 			pin.Frame = flagView.Frame;
@@ -91,7 +59,7 @@ namespace Board.Screens.Controls
 			var subtitle = new UILabel ();
 			subtitle.Frame = new CGRect (5, 0, flagView.Frame.Width-10, 20);
 			subtitle.Font = AppDelegate.Narwhal14;
-			subtitle.Text = "EDITOR'S CHOICE";
+			subtitle.Text = subtitleText;
 			subtitle.TextColor = UIColor.White;
 			subtitle.AdjustsFontSizeToFitWidth = true;
 			subtitle.Center = new CGPoint(flagBackground.Center.X, placeName.Center.Y + 25);

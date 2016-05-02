@@ -11,7 +11,7 @@ namespace Board.Interface
 {
 	public class PageSelectorScreen : UIViewController
 	{
-		MenuBanner Banner;
+		UIMenuBanner Banner;
 		UIScrollView ScrollView;
 		List<MenuButton> Buttons;
 		bool pressed;
@@ -139,7 +139,7 @@ namespace Board.Interface
 
 		private void LoadBanner()
 		{
-			Banner = new MenuBanner ("./screens/pageselector/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new UIMenuBanner ("./screens/pageselector/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){

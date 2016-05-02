@@ -8,7 +8,7 @@ namespace Board.Screens
 {
 	public class SettingsScreen : UIViewController
 	{
-		MenuBanner Banner;
+		UIMenuBanner Banner;
 		LoginButton logInButton;
 
 		public SettingsScreen ()
@@ -57,7 +57,7 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			Banner = new MenuBanner ("./screens/settings/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new UIMenuBanner ("./screens/settings/banner/" + AppDelegate.PhoneVersion + ".jpg");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
