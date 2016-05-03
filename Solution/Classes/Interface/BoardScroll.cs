@@ -126,7 +126,6 @@ namespace Board.Interface
 			DragEndsEvent = (delegate { 
 				IsDragging = false;
 				IsHighlighting = false;
-				Console.WriteLine("false!");
 				ShouldOpenEyes = false;
 			});
 

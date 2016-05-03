@@ -3,6 +3,7 @@ using MGImageUtilitiesBinding;
 using Board.Interface;
 using CoreGraphics;
 using Foundation;
+using Board.Utilities;
 
 namespace Board.Screens.Controls
 {
@@ -10,26 +11,66 @@ namespace Board.Screens.Controls
 		public UIBoardThumb BoardThumb;
 		public UILabel NameLabel;
 		public const int TextSpace = 60;
+		public readonly float Size;
 
 		public UIBoardThumbComponent(Board.Schema.Board board, CGPoint contentOffset, float size){
+			Size = size;
 			BoardThumb = new UIBoardThumb (board, contentOffset, size);
 
 			Frame = new CGRect(BoardThumb.Frame.X, BoardThumb.Frame.Y, BoardThumb.Frame.Width, BoardThumb.Frame.Height + TextSpace);
 			BoardThumb.Frame = new CGRect (0, 0, BoardThumb.Frame.Width, BoardThumb.Frame.Height);
 			UserInteractionEnabled = true;
-			NameLabel = CreateNameLabel (board.Name, size);
+
+			NameLabel = CreateNameLabel (board.Name, GetDistance(board), size);
 
 			AddSubviews (BoardThumb, NameLabel);
 		}
 
-		private UILabel CreateNameLabel(string nameString, float width)
+		private double GetDistance(Board.Schema.Board board){
+			/*
+			var containerScreen = AppDelegate.NavigationController.TopViewController as ContainerScreen;
+			var mainMenuScreen = containerScreen.CurrentScreen as MainMenuScreen;
+			*/
+
+			var location = AppDelegate.UserLocation;
+			double distance = 0;
+
+			if (location.IsValid()) {
+				distance = CommonUtils.DistanceBetweenCoordinates (board.GeolocatorObject.Coordinate, location, 'M');
+			}
+
+			return distance;
+		}
+
+		public void UpdateDistanceLabel(){
+			NameLabel.RemoveFromSuperview ();
+			NameLabel = CreateNameLabel (BoardThumb.Board.Name, GetDistance(BoardThumb.Board), Size);
+			AddSubview (NameLabel);
+			
+		}
+
+		private UILabel CreateNameLabel(string nameString, double distance, float width)
 		{
 			UILabel label = new UILabel ();
 
 			label.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 
-			string distanceString = "1 mile away";
-			string compositeString = nameString + "\n" + distanceString;
+			string farAway;
+			if (distance != 1) {
+				farAway = " miles away";
+			} else {
+				farAway = " mile away";
+			}
+
+			string distanceString = distance.ToString ("F1");
+			if (distanceString == "0.0") {
+				distanceString = "0";
+			}
+
+			string distanceTotalString = distanceString + farAway;
+			string compositeString = nameString + "\n" + distanceTotalString;
+
+			System.Console.WriteLine (compositeString);
 
 			var nameAttributes = new UIStringAttributes {
 				Font = UIFont.SystemFontOfSize(14),
@@ -43,7 +84,7 @@ namespace Board.Screens.Controls
 
 			var attributedString = new NSMutableAttributedString (compositeString);
 			attributedString.SetAttributes (nameAttributes.Dictionary, new NSRange (0, nameString.Length));
-			attributedString.SetAttributes (distanceAttributes, new NSRange (nameString.Length, distanceString.Length + 1));
+			attributedString.SetAttributes (distanceAttributes, new NSRange (nameString.Length, distanceTotalString.Length + 1));
 
 			label.TextColor = AppDelegate.BoardBlack;
 			label.Lines = 0;

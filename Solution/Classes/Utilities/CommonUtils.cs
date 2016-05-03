@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-
 using CoreGraphics;
 using System.Threading.Tasks;
-
+using CoreLocation;
 using Foundation;
 using UIKit;
 
@@ -13,6 +12,32 @@ namespace Board.Utilities
 {
 	public static class CommonUtils
 	{
+		public static double DistanceBetweenCoordinates(CLLocationCoordinate2D location1, CLLocationCoordinate2D location2, char unit = 'K')
+		{
+			double rlat1 = Math.PI*location1.Latitude/180;
+			double rlat2 = Math.PI*location2.Latitude/180;
+			double theta = location1.Longitude - location2.Longitude;
+			double rtheta = Math.PI*theta/180;
+			double dist =
+				Math.Sin(rlat1)*Math.Sin(rlat2) + Math.Cos(rlat1)*
+				Math.Cos(rlat2)*Math.Cos(rtheta);
+			dist = Math.Acos(dist);
+			dist = dist*180/Math.PI;
+			dist = dist*60*1.1515;
+
+			switch (unit)
+			{
+			case 'K': //Kilometers -> default
+				return dist*1.609344;
+			case 'N': //Nautical Miles 
+				return dist*0.8684;
+			case 'M': //Miles
+				return dist;
+			}
+
+			return dist;
+		}
+
 		public static Int32 GetUnixTimeStamp(){
 			return (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 		}

@@ -42,6 +42,8 @@ namespace Board.Screens.Controls
 		public enum OrderMode { Neighborhood = 0, Alphabetic, Distance }
 		public const int TopAndBottomSeparation = 20;
 
+		public List<UIBoardThumbComponent> ListThumbComponents;
+
 		private IBoardComparer _boardComparer;
 		private Dictionary<OrderMode, IBoardComparer> _boardComparersByMode; 
 
@@ -58,8 +60,9 @@ namespace Board.Screens.Controls
 			this._boardComparersByMode = new Dictionary<OrderMode, IBoardComparer> ();
 			this._boardComparersByMode.Add (OrderMode.Alphabetic, new AlphabeticComparer ());
 			this._boardComparersByMode.Add (OrderMode.Neighborhood, new NeighbourhoodComparer ());
-
 			this._boardComparer = this._boardComparersByMode [mode];
+
+			ListThumbComponents = new List<UIBoardThumbComponent> ();
 
 			boardList = boardList.OrderBy(x => x, this._boardComparer).ToList();
 
@@ -76,8 +79,9 @@ namespace Board.Screens.Controls
 					}
 
 					// draw new location string
-					var locationLabel =new UILocationLabel (this._boardComparer.GetComparisonPropertyDescription(b), 
+					var locationLabel = new UILocationLabel (this._boardComparer.GetComparisonPropertyDescription(b), 
 						new CGPoint(UICarouselController.ItemSeparation, yposition), UITextAlignment.Center);
+					
 					yposition += (float)locationLabel.Frame.Height + ThumbSize / 2 + 10;
 					comparer = b;
 					AddSubview(locationLabel);
@@ -94,6 +98,7 @@ namespace Board.Screens.Controls
 
 				var btComponent = new UIBoardThumbComponent (b, new CGPoint ((AppDelegate.ScreenWidth/ 4) * linecounter, yposition), ThumbSize);
 				ListThumbs.Add (btComponent.BoardThumb);
+				ListThumbComponents.Add (btComponent);
 				AddSubview (btComponent);
 				linecounter++;
 				i++;
@@ -102,6 +107,7 @@ namespace Board.Screens.Controls
 			UserInteractionEnabled = true;
 			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, yposition + ThumbSize / 2 + TopAndBottomSeparation + extraLowMargin + UIBoardThumbComponent.TextSpace);
 		}
+
 	}
 }
 

@@ -6,6 +6,7 @@ using CoreAnimation;
 using Facebook.CoreKit;
 using Foundation;
 using Google.Maps;
+using CoreLocation;
 using UIKit;
 
 namespace Board
@@ -22,7 +23,6 @@ namespace Board
 
 		// until we get backend support and we can actually store new boards online
 		public static UINavigationController NavigationController;
-
 		public static float ScreenWidth;
 		public static float ScreenHeight;
 
@@ -40,6 +40,7 @@ namespace Board
 		public static UIFont SystemFontOfSize18;
 		public static UIFont SystemFontOfSize20;
 
+		public static CLLocationCoordinate2D UserLocation;
 		public static BoardInterface boardInterface;
 
 		public static double Latitude;

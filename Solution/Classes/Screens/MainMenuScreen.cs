@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Board.Infrastructure;
-using Board.Interface;
 using Board.Screens.Controls;
 using Board.Utilities;
 using CoreGraphics;
@@ -23,8 +21,9 @@ namespace Board.Screens
 		UIMagazine Magazine;
 		UIButton map_button;
 		EventHandler MapButtonEvent;
-		MapView map;
+		public MapView map;
 		UIContentDisplay ContentDisplay;
+		List<Board.Schema.Board> BoardList;
 
 		bool mapInfoTapped;
 		bool firstLocationUpdate;
@@ -96,9 +95,9 @@ namespace Board.Screens
 			ScrollView.BackgroundColor = UIColor.White;
 
 			// GenerateBoardList()
-			var boardList = await CloudController.GetUserBoards ();
+			BoardList = await CloudController.GetUserBoards ();
 
-			Magazine = new UIMagazine (boardList);
+			Magazine = new UIMagazine (BoardList);
 
 			ContentDisplay = Magazine.Pages [0].ContentDisplay;
 			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, ContentDisplay.Frame.Bottom);
@@ -160,6 +159,7 @@ namespace Board.Screens
 				firstLocationUpdate = true; 
 
 				var location = change.ObjectForKey (NSValue.ChangeNewKey) as CoreLocation.CLLocation;
+				AppDelegate.UserLocation = location.Coordinate;
 				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
 
 				if (!generatedMarkers) {
@@ -190,7 +190,15 @@ namespace Board.Screens
 		public void PlaceNewScreen(UIContentDisplay newDisplay){
 			ContentDisplay.UnsuscribeToEvents ();
 			ContentDisplay.RemoveFromSuperview ();
+
+			if (newDisplay is UIThumbsContentDisplay) {
+				foreach (var thumb in ((UIThumbsContentDisplay)newDisplay).ListThumbComponents) {
+					thumb.UpdateDistanceLabel ();
+				}
+				//newDisplay = new UIThumbsContentDisplay (BoardList, UIThumbsContentDisplay.OrderMode.Alphabetic);
+			}
 			ContentDisplay = newDisplay;
+
 			ScrollView.AddSubview (ContentDisplay);
 			ScrollView.SendSubviewToBack (ContentDisplay);
 			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, newDisplay.Frame.Height);
