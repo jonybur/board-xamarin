@@ -28,11 +28,9 @@ namespace Board.Interface
 		public static Dictionary<string, Widget> DictionaryWidgets;
 
 		bool firstLoad;
-		bool TestMode;
 
-		public BoardInterface (Board.Schema.Board _board, bool _testMode){
+		public BoardInterface (Board.Schema.Board _board){
 			board = _board;
-			TestMode = _testMode;
 			firstLoad = true;
 		}
 

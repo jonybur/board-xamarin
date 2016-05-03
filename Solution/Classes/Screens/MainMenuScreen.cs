@@ -17,21 +17,18 @@ namespace Board.Screens
 	public partial class MainMenuScreen : UIViewController
 	{
 		UIMenuBanner Banner;
-		UIScrollView content;
-		List<UIBoardThumb> ListThumbs;
+		UIScrollView ScrollView;
 		List<Marker> ListMapMarkers;
 
-		UIMagazineBanner MagazineBanner;
+		UIMagazine Magazine;
 		UIButton map_button;
 		EventHandler MapButtonEvent;
 		MapView map;
+		UIContentDisplay ContentDisplay;
 
 		bool mapInfoTapped;
 		bool firstLocationUpdate;
 		bool generatedMarkers;
-
-		float yposition;
-		float thumbsize;
 
 		public override void DidReceiveMemoryWarning ()
 		{
@@ -42,20 +39,19 @@ namespace Board.Screens
 		{
 			base.ViewDidLoad ();
 
-			ListThumbs = new List<UIBoardThumb> ();
 			ListMapMarkers = new List<Marker> ();
 
 			if (Profile.CurrentProfile == null) {
 				AppDelegate.NavigationController.PopViewController (true);
 			}
 
-			content = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			ScrollView = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 
 			LoadMapButton ();
 			LoadBanner ();
 			LoadMap ();
 
-			View.AddSubviews (content, map, Banner, map_button);
+			View.AddSubviews (ScrollView, map, Banner, map_button);
 		}
 
 		public override async void ViewDidAppear(bool animated)
@@ -65,10 +61,8 @@ namespace Board.Screens
 			// suscribe to observers, gesture recgonizers, events
 			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
 			map_button.TouchUpInside += MapButtonEvent;	
-			foreach (UIBoardThumb bt in ListThumbs) {
-				bt.SuscribeToEvent ();
-			}
 			mapInfoTapped = false;
+			ContentDisplay.SuscribeToEvents ();
 			Banner.SuscribeToEvents ();
 		}
 
@@ -77,22 +71,18 @@ namespace Board.Screens
 			// unsuscribe from observers, gesture recgonizers, events
 			map.RemoveObserver (this, new NSString ("myLocation"));
 			map_button.TouchUpInside -= MapButtonEvent;
-			foreach (UIBoardThumb bt in ListThumbs) {
-				bt.UnsuscribeToEvent ();
-				MemoryUtility.ReleaseUIViewWithChildren (bt, true);
-			}
+			ContentDisplay.UnsuscribeToEvents ();
 			foreach (Marker mark in ListMapMarkers) {
 				mark.Dispose ();
 			}
 
-			MemoryUtility.ReleaseUIViewWithChildren (map, true);
+			MemoryUtility.ReleaseUIViewWithChildren (map);
 
 			ListMapMarkers = null;
-			ListThumbs = null;
 
 			Banner.UnsuscribeToEvents ();
 
-			MemoryUtility.ReleaseUIViewWithChildren (View, true);
+			MemoryUtility.ReleaseUIViewWithChildren (View);
 			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 		}
 
@@ -103,33 +93,25 @@ namespace Board.Screens
 
 		private async System.Threading.Tasks.Task LoadContent()
 		{
-			thumbsize = AppDelegate.ScreenWidth / 3.5f;
-
-			content.BackgroundColor = UIColor.White;
-
-			MagazineBanner = new UIMagazineBanner ();
-			content.AddSubview (MagazineBanner);
-
-			var carousel1 = new UICarouselController ();
-			carousel1.View.Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight / 2);
-			content.AddSubview (carousel1.View);
+			ScrollView.BackgroundColor = UIColor.White;
 
 			// GenerateBoardList()
 			var boardList = await CloudController.GetUserBoards ();
-			boardList = boardList.OrderBy(o=>o.GeolocatorObject.Neighborhood).ToList();
 
-			// starting point
-			yposition = (float)Banner.Frame.Bottom * 30 + 10;
+			Magazine = new UIMagazine (boardList);
 
-			content.ScrollEnabled = true;
-			content.UserInteractionEnabled = true;
+			ContentDisplay = Magazine.Pages [0].ContentDisplay;
+			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, ContentDisplay.Frame.Bottom);
 
-			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, yposition + thumbsize + 5);
+			ScrollView.AddSubview (ContentDisplay);
+			ScrollView.AddSubview (Magazine.Banner);
 
-			content.Scrolled += (sender, e) => {
+			ScrollView.ScrollEnabled = true;
+			ScrollView.Scrolled += (sender, e) => {
 				
-				if (content.ContentOffset.Y < 0){
-					MagazineBanner.Center = new CGPoint(MagazineBanner.Center.X, UIMenuBanner.MenuHeight + MagazineBanner.Frame.Height / 2 + content.ContentOffset.Y);
+				if (ScrollView.ContentOffset.Y < 0){
+					Magazine.Banner.Center = new CGPoint(Magazine.Banner.Center.X,
+						UIMenuBanner.MenuHeight + Magazine.Banner.Frame.Height / 2 + ScrollView.ContentOffset.Y);
 				}
 
 			};
@@ -162,10 +144,10 @@ namespace Board.Screens
 			map.InfoTapped += (sender, e) => {
 				if (!mapInfoTapped)
 				{
-					UIBoardThumb bthumb = ListThumbs.Find(t=>t.Board.Id == ((NSString)e.Marker.UserData).ToString());
+					/*UIBoardThumb bthumb = ListThumbs.Find(t=>t.Board.Id == ((NSString)e.Marker.UserData).ToString());
 					AppDelegate.boardInterface = new BoardInterface(bthumb.Board, false);
 					AppDelegate.NavigationController.PushViewController(AppDelegate.boardInterface, true);
-					mapInfoTapped = true;
+					mapInfoTapped = true;*/
 				}
 			};
 
@@ -189,7 +171,7 @@ namespace Board.Screens
 
 		private void GenerateMarkers()
 		{
-			foreach (UIBoardThumb thumb in ListThumbs) {
+			/*foreach (UIBoardThumb thumb in ListThumbs) {
 				Marker marker = new Marker ();
 				marker.AppearAnimation = MarkerAnimation.Pop;
 				marker.Position = thumb.Board.GeolocatorObject.Coordinate;
@@ -202,8 +184,18 @@ namespace Board.Screens
 				marker.Tappable = true;
 				marker.UserData = new NSString(thumb.Board.Id);
 				ListMapMarkers.Add (marker);
-			}
+			}*/
 		}
+
+		public void PlaceNewScreen(UIContentDisplay newDisplay){
+			ContentDisplay.UnsuscribeToEvents ();
+			ContentDisplay.RemoveFromSuperview ();
+			ContentDisplay = newDisplay;
+			ScrollView.AddSubview (ContentDisplay);
+			ScrollView.SendSubviewToBack (ContentDisplay);
+			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, newDisplay.Frame.Height);
+			ContentDisplay.SuscribeToEvents ();
+		} 
 
 		private UIImage CreateMarkerImage(UIImage logo)
 		{

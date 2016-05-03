@@ -3,9 +3,9 @@ using UIKit;
 
 namespace Board.Screens.Controls
 {
-	public class TwoLinesMenuButton : MenuButton
+	public class UITwoLinesMenuButton : UIMenuButton
 	{
-		public TwoLinesMenuButton(float yPosition)
+		public UITwoLinesMenuButton(float yPosition)
 		{
 			Frame = new CGRect (0, yPosition, AppDelegate.ScreenWidth, 80);
 			UserInteractionEnabled = true;

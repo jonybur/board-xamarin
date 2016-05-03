@@ -12,7 +12,7 @@ namespace Board.Interface.FacebookImport
 	{
 		UIMenuBanner Banner;
 		UIScrollView ScrollView;
-		List<MenuButton> Buttons;
+		List<UIMenuButton> Buttons;
 
 		private void Completion(List<FacebookElement> elementList) {
 			LoadAlbums (elementList);
@@ -26,7 +26,7 @@ namespace Board.Interface.FacebookImport
 
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 
-			Buttons = new List<MenuButton> ();
+			Buttons = new List<UIMenuButton> ();
 
 			BTProgressHUD.Show ();
 			FacebookUtils.MakeGraphRequest (BoardInterface.board.FBPage.Id, "albums", Completion);
@@ -76,9 +76,9 @@ namespace Board.Interface.FacebookImport
 		}
 
 		bool pressed;
-		private OneLineMenuButton AlbumButton(float yPosition, FacebookAlbum album)
+		private UIOneLineMenuButton AlbumButton(float yPosition, FacebookAlbum album)
 		{
-			OneLineMenuButton albumButton = new OneLineMenuButton (yPosition);
+			UIOneLineMenuButton albumButton = new UIOneLineMenuButton (yPosition);
 			albumButton.SetLabel (album.Name + " >");
 			albumButton.SetUnpressedColors ();
 

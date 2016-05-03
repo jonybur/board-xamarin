@@ -8,15 +8,14 @@ using Foundation;
 
 namespace Board.Screens.Controls
 {
-	public class SideMenu : UIViewController
+	public class UISideMenu : UIViewController
 	{
 		UIImageView sidemenu;
 		UITapGestureRecognizer SideMenuTap;
 		ProfilePictureView profileView;
 		string FromScreen;
 
-
-		public SideMenu(string fromScreen)
+		public UISideMenu(string fromScreen)
 		{
 			FromScreen = fromScreen;
 		}

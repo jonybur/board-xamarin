@@ -329,6 +329,7 @@
     <BundleResource Include="Resources\screens\main\magazine\westpalmbeach.png" />
     <BundleResource Include="Resources\screens\main\magazine\pin.png" />
     <BundleResource Include="Resources\screens\business\sidemenu\6.png" />
+    <BundleResource Include="Resources\screens\main\magazine\carouselitem\1.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -404,24 +405,17 @@
     <Compile Include="Classes\Facebook\FacebookElement.cs" />
     <Compile Include="Classes\Facebook\FacebookPost.cs" />
     <Compile Include="Classes\Facebook\FacebookPage.cs" />
-    <Compile Include="Classes\Screens\Controls\MenuButton.cs" />
-    <Compile Include="Classes\Screens\Controls\OneLineMenuButton.cs" />
-    <Compile Include="Classes\Screens\Controls\TwoLinesMenuButton.cs" />
     <Compile Include="Classes\Screens\MainMenuScreen_Demo.cs" />
-    <Compile Include="Classes\Screens\Controls\MenuBanner.cs" />
     <Compile Include="Classes\Facebook\FacebookCover.cs" />
     <Compile Include="Classes\Interface\Buttons\FacebookButton.cs" />
     <Compile Include="Classes\Interface\Widgets\MapWidget.cs" />
     <Compile Include="Classes\Schema\Map.cs" />
     <Compile Include="Classes\Interface\LookUp\MapLookUp.cs" />
     <Compile Include="Classes\Utilities\ICanCleanUpMyself.cs" />
-    <Compile Include="Classes\Screens\Controls\MapMarker.cs" />
-    <Compile Include="Classes\Screens\Controls\SideMenu.cs" />
     <Compile Include="Classes\Screens\ContainerScreen.cs" />
     <Compile Include="Classes\Infrastructure\JsonUtility.cs" />
     <Compile Include="Classes\Interface\Buttons\InfoButton.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Classes\Screens\Controls\TrendingBlock.cs" />
     <Compile Include="Classes\Interface\SettingsScreen\AnalyticsScreen.cs" />
     <Compile Include="Classes\Interface\CameraScreen\CameraController.cs" />
     <Compile Include="Classes\Interface\CameraScreen\CustomPBJVisionDelegate.cs" />
@@ -438,14 +432,24 @@
     <Compile Include="Classes\Facebook\FacebookVideo.cs" />
     <Compile Include="Classes\Infrastructure\CloudController.cs" />
     <Compile Include="Classes\JsonResponses\UberProductResponse.cs" />
-    <Compile Include="Classes\Screens\Controls\ThumbSidescroller.cs" />
-    <Compile Include="Classes\Screens\Controls\MagazineBannerPage.cs" />
-    <Compile Include="Classes\Screens\Controls\MagazineBannerPageController.cs" />
-    <Compile Include="Classes\Screens\Controls\MagazineBanner.cs" />
-    <Compile Include="Classes\Screens\Controls\UICarouselController.cs" />
-    <Compile Include="Classes\Screens\Controls\UIBoardThumb.cs" />
     <Compile Include="Classes\Screens\Controls\UIGalleryScrollView.cs" />
     <Compile Include="Classes\Screens\Controls\UILocationLabel.cs" />
+    <Compile Include="Classes\Screens\Controls\UITrendingBlock.cs" />
+    <Compile Include="Classes\Screens\Controls\UISideMenu.cs" />
+    <Compile Include="Classes\Screens\Controls\MenuButton\UIOneLineMenuButton.cs" />
+    <Compile Include="Classes\Screens\Controls\MenuButton\UITwoLinesMenuButton.cs" />
+    <Compile Include="Classes\Screens\Controls\MenuButton\UIMenuButton.cs" />
+    <Compile Include="Classes\Screens\Controls\UIMenuBanner.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazineBanner.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazineBannerPage.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazineBannerPageController.cs" />
+    <Compile Include="Classes\Screens\Controls\UIActionButton.cs" />
+    <Compile Include="Classes\Screens\Controls\UIContentDisplay\UIContentDisplay.cs" />
+    <Compile Include="Classes\Screens\Controls\UIContentDisplay\UIContentThumb.cs" />
+    <Compile Include="Classes\Screens\Controls\UIContentDisplay\CarouselSubscreen\UICarouselController.cs" />
+    <Compile Include="Classes\Screens\Controls\UIContentDisplay\ThumbsSubscreen\UIThumbsContentDisplay.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazinePage.cs" />
+    <Compile Include="Classes\Screens\Controls\UIContentDisplay\UIBoardThumb.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -537,6 +541,12 @@
     <Folder Include="Resources\boardinterface\screens\albums\banner\" />
     <Folder Include="Resources\boardinterface\screens\photos\banner\" />
     <Folder Include="Resources\screens\main\magazine\" />
+    <Folder Include="Classes\Screens\Controls\MenuButton\" />
+    <Folder Include="Classes\Screens\Controls\MagazineBanner\" />
+    <Folder Include="Resources\screens\main\magazine\carouselitem\" />
+    <Folder Include="Classes\Screens\Controls\UIContentDisplay\" />
+    <Folder Include="Classes\Screens\Controls\UIContentDisplay\CarouselSubscreen\" />
+    <Folder Include="Classes\Screens\Controls\UIContentDisplay\ThumbsSubscreen\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

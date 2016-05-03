@@ -13,7 +13,7 @@ namespace Board.Interface.CreateScreens
 	{
 		UIMenuBanner Banner;
 		UIScrollView ScrollView;
-		List<MenuButton> Buttons;
+		List<UIMenuButton> Buttons;
 		string TypeOfImport;
 		Action<FacebookElement> OnReturn;
 		bool pressed;
@@ -32,7 +32,7 @@ namespace Board.Interface.CreateScreens
 			LoadBanner ();
 			View.BackgroundColor = UIColor.White;
 
-			Buttons = new List<MenuButton> ();
+			Buttons = new List<UIMenuButton> ();
 
 			FacebookUtils.MakeGraphRequest (BoardInterface.board.FBPage.Id, TypeOfImport, Completion);
 		}
@@ -62,7 +62,7 @@ namespace Board.Interface.CreateScreens
 
 			int i = 0;
 			foreach (FacebookElement fbelement in ElementList) {
-				OneLineMenuButton button;
+				UIOneLineMenuButton button;
 
 				// for importing events
 				if (fbelement is FacebookEvent) {
@@ -84,7 +84,7 @@ namespace Board.Interface.CreateScreens
 
 				// in case of an error
 				} else {
-					button = new OneLineMenuButton ();
+					button = new UIOneLineMenuButton ();
 				}
 
 				yPosition += (float)button.Frame.Height + 1;
@@ -97,9 +97,9 @@ namespace Board.Interface.CreateScreens
 			View.AddSubview (Banner);
 		}
 
-		private OneLineMenuButton CreateButton(float yPosition, string content, FacebookElement fbelement)
+		private UIOneLineMenuButton CreateButton(float yPosition, string content, FacebookElement fbelement)
 		{
-			OneLineMenuButton fbeventButton = new OneLineMenuButton (yPosition);
+			UIOneLineMenuButton fbeventButton = new UIOneLineMenuButton (yPosition);
 
 			if (content.Length > 35) {
 				content = content.Substring (0, 35) + "...";
@@ -147,14 +147,14 @@ namespace Board.Interface.CreateScreens
 
 		private void SuscribeToEvents()
 		{
-			foreach (MenuButton sb in Buttons) {
+			foreach (UIMenuButton sb in Buttons) {
 				sb.SuscribeToEvent ();
 			}
 		}
 
 		private void UnsuscribeToEvents()
 		{
-			foreach (MenuButton sb in Buttons) {
+			foreach (UIMenuButton sb in Buttons) {
 				sb.UnsuscribeToEvent ();
 			}
 

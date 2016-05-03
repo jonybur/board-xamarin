@@ -13,7 +13,7 @@ namespace Board.Interface
 	{
 		UIMenuBanner Banner;
 		UIScrollView ScrollView;
-		List<MenuButton> Buttons;
+		List<UIMenuButton> Buttons;
 		bool pressed;
 
 		public override async void ViewDidLoad ()
@@ -24,7 +24,7 @@ namespace Board.Interface
 			LoadBanner ();
 			View.BackgroundColor = UIColor.White;
 
-			Buttons = new List<MenuButton> ();
+			Buttons = new List<UIMenuButton> ();
 
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			View.AddSubview (ScrollView);
@@ -43,14 +43,14 @@ namespace Board.Interface
 
 		private void SuscribeToEvents()
 		{
-			foreach (MenuButton sb in Buttons) {
+			foreach (UIMenuButton sb in Buttons) {
 				sb.SuscribeToEvent ();
 			}
 		}
 
 		private void UnsuscribeToEvents()
 		{
-			foreach (MenuButton sb in Buttons) {
+			foreach (UIMenuButton sb in Buttons) {
 				sb.UnsuscribeToEvent ();
 			}
 			Banner.UnsuscribeToEvents ();
@@ -72,14 +72,14 @@ namespace Board.Interface
 
 			int i = 0;
 			foreach (FacebookElement page in ElementList) {
-				TwoLinesMenuButton pageButton = PageButton (yPosition, (FacebookPage)page);
+				UITwoLinesMenuButton pageButton = PageButton (yPosition, (FacebookPage)page);
 				ScrollView.AddSubview (pageButton);
 				Buttons.Add (pageButton);
 				i++;
 				yPosition += (float)pageButton.Frame.Height + 1;
 			}
 
-			OneLineMenuButton unsyncButton = CreateUnsyncButton (yPosition);
+			UIOneLineMenuButton unsyncButton = CreateUnsyncButton (yPosition);
 			if (BoardInterface.board.FBPage == null) {
 				unsyncButton.Alpha = 0f;
 			}
@@ -87,9 +87,9 @@ namespace Board.Interface
 			Buttons.Add (unsyncButton);
 		}
 
-		private TwoLinesMenuButton PageButton(float yPosition, FacebookPage page)
+		private UITwoLinesMenuButton PageButton(float yPosition, FacebookPage page)
 		{
-			TwoLinesMenuButton pageButton = new TwoLinesMenuButton (yPosition);
+			UITwoLinesMenuButton pageButton = new UITwoLinesMenuButton (yPosition);
 			pageButton.SetLabels (page.Name, page.Category);
 			pageButton.SetUnpressedColors ();
 
@@ -109,9 +109,9 @@ namespace Board.Interface
 			return pageButton;
 		}
 
-		private OneLineMenuButton CreateUnsyncButton(float yPosition)
+		private UIOneLineMenuButton CreateUnsyncButton(float yPosition)
 		{
-			OneLineMenuButton unsyncButton = new OneLineMenuButton (yPosition);
+			UIOneLineMenuButton unsyncButton = new UIOneLineMenuButton (yPosition);
 			unsyncButton.SetLabel("Unsync");
 			unsyncButton.SetUnpressedColors ();
 

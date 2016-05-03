@@ -4,12 +4,12 @@ using UIKit;
 
 namespace Board.Screens.Controls
 {
-	public class MenuButton : UIButton
+	public class UIMenuButton : UIButton
 	{
 		public EventHandler TapEvent;
 		public List<UILabel> ListLabels;
 
-		public MenuButton()
+		public UIMenuButton()
 		{
 			ListLabels = new List<UILabel> ();
 		}

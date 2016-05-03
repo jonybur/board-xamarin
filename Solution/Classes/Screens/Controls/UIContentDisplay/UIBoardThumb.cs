@@ -6,11 +6,8 @@ using CoreGraphics;
 
 namespace Board.Screens.Controls
 {
-	public sealed class UIBoardThumb : UIButton
+	public sealed class UIBoardThumb : UIContentThumb
 	{
-		private EventHandler TouchEvent;
-		public Board.Schema.Board Board;
-
 		public UIBoardThumb (Board.Schema.Board board, CGPoint contentOffset, float size)
 		{ 
 			Board = board;
@@ -43,7 +40,7 @@ namespace Board.Screens.Controls
 			TouchEvent = (sender, e) => {
 				if (AppDelegate.boardInterface == null)
 				{
-					AppDelegate.boardInterface = new BoardInterface (board, false);
+					AppDelegate.boardInterface = new BoardInterface (board);
 					AppDelegate.NavigationController.PushViewController (AppDelegate.boardInterface, true);
 				}
 			};
@@ -61,16 +58,6 @@ namespace Board.Screens.Controls
 			current.FillEllipseInRect (new CGRect(0, 0, size.Width, size.Height));
 
 			return UIGraphics.GetImageFromCurrentImageContext ();
-		}
-
-		public void SuscribeToEvent()
-		{
-			TouchUpInside += TouchEvent;	
-		}
-
-		public void UnsuscribeToEvent()
-		{
-			TouchUpInside -= TouchEvent;
 		}
 	}
 }

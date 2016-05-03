@@ -3,11 +3,11 @@ using UIKit;
 
 namespace Board.Screens.Controls
 {
-	public sealed class MagazineBannerPage : UIImageView
+	public sealed class UIMagazineBannerPage : UIImageView
 	{
 		public const int Height = 175;
 
-		public MagazineBannerPage(string subtitleText)
+		public UIMagazineBannerPage(string subtitleText)
 		{
 			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, Height);
 			BackgroundColor = UIColor.White;

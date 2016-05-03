@@ -7,8 +7,8 @@ namespace Board.Screens
 {
 	public class ContainerScreen : UIViewController
 	{
-		SideMenu sideMenu;
-		UIViewController currentScreen;
+		UISideMenu sideMenu;
+		public UIViewController CurrentScreen;
 
 		public override void ViewDidLoad ()
 		{
@@ -46,75 +46,75 @@ namespace Board.Screens
 
 		public void LoadMainMenu()
 		{
-			currentScreen = new MainMenuScreen ();
-			AddChildViewController (currentScreen);
-			View.AddSubview (currentScreen.View);
+			CurrentScreen = new MainMenuScreen ();
+			AddChildViewController (CurrentScreen);
+			View.AddSubview (CurrentScreen.View);
 		}
 
 		public void LoadBusinessScreen()
 		{
-			currentScreen = new BusinessScreen ();
-			AddChildViewController (currentScreen);
-			View.AddSubview (currentScreen.View);
+			CurrentScreen = new BusinessScreen ();
+			AddChildViewController (CurrentScreen);
+			View.AddSubview (CurrentScreen.View);
 		}
 
 		public override void ViewDidDisappear(bool animated)
 		{
-			currentScreen.ViewDidDisappear (animated);
+			CurrentScreen.ViewDidDisappear (animated);
 			MemoryUtility.ReleaseUIViewWithChildren (View);
 		}
 
 		public void BringSideMenuUp(string fromScreen)
 		{
-			sideMenu = new SideMenu (fromScreen);
+			sideMenu = new UISideMenu (fromScreen);
 			View.AddSubview (sideMenu.View);
 		}
 
 		public void ChangeToMainScreen()
 		{
 			RemoveCurrentScreen ();
-			currentScreen = new MainMenuScreen ();
-			AddChildViewController (currentScreen);
-			View.AddSubview (currentScreen.View);
+			CurrentScreen = new MainMenuScreen ();
+			AddChildViewController (CurrentScreen);
+			View.AddSubview (CurrentScreen.View);
 		}
 
 		public void ChangeToBusinessScreen()
 		{	
 			RemoveCurrentScreen ();
-			currentScreen = new BusinessScreen ();
-			AddChildViewController (currentScreen);
-			View.AddSubview (currentScreen.View);
+			CurrentScreen = new BusinessScreen ();
+			AddChildViewController (CurrentScreen);
+			View.AddSubview (CurrentScreen.View);
 		}
 
 		public void ChangeToSettingsScreen()
 		{
 			RemoveCurrentScreen ();
-			currentScreen = new SettingsScreen ();
-			AddChildViewController (currentScreen);
-			View.AddSubview (currentScreen.View);
+			CurrentScreen = new SettingsScreen ();
+			AddChildViewController (CurrentScreen);
+			View.AddSubview (CurrentScreen.View);
 		}
 
 		public void ChangeToInviteScreen()
 		{
 			RemoveCurrentScreen ();
-			currentScreen = new InviteScreen ();
-			AddChildViewController (currentScreen);
-			View.AddSubview (currentScreen.View);
+			CurrentScreen = new InviteScreen ();
+			AddChildViewController (CurrentScreen);
+			View.AddSubview (CurrentScreen.View);
 		}
 
 		public void ChangeToSupportScreen()
 		{
 			RemoveCurrentScreen ();
-			currentScreen = new SupportScreen ();
-			AddChildViewController (currentScreen);
-			View.AddSubview (currentScreen.View);
+			CurrentScreen = new SupportScreen ();
+			AddChildViewController (CurrentScreen);
+			View.AddSubview (CurrentScreen.View);
 		}
 
 		private void RemoveCurrentScreen()
 		{
-			currentScreen.WillMoveToParentViewController (null);
-			currentScreen.View.RemoveFromSuperview ();
-			currentScreen.RemoveFromParentViewController ();
+			CurrentScreen.WillMoveToParentViewController (null);
+			CurrentScreen.View.RemoveFromSuperview ();
+			CurrentScreen.RemoveFromParentViewController ();
 		}
 	}
 }

@@ -5,7 +5,7 @@ using MGImageUtilitiesBinding;
 
 namespace Board.Screens.Controls
 {
-	public sealed class TrendingBlock : UIImageView
+	public sealed class UITrendingBlock : UIImageView
 	{
 		public UIImageView ParallaxBlock;
 		private UIImageView LikeComponent;
@@ -26,7 +26,7 @@ namespace Board.Screens.Controls
 			ParallaxBlock.Center = new CGPoint (ParallaxBlock.Center.X, centerY - (yoffset - offsetDelta)/10);
 		}
 
-		public TrendingBlock(float yposition, Board.Schema.Board board)
+		public UITrendingBlock(float yposition, Board.Schema.Board board)
 		{
 			Frame = new CGRect (0, yposition, AppDelegate.ScreenWidth, 250);
 			BackgroundColor = UIColor.White;

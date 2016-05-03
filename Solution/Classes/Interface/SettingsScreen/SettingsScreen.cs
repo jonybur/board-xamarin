@@ -7,7 +7,7 @@ namespace Board.Interface
 	public class SettingsScreen : UIViewController
 	{
 		UIMenuBanner Banner;
-		OneLineMenuButton SyncButton, AnalyticsButton;
+		UIOneLineMenuButton SyncButton, AnalyticsButton;
 
 		public override void ViewDidLoad ()
 		{
@@ -36,7 +36,7 @@ namespace Board.Interface
 
 		private void CreateAnalyticsButton(float yPosition)
 		{
-			AnalyticsButton = new OneLineMenuButton (yPosition);
+			AnalyticsButton = new UIOneLineMenuButton (yPosition);
 			AnalyticsButton.SetLabel ("Get Analytics >");
 
 			AnalyticsButton.TouchUpInside += (sender, e) => {
@@ -50,7 +50,7 @@ namespace Board.Interface
 
 		private void CreateSyncButton(float yPosition)
 		{
-			SyncButton = new OneLineMenuButton (yPosition);
+			SyncButton = new UIOneLineMenuButton (yPosition);
 
 			SyncButton.TouchUpInside += (sender, e) => {
 				SyncButton.SetPressedColors();
