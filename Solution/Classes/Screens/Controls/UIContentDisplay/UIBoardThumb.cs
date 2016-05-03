@@ -1,12 +1,63 @@
-﻿using System;
-using UIKit;
+﻿using UIKit;
 using MGImageUtilitiesBinding;
 using Board.Interface;
 using CoreGraphics;
+using Foundation;
 
 namespace Board.Screens.Controls
 {
-	public sealed class UIBoardThumb : UIContentThumb
+	public class UIBoardThumbComponent : UIView{
+		public UIBoardThumb BoardThumb;
+		public UILabel NameLabel;
+		public const int TextSpace = 60;
+
+		public UIBoardThumbComponent(Board.Schema.Board board, CGPoint contentOffset, float size){
+			BoardThumb = new UIBoardThumb (board, contentOffset, size);
+
+			Frame = new CGRect(BoardThumb.Frame.X, BoardThumb.Frame.Y, BoardThumb.Frame.Width, BoardThumb.Frame.Height + TextSpace);
+			BoardThumb.Frame = new CGRect (0, 0, BoardThumb.Frame.Width, BoardThumb.Frame.Height);
+			UserInteractionEnabled = true;
+			NameLabel = CreateNameLabel (board.Name, size);
+
+			AddSubviews (BoardThumb, NameLabel);
+		}
+
+		private UILabel CreateNameLabel(string nameString, float width)
+		{
+			UILabel label = new UILabel ();
+
+			label.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
+
+			string distanceString = "1 mile away";
+			string compositeString = nameString + "\n" + distanceString;
+
+			var nameAttributes = new UIStringAttributes {
+				Font = UIFont.SystemFontOfSize(14),
+				ForegroundColor = UIColor.Black
+			};
+
+			var distanceAttributes = new UIStringAttributes {
+				Font = UIFont.SystemFontOfSize(14),
+				ForegroundColor = UIColor.FromRGB(100,100,100)
+			};
+
+			var attributedString = new NSMutableAttributedString (compositeString);
+			attributedString.SetAttributes (nameAttributes.Dictionary, new NSRange (0, nameString.Length));
+			attributedString.SetAttributes (distanceAttributes, new NSRange (nameString.Length, distanceString.Length + 1));
+
+			label.TextColor = AppDelegate.BoardBlack;
+			label.Lines = 0;
+			label.AttributedText = attributedString;
+			label.AdjustsFontSizeToFitWidth = false;
+			label.Font = UIFont.SystemFontOfSize(14);
+			label.Frame = new CGRect (5, width, width - 10, TextSpace);
+			label.SizeToFit ();
+
+			return label;
+		}
+	}
+
+	public class UIBoardThumb : UIContentThumb
 	{
 		public UIBoardThumb (Board.Schema.Board board, CGPoint contentOffset, float size)
 		{ 
@@ -45,7 +96,7 @@ namespace Board.Screens.Controls
 				}
 			};
 
-			this.UserInteractionEnabled = true;
+			UserInteractionEnabled = true;
 		}
 
 		private UIImage CreateThumbImage(CGSize size)
@@ -60,5 +111,7 @@ namespace Board.Screens.Controls
 			return UIGraphics.GetImageFromCurrentImageContext ();
 		}
 	}
+
+
 }
 

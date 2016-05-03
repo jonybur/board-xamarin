@@ -55,6 +55,7 @@ namespace Board.Infrastructure
 				var image = UIImage.FromBundle (imgPath);
 
 				var board = new Board.Schema.Board();
+
 				board.ImageView = new UIImageView(image);
 				board.GeolocatorObject = JsonHandler.DeserializeObject (boardL[0].GeolocatorJson);
 

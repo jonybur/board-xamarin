@@ -150,7 +150,7 @@ namespace Board.Screens
 		private void NextButtonEnabled(bool enabled)
 		{
 			if (nameView != null) {
-				if (nameView.Text.Length < 5) {
+				if (nameView.Text.Length < 1) {
 					nextEnabled = false;
 					orangeRectangle.Alpha = .5f;
 					return;

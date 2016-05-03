@@ -72,11 +72,12 @@ namespace Board.Screens.Controls
 				if (this._boardComparer.Compare(comparer, b) != 0 || i == 0) {
 
 					if (sectionNumber > 0) {
-						yposition += ThumbSize / 2 + 10;
+						yposition += ThumbSize / 2 + UIBoardThumbComponent.TextSpace + 10;
 					}
 
 					// draw new location string
-					var locationLabel = new UILocationLabel (this._boardComparer.GetComparisonPropertyDescription(b), new CGPoint(0,yposition), UITextAlignment.Center);
+					var locationLabel =new UILocationLabel (this._boardComparer.GetComparisonPropertyDescription(b), 
+						new CGPoint(UICarouselController.ItemSeparation, yposition), UITextAlignment.Center);
 					yposition += (float)locationLabel.Frame.Height + ThumbSize / 2 + 10;
 					comparer = b;
 					AddSubview(locationLabel);
@@ -88,17 +89,18 @@ namespace Board.Screens.Controls
 				if (linecounter >= 4) {
 					linecounter = 1;
 					// nueva linea de thumbs
-					yposition += ThumbSize + 10;
+					yposition += ThumbSize + UIBoardThumbComponent.TextSpace;
 				}
-				var boardThumb = new UIBoardThumb (b, new CGPoint ((AppDelegate.ScreenWidth/ 4) * linecounter, yposition), ThumbSize);
 
-				ListThumbs.Add (boardThumb);
-				AddSubview (boardThumb);
+				var btComponent = new UIBoardThumbComponent (b, new CGPoint ((AppDelegate.ScreenWidth/ 4) * linecounter, yposition), ThumbSize);
+				ListThumbs.Add (btComponent.BoardThumb);
+				AddSubview (btComponent);
 				linecounter++;
 				i++;
 			}
 
-			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, yposition + ThumbSize / 2 + TopAndBottomSeparation + extraLowMargin);
+			UserInteractionEnabled = true;
+			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, yposition + ThumbSize / 2 + TopAndBottomSeparation + extraLowMargin + UIBoardThumbComponent.TextSpace);
 		}
 	}
 }
