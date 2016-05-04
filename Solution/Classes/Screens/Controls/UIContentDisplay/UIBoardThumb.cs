@@ -37,6 +37,7 @@ namespace Board.Screens.Controls
 
 			if (location.IsValid()) {
 				distance = CommonUtils.DistanceBetweenCoordinates (board.GeolocatorObject.Coordinate, location, 'M');
+				board.Distance = distance;
 			}
 
 			return distance;
@@ -69,8 +70,6 @@ namespace Board.Screens.Controls
 
 			string distanceTotalString = distanceString + farAway;
 			string compositeString = nameString + "\n" + distanceTotalString;
-
-			System.Console.WriteLine (compositeString);
 
 			var nameAttributes = new UIStringAttributes {
 				Font = UIFont.SystemFontOfSize(14),

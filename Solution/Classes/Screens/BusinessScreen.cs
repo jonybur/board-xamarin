@@ -12,7 +12,7 @@ namespace Board.Screens
 	public class BusinessScreen : UIViewController
 	{
 		UIMenuBanner Banner;
-		UIScrollView content;
+		UIScrollView ScrollView;
 		List<Board.Schema.Board> boardList;
 		UIThumbsContentDisplay ThumbsScreen;
 
@@ -21,10 +21,10 @@ namespace Board.Screens
 			BTProgressHUD.Show ();
 
 			boardList = new List<Board.Schema.Board> ();
-			content = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
-			content.BackgroundColor = UIColor.White;
+			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			ScrollView.BackgroundColor = UIColor.White;
 
-			View.AddSubview (content);
+			View.AddSubview (ScrollView);
 
 			LoadBanner ();
 		}
@@ -55,7 +55,7 @@ namespace Board.Screens
 
 		private void InitializeInterface()
 		{
-			foreach (UIView v in content.Subviews) {
+			foreach (UIView v in ScrollView.Subviews) {
 				v.RemoveFromSuperview ();
 			}
 
@@ -69,29 +69,29 @@ namespace Board.Screens
 		private void LoadContent()
 		{
 			ThumbsScreen = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Neighborhood);
-			content.AddSubview (ThumbsScreen);
-			content.ContentSize = new CGSize (AppDelegate.ScreenWidth, ThumbsScreen.Frame.Bottom);
+			ScrollView.AddSubview (ThumbsScreen);
+			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, ThumbsScreen.Frame.Bottom);
 
-			content.ScrollEnabled = true;
-			content.UserInteractionEnabled = true;
+			ScrollView.ScrollEnabled = true;
+			ScrollView.UserInteractionEnabled = true;
 		}
 
 		private void LoadNoContent()
 		{
 			// si el usuario no tiene boards creados...
-			content = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			ScrollView = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 
-			var imgv = new UIImageView (content.Frame);
+			var imgv = new UIImageView (ScrollView.Frame);
 
 			using (UIImage image = UIImage.FromFile ("./screens/business/empty/" + AppDelegate.PhoneVersion + ".jpg")) {
 				imgv.Image = image;
 			}
 
-			content.AddSubview (imgv);
-			content.ScrollEnabled = true;
-			content.UserInteractionEnabled = true;
+			ScrollView.AddSubview (imgv);
+			ScrollView.ScrollEnabled = true;
+			ScrollView.UserInteractionEnabled = true;
 		
-			View.AddSubview (content);
+			View.AddSubview (ScrollView);
 		}
 
 		private void LoadBanner()

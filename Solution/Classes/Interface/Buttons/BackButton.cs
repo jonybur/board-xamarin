@@ -16,15 +16,19 @@ namespace Board.Interface.Buttons
 			uiButton.Frame = new CGRect (0,0, ButtonSize, ButtonSize);
 			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth - ButtonSize) / 8,
 				AppDelegate.ScreenHeight - ButtonSize / 2);
-			
-			eventHandlers.Add ((sender, e) => {
-				var containerScreen = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 2] as ContainerScreen;
-				if (containerScreen!= null)
-				{
-					containerScreen.LoadMainMenu();
-				}
 
-				AppDelegate.PopViewControllerWithCallback(AppDelegate.ExitBoardInterface);
+			bool blockButton = false;
+
+			eventHandlers.Add ((sender, e) => {
+				if (!blockButton){
+					var containerScreen = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 2] as ContainerScreen;
+					if (containerScreen!= null)
+					{
+						containerScreen.LoadMainMenu();
+					}
+					AppDelegate.PopViewControllerWithCallback(AppDelegate.ExitBoardInterface);
+					blockButton = true;
+				}
 			});
 
 		}

@@ -6,9 +6,11 @@ namespace Board.Screens
 {
 	public class UILocationLabel : UILabel{
 
+		public const int Height = 20;
+
 		public UILocationLabel(string text, float indent = 10 ,UITextAlignment alignment = UITextAlignment.Left)
 		{
-			Frame = new CGRect(indent, 0, AppDelegate.ScreenWidth - indent, 20);
+			Frame = new CGRect(indent, 0, AppDelegate.ScreenWidth - indent, Height);
 			Font = AppDelegate.Narwhal18;
 			TextColor = AppDelegate.BoardOrange;
 			AdjustsFontSizeToFitWidth = true;
@@ -18,7 +20,7 @@ namespace Board.Screens
 
 		public UILocationLabel(string text, CGPoint point, UITextAlignment alignment = UITextAlignment.Left)
 		{
-			Frame = new CGRect(point.X, point.Y, AppDelegate.ScreenWidth - point.X * 2, 20);
+			Frame = new CGRect(point.X, point.Y, AppDelegate.ScreenWidth - point.X * 2, Height);
 			Font = AppDelegate.Narwhal18;
 			TextColor = AppDelegate.BoardOrange;
 			AdjustsFontSizeToFitWidth = true;

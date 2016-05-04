@@ -195,7 +195,6 @@ namespace Board.Screens
 				foreach (var thumb in ((UIThumbsContentDisplay)newDisplay).ListThumbComponents) {
 					thumb.UpdateDistanceLabel ();
 				}
-				//newDisplay = new UIThumbsContentDisplay (BoardList, UIThumbsContentDisplay.OrderMode.Alphabetic);
 			}
 			ContentDisplay = newDisplay;
 
