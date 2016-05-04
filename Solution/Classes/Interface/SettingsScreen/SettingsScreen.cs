@@ -23,10 +23,10 @@ namespace Board.Interface
 
 		public override void ViewDidAppear(bool animated)
 		{
-			if (BoardInterface.board.FBPage == null) {
+			if (UIBoardInterface.board.FBPage == null) {
 				SyncButton.SetLabel("Connect to Facebook Page >");
 			} else {
-				SyncButton.SetLabel(string.Format ("Connected to {0}", BoardInterface.board.FBPage.Name));
+				SyncButton.SetLabel(string.Format ("Connected to {0}", UIBoardInterface.board.FBPage.Name));
 			}
 
 			AnalyticsButton.SetUnpressedColors ();

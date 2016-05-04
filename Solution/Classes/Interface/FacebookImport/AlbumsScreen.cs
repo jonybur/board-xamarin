@@ -29,7 +29,7 @@ namespace Board.Interface.FacebookImport
 			Buttons = new List<UIMenuButton> ();
 
 			BTProgressHUD.Show ();
-			FacebookUtils.MakeGraphRequest (BoardInterface.board.FBPage.Id, "albums", Completion);
+			FacebookUtils.MakeGraphRequest (UIBoardInterface.board.FBPage.Id, "albums", Completion);
 
 			View.AddSubviews (ScrollView, Banner);
 		}

@@ -39,7 +39,7 @@ namespace Board.Interface.Buttons
 		}
 
 		private void OpenFacebookImporter(UIAlertAction action){
-			if (BoardInterface.board.FBPage != null) {
+			if (UIBoardInterface.board.FBPage != null) {
 				var importScreen = new AlbumsScreen();
 				AppDelegate.PushViewLikePresentView (importScreen);
 			} else { 

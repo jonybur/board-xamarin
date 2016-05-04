@@ -69,7 +69,7 @@ namespace Board.Interface
 
 			var frame = widget.View.Frame;
 
-			var boardScroll = AppDelegate.boardInterface.BoardScroll;
+			var boardScroll = AppDelegate.BoardInterface.BoardScroll;
 
 			view = new UIView (new CGRect (boardScroll.ScrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
 				boardScroll.ScrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Board.Interface.Buttons.Button.ButtonSize / 2, frame.Width, frame.Height));
@@ -151,7 +151,7 @@ namespace Board.Interface
 		}
 
 		public static Content GetContent(){
-			var boardScroll = AppDelegate.boardInterface.BoardScroll;
+			var boardScroll = AppDelegate.BoardInterface.BoardScroll;
 
 			view.Transform = CGAffineTransform.MakeRotation (0);
 			view.Center = new CGPoint (view.Center.X - boardScroll.LastScreen * UIBoardScroll.ScrollViewWidthSize, view.Center.Y);

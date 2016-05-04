@@ -18,6 +18,7 @@ namespace Board.Schema
 		public FacebookPage FBPage;
 		public string Id;
 		public double Distance;
+		public string Description;
 
 		public Board()
 		{

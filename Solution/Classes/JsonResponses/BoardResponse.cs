@@ -11,7 +11,7 @@ namespace Board.JsonResponses
 		{
 			try {
 				return JsonConvert.DeserializeObject<BoardResponse>(json);
-			}catch{
+			} catch {
 				return null;
 			}
 		}
@@ -20,8 +20,10 @@ namespace Board.JsonResponses
 		public class Datum
 		{
 			public string uuid { get; set; }
-			public string address { get; set; }
+			public double latitude { get; set; }
+			public double longitude { get; set; }
 			public string name { get; set; }
+			public string description { get; set; }
 			public string userId { get; set; }
 			public string mainColor { get; set; }
 			public string secondaryColor { get; set; }
@@ -30,6 +32,7 @@ namespace Board.JsonResponses
 			public string logoURL { get; set; }
 		}
 
+		[Preserve(AllMembers = true)]
 		public List<Datum> data { get; set; }
 	}
 }

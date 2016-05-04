@@ -18,7 +18,7 @@ namespace Board.Interface.Buttons
 				(AppDelegate.ScreenWidth - ButtonSize) / 8 * 3, AppDelegate.ScreenHeight - ButtonSize / 2);
 
 			eventHandlers.Add ((sender, e) => {
-				NSUrl url= new NSUrl("https://www.facebook.com/" + BoardInterface.board.FBPage.Id);
+				NSUrl url= new NSUrl("https://www.facebook.com/" + UIBoardInterface.board.FBPage.Id);
 				UIApplication.SharedApplication.OpenUrl(url);
 
 			});

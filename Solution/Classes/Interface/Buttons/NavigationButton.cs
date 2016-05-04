@@ -42,18 +42,18 @@ namespace Board.Interface.Buttons
 			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer (tg => {
 				tg.NumberOfTapsRequired = 1;
 
-				if (BoardInterface.DictionaryWidgets == null)
+				if (UIBoardInterface.DictionaryWidgets == null)
 				{ return; }
 
-				if (BoardInterface.DictionaryWidgets.Count == 0)
+				if (UIBoardInterface.DictionaryWidgets.Count == 0)
 				{ return; }
 
 
-				if (highlitedContent >= BoardInterface.DictionaryWidgets.Count) {
+				if (highlitedContent >= UIBoardInterface.DictionaryWidgets.Count) {
 					highlitedContent = 0;
 				}
 
-				List<Widget> NavigationList = BoardInterface.DictionaryWidgets.Values.OrderBy(o=>o.EyeOpen).ToList();
+				List<Widget> NavigationList = UIBoardInterface.DictionaryWidgets.Values.OrderBy(o=>o.EyeOpen).ToList();
 				if(!NavigationList[0].EyeOpen) {
 					highlitedContent = 0;
 				}
@@ -65,7 +65,7 @@ namespace Board.Interface.Buttons
 					widget.OpenEye();
 				}
 
-				var boardScroll = AppDelegate.boardInterface.BoardScroll;
+				var boardScroll = AppDelegate.BoardInterface.BoardScroll;
 				var scrollOffset = boardScroll.VirtualLeftBound + AppDelegate.ScreenWidth / 2;
 				var widgetPosition = widget.content.Center.X - AppDelegate.ScreenWidth / 2;
 

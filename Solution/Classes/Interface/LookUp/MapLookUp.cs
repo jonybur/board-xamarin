@@ -79,9 +79,9 @@ namespace Board.Interface.LookUp
 			
 			marker.Position = markerLocation;
 			marker.Map = mapView;
-			marker.Icon = CreateMarkerImage (BoardInterface.board.ImageView.Image);
+			marker.Icon = CreateMarkerImage (UIBoardInterface.board.ImageView.Image);
 			marker.Draggable = false;
-			marker.Title = BoardInterface.board.Name;
+			marker.Title = UIBoardInterface.board.Name;
 			try{
 				marker.Snippet = GeolocatorObject.results [0].address_components [0].long_name + " " +
 					GeolocatorObject.results [0].address_components [1].short_name;

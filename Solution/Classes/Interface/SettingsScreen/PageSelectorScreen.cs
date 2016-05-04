@@ -80,7 +80,7 @@ namespace Board.Interface
 			}
 
 			UIOneLineMenuButton unsyncButton = CreateUnsyncButton (yPosition);
-			if (BoardInterface.board.FBPage == null) {
+			if (UIBoardInterface.board.FBPage == null) {
 				unsyncButton.Alpha = 0f;
 			}
 			ScrollView.AddSubview (unsyncButton);
@@ -102,7 +102,7 @@ namespace Board.Interface
 					Thread thread = new Thread(new ThreadStart(PopOut));
 					thread.Start();
 
-					BoardInterface.board.FBPage = page;
+					UIBoardInterface.board.FBPage = page;
 				}
 			};
 
@@ -124,7 +124,7 @@ namespace Board.Interface
 					Thread thread = new Thread(new ThreadStart(PopOut));
 					thread.Start();
 
-					BoardInterface.board.FBPage = null;
+					UIBoardInterface.board.FBPage = null;
 				}
 			};
 

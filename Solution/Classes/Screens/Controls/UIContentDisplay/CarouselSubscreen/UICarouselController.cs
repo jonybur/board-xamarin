@@ -79,10 +79,10 @@ namespace Board.Screens.Controls
 			ClipsToBounds = true;
 
 			TouchEvent = (sender, e) => {
-				if (AppDelegate.boardInterface == null)
+				if (AppDelegate.BoardInterface == null)
 				{
-					AppDelegate.boardInterface = new BoardInterface (board);
-					AppDelegate.NavigationController.PushViewController (AppDelegate.boardInterface, true);
+					AppDelegate.BoardInterface = new UIBoardInterface (board);
+					AppDelegate.NavigationController.PushViewController (AppDelegate.BoardInterface, true);
 				}
 			};
 		}

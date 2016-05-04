@@ -80,7 +80,7 @@ namespace Board.Interface
 
 			LoadBackground ();
 
-			infoBox = new InfoBox (BoardInterface.board);
+			infoBox = new InfoBox (UIBoardInterface.board);
 			ScrollView.AddSubview (infoBox);
 
 			SuscribeToEvents ();
@@ -172,7 +172,7 @@ namespace Board.Interface
 
 			float autosize = (float)TopBanner.Frame.Height - 25;
 
-			UIImage logo = BoardInterface.board.ImageView.Image;
+			UIImage logo = UIBoardInterface.board.ImageView.Image;
 			UIImage logoImage = logo.ImageScaledToFitSize  (new CGSize (autosize, autosize));
 			UIImageView mainLogo = new UIImageView(logoImage);
 			mainLogo.Center = new CGPoint (TopBanner.Frame.Width / 2, TopBanner.Frame.Height / 2 + 10);
@@ -186,7 +186,7 @@ namespace Board.Interface
 
 		public void SelectiveRendering(){
 
-			if (!(BoardInterface.DictionaryWidgets == null || BoardInterface.DictionaryWidgets.Count == 0))
+			if (!(UIBoardInterface.DictionaryWidgets == null || UIBoardInterface.DictionaryWidgets.Count == 0))
 			{
 				// clusterfuck
 				float physicalRightBound = (float)(ScrollView.ContentOffset.X + AppDelegate.ScreenWidth);
@@ -200,7 +200,7 @@ namespace Board.Interface
 				virtualRightBound = (virtualRightBound > 0) ? virtualRightBound : 0;
 				virtualLeftBound = (virtualLeftBound > 0) ? virtualLeftBound : 0;
 
-				List<Widget> WidgetsToDraw = BoardInterface.DictionaryWidgets.Values.ToList ().FindAll (item =>
+				List<Widget> WidgetsToDraw = UIBoardInterface.DictionaryWidgets.Values.ToList ().FindAll (item =>
 					((item.content.Center.X - item.View.Frame.Width / 2) > (virtualLeftBound - AppDelegate.ScreenWidth) &&
                      (item.content.Center.X - item.View.Frame.Width / 2 < (virtualLeftBound + AppDelegate.ScreenWidth))) ||
 					((item.content.Center.X + item.View.Frame.Width / 2) < (virtualRightBound + AppDelegate.ScreenWidth) &&

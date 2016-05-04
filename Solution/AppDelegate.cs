@@ -1,12 +1,13 @@
 ﻿using System;
 using Board.Infrastructure;
 using Board.Interface;
+using Board.JsonResponses;
 using Board.Screens;
 using CoreAnimation;
+using CoreLocation;
 using Facebook.CoreKit;
 using Foundation;
 using Google.Maps;
-using CoreLocation;
 using UIKit;
 
 namespace Board
@@ -42,10 +43,7 @@ namespace Board
 		public static UIFont SystemFontOfSize20;
 
 		public static CLLocationCoordinate2D UserLocation;
-		public static BoardInterface boardInterface;
-
-		public static double Latitude;
-		public static double Longitude;
+		public static UIBoardInterface BoardInterface;
 
 		public static string PhoneVersion;
 
@@ -54,8 +52,10 @@ namespace Board
 		public const string FacebookDisplayName = "Board Alpha - Deve­l­o­p­ment";
 		public const string GoogleMapsAPIKey = "AIzaSyAUO-UX9QKVWK421yjXqoo02N5TYrG_hY8";
 		public const string UberServerToken = "4y1kRu3Kt-LWdTeXcktgphAN7qZlltsTRTbvwIQ_";
+		const string MapsApiKey = "AIzaSyAyjPtEvhmhHHa5_aPiZPiPN3GUtIXxO6I";
 
 		public static string BoardToken;
+		public static AmazonS3TicketResponse AmazonS3Ticket;
 		public static string EncodedBoardToken;
 	
 		public static ContainerScreen containerScreen;
@@ -66,7 +66,6 @@ namespace Board
 		//
 		// You have 17 seconds to return from this method, or iOS will terminate your application.
 		//
-		const string MapsApiKey = "AIzaSyAyjPtEvhmhHHa5_aPiZPiPN3GUtIXxO6I";
 
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
@@ -88,9 +87,6 @@ namespace Board
 
 			MapServices.ProvideAPIKey (MapsApiKey);
 
-			Latitude = 0;
-			Longitude = 0;
-	
 			// FACEBOOK
 			Profile.EnableUpdatesOnAccessTokenChange (true);
 			Settings.AppID = FacebookAppId;
@@ -153,9 +149,9 @@ namespace Board
 
 		public static void ExitBoardInterface()
 		{
-			boardInterface.ExitBoard ();
-			boardInterface.Dispose ();
-			boardInterface = null;
+			BoardInterface.ExitBoard ();
+			BoardInterface.Dispose ();
+			BoardInterface = null;
 			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 		}
 

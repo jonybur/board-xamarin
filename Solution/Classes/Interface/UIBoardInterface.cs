@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using BigTed;
 using Board.Interface;
+using Board.Infrastructure;
 using Board.Interface.Buttons;
 using Board.Interface.Widgets;
 using Board.Schema;
@@ -15,7 +16,7 @@ namespace Board.Interface
 {
 	// user interface - connects to the board controller
 	// also called BoardView
-	public partial class BoardInterface : UIViewController
+	public partial class UIBoardInterface : UIViewController
 	{
 		public const int BannerHeight = 66;
 		public const int ButtonBarHeight = 45;
@@ -29,7 +30,7 @@ namespace Board.Interface
 
 		bool firstLoad;
 
-		public BoardInterface (Board.Schema.Board _board){
+		public UIBoardInterface (Board.Schema.Board _board){
 			board = _board;
 			firstLoad = true;
 		}
@@ -151,7 +152,7 @@ namespace Board.Interface
 
 			View.AddSubview (buttonBackground);
 
-			if (Profile.CurrentProfile.UserID == board.CreatorId) {
+			if (CloudController.UserCanEditBoard(board)) {
 				View.AddSubviews (ButtonInterface.GetCreatorButtons().ToArray());
 			} else {
 				View.AddSubviews (ButtonInterface.GetUserButtons (board.FBPage != null).ToArray());

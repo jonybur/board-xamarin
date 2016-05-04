@@ -60,7 +60,7 @@ namespace Board.Interface.LookUp
 				FacebookButton.Alpha = 0f;
 			}
 
-			if (Profile.CurrentProfile.UserID != BoardInterface.board.CreatorId) {
+			if (Profile.CurrentProfile.UserID != UIBoardInterface.board.CreatorId) {
 				TrashButton.Alpha = 0f;
 				EditButton.Alpha = 0f;
 			}
@@ -178,17 +178,17 @@ namespace Board.Interface.LookUp
 
 		private void RemoveWidget(UIAlertAction action)
 		{
-			BoardInterface.DictionaryContent.Remove (content.Id);
+			UIBoardInterface.DictionaryContent.Remove (content.Id);
 
 			Widget widget;
 
-			BoardInterface.DictionaryWidgets.TryGetValue (content.Id, out widget);
+			UIBoardInterface.DictionaryWidgets.TryGetValue (content.Id, out widget);
 
 			if (widget != null) {
 				widget.UnsuscribeToEvents ();
 				widget.View.RemoveFromSuperview ();
 				MemoryUtility.ReleaseUIViewWithChildren (widget.View);
-				BoardInterface.DictionaryWidgets.Remove (content.Id);
+				UIBoardInterface.DictionaryWidgets.Remove (content.Id);
 			}
 
 			string deleteJson = JsonUtilty.GenerateDeleteJson (content.Id);
@@ -292,7 +292,7 @@ namespace Board.Interface.LookUp
 				if (UIApplication.SharedApplication.CanOpenUrl(url)) {
 					
 					
-					NSUrl uberRequest = new NSUrl("waze://?ll="+BoardInterface.board.GeolocatorObject.results [0].geometry.location.lat+","+BoardInterface.board.GeolocatorObject.results [0].geometry.location.lng+"&z=10&navigate=yes");
+					NSUrl uberRequest = new NSUrl("waze://?ll="+UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lat+","+UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lng+"&z=10&navigate=yes");
 
 					UIApplication.SharedApplication.OpenUrl(uberRequest);
 				}
@@ -332,8 +332,8 @@ namespace Board.Interface.LookUp
 
 				if (UIApplication.SharedApplication.CanOpenUrl(url)) {
 
-					double lat = BoardInterface.board.GeolocatorObject.results [0].geometry.location.lat;
-					double lng = BoardInterface.board.GeolocatorObject.results [0].geometry.location.lng;
+					double lat = UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lat;
+					double lng = UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lng;
 
 					string product_id = CloudController.GetUberProduct(lat, lng);
 
@@ -430,7 +430,7 @@ namespace Board.Interface.LookUp
 				await ShareImplementation.Init ();
 				ShareImplementation a = new ShareImplementation ();
 		
-				string metadata = "["+BoardInterface.board.Name + " via Board, " + content.CreationDate.ToString("M/d h:m tt") + "]: \n";
+				string metadata = "["+UIBoardInterface.board.Name + " via Board, " + content.CreationDate.ToString("M/d h:m tt") + "]: \n";
 
 				if (content is Announcement)
 				{

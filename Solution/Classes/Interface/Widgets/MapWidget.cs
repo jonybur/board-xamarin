@@ -60,7 +60,7 @@ namespace Board.Interface.Widgets
 				var markerLocation = new CLLocationCoordinate2D (25.792826, -80.12994);
 				marker.Position = markerLocation;
 				marker.Map = mapView;
-				marker.Icon = CreateMarkerImage (BoardInterface.board.ImageView.Image);
+				marker.Icon = CreateMarkerImage (UIBoardInterface.board.ImageView.Image);
 				marker.Draggable = false;
 				mapView.Camera = CameraPosition.FromCamera (new CLLocationCoordinate2D(25.792826, -80.12994), 16);
 			}

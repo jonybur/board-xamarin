@@ -141,6 +141,30 @@
     <Reference Include="Google.Maps">
       <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.11.1.2\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
     </Reference>
+    <Reference Include="System.Net.Http.Primitives">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\Xamarin.iOS10\System.Net.Http.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Extensions">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\Xamarin.iOS10\System.Net.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="PCLStorage">
+      <HintPath>..\packages\PCLStorage.1.0.2\lib\portable-Xamarin.iOS+Xamarin.Mac\PCLStorage.dll</HintPath>
+    </Reference>
+    <Reference Include="PCLStorage.Abstractions">
+      <HintPath>..\packages\PCLStorage.1.0.2\lib\portable-Xamarin.iOS+Xamarin.Mac\PCLStorage.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Validation">
+      <HintPath>..\packages\Validation.2.0.6.15003\lib\portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10\Validation.dll</HintPath>
+    </Reference>
+    <Reference Include="PCLCrypto">
+      <HintPath>..\packages\PCLCrypto.1.0.2.15130\lib\Xamarin.iOS\PCLCrypto.dll</HintPath>
+    </Reference>
+    <Reference Include="AWSSDK.Core">
+      <HintPath>..\packages\AWSSDK.Core.3.1.1.0\lib\Xamarin.iOS10\AWSSDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="AWSSDK.S3">
+      <HintPath>..\packages\AWSSDK.S3.3.1.2.1\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid10+xamarinios10+MonoTouch10\AWSSDK.S3.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\fonts\congress-font-medium.ttf" />
@@ -330,6 +354,7 @@
     <BundleResource Include="Resources\screens\main\magazine\pin.png" />
     <BundleResource Include="Resources\screens\business\sidemenu\6.png" />
     <BundleResource Include="Resources\screens\main\magazine\carouselitem\1.png" />
+    <BundleResource Include="Resources\screens\main\map\markercontainer_black.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -351,7 +376,6 @@
     <Compile Include="Classes\Screens\InviteScreen.cs" />
     <Compile Include="Classes\Screens\SettingsScreen.cs" />
     <Compile Include="Classes\Screens\SupportScreen.cs" />
-    <Compile Include="Classes\Interface\BoardInterface.cs" />
     <Compile Include="Classes\JsonResponses\BoardResponse.cs" />
     <Compile Include="Classes\JsonResponses\GoogleGeolocatorObject.cs" />
     <Compile Include="Classes\JsonResponses\TokenResponse.cs" />
@@ -450,6 +474,8 @@
     <Compile Include="Classes\Screens\Controls\UIContentDisplay\ThumbsSubscreen\UIThumbsContentDisplay.cs" />
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazinePage.cs" />
     <Compile Include="Classes\Screens\Controls\UIContentDisplay\UIBoardThumb.cs" />
+    <Compile Include="Classes\JsonResponses\AmazonS3TicketResponse.cs" />
+    <Compile Include="Classes\Interface\UIBoardInterface.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

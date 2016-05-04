@@ -55,7 +55,7 @@ namespace Board.Interface.LookUp
 			UILabel label = new UILabel ();
 			label.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 			label.AttributedText = poll.Question;
-			label.TextColor = BoardInterface.board.MainColor;
+			label.TextColor = UIBoardInterface.board.MainColor;
 			label.Lines = 0;
 			label.Font = AppDelegate.SystemFontOfSize18;
 
@@ -94,7 +94,7 @@ namespace Board.Interface.LookUp
 			{
 				AnswerImageView = new UIImageView (EmptyRadio);
 				AnswerImageView.Frame = new CGRect (0, 0, 20, 20);
-				AnswerImageView.TintColor = BoardInterface.board.MainColor;
+				AnswerImageView.TintColor = UIBoardInterface.board.MainColor;
 				AnswerImageView.Center = new CGPoint (15, Frame.Height / 2);
 			}
 
@@ -114,7 +114,7 @@ namespace Board.Interface.LookUp
 				label.Font = AppDelegate.SystemFontOfSize16;
 				label.AdjustsFontSizeToFitWidth = true;
 				label.Text = answer;
-				label.TextColor = BoardInterface.board.MainColor;
+				label.TextColor = UIBoardInterface.board.MainColor;
 
 				SetEmptyImage();
 

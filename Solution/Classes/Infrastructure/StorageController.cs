@@ -40,6 +40,8 @@ namespace Board.Infrastructure
 				NSSearchPathDomain.User) [0]).Path;
 
 			dbPath = Path.Combine (docsPath, "localdb.db3");
+			 
+			//File.Delete(dbPath);
 
 			database = new SQLiteConnection (dbPath);
 			database.CreateTable<BoardL> ();

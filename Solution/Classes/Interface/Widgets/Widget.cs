@@ -283,7 +283,7 @@ namespace Board.Interface.Widgets
 					}
 					else if (content is Map)
 					{
-						lookUp = new MapLookUp(BoardInterface.board.GeolocatorObject);
+						lookUp = new MapLookUp(UIBoardInterface.board.GeolocatorObject);
 					}
 					else if (content is Poll)
 					{
@@ -320,7 +320,7 @@ namespace Board.Interface.Widgets
 			GestureRecognizers.Add (tap);
 			GestureRecognizers.Add (doubleTap);
 
-			if (BoardInterface.board.CreatorId == Profile.CurrentProfile.UserID) {
+			if (UIBoardInterface.board.CreatorId == Profile.CurrentProfile.UserID) {
 				GestureRecognizers.Add (longPress);
 			}
 		}
@@ -329,7 +329,7 @@ namespace Board.Interface.Widgets
 			UnsuscribeToEvents ();
 			View.RemoveFromSuperview ();
 			MemoryUtility.ReleaseUIViewWithChildren (View);
-			BoardInterface.DictionaryWidgets.Remove (content.Id);
+			UIBoardInterface.DictionaryWidgets.Remove (content.Id);
 			string deleteJson = JsonUtilty.GenerateDeleteJson (content.Id);
 		}
 
@@ -374,7 +374,7 @@ namespace Board.Interface.Widgets
 		public void OpenEye()
 		{
 			EyeView.Image = OpenEyeImageView.Image;
-			EyeView.TintColor = BoardInterface.board.MainColor;
+			EyeView.TintColor = UIBoardInterface.board.MainColor;
 			EyeOpen = true;
 
 			CAKeyFrameAnimation scale = new CAKeyFrameAnimation ();

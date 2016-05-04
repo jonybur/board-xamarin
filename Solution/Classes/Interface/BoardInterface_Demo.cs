@@ -9,7 +9,7 @@ using Board.Schema;
 
 namespace Board.Interface
 {
-	public partial class BoardInterface
+	public partial class UIBoardInterface
 	{
 
 		private void GenerateTestPictures()

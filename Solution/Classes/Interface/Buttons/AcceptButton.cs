@@ -33,16 +33,16 @@ namespace Board.Interface.Buttons
 
 				string jsonString = JsonUtilty.GenerateUpdateJson(content);
 
-				BoardInterface.DictionaryContent.Add (content.Id, content);
+				UIBoardInterface.DictionaryContent.Add (content.Id, content);
 
 				// remove the preview imageview from the superview
 				Preview.RemoveFromSuperview ();
 
 				// adds widget to dictionary
-				AppDelegate.boardInterface.AddWidgetToDictionaryFromContent (content);
+				AppDelegate.BoardInterface.AddWidgetToDictionaryFromContent (content);
 
 				// renders scrollview
-				AppDelegate.boardInterface.BoardScroll.SelectiveRendering();
+				AppDelegate.BoardInterface.BoardScroll.SelectiveRendering();
 			});
 
 			uiButton.Alpha = 0f;

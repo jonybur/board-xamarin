@@ -294,14 +294,11 @@ namespace Board.Screens
 				{
 				case 1:
 					board.MainColor = color;
-
 					hexView1.Text = CommonUtils.UIColorToHex(color);
 					break;
 				case 2:
 					board.SecondaryColor = color;
-
 					hexView2.Text = CommonUtils.UIColorToHex(color);
-
 					break;
 				}
 

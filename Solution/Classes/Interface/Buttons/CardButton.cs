@@ -31,7 +31,7 @@ namespace Board.Interface.Buttons
 				alert.AddAction (UIAlertAction.Create ("Spotify® Playlist (coming soon)", UIAlertActionStyle.Default, null));
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 
-				AppDelegate.boardInterface.NavigationController.PresentViewController (alert, true, null);
+				AppDelegate.BoardInterface.NavigationController.PresentViewController (alert, true, null);
 			});
 		}
 

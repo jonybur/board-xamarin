@@ -70,7 +70,7 @@ namespace Board.Interface.CreateScreens
 				content.SocialChannel = ShareButtons.GetActiveSocialChannels ();
 
 				var mightBeBoardInterface = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 3];
-				if (mightBeBoardInterface is BoardInterface) {
+				if (mightBeBoardInterface is UIBoardInterface) {
 					AppDelegate.NavigationController.PopToViewController (mightBeBoardInterface, false);
 				} else {
 					AppDelegate.NavigationController.PopToViewController(AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 2], false);

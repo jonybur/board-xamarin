@@ -174,6 +174,8 @@ namespace Board.Screens.Controls
 			if (superView != null) {
 				superView.ContentSize = Frame.Size;
 			}
+
+			SuscribeToEvents ();
 		}
 
 		class UIFilterSelector : UILabel{

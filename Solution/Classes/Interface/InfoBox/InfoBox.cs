@@ -98,7 +98,7 @@ namespace Board.Interface
 			Container.CreateMap ((float)Frame.Width, location);
 
 			MapTap = new UITapGestureRecognizer(obj => {
-				var lookUp = new MapLookUp(BoardInterface.board.GeolocatorObject);
+				var lookUp = new MapLookUp(UIBoardInterface.board.GeolocatorObject);
 				AppDelegate.PushViewLikePresentView(lookUp);
 			});
 
@@ -137,7 +137,7 @@ namespace Board.Interface
 				CLLocationCoordinate2D markerLocation = location;
 				marker.Position = markerLocation;
 				marker.Map = mapView;
-				marker.Icon = CreateMarkerImage (BoardInterface.board.ImageView.Image);
+				marker.Icon = CreateMarkerImage (UIBoardInterface.board.ImageView.Image);
 				marker.Draggable = false;
 				mapView.Camera = CameraPosition.FromCamera (location, 16);
 			}

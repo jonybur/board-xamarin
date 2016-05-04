@@ -218,7 +218,7 @@ namespace Board.Interface.LookUp
 				// make the event start 20 minutes from now and last 30 minutes
 				newEvent.StartDate = startNSDate;
 				newEvent.EndDate = endNSDate;
-				newEvent.Title = boardEvent.Name + " @ " + BoardInterface.board.Name;
+				newEvent.Title = boardEvent.Name + " @ " + UIBoardInterface.board.Name;
 
 				string signature = "- Created with Board";
 
@@ -227,7 +227,7 @@ namespace Board.Interface.LookUp
 				}
 					
 				newEvent.Notes = boardEvent.Description + signature;
-				newEvent.Location = BoardInterface.board.GeolocatorObject.Address;
+				newEvent.Location = UIBoardInterface.board.GeolocatorObject.Address;
 
 				eventController.Event = newEvent;
 

@@ -39,8 +39,6 @@ namespace Board.Screens
 
 			Banner.SuscribeToEvents ();
 
-			ThumbsScreen.SuscribeToEvents ();
-
 			BTProgressHUD.Dismiss ();
 		}
 
@@ -48,7 +46,9 @@ namespace Board.Screens
 		{
 			Banner.UnsuscribeToEvents ();
 
-			ThumbsScreen.UnsuscribeToEvents ();
+			if (ThumbsScreen != null) {
+				ThumbsScreen.UnsuscribeToEvents ();
+			}
 
 			MemoryUtility.ReleaseUIViewWithChildren (View);
 		}
@@ -60,7 +60,7 @@ namespace Board.Screens
 			}
 
 			if (boardList.Count == 0) {
-				LoadNoContent ();
+				//LoadNoContent ();
 			} else {
 				LoadContent ();
 			}
@@ -92,6 +92,7 @@ namespace Board.Screens
 			ScrollView.UserInteractionEnabled = true;
 		
 			View.AddSubview (ScrollView);
+			View.SendSubviewToBack (ScrollView);
 		}
 
 		private void LoadBanner()
