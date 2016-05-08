@@ -45,12 +45,10 @@ namespace Board.Interface.CreateScreens
 
 			LoadContent ();
 
-			string imagePath = "./boardinterface/screens/event/banner/" + AppDelegate.PhoneVersion + ".jpg";
-
 			whiteBack = new UIImageView ();
 			ScrollView.AddSubview (whiteBack);
 
-			LoadBanner (imagePath, "events", LoadFromFacebookEvent);
+			LoadBanner ("events", LoadFromFacebookEvent, "EVENT", "cross_left", "import_right");
 			LoadPictureBox ();
 			LoadNameLabel ((float) PictureBox.Frame.Bottom + 50);
 			LoadTextView ((float) NameLabel.Frame.Bottom + 10);

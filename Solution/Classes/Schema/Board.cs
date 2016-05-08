@@ -1,6 +1,5 @@
 using Board.JsonResponses;
 using Board.Facebook;
-using CoreLocation;
 using UIKit;
 using Board.Utilities;
 
@@ -23,6 +22,10 @@ namespace Board.Schema
 		public Board()
 		{
 			Id = CommonUtils.GenerateGuid ();
+		}
+
+		public Board(string id){
+			Id = id;
 		}
 
 		public Board (string name, UIImageView imageview, UIColor mainColor, UIColor secondaryColor, GoogleGeolocatorObject geolocatorObject, string creatorId)

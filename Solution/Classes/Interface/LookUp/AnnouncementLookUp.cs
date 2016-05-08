@@ -10,8 +10,8 @@ namespace Board.Interface.LookUp
 		{
 			content = announcement;
 
-			UIColor backColor = UIColor.FromRGB(250,250,250);
-			UIColor frontColor = AppDelegate.BoardBlack;
+			UIColor frontColor = UIColor.White;
+			UIColor backColor = UIColor.Black;
 
 			View.BackgroundColor = backColor;
 

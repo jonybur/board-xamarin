@@ -139,7 +139,7 @@ namespace Board.Interface
 
 		private void LoadBanner()
 		{
-			Banner = new UIMenuBanner ("./screens/pageselector/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new UIMenuBanner ("SELECT", "arrow_left");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){

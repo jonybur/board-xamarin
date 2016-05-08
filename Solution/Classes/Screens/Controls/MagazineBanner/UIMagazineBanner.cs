@@ -32,7 +32,7 @@ namespace Board.Screens.Controls
 
 		// generates the magazine headers
 		private void GeneratePages(List<Board.Schema.Board> boardList){
-			string[] demopages = new []{ "EDITOR'S CHOICE", "ALL" };
+			string[] demopages = new []{ "EDITOR'S CHOICE", "TRENDING", "ALL" };
 
 			var pages = new UIMagazinePage[demopages.Length];
 
@@ -50,7 +50,8 @@ namespace Board.Screens.Controls
 
 			pages [0].ContentDisplay = new UICarouselContentDisplay ();
 			//new UIThumbsContentDisplay (boardList, (float)Magazine.Banner.Frame.Height, UIActionButton.Height);
-			pages [1].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Alphabetic, UIMagazineBannerPage.Height, UIActionButton.Height);
+			pages [1].ContentDisplay = new UITimelineContentDisplay (boardList, UIMagazineBannerPage.Height, UIActionButton.Height);
+			pages [2].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Distance, UIMagazineBannerPage.Height, UIActionButton.Height);
 
 			Pages = pages;
 		}
@@ -62,7 +63,7 @@ namespace Board.Screens.Controls
 
 		public UIMagazineBanner ()
 		{
-			Frame = new CGRect(0, UIMenuBanner.MenuHeight, AppDelegate.ScreenWidth, UIMagazineBannerPage.Height);
+			Frame = new CGRect(0, UIMenuBanner.Height, AppDelegate.ScreenWidth, UIMagazineBannerPage.Height);
 
 			BackgroundColor = UIColor.FromRGBA(0,0,0,0);
 

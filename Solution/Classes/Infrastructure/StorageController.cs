@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using Board.JsonResponses;
 using Board.Schema;
+using Board.Utilities;
+using System.Threading.Tasks;
 using Foundation;
 using SQLite;
 using UIKit;
@@ -29,6 +31,20 @@ namespace Board.Infrastructure
 			}
 		}
 
+		[Preserve(AllMembers = true)]
+		[Table("Users")]
+		private class UserL {
+			[PrimaryKey, Column("id")]
+			public string Id { get; set; }
+
+			public UserL(){}
+
+			public UserL(string id){
+				Id = id;
+			}
+		}
+
+
 		private static string dbPath;
 		private static string docsPath;
 		private static SQLiteConnection database;
@@ -45,6 +61,7 @@ namespace Board.Infrastructure
 
 			database = new SQLiteConnection (dbPath);
 			database.CreateTable<BoardL> ();
+			database.CreateTable<UserL> ();
 		}
 
 		public static Board.Schema.Board BoardIsStored(string id){
@@ -56,7 +73,7 @@ namespace Board.Infrastructure
 				string imgPath = Path.Combine (docsPath, id + ".jpg"); 
 				var image = UIImage.FromBundle (imgPath);
 
-				var board = new Board.Schema.Board();
+				var board = new Board.Schema.Board(id);
 
 				board.ImageView = new UIImageView(image);
 				board.GeolocatorObject = JsonHandler.DeserializeObject (boardL[0].GeolocatorJson);
@@ -64,6 +81,41 @@ namespace Board.Infrastructure
 				return board;
 			} else {
 				return null;
+			}
+		}
+
+		public static User UserIsStored(string id = "11111"){
+			var userL = database.Query<BoardL> ("SELECT * FROM Users WHERE id = ?", id);
+
+			if (userL.Count > 0) {
+
+				// gets image and location from storage
+				string imgPath = Path.Combine (docsPath, id + ".jpg"); 
+				var image = UIImage.FromBundle (imgPath);
+
+				var user = new User();
+
+				user.ProfilePictureUIImage = image;
+
+				return user;
+			} else {
+				return null;
+			}
+		}
+
+		public static void StoreUser(User user){
+			string uid = "11111";
+
+			var userL = new UserL (uid);
+			string imgFilename = Path.Combine (docsPath, uid + ".jpg"); 
+			NSData imgData = user.ProfilePictureUIImage.AsJPEG();
+
+			NSError err = null;
+
+			if (imgData.Save (imgFilename, false, out err) && imgData.Save (imgFilename, false, out err)) {
+				database.Insert (userL);
+			} else {
+				Console.WriteLine ("ERROR : picture hasnt been saved " + err.LocalizedDescription);
 			}
 		}
 

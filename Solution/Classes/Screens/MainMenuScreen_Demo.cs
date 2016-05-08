@@ -1,16 +1,14 @@
 ﻿using System.Collections.Generic;
-using Facebook.CoreKit;
 using UIKit;
-using Board.Screens.Controls;
 
 namespace Board.Screens
 {
 	public partial class MainMenuScreen
 	{
-		private static List<Board.Schema.Board> GenerateBoardList()
+		private static List<Board.Schema.Board> GenerateDemoBoardList()
 		{
 			List<Board.Schema.Board> boardList = new List<Board.Schema.Board> ();
-			/*
+
 			using (UIImage img = UIImage.FromFile("./logos/americansocial.png")){
 				Board.Schema.Board board = new Board.Schema.Board ("American Social", new UIImageView(img), UIColor.FromRGB (0, 6, 67), UIColor.FromRGB (177, 23, 0), null, string.Empty);
 				boardList.Add(board);
@@ -64,7 +62,7 @@ namespace Board.Screens
 			}
 			using (UIImage img = UIImage.FromFile ("./logos/table26.jpg")) {
 				boardList.Add (new Board.Schema.Board ("Table 26", new UIImageView(img), UIColor.Black, UIColor.FromRGB (20, 20, 20), null, string.Empty));	
-			}*/
+			}
 
 			return boardList;
 		}  

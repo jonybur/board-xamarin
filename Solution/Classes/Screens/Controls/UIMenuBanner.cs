@@ -4,34 +4,98 @@ using System.Collections.Generic;
 
 namespace Board.Screens.Controls
 {
-	public class UIMenuBanner : UIImageView
+	public sealed class UIMenuBanner : UIImageView
 	{
 		List<UITapGestureRecognizer> taps;
 
-		public const int MenuHeight = 66;
+		public const int Height = 66;
 
-		public UIMenuBanner (string imagePath)
+
+		public UIMenuBanner (string title, string left_button = null, string right_button = null, int steps_number = 0, int current_step = 0)
 		{
 			taps = new List<UITapGestureRecognizer> ();
 
-			// TODO: add 1-2-3 for createscreen functionality
+			var backgroundView = GenerateBackground ();
+			Frame = backgroundView.Frame;
 
-			using (UIImage bannerImage = UIImage.FromFile (imagePath)) {
-				Frame = new CGRect (0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2);
-				Image = bannerImage;
-				Alpha = .95f;
+			var titleLabel = GenerateTitle (title);
+
+			AddSubview (backgroundView);
+
+			if (left_button != null) {
+				var leftButton = GenerateButton (left_button, true);	
+				AddSubview (leftButton);
 			}
-			//Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, MenuHeight);
-			//BackgroundColor = AppDelegate.BoardOrange;
+			if (right_button != null) {
+				var rightButton = GenerateButton (right_button, false);
+				AddSubview (rightButton);
+			}
 
-			//var background = GenerateBackground ();
-			//Frame = background.Frame;
+			AddSubviews (titleLabel);
 
-			//var title = GenerateTitle (imagePath);
+			if (steps_number > 0) {
+				var stepsView = GenerateStepsBackground();
 
-			//AddSubviews (background, title);
+				var labels = GenerateStepsLabels (steps_number, current_step, (float)stepsView.Frame.Height);
+
+				stepsView.AddSubviews(labels);
+
+				AddSubview (stepsView);
+
+				Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, stepsView.Frame.Bottom);
+			}
 
 			UserInteractionEnabled = true;
+		}
+
+		private UIImageView GenerateStepsBackground(){
+			var background = new UIImageView (new CGRect (0, Height + 1, AppDelegate.ScreenWidth, 33));
+			background.BackgroundColor = AppDelegate.BoardOrange;
+			background.Alpha = .95f;
+
+			return background;
+		}
+
+		private UILabel[] GenerateStepsLabels(int steps_number, int current_step, float frame_height){
+			var labels = new UILabel[steps_number];
+
+			for (int i = 0; i < steps_number; i++) {
+				var label = new UILabel ();
+				int labelText = i + 1;
+
+				label.Font = AppDelegate.Narwhal20;
+				label.Text = labelText.ToString();
+				label.TextColor = UIColor.White;
+
+				if (labelText != current_step) {
+					label.Alpha = .5f;
+				}
+
+				var size = label.Text.StringSize (label.Font);
+
+				float xposition = AppDelegate.ScreenWidth * ((float)(i + 1) / (float)(steps_number + 1));
+
+				label.Frame = new CGRect(0, 0, size.Width, size.Height);
+				label.Center = new CGPoint(xposition, (frame_height / 2) + 2);
+
+				labels [i] = label;
+			}
+
+			return labels;
+		}
+
+		private UIImageView GenerateButton(string filename, bool ontheleft){
+
+			var buttonView = new UIImageView ();
+
+			using (var img = UIImage.FromFile ("./menubanner/"+filename+".png")) {
+				float imgw = (float)img.Size.Width / 2, imgh = (float)img.Size.Height / 2;
+				float xposition = ontheleft ? 0 : (float)Frame.Width - imgw;
+				buttonView.Image = img;
+				buttonView.Frame = new CGRect (xposition, 0, imgw, imgh);
+			}
+
+			return buttonView;
 		}
 
 		private UIImageView GenerateBackground(){

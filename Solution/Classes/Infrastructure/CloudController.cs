@@ -4,6 +4,7 @@ using CoreLocation;
 using System.Threading.Tasks;
 using Board.JsonResponses;
 using Board.Utilities;
+using Board.Schema;
 using Facebook.CoreKit;
 using System.Collections.Generic;
 using Newtonsoft.Json;
@@ -13,11 +14,29 @@ namespace Board.Infrastructure
 {
 	public static class CloudController
 	{
-		public static bool GetAmazonS3Ticket(){
-			if (AccessToken.CurrentAccessToken == null) {
-				return false;
-			}
+		public static async Task<bool> GetUserProfile(){
+			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/user?authToken="+AppDelegate.EncodedBoardToken);
 
+				AppDelegate.BoardUser = JsonConvert.DeserializeObject<User>(result);
+
+				User user = StorageController.UserIsStored(/*AppDelegate.BoardUser.Id*/);
+				if (user != null){
+					System.Console.WriteLine("theres user");
+				AppDelegate.BoardUser.ProfilePictureUIImage = user.ProfilePictureUIImage;
+				} else {
+					System.Console.WriteLine("theres no user");
+					// stores image
+				AppDelegate.BoardUser.ProfilePictureUIImage = await CommonUtils.DownloadUIImageFromURL (AppDelegate.BoardUser.ProfilePictureURL);
+
+				System.Console.WriteLine(AppDelegate.BoardUser.ProfilePictureUIImage.Size.Height);
+
+					StorageController.StoreUser(AppDelegate.BoardUser);
+				}
+
+				return true;
+		}
+
+		public static bool GetAmazonS3Ticket(){
 			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/media/ticket?authToken="+AppDelegate.EncodedBoardToken);
 
 			try{
@@ -25,6 +44,18 @@ namespace Board.Infrastructure
 				return true;
 			} catch {
 				AppDelegate.AmazonS3Ticket = null;
+				return false;
+			}
+		}
+
+		public static bool DeleteBoard(Board.Schema.Board board){
+			///api/boards/<Board ID>?authToken=<Authorization Token>
+
+			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/board/" + board.Id + "?authToken=" + AppDelegate.EncodedBoardToken, "DELETE");
+
+			if (result == "200" || result == string.Empty) {
+				return true;
+			} else {
 				return false;
 			}
 		}
@@ -72,7 +103,7 @@ namespace Board.Infrastructure
 
 		public static void UploadObject(string url)
 		{
-			ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+			//ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 
 			HttpWebRequest httpRequest = WebRequest.Create(url) as HttpWebRequest;
 			httpRequest.Method = "PUT";
@@ -123,12 +154,22 @@ namespace Board.Infrastructure
 		public static async Task<List<Board.Schema.Board>> GetNearbyBoards(CLLocationCoordinate2D location, int meterRadius){
 
 			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/boards/nearby?" +
-				"authToken="+AppDelegate.EncodedBoardToken+ "&latitude=" + location.Latitude + "&longitude=" + location.Longitude + "&radiusInMeters="+meterRadius);
+				"authToken=" + AppDelegate.EncodedBoardToken+ "&latitude=" + location.Latitude + "&longitude=" + location.Longitude + "&radiusInMeters="+meterRadius);
 
 			BoardResponse response = BoardResponse.Deserialize (result);
 
 			// array hotfix
 			result = "{ data: " + result + "}";
+
+			var boards = await GenerateBoardListFromBoardResponse (response);
+
+			return boards;
+		}
+
+		public static async Task<List<Board.Schema.Board>> GetAllBoards(){
+			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/boards?authToken=" + AppDelegate.EncodedBoardToken);
+
+			BoardResponse response = BoardResponse.Deserialize (result);
 
 			var boards = await GenerateBoardListFromBoardResponse (response);
 
@@ -210,11 +251,11 @@ namespace Board.Infrastructure
 			AppDelegate.EncodedBoardToken = null;
 		}
 
-		private static string JsonGETRequest(string url, string contentType = "application/json")
+		private static string JsonGETRequest(string url, string method = "GET", string contentType = "application/json")
 		{
 			var httpWebRequest = (HttpWebRequest)WebRequest.Create (url);
 			httpWebRequest.ContentType = contentType;
-			httpWebRequest.Method = "GET";
+			httpWebRequest.Method = method;
 			httpWebRequest.Timeout = 8000;
 
 			try{

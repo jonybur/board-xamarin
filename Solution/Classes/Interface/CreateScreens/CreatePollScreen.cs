@@ -26,9 +26,7 @@ namespace Board.Interface.CreateScreens
 
 			LoadContent ();
 
-			string imagePath = "./boardinterface/screens/poll/banner/" + AppDelegate.PhoneVersion + ".jpg";
-
-			LoadBanner (imagePath, null, null);
+			LoadBanner (null, null, "POLL", "cross_left");
 			LoadNextButton (false);
 			LoadTextView ();
 			answerField1 = LoadAnswerField ((float)textview.Frame.Bottom + 20, 1);

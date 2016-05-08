@@ -38,9 +38,7 @@ namespace Board.Interface.CreateScreens
 
 			LoadContent ();
 
-			string imagePath = "./boardinterface/screens/announcement/banner/" + AppDelegate.PhoneVersion + ".jpg";
-
-			LoadBanner (imagePath, "posts", LoadFromFacebookEvent);
+			LoadBanner ("posts", LoadFromFacebookEvent, "ANNOUNCEMENT", "cross_left", "import_right");
 			LoadNextButton (isEditing);
 			LoadTextView ();
 

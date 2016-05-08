@@ -116,7 +116,11 @@ namespace Board.Screens
 			}
 			_player = new AVPlayer (_playerItem);
 			AVPlayerLayer _playerLayer = AVPlayerLayer.FromPlayer (_player);
+
+			_playerLayer.VideoGravity = AVLayerVideoGravity.Resize;
+
 			_playerLayer.Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
+
 			_player.ActionAtItemEnd = AVPlayerActionAtItemEnd.Pause;
 			_player.Volume = 0;
 

@@ -126,7 +126,7 @@ namespace Board.Interface.CreateScreens
 
 		protected void LoadBanner()
 		{
-			Banner = new UIMenuBanner ("./boardinterface/screens/import/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new UIMenuBanner ("IMPORT", "arrow_left");
 
 			var tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4) {

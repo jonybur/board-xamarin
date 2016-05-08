@@ -95,7 +95,7 @@ namespace Board.Interface.LookUp
 		{
 			UIGraphics.BeginImageContextWithOptions (new CGSize (66, 96), false, 2f);
 
-			using (UIImage container = UIImage.FromFile ("./screens/main/map/markercontainer.png")) {
+			using (UIImage container = UIImage.FromFile ("./screens/main/map/markercontainer_black.png")) {
 				container.Draw (new CGRect (0, 0, 66, 96));
 			}
 

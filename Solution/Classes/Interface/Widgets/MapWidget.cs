@@ -70,7 +70,7 @@ namespace Board.Interface.Widgets
 			{
 				UIGraphics.BeginImageContextWithOptions (new CGSize (44, 64), false, 2f);
 
-				using (UIImage container = UIImage.FromFile ("./screens/main/map/markercontainer.png")) {
+				using (UIImage container = UIImage.FromFile ("./screens/main/map/markercontainer_black.png")) {
 					container.Draw (new CGRect (0, 0, 44, 64));
 				}
 

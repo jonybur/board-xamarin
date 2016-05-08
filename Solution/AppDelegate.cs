@@ -3,6 +3,7 @@ using Board.Infrastructure;
 using Board.Interface;
 using Board.JsonResponses;
 using Board.Screens;
+using Board.Schema;
 using CoreAnimation;
 using CoreLocation;
 using Facebook.CoreKit;
@@ -42,6 +43,7 @@ namespace Board
 		public static UIFont SystemFontOfSize18;
 		public static UIFont SystemFontOfSize20;
 
+		public static User BoardUser;
 		public static CLLocationCoordinate2D UserLocation;
 		public static UIBoardInterface BoardInterface;
 
@@ -100,6 +102,12 @@ namespace Board
 				PhoneVersion = "6";
 			} else if (ScreenWidth == 414) {
 				PhoneVersion = "6plus";
+			} else if (ScreenWidth == 320) {
+				if (ScreenHeight == 480) {
+					PhoneVersion = "4";
+				} else if (ScreenHeight == 568) {
+					PhoneVersion = "5";
+				}
 			} else {
 				PhoneVersion = "6";
 			}

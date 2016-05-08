@@ -10,6 +10,7 @@ using Foundation;
 using Google.Maps;
 using MGImageUtilitiesBinding;
 using UIKit;
+using BigTed;
 
 namespace Board.Screens
 {
@@ -21,7 +22,7 @@ namespace Board.Screens
 		List<Marker> ListMapMarkers;
 
 		UIMagazine Magazine;
-		UIButton map_button;
+		UIActionButton map_button;
 		EventHandler MapButtonEvent;
 		UIContentDisplay ContentDisplay;
 		List<Board.Schema.Board> BoardList;
@@ -56,10 +57,12 @@ namespace Board.Screens
 
 		public override async void ViewDidAppear(bool animated)
 		{
+			await CloudController.GetUserProfile ();
 			// suscribe to observers, gesture recgonizers, events
 			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
 			map_button.TouchUpInside += MapButtonEvent;	
 			mapInfoTapped = false;
+
 			Banner.SuscribeToEvents ();
 		}
 
@@ -68,7 +71,10 @@ namespace Board.Screens
 			// unsuscribe from observers, gesture recgonizers, events
 			map.RemoveObserver (this, new NSString ("myLocation"));
 			map_button.TouchUpInside -= MapButtonEvent;
-			ContentDisplay.UnsuscribeToEvents ();
+
+			if (ContentDisplay != null) {
+				ContentDisplay.UnsuscribeToEvents ();
+			}
 
 			foreach (Marker mark in ListMapMarkers) {
 				mark.Dispose ();
@@ -86,7 +92,7 @@ namespace Board.Screens
 		{
 			ScrollView.BackgroundColor = UIColor.White;
 
-			BoardList = await CloudController.GetUserBoards();
+			BoardList = await CloudController.GetAllBoards();
 			//BoardList = await CloudController.GetNearbyBoards (AppDelegate.UserLocation, 10000);
 
 			Magazine = new UIMagazine (BoardList);
@@ -102,7 +108,7 @@ namespace Board.Screens
 				
 				if (ScrollView.ContentOffset.Y < 0){
 					Magazine.Banner.Center = new CGPoint(Magazine.Banner.Center.X,
-						UIMenuBanner.MenuHeight + Magazine.Banner.Frame.Height / 2 + ScrollView.ContentOffset.Y);
+						UIMenuBanner.Height + Magazine.Banner.Frame.Height / 2 + ScrollView.ContentOffset.Y);
 				}
 
 			};
@@ -110,7 +116,7 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			Banner = new UIMenuBanner("./screens/main/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new UIMenuBanner ("BOARD", "menu_left");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
@@ -126,8 +132,14 @@ namespace Board.Screens
 			firstLocationUpdate = false;
 
 			var camera = CameraPosition.FromCamera (40, -100, -2);
-			map = MapView.FromCamera (new CGRect (0, Banner.Frame.Bottom, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight - Banner.Frame.Height - map_button.Frame.Height), camera);
+			map = MapView.FromCamera (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight), camera);
 			map.Alpha = 0f;
+			//	MapView.FromCamera (new CGRect (), camera);
+
+			var edgeInsets = new UIEdgeInsets (UIMenuBanner.Height, 0, UIActionButton.Height, 0);
+
+			map.Padding = edgeInsets;
+
 			map.Settings.CompassButton = true;
 			map.Settings.MyLocationButton = true;
 			map.UserInteractionEnabled = true;
@@ -147,6 +159,9 @@ namespace Board.Screens
 		public override async void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
 		{
 			if (!firstLocationUpdate) {
+				
+				BTProgressHUD.Show ();
+
 				firstLocationUpdate = true; 
 
 				var location = change.ObjectForKey (NSValue.ChangeNewKey) as CoreLocation.CLLocation;
@@ -155,6 +170,8 @@ namespace Board.Screens
 
 				await LoadContent ();
 				ContentDisplay.SuscribeToEvents ();
+
+				BTProgressHUD.Dismiss ();
 
 				if (!generatedMarkers) {
 					GenerateMarkers ();
@@ -185,6 +202,7 @@ namespace Board.Screens
 			ContentDisplay.UnsuscribeToEvents ();
 			ContentDisplay.RemoveFromSuperview ();
 
+			// this updates distance to thumbs everytime user switches screen
 			if (newDisplay is UIThumbsContentDisplay) {
 				var listThumbs = ((UIThumbsContentDisplay)newDisplay).ListThumbComponents;
 				if (listThumbs != null){
@@ -220,27 +238,17 @@ namespace Board.Screens
 
 		private void LoadMapButton()
 		{
-			using (UIImage mapImage = UIImage.FromFile ("./screens/main/map/" + AppDelegate.PhoneVersion + ".jpg")) {
-				map_button = new UIButton(new CGRect(0,AppDelegate.ScreenHeight - (mapImage.Size.Height / 2),
-					mapImage.Size.Width / 2, mapImage.Size.Height / 2));
-				map_button.SetImage(mapImage, UIControlState.Normal);
-			}
+			map_button = new UIActionButton ("MAP");
 
 			MapButtonEvent = (sender, e) => {
-				
-				if (map.Alpha == 0f)
-				{ 
-					map.Alpha = 1f; 
+				map_button.Alpha = 1f;
 
-					using (UIImage listImage = UIImage.FromFile ("./screens/main/list/" + AppDelegate.PhoneVersion + ".jpg")) {
-						map_button.SetImage(listImage, UIControlState.Normal);
-					}
+				if (map.Alpha == 0f) { 
+					map.Alpha = 1f; 
+					map_button.ChangeTitle("LIST");
 				} else {
 					map.Alpha = 0f;
-
-					using (UIImage mapImage = UIImage.FromFile ("./screens/main/map/" + AppDelegate.PhoneVersion + ".jpg")) {
-						map_button.SetImage(mapImage, UIControlState.Normal);
-					}
+					map_button.ChangeTitle("MAP");
 				} 
 			};
 

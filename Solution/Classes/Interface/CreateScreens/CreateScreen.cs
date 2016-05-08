@@ -36,9 +36,9 @@ namespace Board.Interface.CreateScreens
 			View.AddSubview (ScrollView);
 		}
 
-		protected void LoadBanner(string imagePath, string toImport, Action<FacebookElement> onReturn)
+		protected void LoadBanner(string toImport, Action<FacebookElement> onReturn, string title, string left_button = null, string right_button = null)
 		{
-			Banner = new UIMenuBanner (imagePath);
+			Banner = new UIMenuBanner (title, left_button, right_button);
 
 			var leftTap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4) {

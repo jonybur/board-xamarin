@@ -90,7 +90,7 @@ namespace Board.Interface.FacebookImport
 			
 		private void LoadBanner()
 		{
-			Banner = new UIMenuBanner ("./boardinterface/screens/photos/banner/" + AppDelegate.PhoneVersion + ".jpg");
+			Banner = new UIMenuBanner ("PHOTOS", "arrow_left");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (!CanGoBack){

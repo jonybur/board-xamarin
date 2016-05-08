@@ -12,7 +12,7 @@ namespace Board.Screens.Controls
 	{
 		UIImageView sidemenu;
 		UITapGestureRecognizer SideMenuTap;
-		ProfilePictureView profileView;
+		UIImageView profileView;
 		string FromScreen;
 
 		public UISideMenu(string fromScreen)
@@ -26,6 +26,7 @@ namespace Board.Screens.Controls
 			View.Layer.ShadowRadius = 5f;
 			View.Layer.ShadowColor = UIColor.Black.CGColor;
 			View.Layer.ShadowOpacity = .75f;
+			View.Alpha = .95f;
 
 			CABasicAnimation animation =  new CABasicAnimation();
 			animation.KeyPath = "position.x";
@@ -35,8 +36,9 @@ namespace Board.Screens.Controls
 			animation.Duration = .2f;
 			View.Layer.AddAnimation(animation, "basic");
 
-			using (UIImage bannerImage = UIImage.FromFile ("./screens/" + FromScreen + "/sidemenu/" + AppDelegate.PhoneVersion + ".png")) {
-				sidemenu = new UIImageView (new CGRect (0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2));
+			using (UIImage bannerImage = UIImage.FromFile ("./screens/sidemenus/"+ AppDelegate.PhoneVersion + "/" + FromScreen + ".png")) {
+				sidemenu = new UIImageView ();
+				sidemenu.Frame = new CGRect (0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2);
 				sidemenu.Image = bannerImage;
 			}
 
@@ -91,15 +93,36 @@ namespace Board.Screens.Controls
 
 			sidemenu.UserInteractionEnabled = true;
 
-			profileView = new ProfilePictureView (new CGRect (11, 78, 149, 149));
-			profileView.ProfileId = Profile.CurrentProfile.UserID;
+			float yposition, imagesize;
+			UIFont namefont, lastnamefont;
+			int nameYPosition;
 
-			View.AddSubviews (profileView, sidemenu);
+			if (AppDelegate.PhoneVersion == "4") {
+				yposition = 20;
+				imagesize = 110;
 
-			UIFont namefont = AppDelegate.Narwhal20;
-			UIFont lastnamefont = AppDelegate.Narwhal24;
+				namefont = AppDelegate.Narwhal18;
+				lastnamefont = AppDelegate.Narwhal20;
+				nameYPosition = 10;
+			} else {
+				yposition = 78;
+				imagesize = 149;
 
-			UILabel name = new UILabel (new CGRect(10, profileView.Frame.Bottom + 15, sidemenu.Frame.Width - 20, 20));
+				namefont = AppDelegate.Narwhal20;
+				lastnamefont = AppDelegate.Narwhal24;
+				nameYPosition = 15;
+			}
+
+			profileView = new UIImageView (new CGRect (0, 0, imagesize, imagesize));
+			profileView.Center = new CGPoint (sidemenu.Frame.Width / 2, yposition + imagesize / 2);
+			profileView.Image = AppDelegate.BoardUser.ProfilePictureUIImage;
+			profileView.Layer.CornerRadius = profileView.Frame.Width / 2;
+			profileView.Layer.MasksToBounds = true;
+			View.AddSubviews (sidemenu, profileView);
+
+
+			// TODO: usar user en lugar de profile
+			UILabel name = new UILabel (new CGRect(10, profileView.Frame.Bottom + nameYPosition, sidemenu.Frame.Width - 20, 20));
 			name.Font = namefont;
 			name.Text = Profile.CurrentProfile.FirstName;
 			name.TextColor = UIColor.White;
@@ -152,8 +175,9 @@ namespace Board.Screens.Controls
 
 		public override void ViewDidDisappear(bool animated)
 		{
+			profileView.Image = null;
 			View.RemoveGestureRecognizer (SideMenuTap);
-			MemoryUtility.ReleaseUIViewWithChildren (this.View, true); 
+			MemoryUtility.ReleaseUIViewWithChildren (View); 
 		}
 
 	}

@@ -2,6 +2,7 @@
 using MGImageUtilitiesBinding;
 using Board.Interface;
 using CoreGraphics;
+using System;
 using Foundation;
 using Board.Utilities;
 
@@ -27,11 +28,6 @@ namespace Board.Screens.Controls
 		}
 
 		private double GetDistance(Board.Schema.Board board){
-			/*
-			var containerScreen = AppDelegate.NavigationController.TopViewController as ContainerScreen;
-			var mainMenuScreen = containerScreen.CurrentScreen as MainMenuScreen;
-			*/
-
 			var location = AppDelegate.UserLocation;
 			double distance = 0;
 
@@ -39,7 +35,6 @@ namespace Board.Screens.Controls
 				distance = CommonUtils.DistanceBetweenCoordinates (board.GeolocatorObject.Coordinate, location, 'M');
 				board.Distance = distance;
 			}
-
 			return distance;
 		}
 
