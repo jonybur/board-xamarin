@@ -316,10 +316,9 @@ namespace Board.Screens
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				
-				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					
+				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4) {
 					NavigationController.PopViewController(false);
-				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 4) * 3){
+				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 4) * 3) {
 					CreateScreen3 createScreen3 = new CreateScreen3(board);
 					NavigationController.PushViewController(createScreen3, false);
 				} 

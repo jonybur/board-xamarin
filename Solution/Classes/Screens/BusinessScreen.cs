@@ -78,14 +78,11 @@ namespace Board.Screens
 
 		private void LoadNoContent()
 		{
+			// TODO: add empty image
 			// si el usuario no tiene boards creados...
 			ScrollView = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 
 			var imgv = new UIImageView (ScrollView.Frame);
-
-			using (UIImage image = UIImage.FromFile ("./screens/business/empty/" + AppDelegate.PhoneVersion + ".jpg")) {
-				imgv.Image = image;
-			}
 
 			ScrollView.AddSubview (imgv);
 			ScrollView.ScrollEnabled = true;

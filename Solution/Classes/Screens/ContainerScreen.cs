@@ -1,7 +1,8 @@
-﻿using Board.Screens.Controls;
-using UIKit;
+﻿using Board.Infrastructure;
+using Board.Screens.Controls;
 using Board.Utilities;
 using Foundation;
+using UIKit;
 
 namespace Board.Screens
 {
@@ -23,20 +24,23 @@ namespace Board.Screens
 			LoadChangelogAlert ();
 		}
 
+		public override async void ViewDidAppear(bool animated){
+			await CloudController.GetUserProfile ();
+		}
+
 		public void LoadChangelogAlert()
 		{
 			var defaults = NSUserDefaults.StandardUserDefaults;
-			const string key = "LaunchedBeforeKey038";
+			const string key = "LaunchedBeforeKey039";
 			if (!defaults.BoolForKey (key)) {
 				// First launch
 				NSUserDefaults.StandardUserDefaults.SetBool(true, key);
 				defaults.Synchronize ();
 
-				UIAlertController alert = UIAlertController.Create ("Welcome to Board 0.3.8", "Changelog:\n" +
-					"· Whole new Board interface\n" +
-					"· Unlimited scroll\n" +
-					"· Snapchat-inspired camera\n" +
-					"· Bug fixes", UIAlertControllerStyle.Alert);
+				UIAlertController alert = UIAlertController.Create ("Welcome to Board 0.3.9", "Changelog:\n" +
+					"· Server integration\n" +
+					"· Whole new main menu"
+					, UIAlertControllerStyle.Alert);
 
 				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));	
 

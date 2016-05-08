@@ -48,11 +48,21 @@ namespace Board.Screens.Controls
 				buttonLocations [1] = 440;
 				buttonLocations [2] = 525;
 				buttonLocations [3] = 605;
-			} else {
+			} else if (AppDelegate.PhoneVersion == "6plus") {
 				buttonLocations [0] = 390;
 				buttonLocations [1] = 470;
 				buttonLocations [2] = 550;
 				buttonLocations [3] = 630;
+			} else if (AppDelegate.PhoneVersion == "4") {
+				buttonLocations [0] = 245;
+				buttonLocations [1] = 310;
+				buttonLocations [2] = 370;
+				buttonLocations [3] = 435;
+			} else if (AppDelegate.PhoneVersion == "5") {
+				buttonLocations [0] = 285;
+				buttonLocations [1] = 360;
+				buttonLocations [2] = 436;
+				buttonLocations [3] = 518;
 			}
 
 			SideMenuTap = new UITapGestureRecognizer (tg => {
@@ -98,18 +108,24 @@ namespace Board.Screens.Controls
 			int nameYPosition;
 
 			if (AppDelegate.PhoneVersion == "4") {
-				yposition = 20;
+				yposition = 35;
 				imagesize = 110;
 
 				namefont = AppDelegate.Narwhal18;
 				lastnamefont = AppDelegate.Narwhal20;
 				nameYPosition = 10;
 			} else {
-				yposition = 78;
-				imagesize = 149;
+				if (AppDelegate.PhoneVersion == "5") {
+					yposition = 30;
+					imagesize = 135;
+				} else {
+					yposition = 45;
+					imagesize = 150;
+				}
 
 				namefont = AppDelegate.Narwhal20;
 				lastnamefont = AppDelegate.Narwhal24;
+
 				nameYPosition = 15;
 			}
 

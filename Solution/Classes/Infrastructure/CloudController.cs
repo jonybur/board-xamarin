@@ -3,6 +3,8 @@ using System.Net;
 using CoreLocation;
 using System.Threading.Tasks;
 using Board.JsonResponses;
+using Foundation;
+using System;
 using Board.Utilities;
 using Board.Schema;
 using Facebook.CoreKit;
@@ -17,23 +19,19 @@ namespace Board.Infrastructure
 		public static async Task<bool> GetUserProfile(){
 			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/user?authToken="+AppDelegate.EncodedBoardToken);
 
-				AppDelegate.BoardUser = JsonConvert.DeserializeObject<User>(result);
+			AppDelegate.BoardUser = JsonConvert.DeserializeObject<User>(result);
 
-				User user = StorageController.UserIsStored(/*AppDelegate.BoardUser.Id*/);
-				if (user != null){
-					System.Console.WriteLine("theres user");
-				AppDelegate.BoardUser.ProfilePictureUIImage = user.ProfilePictureUIImage;
-				} else {
-					System.Console.WriteLine("theres no user");
-					// stores image
+			var profileImage = StorageController.GetProfilePicture (AppDelegate.BoardUser.ProfilePictureURL);
+
+			if (profileImage != null){
+				AppDelegate.BoardUser.ProfilePictureUIImage = profileImage;
+			} else {
+				// stores image
 				AppDelegate.BoardUser.ProfilePictureUIImage = await CommonUtils.DownloadUIImageFromURL (AppDelegate.BoardUser.ProfilePictureURL);
+				StorageController.StoreProfilePicture(AppDelegate.BoardUser);
+			}
 
-				System.Console.WriteLine(AppDelegate.BoardUser.ProfilePictureUIImage.Size.Height);
-
-					StorageController.StoreUser(AppDelegate.BoardUser);
-				}
-
-				return true;
+			return true;
 		}
 
 		public static bool GetAmazonS3Ticket(){
@@ -101,36 +99,40 @@ namespace Board.Infrastructure
 			}
 		}
 
-		public static void UploadObject(string url)
+		public static string UploadObject(string amazonUrl, UIImage image)
 		{
 			//ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 
-			HttpWebRequest httpRequest = WebRequest.Create(url) as HttpWebRequest;
+			HttpWebRequest httpRequest = WebRequest.Create(amazonUrl) as HttpWebRequest;
 			httpRequest.Method = "PUT";
 			httpRequest.ContentType = "application/octet-stream";
-			using (Stream dataStream = httpRequest.GetRequestStream())
-			{
-				byte[] buffer = new byte[8000];
-				using (FileStream fileStream = new FileStream("./logos/americansocial.png", FileMode.Open, FileAccess.Read))
-				{
-					int bytesRead = 0;
-					while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) > 0)
-					{
-						dataStream.Write(buffer, 0, bytesRead);
-					}
-				}
+
+			var data = image.AsJPEG ().AsStream();
+
+			using (Stream dataStream = httpRequest.GetRequestStream()) {
+				data.CopyTo (dataStream);
 			}
 
-			HttpWebResponse response = httpRequest.GetResponse() as HttpWebResponse;
+			var response = httpRequest.GetResponse() as HttpWebResponse;
+			var absoluteURL = response.ResponseUri.AbsoluteUri;
+			var indexOfParameter = absoluteURL.IndexOf ('?');
+
+			if (indexOfParameter != -1) {
+				absoluteURL = absoluteURL.Substring (0, indexOfParameter);
+			}
+
+			return absoluteURL;
 		}
 
 
 		public static bool CreateBoard(Board.Schema.Board board){
-
 			GetAmazonS3Ticket ();
 
+			string logoURL;
 			if (AppDelegate.AmazonS3Ticket != null) {
-				UploadObject (AppDelegate.AmazonS3Ticket.url);
+				logoURL = UploadObject (AppDelegate.AmazonS3Ticket.url, board.ImageView.Image);
+			} else {
+				return false;
 			}
 			
 			string json = "{\"uuid\": \"" + board.Id  + "\", " + 
@@ -140,11 +142,12 @@ namespace Board.Infrastructure
 				"\"description\": \"" + board.Description + "\", " +
 				"\"mainColorCode\": \"" + CommonUtils.UIColorToHex(board.MainColor)  + "\", " +
 				"\"secondaryColorCode\": \"" + CommonUtils.UIColorToHex(board.SecondaryColor) + "\", " +
-				"\"logoURL\": \"" + "http://www.getonboard.us/wp-content/uploads/2016/02/orange_60.png" + "\" }";
+				"\"logoURL\": \"" + logoURL + "\" }";
 
 			string result = JsonPOSTRequest ("http://"+AppDelegate.APIAddress+"/api/board?authToken=" + AppDelegate.EncodedBoardToken, json);
 
 			if (result == "200" || result == string.Empty) {
+				StorageController.StoreImage (board.ImageView.Image, board.Id);
 				return true;
 			} else {
 				return false;
@@ -152,14 +155,10 @@ namespace Board.Infrastructure
 		}
 
 		public static async Task<List<Board.Schema.Board>> GetNearbyBoards(CLLocationCoordinate2D location, int meterRadius){
-
 			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/boards/nearby?" +
 				"authToken=" + AppDelegate.EncodedBoardToken+ "&latitude=" + location.Latitude + "&longitude=" + location.Longitude + "&radiusInMeters="+meterRadius);
 
 			BoardResponse response = BoardResponse.Deserialize (result);
-
-			// array hotfix
-			result = "{ data: " + result + "}";
 
 			var boards = await GenerateBoardListFromBoardResponse (response);
 

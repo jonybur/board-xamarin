@@ -68,7 +68,9 @@ namespace Board.Screens
 				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 4) * 3 && nextEnabled){
 
 					BTProgressHUD.Show();
+
 					bool result = CloudController.CreateBoard(board);
+
 					BTProgressHUD.Dismiss();
 
 					if (result){

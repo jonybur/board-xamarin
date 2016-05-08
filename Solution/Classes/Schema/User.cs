@@ -15,4 +15,3 @@ namespace Board.Schema
 		public UIImage ProfilePictureUIImage { get; set; }
 	}
 }
-

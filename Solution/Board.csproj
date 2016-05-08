@@ -174,8 +174,6 @@
     <BundleResource Include="Resources\timelapse.mp4" />
     <BundleResource Include="Resources\fonts\Narwhal_bold.ttf" />
     <BundleResource Include="Resources\fonts\Narwhal.ttf" />
-    <BundleResource Include="Resources\screens\business\empty\6.jpg" />
-    <BundleResource Include="Resources\screens\business\empty\6plus.jpg" />
     <BundleResource Include="Resources\screens\create\1\content\6.jpg" />
     <BundleResource Include="Resources\screens\create\1\content\6plus.jpg" />
     <BundleResource Include="Resources\screens\create\2\icon.png" />
@@ -225,24 +223,6 @@
     <BundleResource Include="Resources\demo\videos\4.mp4" />
     <BundleResource Include="Resources\demo\videos\5.mp4" />
     <BundleResource Include="Resources\demo\videos\6.mp4" />
-    <BundleResource Include="Resources\logos\bluemartini.png" />
-    <BundleResource Include="Resources\logos\brickhouse.png" />
-    <BundleResource Include="Resources\logos\clevelander.png" />
-    <BundleResource Include="Resources\logos\coyo.jpeg" />
-    <BundleResource Include="Resources\logos\doghouse.jpeg" />
-    <BundleResource Include="Resources\logos\doloreslolita.jpg" />
-    <BundleResource Include="Resources\logos\electricpickle.jpg" />
-    <BundleResource Include="Resources\logos\fattuesdays.jpg" />
-    <BundleResource Include="Resources\logos\liv.jpg" />
-    <BundleResource Include="Resources\logos\mangos.png" />
-    <BundleResource Include="Resources\logos\mansion.jpg" />
-    <BundleResource Include="Resources\logos\mrmoes.jpg" />
-    <BundleResource Include="Resources\logos\nikki.jpg" />
-    <BundleResource Include="Resources\logos\panther.JPG" />
-    <BundleResource Include="Resources\logos\space.jpg" />
-    <BundleResource Include="Resources\logos\tavernopa.png" />
-    <BundleResource Include="Resources\logos\wetwillies.jpg" />
-    <BundleResource Include="Resources\logos\wood.png" />
     <BundleResource Include="Resources\boardinterface\widget\time.png" />
     <BundleResource Include="Resources\demo\events\1.jpg" />
     <BundleResource Include="Resources\demo\events\2.jpg" />
@@ -264,14 +244,11 @@
     <BundleResource Include="Resources\boardinterface\widget\radiobut2.png" />
     <BundleResource Include="Resources\boardinterface\lookup\waze.png" />
     <BundleResource Include="Resources\boardinterface\widget\radiobutfull.png" />
-    <BundleResource Include="Resources\screens\main\list\6.jpg" />
-    <BundleResource Include="Resources\screens\main\list\6plus.jpg" />
     <BundleResource Include="Resources\screens\main\map\marker_blue.png" />
     <BundleResource Include="Resources\screens\main\map\marker_orange.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\info_3px.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\info_3px2.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\info_3px3.png" />
-    <BundleResource Include="Resources\screens\controls\thumbback.png" />
     <BundleResource Include="Resources\demo\main\trending1.jpg" />
     <BundleResource Include="Resources\demo\main\trending2.jpg" />
     <BundleResource Include="Resources\demo\main\trending3.jpg" />
@@ -292,7 +269,6 @@
     <BundleResource Include="Resources\camera\flash_off.png" />
     <BundleResource Include="Resources\camera\flash_on.png" />
     <BundleResource Include="Resources\camera\focus.png" />
-    <BundleResource Include="Resources\logos\americansocial.png" />
     <BundleResource Include="Resources\boardinterface\infobox\call.png" />
     <BundleResource Include="Resources\boardinterface\infobox\message.png" />
     <BundleResource Include="Resources\boardinterface\infobox\addstar.png" />
@@ -304,10 +280,7 @@
     <BundleResource Include="Resources\boardinterface\infobox\addstar4.png" />
     <BundleResource Include="Resources\boardinterface\infobox\message2.png" />
     <BundleResource Include="Resources\boardinterface\backgrounds\diamonds.png" />
-    <BundleResource Include="Resources\logos\table26.jpg" />
-    <BundleResource Include="Resources\screens\main\magazine\westpalmbeach.png" />
     <BundleResource Include="Resources\screens\main\magazine\pin.png" />
-    <BundleResource Include="Resources\screens\main\magazine\carouselitem\1.png" />
     <BundleResource Include="Resources\screens\main\map\markercontainer_black.png" />
     <BundleResource Include="Resources\menubanner\cross_left.png" />
     <BundleResource Include="Resources\menubanner\import_right.png" />
@@ -330,6 +303,13 @@
     <BundleResource Include="Resources\screens\sidemenus\4\main.png" />
     <BundleResource Include="Resources\screens\sidemenus\4\settings.png" />
     <BundleResource Include="Resources\screens\sidemenus\4\support.png" />
+    <BundleResource Include="Resources\screens\sidemenus\5\business.png" />
+    <BundleResource Include="Resources\screens\sidemenus\5\invite.png" />
+    <BundleResource Include="Resources\screens\sidemenus\5\main.png" />
+    <BundleResource Include="Resources\screens\sidemenus\5\settings.png" />
+    <BundleResource Include="Resources\screens\sidemenus\5\support.png" />
+    <BundleResource Include="Resources\demo\magazine\1.png" />
+    <BundleResource Include="Resources\demo\magazine\westpalmbeach.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -464,11 +444,8 @@
     <Folder Include="Classes\Schema\" />
     <Folder Include="Resources\fonts\" />
     <Folder Include="Classes\Screens\" />
-    <Folder Include="Resources\logos\" />
     <Folder Include="Resources\screens\" />
-    <Folder Include="Resources\screens\business\" />
     <Folder Include="Resources\screens\invite\" />
-    <Folder Include="Resources\screens\business\empty\" />
     <Folder Include="Resources\screens\support\" />
     <Folder Include="Resources\screens\create\" />
     <Folder Include="Resources\screens\create\1\" />
@@ -505,8 +482,6 @@
     <Folder Include="Resources\boardinterface\screens\share\link\" />
     <Folder Include="Resources\screens\main\" />
     <Folder Include="Resources\screens\main\map\" />
-    <Folder Include="Resources\screens\main\list\" />
-    <Folder Include="Resources\screens\controls\" />
     <Folder Include="Resources\demo\main\" />
     <Folder Include="Properties\" />
     <Folder Include="Resources\boardinterface\screens\share\save\" />
@@ -518,7 +493,6 @@
     <Folder Include="Resources\screens\main\magazine\" />
     <Folder Include="Classes\Screens\Controls\MenuButton\" />
     <Folder Include="Classes\Screens\Controls\MagazineBanner\" />
-    <Folder Include="Resources\screens\main\magazine\carouselitem\" />
     <Folder Include="Classes\Screens\Controls\UIContentDisplay\" />
     <Folder Include="Resources\menubanner\" />
     <Folder Include="Resources\screens\sidemenus\" />
@@ -526,6 +500,7 @@
     <Folder Include="Resources\screens\sidemenus\5\" />
     <Folder Include="Resources\screens\sidemenus\6\" />
     <Folder Include="Resources\screens\sidemenus\6plus\" />
+    <Folder Include="Resources\demo\magazine\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

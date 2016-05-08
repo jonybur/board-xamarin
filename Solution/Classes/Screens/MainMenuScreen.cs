@@ -57,7 +57,6 @@ namespace Board.Screens
 
 		public override async void ViewDidAppear(bool animated)
 		{
-			await CloudController.GetUserProfile ();
 			// suscribe to observers, gesture recgonizers, events
 			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
 			map_button.TouchUpInside += MapButtonEvent;	
@@ -92,8 +91,8 @@ namespace Board.Screens
 		{
 			ScrollView.BackgroundColor = UIColor.White;
 
-			BoardList = await CloudController.GetAllBoards();
-			//BoardList = await CloudController.GetNearbyBoards (AppDelegate.UserLocation, 10000);
+			//BoardList = await CloudController.GetAllBoards();
+			BoardList = await CloudController.GetNearbyBoards (AppDelegate.UserLocation, 10000);
 
 			Magazine = new UIMagazine (BoardList);
 
@@ -251,8 +250,6 @@ namespace Board.Screens
 					map_button.ChangeTitle("MAP");
 				} 
 			};
-
-			map_button.Alpha = .95f;
 		}
 
 	}
