@@ -4,6 +4,7 @@ using Board.Utilities;
 using CoreGraphics;
 using Foundation;
 using UIKit;
+using CoreLocation;
 using Board.Interface.Widgets;
 using Facebook.CoreKit;
 using System;
@@ -50,11 +51,11 @@ namespace Board.Interface.LookUp
 			CreateBackButton (buttonColor);
 			CreateLikeButton (buttonColor);
 			CreateFacebookButton (buttonColor);
-			CreateUberButton (buttonColor);
 			CreateShareButton (buttonColor);
 			CreateTrashButton (buttonColor);
-			CreateWazeButton (buttonColor);
 			CreateEditButton (buttonColor);
+			//CreateWazeButton (buttonColor);
+			//CreateUberButton (buttonColor);
 		
 			if (string.IsNullOrEmpty(content.FacebookId)) {
 				FacebookButton.Alpha = 0f;
@@ -73,9 +74,9 @@ namespace Board.Interface.LookUp
 			FacebookButton.AddGestureRecognizer (facebookTap);
 			ShareButton.AddGestureRecognizer (shareTap);
 			EditButton.AddGestureRecognizer (editTap);
-			UberButton.AddGestureRecognizer (uberTap);
 			TrashButton.AddGestureRecognizer (trashTap);
-			WazeButton.AddGestureRecognizer (wazeTap);
+			//WazeButton.AddGestureRecognizer (wazeTap);
+			//UberButton.AddGestureRecognizer (uberTap);
 		}
 
 		public override void ViewDidDisappear(bool animated)
@@ -85,9 +86,9 @@ namespace Board.Interface.LookUp
 			LikeButton.RemoveGestureRecognizer (facebookTap);
 			EditButton.RemoveGestureRecognizer (editTap);
 			ShareButton.RemoveGestureRecognizer (shareTap);
-			UberButton.RemoveGestureRecognizer (uberTap);
 			TrashButton.RemoveGestureRecognizer (trashTap);
-			WazeButton.RemoveGestureRecognizer (wazeTap);
+			//WazeButton.RemoveGestureRecognizer (wazeTap);
+			//UberButton.RemoveGestureRecognizer (uberTap);
 		}
 
 		protected void CreateBackButton(UIColor buttonColor)
@@ -287,14 +288,11 @@ namespace Board.Interface.LookUp
 
 			wazeTap = new UITapGestureRecognizer (tg => {
 
-				NSUrl url = new NSUrl("waze://");
+				var destination = new CLLocationCoordinate2D(UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lat,
+					UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lng);
 
-				if (UIApplication.SharedApplication.CanOpenUrl(url)) {
-					
-					
-					NSUrl uberRequest = new NSUrl("waze://?ll="+UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lat+","+UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lng+"&z=10&navigate=yes");
-
-					UIApplication.SharedApplication.OpenUrl(uberRequest);
+				if (AppsController.CanOpenWaze()) {
+					AppsController.OpenWaze(destination);
 				}
 				else {
 					// No Waze app! Open mobile website.
@@ -326,31 +324,6 @@ namespace Board.Interface.LookUp
 			}
 
 			UberButton.UserInteractionEnabled = true;
-
-			uberTap = new UITapGestureRecognizer (tg => {
-				NSUrl url = new NSUrl("uber://");
-
-				if (UIApplication.SharedApplication.CanOpenUrl(url)) {
-
-					double lat = UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lat;
-					double lng = UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lng;
-
-					string product_id = CloudController.GetUberProduct(lat, lng);
-
-					NSUrl uberRequest = new NSUrl("uber://?" +
-						"client_id=7-UVBjdHfUrKKeZU9nDlP_HktFs3iWVT&" +
-						"product_id=" + product_id + "&" +
-						"action=setPickup&" +
-						"pickup=my_location&" +
-						"dropoff[latitude]=" + lat + "&" +
-						"dropoff[longitude]=" + lng);
-
-					UIApplication.SharedApplication.OpenUrl(uberRequest);
-				}
-				else {
-					// No Uber app!
-				}
-			});
 		}
 
 
@@ -380,21 +353,15 @@ namespace Board.Interface.LookUp
 			FacebookButton.UserInteractionEnabled = true;
 
 			facebookTap = new UITapGestureRecognizer (tg => {
-				NSUrl url;
-
 				if(content is BoardEvent)
 				{
 					// opens in app
-					url = new NSUrl("https://www.facebook.com/" + content.FacebookId);
+					AppsController.OpenFacebook(content.FacebookId, true);
 				}else {
 
 					// opens in safari
-					url = new NSUrl("https://facebook.com/" + content.FacebookId);
+					AppsController.OpenFacebook(content.FacebookId, false);
 				}
-
-				UIApplication.SharedApplication.OpenUrl(url);
-
-
 			});
 		}
 

@@ -37,7 +37,7 @@ namespace Board.Interface.LookUp
 			LoadMap ();
 			ScrollView.AddSubview (mapView);
 
-			View.AddSubviews (ScrollView, BackButton, UberButton);
+			View.AddSubviews (ScrollView, BackButton);
 		}
 
 		public override void ViewDidDisappear(bool animated)

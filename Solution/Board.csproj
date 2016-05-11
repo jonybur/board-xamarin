@@ -432,6 +432,7 @@
     <Compile Include="Classes\Interface\InfoBox\UIInfoBox.cs" />
     <Compile Include="Classes\Screens\Controls\UIBoardBannerPage.cs" />
     <Compile Include="Classes\Interface\UISticker.cs" />
+    <Compile Include="Classes\Infrastructure\AppsController.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

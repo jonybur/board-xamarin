@@ -239,19 +239,19 @@ namespace Board.Infrastructure
 			return boards;
 		}
 
-		public static string GetUberProduct(double lat, double lng){
-			string result = JsonGETRequest("https://api.uber.com/v1/products?latitude="+lat+"&longitude="+lng+"&server_token="+AppDelegate.UberServerToken);
+		public static UberProductResponse GetUberProducts(CLLocationCoordinate2D location){
+			string result = JsonGETRequest("https://api.uber.com/v1/products?latitude="+location.Latitude+"&longitude="+location.Longitude+"&server_token="+AppDelegate.UberServerToken);
 
 			var productResponse = JsonConvert.DeserializeObject<UberProductResponse> (result);
 
 			if (productResponse != null) {
 				if (productResponse.products.Count > 0) {
 					// always gets first product (luckily it will always be uberX)
-					return productResponse.products [0].product_id;
+					return productResponse;
 				}
 			}
 
-			return string.Empty;
+			return null;
 		}
 
 		public static void LogOut(){

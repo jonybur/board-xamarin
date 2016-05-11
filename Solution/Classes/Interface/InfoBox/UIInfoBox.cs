@@ -5,6 +5,10 @@ using MGImageUtilitiesBinding;
 using UIKit;
 using Board.Utilities;
 using Board.Interface.LookUp;
+using BigTed;
+using Board.Infrastructure;
+using Foundation;
+using CoreLocation;
 
 namespace Board.Interface
 {
@@ -71,6 +75,7 @@ namespace Board.Interface
 
 			const int ButtonHeight = 40;
 			public UIButton uberButton, directionsButton;
+			UITapGestureRecognizer uberTap, directionsTap;
 
 			public MapContainer(CGRect frame){
 				CreateMap ((float)frame.Width);
@@ -88,13 +93,41 @@ namespace Board.Interface
 				CreateUberButton();
 			}
 
-			private void CreateUberButton(){
-				directionsButton = new UIButton ();
-				directionsButton.Frame = new CGRect (0, button.Frame.Height - ButtonHeight, button.Frame.Width / 2 - 1, ButtonHeight);
-				directionsButton.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 200);
-				directionsButton.SetTitle ("UBER", UIControlState.Normal);
 
-				button.AddSubview (directionsButton);
+			private void CreateUberButton(){
+				uberButton = new UIButton ();
+				uberButton.Frame = new CGRect (0, button.Frame.Height - ButtonHeight, button.Frame.Width / 2 - 1, ButtonHeight);
+				uberButton.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 200);
+				uberButton.SetTitle ("UBER", UIControlState.Normal);
+
+				uberTap = new UITapGestureRecognizer (tg => {
+					
+					if (AppsController.CanOpenUber()) {
+						
+						var location = new CLLocationCoordinate2D(UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lat,
+							UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lng);
+
+						var listproducts = CloudController.GetUberProducts(location);
+
+						UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
+						foreach(var product in listproducts.products){
+							alert.AddAction (UIAlertAction.Create (product.display_name, UIAlertActionStyle.Default, delegate {
+								AppsController.OpenUber (product.product_id, location);
+							}));	
+						}
+						alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
+
+						AppDelegate.NavigationController.PresentViewController(alert, true, null);
+					}
+					else {
+						UIAlertController alert = UIAlertController.Create("No Uber app installed", "To use this function please install Uber", UIAlertControllerStyle.Alert);
+						alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+						AppDelegate.NavigationController.PresentViewController (alert, true, null);
+					}
+				});
+
+				uberButton.AddGestureRecognizer (uberTap);
+				button.AddSubview (uberButton);
 			}
 
 			private void CreateDirectionsButton(){
@@ -103,6 +136,29 @@ namespace Board.Interface
 				directionsButton.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 200);
 				directionsButton.SetTitle ("DIRECTIONS", UIControlState.Normal);
 
+				directionsTap = new UITapGestureRecognizer (tg => {
+
+					var location = new CLLocationCoordinate2D(UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lat,
+						UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lng);
+					
+					if (AppsController.CanOpenGoogleMaps()){
+
+						UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
+						alert.AddAction (UIAlertAction.Create ("Google Maps", UIAlertActionStyle.Default, obj => AppsController.OpenGoogleMaps (location)));
+						alert.AddAction (UIAlertAction.Create ("Apple Maps", UIAlertActionStyle.Default, obj => AppsController.OpenAppleMaps (location)));
+						alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
+
+						AppDelegate.NavigationController.PresentViewController(alert, true, null);
+
+						// display two alternatives
+						AppsController.OpenGoogleMaps (location);
+					} else {
+						AppsController.OpenAppleMaps (location);
+						
+					}
+				});
+
+				directionsButton.AddGestureRecognizer (directionsTap);
 				button.AddSubview (directionsButton);
 			}
 
@@ -112,6 +168,7 @@ namespace Board.Interface
 				mapView = MapView.FromCamera (new CGRect (0, 0, button.Frame.Width, button.Frame.Height), camera);
 				mapView.UserInteractionEnabled = false;
 				mapView.Layer.AllowsEdgeAntialiasing = true;
+				mapView.MyLocationEnabled = true;
 				mapView.Camera = CameraPosition.FromCamera (UIBoardInterface.board.GeolocatorObject.Coordinate, 16);
 				mapMarker = new UIMapMarker (UIBoardInterface.board, mapView);
 
@@ -127,6 +184,8 @@ namespace Board.Interface
 
 			public override void ViewDidUnload ()
 			{
+				uberButton.RemoveGestureRecognizer (uberTap);
+				directionsButton.RemoveGestureRecognizer (directionsTap);
 				button.RemoveGestureRecognizer(MapTap);
 				mapMarker.Dispose ();
 				MemoryUtility.ReleaseUIViewWithChildren (View);	
