@@ -12,7 +12,7 @@ namespace Board.Interface.Buttons
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/strokebuttons/card_3px.png")) {
+			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/nubuttons/nucard.png")) {
 				uiButton.SetImage (uiImage, UIControlState.Normal);
 			}
 
@@ -29,6 +29,7 @@ namespace Board.Interface.Buttons
 				alert.AddAction (UIAlertAction.Create ("Poll", UIAlertActionStyle.Default, CreatePoll));
 				alert.AddAction (UIAlertAction.Create ("Promotion (coming soon)", UIAlertActionStyle.Default, null));
 				alert.AddAction (UIAlertAction.Create ("Spotify® Playlist (coming soon)", UIAlertActionStyle.Default, null));
+				alert.AddAction (UIAlertAction.Create ("Sticker (coming soon)", UIAlertActionStyle.Default, CreateSticker));
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 
 				AppDelegate.BoardInterface.NavigationController.PresentViewController (alert, true, null);
@@ -51,6 +52,12 @@ namespace Board.Interface.Buttons
 		{
 			CreatePollScreen pollScreen = new CreatePollScreen ();
 			AppDelegate.PushViewLikePresentView (pollScreen);
+		}
+
+		private static void CreateSticker(UIAlertAction act){
+			UISticker sticker = new UISticker ();
+			System.Console.WriteLine (sticker.CanBecomeFirstResponder);
+			sticker.BecomeFirstResponder ();
 		}
 
 		private static void CreateMap(UIAlertAction act)

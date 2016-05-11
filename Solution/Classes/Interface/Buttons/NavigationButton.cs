@@ -154,11 +154,13 @@ namespace Board.Interface.Buttons
 
 			// otherwise, instanciate new text
 
-			UIFont font = UIFont.SystemFontOfSize (12);
-			numberLabel = new UILabel (new CGRect (0, ButtonSize / 2 - 14, ButtonSize, 14));
+			UIFont font = AppDelegate.Narwhal12;
+			font = UIFont.SystemFontOfSize (10);
+			numberLabel = new UILabel (new CGRect (0, ButtonSize / 2 + 10, ButtonSize, 10));
 			numberLabel.Font = font;
 			numberLabel.TextAlignment = UITextAlignment.Center;
-			numberLabel.Text = contentAmmount.ToString ();
+			numberLabel.Text = contentAmmount.ToString () + " NEW";
+			numberLabel.AdjustsFontSizeToFitWidth = true;
 			numberLabel.TextColor = UIColor.Black;
 
 			uiButton.AddSubview (numberLabel);
@@ -180,12 +182,14 @@ namespace Board.Interface.Buttons
 
 			// otherwise, instanciate new text
 
-			UIFont font = UIFont.SystemFontOfSize (12);
-			contentAmmount = content;
-			numberLabel = new UILabel (new CGRect (0, ButtonSize / 2 - 14, ButtonSize, 14));
+			UIFont font = AppDelegate.Narwhal12;
+			font = UIFont.SystemFontOfSize (10);
+			contentAmmount = content;			
+			numberLabel = new UILabel (new CGRect (0, ButtonSize / 2 + 10, ButtonSize, 10));
 			numberLabel.Font = font;
 			numberLabel.TextAlignment = UITextAlignment.Center;
-			numberLabel.Text = content.ToString ();
+			numberLabel.Text = content.ToString () + " NEW";
+			numberLabel.AdjustsFontSizeToFitWidth = true;
 			numberLabel.TextColor = UIColor.Black;
 
 			uiButton.AddSubview (numberLabel);

@@ -3,6 +3,7 @@ using UIKit;
 using MGImageUtilitiesBinding;
 using System.Collections.Generic;
 using System.Linq;
+using Haneke;
 
 namespace Board.Screens.Controls
 {
@@ -49,9 +50,8 @@ namespace Board.Screens.Controls
 			}
 
 			pages [0].ContentDisplay = new UICarouselContentDisplay ();
-			//new UIThumbsContentDisplay (boardList, (float)Magazine.Banner.Frame.Height, UIActionButton.Height);
 			pages [1].ContentDisplay = new UITimelineContentDisplay (boardList, UIMagazineBannerPage.Height, UIActionButton.Height);
-			pages [2].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Distance, UIMagazineBannerPage.Height, UIActionButton.Height);
+			pages [2].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Neighborhood, UIMagazineBannerPage.Height, UIActionButton.Height);
 
 			Pages = pages;
 		}
@@ -68,9 +68,10 @@ namespace Board.Screens.Controls
 			BackgroundColor = UIColor.FromRGBA(0,0,0,0);
 
 			var backgroundImage = new UIImageView (new CGRect(0,0,Frame.Width, Frame.Height));
-			using (UIImage img = UIImage.FromFile ("./screens/main/magazine/westpalmbeach.png")) {
+			using (UIImage img = UIImage.FromFile ("./demo/magazine/westpalmbeach.png")) {
 				UIImage scaledImage = img.ImageScaledToFitSize (Frame.Size);
 				backgroundImage.Image = scaledImage;
+
 			}
 
 			MagazineBannerPageController = new UIMagazineBannerPageController (UIPageViewControllerTransitionStyle.Scroll, UIPageViewControllerNavigationOrientation.Horizontal, Frame.Size);

@@ -21,6 +21,7 @@ namespace Board.Interface
 		public const int BannerHeight = 66;
 		public const int ButtonBarHeight = 45;
 
+		public static bool UserCanEditBoard;
 		public static Board.Schema.Board board;
 
 		public UIBoardScroll BoardScroll;
@@ -44,11 +45,14 @@ namespace Board.Interface
 		{
 			// if it reaches this section, user has been logged in and authorized
 			base.ViewDidLoad ();
+
 			AutomaticallyAdjustsScrollViewInsets = false;
 
 			BTProgressHUD.Show();
 
 			InitializeLists ();
+
+			UserCanEditBoard = CloudController.UserCanEditBoard (board.Id);
 
 			InitializeInterface ();
 
@@ -65,7 +69,8 @@ namespace Board.Interface
 
 		private void InitializeInterface()
 		{
-			View.BackgroundColor = board.MainColor;
+			// This was main color
+			View.BackgroundColor = UIColor.FromRGB(8, 22, 62);
 
 			BoardScroll = new UIBoardScroll ();
 			BoardScroll.Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
@@ -86,7 +91,9 @@ namespace Board.Interface
 		{
 			if (firstLoad) {
 
-				GenerateTestPictures ();
+				GenerateTestContent ();
+
+				CloudController.GetBoardSnapshot (board.Id);
 
 				GenerateWidgets ();
 
@@ -137,7 +144,8 @@ namespace Board.Interface
 
 				widget.Value.UnsuscribeToEvents ();
 				widget.Value.View.RemoveFromSuperview ();
-				MemoryUtility.ReleaseUIViewWithChildren (widget.Value.View, true);
+
+				MemoryUtility.ReleaseUIViewWithChildren (widget.Value.View);
 			}
 
 			DictionaryWidgets = new Dictionary<string, Widget>();
@@ -148,11 +156,11 @@ namespace Board.Interface
 			ButtonInterface.Initialize ();
 
 			UIImageView buttonBackground = new UIImageView (new CGRect (0, AppDelegate.ScreenHeight - 45, AppDelegate.ScreenWidth, ButtonBarHeight));
-			buttonBackground.BackgroundColor = UIColor.FromRGBA (255, 255, 255, 240);
+			buttonBackground.BackgroundColor = UIColor.White;
 
 			View.AddSubview (buttonBackground);
 
-			if (CloudController.UserCanEditBoard(board)) {
+			if (UserCanEditBoard) {
 				View.AddSubviews (ButtonInterface.GetCreatorButtons().ToArray());
 			} else {
 				View.AddSubviews (ButtonInterface.GetUserButtons (board.FBPage != null).ToArray());

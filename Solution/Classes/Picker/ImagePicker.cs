@@ -133,7 +133,7 @@ namespace Board.Picker
 						icon.Center = new CGPoint(autosize/2, autosize/2);
 						icon.Image = image;
 
-						board.ImageView = new UIImageView(image);
+						board.Image = image;
 
 					}
 				}

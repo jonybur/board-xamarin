@@ -1,9 +1,9 @@
 ﻿using Board.Schema;
 using System;
+using Board.Screens.Controls;
 using Foundation;
 using Google.Maps;
 using Board.Utilities;
-using MGImageUtilitiesBinding;
 using Board.JsonResponses;
 using CoreLocation;
 using CoreGraphics;
@@ -14,6 +14,7 @@ namespace Board.Interface.LookUp
 	public class MapLookUp : UILookUp
 	{
 		MapView mapView;
+		UIMapMarker mapMarker;
 		bool firstLocationUpdate;
 		GoogleGeolocatorObject GeolocatorObject;
 
@@ -72,42 +73,8 @@ namespace Board.Interface.LookUp
 
 		private void CreateMarker()
 		{
-			Marker marker = new Marker ();
-			marker.AppearAnimation = MarkerAnimation.Pop;
-			var markerLocation = new CLLocationCoordinate2D(GeolocatorObject.results [0].geometry.location.lat,
-				GeolocatorObject.results [0].geometry.location.lng);
-			
-			marker.Position = markerLocation;
-			marker.Map = mapView;
-			marker.Icon = CreateMarkerImage (UIBoardInterface.board.ImageView.Image);
-			marker.Draggable = false;
-			marker.Title = UIBoardInterface.board.Name;
-			try{
-				marker.Snippet = GeolocatorObject.results [0].address_components [0].long_name + " " +
-					GeolocatorObject.results [0].address_components [1].short_name;
-			}catch{
-			}
-			marker.InfoWindowAnchor = new CGPoint (.5, .5);
-			marker.Tappable = true;
+			mapMarker = new UIMapMarker (UIBoardInterface.board, mapView, UIMapMarker.SizeMode.Normal);
 		}
-
-		private UIImage CreateMarkerImage(UIImage logo)
-		{
-			UIGraphics.BeginImageContextWithOptions (new CGSize (66, 96), false, 2f);
-
-			using (UIImage container = UIImage.FromFile ("./screens/main/map/markercontainer_black.png")) {
-				container.Draw (new CGRect (0, 0, 66, 96));
-			}
-
-			float autosize = 40;
-
-			logo = logo.ImageScaledToFitSize (new CGSize(autosize,autosize));
-
-			logo.Draw (new CGRect (33 - logo.Size.Width / 2, 33 - logo.Size.Height / 2, logo.Size.Width, logo.Size.Height));
-
-			return UIGraphics.GetImageFromCurrentImageContext ();
-		}
-
 	}
 }
 

@@ -12,7 +12,7 @@ namespace Board.Infrastructure
 		{
 			Dictionary<string, object> FinalJson = new Dictionary<string, object> ();
 
-			FinalJson.Add ("updated", dictionary);
+			FinalJson.Add ("updates", dictionary);
 
 			FinalJson.Add ("timestamp", CommonUtils.GetUnixTimeStamp());
 
@@ -27,7 +27,7 @@ namespace Board.Infrastructure
 
 			Dictionary<string, object> FinalJson = new Dictionary<string, object> ();
 
-			FinalJson.Add ("updated", singleContent);
+			FinalJson.Add ("updates", singleContent);
 
 			FinalJson.Add ("timestamp", CommonUtils.GetUnixTimeStamp ());
 
@@ -38,7 +38,7 @@ namespace Board.Infrastructure
 		{
 			Dictionary<string, object> FinalJson = new Dictionary<string, object> ();
 
-			FinalJson.Add ("deleted", contentids);
+			FinalJson.Add ("deletes", contentids);
 
 			FinalJson.Add ("timestamp", CommonUtils.GetUnixTimeStamp ());
 

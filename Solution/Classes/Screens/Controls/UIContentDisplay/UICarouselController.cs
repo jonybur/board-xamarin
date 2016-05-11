@@ -74,7 +74,7 @@ namespace Board.Screens.Controls
 			Frame = new CGRect (0, 0, Width, Height);
 			BackgroundColor = UIColor.Black;
 			Layer.CornerRadius = 10;
-			using (var img = UIImage.FromFile ("./screens/main/magazine/carouselitem/1.png")) {
+			using (var img = UIImage.FromFile ("./demo/magazine/1.png")) {
 				var scaledImg = img.ImageScaledToFitSize (Frame.Size);
 				SetImage (scaledImg, UIControlState.Normal);
 			}

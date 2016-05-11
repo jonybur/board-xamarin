@@ -8,7 +8,7 @@ namespace Board.Schema
 	// add udid
 	public class Board
 	{
-		public UIImageView ImageView;
+		public UIImage Image;
 		public UIColor MainColor;
 		public UIColor SecondaryColor;
 		public GoogleGeolocatorObject GeolocatorObject;
@@ -28,10 +28,10 @@ namespace Board.Schema
 			Id = id;
 		}
 
-		public Board (string name, UIImageView imageview, UIColor mainColor, UIColor secondaryColor, GoogleGeolocatorObject geolocatorObject, string creatorId)
+		public Board (string name, UIImage image, UIColor mainColor, UIColor secondaryColor, GoogleGeolocatorObject geolocatorObject, string creatorId)
 		{
 			Id = CommonUtils.GenerateGuid ();
-			ImageView = imageview;
+			Image = image;
 			MainColor = mainColor;
 			SecondaryColor = secondaryColor;
 			GeolocatorObject = geolocatorObject;

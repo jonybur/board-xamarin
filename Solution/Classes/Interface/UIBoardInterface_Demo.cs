@@ -12,13 +12,12 @@ namespace Board.Interface
 	public partial class UIBoardInterface
 	{
 
-		private void GenerateTestPictures()
+		private void GenerateTestContent()
 		{
-			board.FBPage = new Board.Facebook.FacebookPage("SatelitesOficial", "Satelites Oficial", "Music Band");
-
 			const float fix = 100;
 			const float fix2 = 90;
 
+			board.FBPage = new Board.Facebook.FacebookPage("SatelitesOficial", "Satelites Oficial", "Music Band");
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/0.jpg")) {
 				AddTestPicture (img, new CGPoint(70+fix, 20+fix), -.03f, DateTime.Now.AddHours(-1));
 			}

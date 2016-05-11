@@ -8,7 +8,6 @@ using CoreGraphics;
 using Facebook.CoreKit;
 using Foundation;
 using Google.Maps;
-using MGImageUtilitiesBinding;
 using UIKit;
 using BigTed;
 
@@ -19,7 +18,7 @@ namespace Board.Screens
 		public MapView map;
 		UIMenuBanner Banner;
 		UIScrollView ScrollView;
-		List<Marker> ListMapMarkers;
+		List<UIMapMarker> ListMapMarkers;
 
 		UIMagazine Magazine;
 		UIActionButton map_button;
@@ -40,7 +39,7 @@ namespace Board.Screens
 		{
 			base.ViewDidLoad ();
 
-			ListMapMarkers = new List<Marker> ();
+			ListMapMarkers = new List<UIMapMarker> ();
 
 			if (Profile.CurrentProfile == null) {
 				AppDelegate.NavigationController.PopViewController (true);
@@ -55,7 +54,7 @@ namespace Board.Screens
 			View.AddSubviews (ScrollView, map, Banner, map_button);
 		}
 
-		public override async void ViewDidAppear(bool animated)
+		public override void ViewDidAppear(bool animated)
 		{
 			// suscribe to observers, gesture recgonizers, events
 			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
@@ -85,6 +84,30 @@ namespace Board.Screens
 
 			MemoryUtility.ReleaseUIViewWithChildren (View);
 			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
+		}
+
+		public override async void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
+		{
+			if (!firstLocationUpdate) {
+
+				BTProgressHUD.Show ();
+
+				firstLocationUpdate = true; 
+
+				var location = change.ObjectForKey (NSValue.ChangeNewKey) as CoreLocation.CLLocation;
+				AppDelegate.UserLocation = location.Coordinate;
+				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
+
+				await LoadContent ();
+				ContentDisplay.SuscribeToEvents ();
+
+				BTProgressHUD.Dismiss ();
+
+				if (!generatedMarkers) {
+					GenerateMarkers ();
+					generatedMarkers = true;
+				}
+			}
 		}
 
 		private async System.Threading.Tasks.Task LoadContent()
@@ -155,44 +178,10 @@ namespace Board.Screens
 			InvokeOnMainThread (()=> map.MyLocationEnabled = true);
 		}
 
-		public override async void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
-		{
-			if (!firstLocationUpdate) {
-				
-				BTProgressHUD.Show ();
-
-				firstLocationUpdate = true; 
-
-				var location = change.ObjectForKey (NSValue.ChangeNewKey) as CoreLocation.CLLocation;
-				AppDelegate.UserLocation = location.Coordinate;
-				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
-
-				await LoadContent ();
-				ContentDisplay.SuscribeToEvents ();
-
-				BTProgressHUD.Dismiss ();
-
-				if (!generatedMarkers) {
-					GenerateMarkers ();
-					generatedMarkers = true;
-				}
-			}
-		}
-
 		private void GenerateMarkers()
 		{
 			foreach (Board.Schema.Board board in BoardList) {
-				Marker marker = new Marker ();
-				marker.AppearAnimation = MarkerAnimation.Pop;
-				marker.Position = board.GeolocatorObject.Coordinate;
-				marker.Map = map;
-				marker.Icon = CreateMarkerImage (board.ImageView.Image);
-				marker.Draggable = false;
-				marker.Title = board.Name;
-				marker.Snippet = board.GeolocatorObject.Address;
-				marker.InfoWindowAnchor = new CGPoint (.5, .5);
-				marker.Tappable = true;
-				marker.UserData = new NSString(board.Id);
+				UIMapMarker marker = new UIMapMarker (board, map, UIMapMarker.SizeMode.Normal);
 				ListMapMarkers.Add (marker);
 			}
 		}
@@ -217,23 +206,6 @@ namespace Board.Screens
 			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, newDisplay.Frame.Height);
 			ContentDisplay.SuscribeToEvents ();
 		} 
-
-		private UIImage CreateMarkerImage(UIImage logo)
-		{
-			UIGraphics.BeginImageContextWithOptions (new CGSize (66, 96), false, 2f);
-
-			using (UIImage container = UIImage.FromFile ("./screens/main/map/markercontainer_black.png")) {
-				container.Draw (new CGRect (0, 0, 66, 96));
-			}
-
-			float autosize = 40;
-
-			logo = logo.ImageScaledToFitSize (new CGSize(autosize,autosize));
-
-			logo.Draw (new CGRect (33 - logo.Size.Width / 2, 33 - logo.Size.Height / 2, logo.Size.Width, logo.Size.Height));
-
-			return UIGraphics.GetImageFromCurrentImageContext ();
-		}
 
 		private void LoadMapButton()
 		{

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Board.Interface;
 using Board.Interface.Widgets;
-using Board.Interface.Buttons;
 using CoreGraphics;
 using MGImageUtilitiesBinding;
 using UIKit;
@@ -25,7 +24,7 @@ namespace Board.Interface
 		EventHandler DragStartsEvent, ScrolledEvent, DecelerationStartsEvent, DecelerationEndsEvent;
 		EventHandler<WillEndDraggingEventArgs> WillEndDragEvent;
 		EventHandler<DraggingEventArgs> DragEndsEvent;
-		InfoBox infoBox;
+		UIInfoBox infoBox;
 		private float TempContentOffset;
 		public int LastScreen;
 		public bool IsHighlighting;
@@ -80,7 +79,7 @@ namespace Board.Interface
 
 			LoadBackground ();
 
-			infoBox = new InfoBox (UIBoardInterface.board);
+			infoBox = new UIInfoBox (UIBoardInterface.board);
 			ScrollView.AddSubview (infoBox);
 
 			SuscribeToEvents ();
@@ -107,7 +106,7 @@ namespace Board.Interface
 					
 					if (Math.Abs ((ScrollView.ContentOffset.X + Frame.Width / 2) - infoBox.Center.X) < 100)
 					{
-						target = new CGPoint(infoBox.Center.X - infoBox.Frame.Width / 2 - 10, 0);
+						target = new CGPoint(infoBox.Center.X - infoBox.Frame.Width / 2 - UIInfoBox.XMargin, 0);
 						ScrollView.SetContentOffset (target, true);
 						isSnapping = true;
 					}
@@ -172,7 +171,7 @@ namespace Board.Interface
 
 			float autosize = (float)TopBanner.Frame.Height - 25;
 
-			UIImage logo = UIBoardInterface.board.ImageView.Image;
+			UIImage logo = UIBoardInterface.board.Image;
 			UIImage logoImage = logo.ImageScaledToFitSize  (new CGSize (autosize, autosize));
 			UIImageView mainLogo = new UIImageView(logoImage);
 			mainLogo.Center = new CGPoint (TopBanner.Frame.Width / 2, TopBanner.Frame.Height / 2 + 10);
@@ -181,25 +180,25 @@ namespace Board.Interface
 
 			TopBanner.AddSubview (mainLogo);
 
-			AddSubview (TopBanner);
+			//AddSubview (TopBanner);
 		}
 
 		public void SelectiveRendering(){
+			
+			// clusterfuck
+			float physicalRightBound = (float)(ScrollView.ContentOffset.X + AppDelegate.ScreenWidth);
+			float physicalLeftBound = (float)(ScrollView.ContentOffset.X);
+
+			rightScreenNumber = (int)Math.Floor((physicalRightBound) / ScrollViewWidthSize);
+			float virtualRightBound = physicalRightBound - ScrollViewWidthSize * rightScreenNumber;
+			leftScreenNumber = (int)Math.Floor ((physicalLeftBound) / ScrollViewWidthSize);
+			virtualLeftBound = physicalLeftBound - ScrollViewWidthSize * leftScreenNumber;
+
+			virtualRightBound = (virtualRightBound > 0) ? virtualRightBound : 0;
+			virtualLeftBound = (virtualLeftBound > 0) ? virtualLeftBound : 0;
 
 			if (!(UIBoardInterface.DictionaryWidgets == null || UIBoardInterface.DictionaryWidgets.Count == 0))
 			{
-				// clusterfuck
-				float physicalRightBound = (float)(ScrollView.ContentOffset.X + AppDelegate.ScreenWidth);
-				float physicalLeftBound = (float)(ScrollView.ContentOffset.X);
-
-				rightScreenNumber = (int)Math.Floor((physicalRightBound) / ScrollViewWidthSize);
-				float virtualRightBound = physicalRightBound - ScrollViewWidthSize * rightScreenNumber;
-				leftScreenNumber = (int)Math.Floor ((physicalLeftBound) / ScrollViewWidthSize);
-				virtualLeftBound = physicalLeftBound - ScrollViewWidthSize * leftScreenNumber;
-
-				virtualRightBound = (virtualRightBound > 0) ? virtualRightBound : 0;
-				virtualLeftBound = (virtualLeftBound > 0) ? virtualLeftBound : 0;
-
 				List<Widget> WidgetsToDraw = UIBoardInterface.DictionaryWidgets.Values.ToList ().FindAll (item =>
 					((item.content.Center.X - item.View.Frame.Width / 2) > (virtualLeftBound - AppDelegate.ScreenWidth) &&
                      (item.content.Center.X - item.View.Frame.Width / 2 < (virtualLeftBound + AppDelegate.ScreenWidth))) ||

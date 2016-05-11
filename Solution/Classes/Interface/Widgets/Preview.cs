@@ -77,7 +77,6 @@ namespace Board.Interface
 
 			view.Alpha = .5f;
 			view.AddGestureRecognizer (SetNewPanGestureRecognizer());
-			view.BackgroundColor = UIColor.Red;
 			view.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
 			view.AddSubviews(widget.View);
 

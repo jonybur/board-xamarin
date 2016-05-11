@@ -2,13 +2,13 @@
 using System;
 using System.Collections.Generic;
 using CoreGraphics;
+using MGImageUtilitiesBinding;
 using CoreAnimation;
 using Board.Interface.Buttons;
 using Board.Schema;
 using Foundation;
 using Board.Interface.LookUp;
 using Board.Infrastructure;
-using Facebook.CoreKit;
 using Board.Utilities;
 
 namespace Board.Interface.Widgets
@@ -40,9 +40,11 @@ namespace Board.Interface.Widgets
 
 		private const int IconSize = 30;
 
-		public const int TopMargin = 5;
-		public const int SideMargin = 5;
-		public static int Autosize = 220;
+		public int TopMargin = 5;
+		public int SideMargin = 5;
+		public static int Autosize;
+
+		private UIColor WidgetGrey;
 
 		int randomLike;
 		bool liked;
@@ -50,11 +52,14 @@ namespace Board.Interface.Widgets
 		public Widget()
 		{
 			HighlightColor = AppDelegate.BoardBlack;
+			WidgetGrey = UIColor.FromRGB (100, 100, 100);
 
 			if (AppDelegate.PhoneVersion == "6") {
-				Autosize = 220;
+				Autosize = 230;
 			} else if (AppDelegate.PhoneVersion == "6plus") {
 				Autosize = 220;
+			} else {
+				Autosize = 230;
 			}
 
 			if (ClosedEyeImageView == null) {
@@ -87,14 +92,12 @@ namespace Board.Interface.Widgets
 			View.Frame = new CGRect (0, 0, MountingView.Frame.Width, MountingView.Frame.Height);
 			View.Center = new CGPoint (content.Center.X + xOffset, content.Center.Y);
 			View.Transform = CGAffineTransform.MakeRotation(content.Rotation);
-
-			View.BackgroundColor = UIColor.Red;
 		}
 
 		protected void CreateMounting(CGRect frame)
 		{
-			MountingView = new UIImageView (new CGRect (0, 0, frame.Width + 10, frame.Height + 45));
-			MountingView.BackgroundColor = UIColor.FromRGB(250,250,250);
+			MountingView = new UIImageView (new CGRect (0, 0, frame.Width + SideMargin * 2, frame.Height + 40 + TopMargin));
+			MountingView.BackgroundColor = UIColor.White;
 
 			CreateEye ();
 			CreateLikeComponent ();
@@ -140,6 +143,32 @@ namespace Board.Interface.Widgets
 			LikeComponent.AddSubviews (likeView, likeLabel);
 		}
 
+		public UIView CreateHeader(){
+			var header = new UIView ();
+			header.Frame = new CGRect (0, 0, View.Frame.Width - SideMargin * 2 - 10, TopMargin);
+
+			var headerLogo = new UIImageView ();
+			var size = new CGSize(TopMargin, TopMargin);
+			headerLogo.Image = UIBoardInterface.board.Image.ImageScaledToFitSize (size);
+			headerLogo.Frame = new CGRect (0, 0, headerLogo.Image.Size.Width, headerLogo.Image.Size.Height);
+			headerLogo.Center = new CGPoint (headerLogo.Center.X, header.Center.Y);
+
+			var headerText = new UILabel ();
+			float sizeOfHeaderLogo = (float)headerLogo.Frame.Right + 10;
+			headerText.Frame = new CGRect (sizeOfHeaderLogo, 0, header.Frame.Width - sizeOfHeaderLogo, header.Frame.Height);
+			headerText.Text = UIBoardInterface.board.Name;
+			headerText.Font = UIFont.BoldSystemFontOfSize (14);
+			headerText.SizeToFit ();
+			headerText.Center = new CGPoint (headerText.Center.X, header.Center.Y);
+
+			header.AddSubviews (headerLogo, headerText);
+
+			header.Frame = new CGRect (0, 0, headerText.Frame.Right, TopMargin);
+			header.Center = new CGPoint (View.Frame.Width / 2 - TopMargin / 2, TopMargin / 2);
+
+			return header;
+		}
+
 		public void Highlight(){
 			if (!Highlighted)
 			{
@@ -154,8 +183,8 @@ namespace Board.Interface.Widgets
 				CAKeyFrameAnimation scale = new CAKeyFrameAnimation ();
 				scale.KeyPath = "transform";
 
-				var identity = CATransform3D.Identity;
-				var scaled = CATransform3D.MakeScale (1.3f, 1.3f, 1.3f);
+				var identity = CATransform3D.MakeScale(1f, 1f, 1f);
+				var scaled = CATransform3D.MakeScale (1.2f, 1.2f, 1.2f);
 
 				scale.Values = new NSObject[]{ 
 					NSValue.FromCATransform3D (identity),
@@ -163,8 +192,9 @@ namespace Board.Interface.Widgets
 					NSValue.FromCATransform3D (identity)
 				};
 
-				scale.KeyTimes = new NSNumber[]{1/2, 6/8, 1};
-				scale.Duration = .8f;
+				scale.KeyTimes = new NSNumber[]{0, 1/2, 1};
+				scale.Additive = true;
+				scale.Duration = .5f;
 				scale.RemovedOnCompletion = false;
 
 				View.Layer.AddAnimation (scale, "highlight");
@@ -194,7 +224,7 @@ namespace Board.Interface.Widgets
 				likeView.Image = likeView.Image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 			}
 
-			likeView.TintColor = UIColor.FromRGB(140,140,140);
+			likeView.TintColor = WidgetGrey;
 			likeView.Center = new CGPoint (frame.Width - 5 - IconSize / 2, frame.Height / 2);
 			return likeView;
 		}
@@ -211,7 +241,7 @@ namespace Board.Interface.Widgets
 			CGSize likeLabelSize = likeText.StringSize (likeFont);
 
 			UILabel likeLabel = new UILabel(new CGRect(0, 0, likeLabelSize.Width + 20, likeLabelSize.Height));
-			likeLabel.TextColor = UIColor.FromRGB (140, 140, 140);
+			likeLabel.TextColor = WidgetGrey;
 			likeLabel.Font = likeFont;
 			likeLabel.Text = likeText;
 			likeLabel.Center = new CGPoint (center.X - likeLabel.Frame.Width / 2 - 5, center.Y);
@@ -224,7 +254,7 @@ namespace Board.Interface.Widgets
 		{
 			EyeView = new UIImageView(new CGRect (MountingView.Frame.X + 10, MountingView.Frame.Height - IconSize - 5, IconSize, IconSize));
 			EyeView.Image = ClosedEyeImageView.Image;
-			EyeView.TintColor = UIColor.FromRGB(140,140,140);
+			EyeView.TintColor = WidgetGrey;
 		}
 
 		public void SuscribeToEvents ()
@@ -320,7 +350,7 @@ namespace Board.Interface.Widgets
 			GestureRecognizers.Add (tap);
 			GestureRecognizers.Add (doubleTap);
 
-			if (UIBoardInterface.board.CreatorId == Profile.CurrentProfile.UserID) {
+			if (UIBoardInterface.UserCanEditBoard) {
 				GestureRecognizers.Add (longPress);
 			}
 		}
@@ -345,8 +375,8 @@ namespace Board.Interface.Widgets
 				CAKeyFrameAnimation scale = new CAKeyFrameAnimation ();
 				scale.KeyPath = "transform";
 
-				var identity = CATransform3D.Identity;
-				var scaled = CATransform3D.MakeScale (1.4f, 1.4f, 1.4f);
+				var identity = CATransform3D.MakeScale(1f, 1f, 1f);
+				var scaled = CATransform3D.MakeScale (1.3f, 1.3f, 1.3f);
 
 				scale.Values = new NSObject[]{ 
 					NSValue.FromCATransform3D (identity),
@@ -354,7 +384,8 @@ namespace Board.Interface.Widgets
 					NSValue.FromCATransform3D (identity)
 				};
 
-				scale.KeyTimes = new NSNumber[]{1/2, 6/8, 1};
+				scale.KeyTimes = new NSNumber[]{0, 1/2, 1};
+				scale.Additive = true;
 				scale.Duration = .5f;
 				scale.RemovedOnCompletion = false;
 
@@ -365,8 +396,8 @@ namespace Board.Interface.Widgets
 			else {
 				randomLike --;
 				likeLabel.Text = randomLike.ToString();
-				likeView.TintColor = UIColor.FromRGB (140, 140, 140);
-				likeLabel.TextColor = UIColor.FromRGB (140, 140, 140);
+				likeView.TintColor = WidgetGrey;
+				likeLabel.TextColor = WidgetGrey;
 				liked = false;
 			}
 		}
@@ -374,13 +405,13 @@ namespace Board.Interface.Widgets
 		public void OpenEye()
 		{
 			EyeView.Image = OpenEyeImageView.Image;
-			EyeView.TintColor = UIBoardInterface.board.MainColor;
+			EyeView.TintColor = AppDelegate.BoardOrange;
 			EyeOpen = true;
 
 			CAKeyFrameAnimation scale = new CAKeyFrameAnimation ();
 			scale.KeyPath = "transform";
 
-			var identity = CATransform3D.Identity;
+			var identity = CATransform3D.MakeScale(1f, 1f, 1f);
 			var scaled = CATransform3D.MakeScale (1.3f, 1.3f, 1.3f);
 
 			scale.Values = new NSObject[]{ 
@@ -389,8 +420,8 @@ namespace Board.Interface.Widgets
 				NSValue.FromCATransform3D (identity)
 			};
 
-			scale.KeyTimes = new NSNumber[]{1/2, 6/8, 1};
-			scale.Duration = .8f;
+			scale.KeyTimes = new NSNumber[]{0, 1/2, 1};
+			scale.Duration = .5f;
 			scale.RemovedOnCompletion = false;
 
 			EyeView.Layer.AddAnimation (scale, "highlight");

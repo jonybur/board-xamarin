@@ -33,6 +33,8 @@ namespace Board.Interface.Buttons
 
 				string jsonString = JsonUtilty.GenerateUpdateJson(content);
 
+				CloudController.UpdateBoard(UIBoardInterface.board.Id, jsonString);
+
 				UIBoardInterface.DictionaryContent.Add (content.Id, content);
 
 				// remove the preview imageview from the superview

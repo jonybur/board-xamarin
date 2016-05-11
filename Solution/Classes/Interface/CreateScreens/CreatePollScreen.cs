@@ -56,7 +56,7 @@ namespace Board.Interface.CreateScreens
 			base.ViewDidDisappear (animated);
 			ScrollView.RemoveGestureRecognizer (scrollViewTap);
 			NextButton.TouchUpInside -= nextButtonTap;
-			MemoryUtility.ReleaseUIViewWithChildren (View, true);
+			MemoryUtility.ReleaseUIViewWithChildren (View);
 		}
 
 		private void CreateGestures()

@@ -95,7 +95,7 @@ namespace Board.Interface.CreateScreens
 				NextButton.TouchUpInside -= nextButtonTap;
 				Banner.UnsuscribeToEvents();
 
-				MemoryUtility.ReleaseUIViewWithChildren (View, true);
+				MemoryUtility.ReleaseUIViewWithChildren (View);
 
 				if (!isEditing) {
 					NavigationController.PopViewController(false);
@@ -122,8 +122,8 @@ namespace Board.Interface.CreateScreens
 
 			textview.KeyboardType = UIKeyboardType.Default;
 			textview.TextColor = AppDelegate.BoardBlue;
-			textview.ReturnKeyType = UIReturnKeyType.Default;
 			textview.EnablesReturnKeyAutomatically = true;
+			textview.ReturnKeyType = UIReturnKeyType.Default;
 			textview.AllowsEditingTextAttributes = true;
 			textview.BackgroundColor = UIColor.White;
 			textview.Font = AppDelegate.SystemFontOfSize18;

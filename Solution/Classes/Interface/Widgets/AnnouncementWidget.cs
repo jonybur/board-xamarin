@@ -9,6 +9,7 @@ namespace Board.Interface.Widgets
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
 		private UITextView textview;
+		private UIView HeaderLogo;
 
 		public Announcement announcement
 		{
@@ -21,6 +22,8 @@ namespace Board.Interface.Widgets
 
 		public AnnouncementWidget(Announcement ann)
 		{
+			TopMargin = 30;
+
 			content = ann;
 
 			UITextView insideText = CreateText ();
@@ -28,8 +31,9 @@ namespace Board.Interface.Widgets
 			// mounting
 			CreateMounting (insideText.Frame);
 			View = new UIView (MountingView.Frame);
+			HeaderLogo = CreateHeader ();
 
-			View.AddSubviews (MountingView, insideText);
+			View.AddSubviews (MountingView, insideText, HeaderLogo);
 
 			EyeOpen = false;
 

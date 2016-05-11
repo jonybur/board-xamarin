@@ -92,6 +92,7 @@ namespace Board.JsonResponses
 		public string status { get; set; }
 
 
+		[Preserve(AllMembers = true)]
 		public string Neighborhood{
 			get {
 				string hood = "<ERROR>";
@@ -103,6 +104,8 @@ namespace Board.JsonResponses
 				return hood;
 			}	
 		}
+
+		[Preserve(AllMembers = true)]
 		public string Address{
 			get {
 				string hood = "<ERROR>";
@@ -115,6 +118,8 @@ namespace Board.JsonResponses
 				return hood;
 			}	
 		}
+
+		[Preserve(AllMembers = true)]
 		public string FullAddress{
 			get {
 				string hood = "<ERROR>";
@@ -126,13 +131,15 @@ namespace Board.JsonResponses
 				return hood;
 			}	
 		}
+
+		[Preserve(AllMembers = true)]
 		public CLLocationCoordinate2D Coordinate{
 			get {
 				try {
 					return new CLLocationCoordinate2D (results [0].geometry.location.lat,
 							results [0].geometry.location.lng);
 				} catch {
-					return new CLLocationCoordinate2D ();
+					return new CLLocationCoordinate2D (0,0);
 				}
 			}
 		}

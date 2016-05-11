@@ -117,7 +117,7 @@ namespace Board.Screens.Controls
 
 			CGSize iconsize = new CGSize (autosize * .7f, autosize * .7f);
 
-			UIImage img = board.ImageView.Image.ImageScaledToFitSize (iconsize);
+			UIImage img = board.Image.ImageScaledToFitSize (iconsize);
 			UIImage circle = CreateThumbImage(Frame.Size);
 
 			SetBackgroundImage (circle, UIControlState.Normal);

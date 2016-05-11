@@ -12,7 +12,7 @@ namespace Board.Interface.Buttons
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/strokebuttons/camera_3px.png")) {
+			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/nubuttons/nucamera.png")) {
 				uiButton = new UIButton (UIButtonType.Custom);
 				uiButton.SetImage (uiImage, UIControlState.Normal);
 			}
@@ -20,7 +20,7 @@ namespace Board.Interface.Buttons
 			uiButton.Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
 			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth - ButtonSize) / 8 * 3 - 10, AppDelegate.ScreenHeight - ButtonSize / 2);
 
-			var tapPress = new UITapGestureRecognizer((tg) => {
+			var tapPress = new UITapGestureRecognizer(tg => {
 				UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
 
 				alert.AddAction (UIAlertAction.Create ("Import from Facebook", UIAlertActionStyle.Default, OpenFacebookImporter));

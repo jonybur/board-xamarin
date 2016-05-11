@@ -75,7 +75,7 @@ namespace Board.Infrastructure
 				UIImage image = UIImage.FromBundle (imgPath);
 
 				var board = new Board.Schema.Board (id);
-				board.ImageView = new UIImageView (image);
+				board.Image = image;
 				board.GeolocatorObject = JsonHandler.DeserializeObject (boardL [0].GeolocatorJson);
 
 				return board;
@@ -109,7 +109,7 @@ namespace Board.Infrastructure
 		public static void StoreBoard(Board.Schema.Board board, string geolocationJson){
 			var boardL = new BoardL (board.Id, geolocationJson);
 				
-			if (StoreImage(board.ImageView.Image, board.Id)) {
+			if (StoreImage(board.Image, board.Id)) {
 				database.Insert (boardL);
 			} else {
 				Console.WriteLine ("ERROR: picture hasnt been saved");

@@ -30,18 +30,18 @@ namespace Board.Interface.Widgets
 			UILabel insideText = CreateQuestion ();
 			lstAnswers = new List<AnswerButton> ();
 
-			float height = (float)insideText.Frame.Height + 10;
+			float yposition = (float)insideText.Frame.Bottom + 5;
 
 			AnswerButton.Initialize ();
 
 			foreach (string ans in poll.Answers) {
-				AnswerButton button = new AnswerButton(ans, height, (float)insideText.Frame.Width);
-				height += (float)button.Frame.Height;
+				AnswerButton button = new AnswerButton(ans, yposition, (float)insideText.Frame.Width);
+				yposition += (float)button.Frame.Height;
 				lstAnswers.Add (button);
 			}
 
 			// mounting
-			CreateMounting (new CGRect(insideText.Frame.X, insideText.Frame.Y, insideText.Frame.Width, height));
+			CreateMounting (new CGRect(insideText.Frame.X, insideText.Frame.Y, insideText.Frame.Width, yposition));
 			View = new UIView();
 
 			View.AddSubviews (MountingView, insideText);
@@ -68,7 +68,7 @@ namespace Board.Interface.Widgets
 			stringAttributes.Font = AppDelegate.SystemFontOfSize18;
 			CGRect labrect = lorum.GetBoundingRect(new CGSize(250,450), NSStringDrawingOptions.UsesLineFragmentOrigin, stringAttributes, null);
 
-			label.Frame = new CGRect (10, 10, 250, labrect.Size.Height);
+			label.Frame = new CGRect (SideMargin + 5, TopMargin + 5, 250, labrect.Size.Height);
 
 			return label;
 		}

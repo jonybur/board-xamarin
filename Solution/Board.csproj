@@ -56,6 +56,7 @@
     <MtouchUseSGen>true</MtouchUseSGen>
     <CodesignProvision>8f509e24-323b-41ef-9c58-9acf693c9618</CodesignProvision>
     <MtouchProfiling>true</MtouchProfiling>
+    <MtouchFloat32>true</MtouchFloat32>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>full</DebugType>
@@ -67,6 +68,9 @@
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchArch>ARMv7, ARM64</MtouchArch>
+    <MtouchFloat32>true</MtouchFloat32>
+    <IpaPackageName>
+    </IpaPackageName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>full</DebugType>
@@ -138,9 +142,6 @@
     <Reference Include="PBJVisionBinding">
       <HintPath>..\..\Libraries\XamarinBinding\PBJVisionBinding\PBJVisionBinding\bin\Release\PBJVisionBinding.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Maps">
-      <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.11.1.2\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
-    </Reference>
     <Reference Include="System.Net.Http.Primitives">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\Xamarin.iOS10\System.Net.Http.Primitives.dll</HintPath>
     </Reference>
@@ -153,17 +154,8 @@
     <Reference Include="PCLStorage.Abstractions">
       <HintPath>..\packages\PCLStorage.1.0.2\lib\portable-Xamarin.iOS+Xamarin.Mac\PCLStorage.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Validation">
-      <HintPath>..\packages\Validation.2.0.6.15003\lib\portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10\Validation.dll</HintPath>
-    </Reference>
-    <Reference Include="PCLCrypto">
-      <HintPath>..\packages\PCLCrypto.1.0.2.15130\lib\Xamarin.iOS\PCLCrypto.dll</HintPath>
-    </Reference>
-    <Reference Include="AWSSDK.Core">
-      <HintPath>..\packages\AWSSDK.Core.3.1.1.0\lib\Xamarin.iOS10\AWSSDK.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="AWSSDK.S3">
-      <HintPath>..\packages\AWSSDK.S3.3.1.2.1\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid10+xamarinios10+MonoTouch10\AWSSDK.S3.dll</HintPath>
+    <Reference Include="Google.Maps">
+      <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.11.1.2\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -203,9 +195,7 @@
     <BundleResource Include="Resources\boardinterface\strokebuttons\camera_3px.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\cancel_3px.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\card_3px.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\closedeye.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\cog_3px.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\openeye.png" />
     <BundleResource Include="Resources\boardinterface\widget\closedeye.png" />
     <BundleResource Include="Resources\boardinterface\widget\like.png" />
     <BundleResource Include="Resources\boardinterface\widget\openeye.png" />
@@ -249,9 +239,6 @@
     <BundleResource Include="Resources\boardinterface\strokebuttons\info_3px.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\info_3px2.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\info_3px3.png" />
-    <BundleResource Include="Resources\demo\main\trending1.jpg" />
-    <BundleResource Include="Resources\demo\main\trending2.jpg" />
-    <BundleResource Include="Resources\demo\main\trending3.jpg" />
     <BundleResource Include="Resources\boardinterface\lookup\edit.png" />
     <BundleResource Include="Resources\screens\main\map\markercontainer.png" />
     <BundleResource Include="Resources\boardinterface\screens\share\save\6.jpg" />
@@ -310,6 +297,15 @@
     <BundleResource Include="Resources\screens\sidemenus\5\support.png" />
     <BundleResource Include="Resources\demo\magazine\1.png" />
     <BundleResource Include="Resources\demo\magazine\westpalmbeach.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nuback.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nucard.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nusettings.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nucamera.png" />
+    <BundleResource Include="Resources\demo\infobox\american_cover.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\left.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\openeye_2.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\openeye.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\closedeye.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -361,7 +357,6 @@
     <Compile Include="Classes\Schema\BoardEvent.cs" />
     <Compile Include="Classes\Interface\Buttons\SettingsButton.cs" />
     <Compile Include="Classes\Interface\Widgets\Widget.cs" />
-    <Compile Include="Classes\Interface\BoardInterface_Demo.cs" />
     <Compile Include="Classes\Interface\LookUp\PictureLookUp.cs" />
     <Compile Include="Classes\Interface\LookUp\VideoLookUp.cs" />
     <Compile Include="Classes\Interface\LookUp\AnnouncementLookUp.cs" />
@@ -402,7 +397,6 @@
     <Compile Include="Classes\Interface\CameraScreen\VideoPreview.cs" />
     <Compile Include="Classes\Interface\CameraScreen\CameraPreview.cs" />
     <Compile Include="Classes\Interface\BoardScroll.cs" />
-    <Compile Include="Classes\Interface\InfoBox\InfoBox.cs" />
     <Compile Include="Classes\Interface\LookUp\UILookUP.cs" />
     <Compile Include="Classes\Interface\FacebookImport\AlbumsScreen.cs" />
     <Compile Include="Classes\Facebook\FacebookAlbum.cs" />
@@ -433,6 +427,11 @@
     <Compile Include="Classes\Screens\Controls\UIContentDisplay\UICarouselController.cs" />
     <Compile Include="Classes\Screens\Controls\UIContentDisplay\UIThumbsContentDisplay.cs" />
     <Compile Include="Classes\Screens\Controls\UIContentDisplay\UITimelineContentDisplay.cs" />
+    <Compile Include="Classes\Screens\Controls\UIMapMarker.cs" />
+    <Compile Include="Classes\Interface\UIBoardInterface_Demo.cs" />
+    <Compile Include="Classes\Interface\InfoBox\UIInfoBox.cs" />
+    <Compile Include="Classes\Screens\Controls\UIBoardBannerPage.cs" />
+    <Compile Include="Classes\Interface\UISticker.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -482,7 +481,6 @@
     <Folder Include="Resources\boardinterface\screens\share\link\" />
     <Folder Include="Resources\screens\main\" />
     <Folder Include="Resources\screens\main\map\" />
-    <Folder Include="Resources\demo\main\" />
     <Folder Include="Properties\" />
     <Folder Include="Resources\boardinterface\screens\share\save\" />
     <Folder Include="Resources\camera\" />
@@ -501,6 +499,8 @@
     <Folder Include="Resources\screens\sidemenus\6\" />
     <Folder Include="Resources\screens\sidemenus\6plus\" />
     <Folder Include="Resources\demo\magazine\" />
+    <Folder Include="Resources\boardinterface\nubuttons\" />
+    <Folder Include="Resources\demo\infobox\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

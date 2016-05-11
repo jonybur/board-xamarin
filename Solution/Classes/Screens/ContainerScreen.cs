@@ -31,15 +31,16 @@ namespace Board.Screens
 		public void LoadChangelogAlert()
 		{
 			var defaults = NSUserDefaults.StandardUserDefaults;
-			const string key = "LaunchedBeforeKey039";
+			const string key = "LaunchedBeforeKey041";
 			if (!defaults.BoolForKey (key)) {
 				// First launch
 				NSUserDefaults.StandardUserDefaults.SetBool(true, key);
 				defaults.Synchronize ();
 
-				UIAlertController alert = UIAlertController.Create ("Welcome to Board 0.3.9", "Changelog:\n" +
+				UIAlertController alert = UIAlertController.Create ("Welcome to Board 0.4.1", "Changelog:\n" +
 					"· Server integration\n" +
-					"· Whole new main menu"
+					"· Whole new main menu\n" +
+					"· Ability to post Boards"
 					, UIAlertControllerStyle.Alert);
 
 				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));	

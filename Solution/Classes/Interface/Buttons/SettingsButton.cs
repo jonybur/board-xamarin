@@ -9,7 +9,7 @@ namespace Board.Interface.Buttons
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/strokebuttons/cog_3px.png")) {
+			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/nubuttons/nusettings.png")) {
 				uiButton.SetImage (uiImage, UIControlState.Normal);
 			}
 

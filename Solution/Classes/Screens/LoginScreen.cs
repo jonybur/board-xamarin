@@ -61,7 +61,7 @@ namespace Board.Screens
 					AppDelegate.containerScreen = new ContainerScreen ();
 					AppDelegate.NavigationController.PushViewController(AppDelegate.containerScreen, true);
 				} else {
-					UIAlertController alert = UIAlertController.Create("Couldn't connect to server", "Please try again later", UIAlertControllerStyle.Alert);
+					UIAlertController alert = UIAlertController.Create("Couldn't connect", "Please ensure you have a connection to the Internet.", UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
 					NavigationController.PresentViewController (alert, true, null);
 				}

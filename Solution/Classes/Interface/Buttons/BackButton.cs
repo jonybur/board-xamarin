@@ -10,7 +10,7 @@ namespace Board.Interface.Buttons
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/strokebuttons/back_3px.png")) {
+			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/nubuttons/nuback.png")) {
 				uiButton.SetImage (uiImage, UIControlState.Normal);
 			}
 			uiButton.Frame = new CGRect (0,0, ButtonSize, ButtonSize);

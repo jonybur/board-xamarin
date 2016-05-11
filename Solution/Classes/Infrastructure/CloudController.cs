@@ -3,7 +3,6 @@ using System.Net;
 using CoreLocation;
 using System.Threading.Tasks;
 using Board.JsonResponses;
-using Foundation;
 using System;
 using Board.Utilities;
 using Board.Schema;
@@ -34,6 +33,15 @@ namespace Board.Infrastructure
 			return true;
 		}
 
+		public static void UpdateBoard(string boardId, string json){
+			string result = JsonPOSTRequest ("http://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/updates?authToken="+AppDelegate.EncodedBoardToken, json);
+
+		}
+
+		public static void GetBoardSnapshot(string boardId){
+			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/snapshot?authToken="+AppDelegate.EncodedBoardToken);
+		}
+
 		public static bool GetAmazonS3Ticket(){
 			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/media/ticket?authToken="+AppDelegate.EncodedBoardToken);
 
@@ -46,10 +54,10 @@ namespace Board.Infrastructure
 			}
 		}
 
-		public static bool DeleteBoard(Board.Schema.Board board){
+		public static bool DeleteBoard(string boardId){
 			///api/boards/<Board ID>?authToken=<Authorization Token>
 
-			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/board/" + board.Id + "?authToken=" + AppDelegate.EncodedBoardToken, "DELETE");
+			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/board/" + boardId + "?authToken=" + AppDelegate.EncodedBoardToken, "DELETE");
 
 			if (result == "200" || result == string.Empty) {
 				return true;
@@ -58,12 +66,12 @@ namespace Board.Infrastructure
 			}
 		}
 
-		public static bool UserCanEditBoard(Board.Schema.Board board){
+		public static bool UserCanEditBoard(string boardId){
 			if (AccessToken.CurrentAccessToken == null) {
 				return false;
 			}
 
-			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/board/"+board.Id+"/edit?authToken="+AppDelegate.EncodedBoardToken);
+			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/edit?authToken="+AppDelegate.EncodedBoardToken);
 
 			if (result == "200" || result == string.Empty) {
 				return true;
@@ -130,7 +138,7 @@ namespace Board.Infrastructure
 
 			string logoURL;
 			if (AppDelegate.AmazonS3Ticket != null) {
-				logoURL = UploadObject (AppDelegate.AmazonS3Ticket.url, board.ImageView.Image);
+				logoURL = UploadObject (AppDelegate.AmazonS3Ticket.url, board.Image);
 			} else {
 				return false;
 			}
@@ -147,7 +155,7 @@ namespace Board.Infrastructure
 			string result = JsonPOSTRequest ("http://"+AppDelegate.APIAddress+"/api/board?authToken=" + AppDelegate.EncodedBoardToken, json);
 
 			if (result == "200" || result == string.Empty) {
-				StorageController.StoreImage (board.ImageView.Image, board.Id);
+				StorageController.StoreImage (board.Image, board.Id);
 				return true;
 			} else {
 				return false;
@@ -204,11 +212,12 @@ namespace Board.Infrastructure
 						// gets image and location from cloud
 						boardImage = await CommonUtils.DownloadUIImageFromURL (r.logoURL);
 
-						string jsonobj = JsonHandler.GET ("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + r.latitude + "," + r.longitude + "&key=" + AppDelegate.GoogleMapsAPIKey);
+						string jsonobj = JsonHandler.GET ("https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+							r.latitude + "," + r.longitude + "&key=" + AppDelegate.GoogleMapsAPIKey);
 						geolocatorObject = JsonHandler.DeserializeObject (jsonobj);
 
 						// saves it to storage
-						board.ImageView = new UIImageView (boardImage);
+						board.Image = boardImage;
 						board.GeolocatorObject = geolocatorObject;
 
 						board.Id = r.uuid;

@@ -119,7 +119,7 @@ namespace Board.Screens.Controls
 					yposition = 30;
 					imagesize = 135;
 				} else {
-					yposition = 45;
+					yposition = 60;
 					imagesize = 150;
 				}
 
