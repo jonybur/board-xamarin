@@ -1,6 +1,7 @@
-using Board.Schema;
-using CoreGraphics;
 using AssetsLibrary;
+using Board.Schema;
+using Board.Utilities;
+using CoreGraphics;
 using UIKit;
 
 namespace Board.Interface.LookUp
@@ -22,7 +23,8 @@ namespace Board.Interface.LookUp
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			ScrollView.UserInteractionEnabled = true;
 
-			UIImageView lookUpImage = CreateImageFrame (picture.Image);
+			UIImageView lookUpImage;
+			lookUpImage = CreateImageFrame (picture.Image);
 			ScrollView.AddSubview (lookUpImage);
 			ScrollView.MaximumZoomScale = 4f;
 			ScrollView.MinimumZoomScale = 1f;
@@ -59,6 +61,8 @@ namespace Board.Interface.LookUp
 			lib.Dispose();
 		}
 
+		UIImageView InternalImageView;
+
 		private UIImageView CreateImageFrame(UIImage image)
 		{
 			float imgw, imgh;
@@ -67,17 +71,17 @@ namespace Board.Interface.LookUp
 			imgw = AppDelegate.ScreenWidth;
 			imgh = AppDelegate.ScreenWidth * scale;
 
-			UIImageView imageView = new UIImageView (new CGRect (0, AppDelegate.ScreenHeight/2 - imgh / 2, imgw, imgh));
-			imageView.Layer.AnchorPoint = new CGPoint(.5f, .5f);
-			imageView.Image = image;
-			imageView.UserInteractionEnabled = true;
+			InternalImageView = new UIImageView (new CGRect (0, AppDelegate.ScreenHeight/2 - imgh / 2, imgw, imgh));
+			InternalImageView.Layer.AnchorPoint = new CGPoint(.5f, .5f);
+			InternalImageView.Image = image;
+			InternalImageView.UserInteractionEnabled = true;
 
-			UIImageView blackTop = new UIImageView (new CGRect (0, 0, AppDelegate.ScreenWidth, imageView.Frame.Top));
+			var blackTop = new UIImageView (new CGRect (0, 0, AppDelegate.ScreenWidth, InternalImageView.Frame.Top));
 			blackTop.BackgroundColor = UIColor.Black;
 
-			UIImageView composite = new UIImageView(new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			var composite = new UIImageView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 
-			composite.AddSubviews (blackTop, imageView);
+			composite.AddSubviews (blackTop, InternalImageView);
 
 			return composite;
 		}
@@ -97,6 +101,10 @@ namespace Board.Interface.LookUp
 			ScrollView.RemoveGestureRecognizer (longpress);
 			ScrollView.ViewForZoomingInScrollView -= zoomView;
 			ScrollView = null;
+
+			InternalImageView.Image = null;
+
+			MemoryUtility.ReleaseUIViewWithChildren (View);
 		}
 
 

@@ -47,16 +47,21 @@ namespace Board.Infrastructure
 		}
 
 		private static string dbPath;
-		private static string docsPath;
+		private static string docsPathLibrary;
+		private static string docsPathCaches;
 		private static SQLiteConnection database;
 
 		public static void Initialize () {
 			
-			docsPath = (NSFileManager.DefaultManager.GetUrls (
+			docsPathLibrary = (NSFileManager.DefaultManager.GetUrls (
 				NSSearchPathDirectory.LibraryDirectory, 
 				NSSearchPathDomain.User) [0]).Path;
+
+			docsPathCaches = (NSFileManager.DefaultManager.GetUrls (
+				NSSearchPathDirectory.CachesDirectory, 
+				NSSearchPathDomain.User) [0]).Path;
 			
-			dbPath = Path.Combine (docsPath, "localdb.db3");
+			dbPath = Path.Combine (docsPathLibrary, "localdb.db3");
 			 
 			//File.Delete(dbPath);
 
@@ -65,13 +70,22 @@ namespace Board.Infrastructure
 			database.CreateTable<ProfilePictureL> ();
 		}
 
+		public static NSUrl StoreVideoInCache(NSData data, string id){
+			string path = Path.Combine (docsPathCaches, id, ".mp4");
+
+			NSError error;
+			data.Save (path, NSDataWritingOptions.Atomic, out error);
+
+			return NSUrl.FromFilename (path);
+		}
+
 		public static Board.Schema.Board BoardIsStored(string id){
 			var boardL = database.Query<BoardL> ("SELECT * FROM Boards WHERE id = ?", id);
 
 			if (boardL.Count > 0) {
 			
 				// gets image and location from storage
-				string imgPath = Path.Combine (docsPath, id + ".jpg"); 
+				string imgPath = Path.Combine (docsPathLibrary, id + ".jpg"); 
 				UIImage image = UIImage.FromBundle (imgPath);
 
 				var board = new Board.Schema.Board (id);
@@ -88,7 +102,7 @@ namespace Board.Infrastructure
 			var ppL = database.Query<ProfilePictureL> ("SELECT * FROM ProfilePictures WHERE pictureurl = ?", pictureURL);
 
 			if (ppL.Count > 0) {
-				string imgPath = Path.Combine (docsPath, ppL[0].Id + ".jpg"); 
+				string imgPath = Path.Combine (docsPathLibrary, ppL[0].Id + ".jpg"); 
 				var image = UIImage.FromBundle (imgPath);
 				return image;
 			} else {
@@ -127,7 +141,7 @@ namespace Board.Infrastructure
 		}
 
 		public static string GetImagePath(string id){
-			return Path.Combine (docsPath, id + ".jpg"); 
+			return Path.Combine (docsPathLibrary, id + ".jpg"); 
 		}
 
 		public static void DeleteLocalImage(string id){

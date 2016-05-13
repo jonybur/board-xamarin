@@ -111,10 +111,6 @@ namespace Board.Interface.LookUp
 				// user tapped on "Done" button
 				AppDelegate.PopViewLikeDismissView();
 				ButtonInterface.SwitchButtonLayout(ButtonInterface.ButtonLayout.NavigationBar);
-				if (!(content is Map))
-				{
-					MemoryUtility.ReleaseUIViewWithChildren (View);
-				}
 			});
 		}
 

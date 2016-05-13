@@ -295,7 +295,7 @@ namespace Board.Interface.Widgets
 
 		protected void CreateGestures()
 		{
-			UITapGestureRecognizer doubleTap = new UITapGestureRecognizer (tg => {
+			var doubleTap = new UITapGestureRecognizer (tg => {
 				if (Preview.IsAlive) { return; }
 
 				Like();
@@ -305,7 +305,7 @@ namespace Board.Interface.Widgets
 				//BoardInterface.scrollView.SetContentOffset (position, true);
 			});
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
+			var tap = new UITapGestureRecognizer (tg => {
 				if (Preview.IsAlive) { return;	}
 
 				if (LikeComponent.Frame.Left < tg.LocationInView(this.View).X &&
@@ -352,7 +352,7 @@ namespace Board.Interface.Widgets
 				}
 			});
 
-			UILongPressGestureRecognizer longPress = new UILongPressGestureRecognizer (tg => {
+			var longPress = new UILongPressGestureRecognizer (tg => {
 				UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
 
 				alert.AddAction (UIAlertAction.Create ("Remove Widget", UIAlertActionStyle.Default, RemoveWidget));

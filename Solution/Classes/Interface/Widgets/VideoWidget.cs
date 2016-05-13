@@ -3,7 +3,10 @@ using System.Threading;
 using AVFoundation;
 using Board.Schema;
 using MediaPlayer;
+using Foundation;
+using AVKit;
 using MGImageUtilitiesBinding;
+using Board.Infrastructure;
 using CoreGraphics;
 using CoreMedia;
 using UIKit;
@@ -29,7 +32,7 @@ namespace Board.Interface.Widgets
 		{
 			content = vid;
 
-			var size = new CGSize (300, 100);//GetFrame (vid);
+			var size = new CGSize (200, 200);
 
 			// mounting
 
@@ -38,11 +41,20 @@ namespace Board.Interface.Widgets
 			View.AddSubview (MountingView);
 
 			// picture
-			CGRect pictureFrame = new CGRect (MountingView.Frame.X + SideMargin, TopMargin, size.Width, size.Height);
-			AVPlayerLayer videoLayer = LoadVideoThumbnail (pictureFrame);
+			/*
+			AVPlayerLayer videoLayer = LoadVideoThumbnail (new CGRect (MountingView.Frame.X + SideMargin, TopMargin, size.Width, size.Height));
+
 			View.Layer.AddSublayer (videoLayer);
+
 			videoLayer.AllowsEdgeAntialiasing = true;
-			videoLayer.ModelLayer.AllowsEdgeAntialiasing = true;
+			videoLayer.ModelLayer.AllowsEdgeAntialiasing = true;*/
+
+			var playerView = new AVPlayerViewController ();
+			playerView.ShowsPlaybackControls = true;
+			playerView.View.Frame = new CGRect (0, 0, size.Width, size.Height);
+			playerView.Player = LoadPlayer (video);
+
+			View.AddSubview (playerView.View);
 			View.Layer.AllowsEdgeAntialiasing = true;
 
 			/*
@@ -74,26 +86,6 @@ namespace Board.Interface.Widgets
 			playButton.Alpha = .95f;
 
 			return playButton;
-		}
-
-		private CGSize GetFrame(Video vid)
-		{
-			float autosize = Widget.Autosize;
-
-			using (MPMoviePlayerViewController moviePlayer = new MPMoviePlayerViewController (vid.Url)) {
-				moviePlayer.MoviePlayer.Play ();
-
-				vid.Thumbnail = moviePlayer.MoviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact);
-
-				moviePlayer.MoviePlayer.Pause ();
-				moviePlayer.MoviePlayer.Dispose ();	
-			}
-
-			vid.Thumbnail = vid.Thumbnail.ImageScaledToFitSize(new CGSize (autosize, autosize));
-
-			var size = new CGSize (vid.Thumbnail.Size.Width, vid.Thumbnail.Size.Height);
-
-			return size;
 		}
 
 		public void SetFrame(CGRect frame)
@@ -139,9 +131,8 @@ namespace Board.Interface.Widgets
 			AVPlayerItem _playerItem;
 			AVPlayerLayer _playerLayer;
 
-			using (AVAsset _asset = AVAsset.FromUrl (video.Url)) {
-				_playerItem = new AVPlayerItem (_asset);
-			}
+			var avasset = GetAVAssetFromRemoteUrl (video.Url);
+			_playerItem = new AVPlayerItem (avasset);
 			_playerItem.AudioMix = new AVAudioMix ();
 			_player = new AVPlayer (_playerItem);
 			_playerLayer = AVPlayerLayer.FromPlayer (_player);
@@ -158,12 +149,62 @@ namespace Board.Interface.Widgets
 				videoDuration = 5;
 			}*/
 
-			loop = true;
-			looper = new Thread (new ThreadStart (LooperMethod));
-			looper.Start ();
+			//loop = true;
+			//looper = new Thread (new ThreadStart (LooperMethod));
+			//looper.Start ();
 
 			return _playerLayer;
 		}
+
+		private AVPlayer LoadPlayer(Video video)
+		{	
+			AVPlayerItem playerItem;
+
+			using (var _asset = AVAsset.FromUrl (video.Url)) {
+				playerItem = new AVPlayerItem (_asset);
+			}
+
+			playerItem.AudioMix = new AVAudioMix ();
+			var player = new AVPlayer (playerItem);
+			player.Seek (new CMTime (0, 1000000000));
+			player.Play ();
+
+			return player;
+		}
+
+		private AVAsset GetAVAssetFromRemoteUrl(NSUrl url){
+			NSError err;
+			NSData urlData = NSData.FromUrl (NSUrl.FromString("http://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_1mb.mp4"), NSDataReadingOptions.Coordinated, out err);
+
+			NSUrl localPath = StorageController.StoreVideoInCache (urlData, content.Id);
+			AVAsset asset = AVAsset.FromUrl (localPath);
+			return asset;
+		}
+
+		/*
+		+ (AVAsset*)getAVAssetFromRemoteUrl:(NSURL*)url 
+		{   
+		    if (!NSTemporaryDirectory())
+		    {
+		       // no tmp dir for the app (need to create one)
+		    }
+
+		    NSURL *tmpDirURL = [NSURL fileURLWithPath:NSTemporaryDirectory() isDirectory:YES];
+		    NSURL *fileURL = [[tmpDirURL URLByAppendingPathComponent:@"temp"] URLByAppendingPathExtension:@"mp4"];
+		    NSLog(@"fileURL: %@", [fileURL path]);
+
+		    NSData *urlData = [NSData dataWithContentsOfURL:url];
+		    [urlData writeToURL:fileURL options:NSAtomicWrite error:nil];
+
+		    AVAsset *asset = [AVAsset assetWithURL:fileURL];
+		    return asset;
+		}
+		+ (AVAsset*)getAVAssetFromLocalUrl:(NSURL*)url
+		{
+		    AVURLAsset *asset = [AVAsset assetWithURL:url];
+		    return asset;
+		}
+		*/
 
 		public void PauseVideo()
 		{
@@ -175,12 +216,12 @@ namespace Board.Interface.Widgets
 
 		public void KillVideo()
 		{
-			PauseVideo ();
+			/*PauseVideo ();
 			loop = false;
 			time = (int)videoDuration;
 			while (looper.IsAlive) {
 			}
-			_player = null;
+			_player = null;*/
 		}
 
 	}

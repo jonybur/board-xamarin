@@ -14,10 +14,7 @@ namespace Board.Interface
 
 		private void GenerateTestContent()
 		{
-			const float fix = 100;
-			const float fix2 = 90;
-
-			AddTestVideo ("http://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_1mb.mp4", new CGPoint(330+fix, 415+fix), -.02f, DateTime.Now.AddMinutes(-701));
+			AddTestVideo ("http://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_1mb.mp4", new CGPoint(330, 415), -.02f, DateTime.Now.AddMinutes(-701));
 
 			/*
 
@@ -215,7 +212,7 @@ namespace Board.Interface
 				moviePlayer.Dispose ();	
 			}*/
 
-			vid.Url = NSUrl.FromFilename (url);
+			vid.Url = NSUrl.FromString (url);
 			vid.UrlText = vid.Url.AbsoluteString;
 			vid.Center = center;
 			vid.CreationDate = creationDate;

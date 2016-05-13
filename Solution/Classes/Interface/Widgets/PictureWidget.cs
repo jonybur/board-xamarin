@@ -28,6 +28,8 @@ namespace Board.Interface.Widgets
 				await picture.GetImageFromUrl (picture.ImageUrl);
 			}
 
+			UnsuscribeToEvents ();
+
 			var size = picture.Thumbnail.Size;
 
 			MountingView.RemoveFromSuperview ();
@@ -49,9 +51,9 @@ namespace Board.Interface.Widgets
 
 			EyeOpen = false;
 
-			CreateGestures ();
-
 			AppDelegate.BoardInterface.BoardScroll.SelectiveRendering ();
+
+			SuscribeToEvents ();
 		}
 
 		public PictureWidget(Picture pic)

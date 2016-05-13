@@ -44,9 +44,6 @@ namespace Board.Interface
 
 		public override void ViewDidLoad ()
 		{
-			var json = JsonUtilty.GenerateDeleteJson ("stickers");
-			CloudController.UpdateBoard (board.Id, json);
-
 			// if it reaches this section, user has been logged in and authorized
 			base.ViewDidLoad ();
 
