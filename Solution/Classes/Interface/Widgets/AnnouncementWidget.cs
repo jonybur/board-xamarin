@@ -22,16 +22,16 @@ namespace Board.Interface.Widgets
 
 		public AnnouncementWidget(Announcement ann)
 		{
-			TopMargin = 30;
+			TopMargin = 40;
 
 			content = ann;
 
 			UITextView insideText = CreateText ();
 
 			// mounting
-			CreateMounting (insideText.Frame);
+			CreateMounting (insideText.Frame.Size);
 			View = new UIView (MountingView.Frame);
-			HeaderLogo = CreateHeader ();
+			HeaderLogo = CreateLogoHeader ();
 
 			View.AddSubviews (MountingView, insideText, HeaderLogo);
 
@@ -53,7 +53,11 @@ namespace Board.Interface.Widgets
 			textview.ScrollEnabled = true;
 			textview.DataDetectorTypes = UIDataDetectorType.Link;
 			textview.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
-			textview.AttributedText = announcement.AttributedText;
+			if (announcement.AttributedText != null) {
+				textview.AttributedText = announcement.AttributedText;
+			} else {
+				textview.Text = announcement.Text;
+			}
 			textview.TextColor = Widget.HighlightColor;
 			textview.SizeToFit ();
 
@@ -63,13 +67,13 @@ namespace Board.Interface.Widgets
 				textview.Frame = new CGRect (SideMargin, TopMargin, 250, textview.Frame.Height);
 			}
 
-			if (textview.Frame.Height < 80) {
-				textview.Frame = new CGRect (SideMargin, TopMargin, textview.Frame.Width, 80);
+			if (textview.Frame.Height < 60) {
+				textview.Frame = new CGRect (SideMargin, TopMargin, textview.Frame.Width, 60);
 			} else if (textview.Frame.Height > 180) {
 				textview.Frame = new CGRect (SideMargin, TopMargin, textview.Frame.Width, 180);
 			}
 
-			if (textview.Frame.Height < 81 && textview.Text.Length > 90) {
+			if (textview.Frame.Height < 61 && textview.Text.Length > 90) {
 				float height = ((textview.Text.Length - 90) / 30) * 20 + 80;
 				textview.Frame = new CGRect (SideMargin, TopMargin, textview.Frame.Width, height);
 			}

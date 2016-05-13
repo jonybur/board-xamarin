@@ -26,10 +26,12 @@ namespace Board.Schema
 		public string ImageUrl;
 	
 		public BoardEvent() {
+			Type = "events";
 		}
 
 		public BoardEvent(string name, UIImage image, DateTime startdate, DateTime enddate, float rotation, CGPoint center, string creatorid, DateTime creationdate)
 		{
+			Type = "events";
 			ImageView = new UIImageView(image);
 			Name = name;
 			StartDate = startdate;

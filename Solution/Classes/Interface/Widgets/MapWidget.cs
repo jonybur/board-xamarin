@@ -25,7 +25,7 @@ namespace Board.Interface.Widgets
 			container.CreateMap ();
 
 			// mounting
-			CreateMounting (container.mapView.Frame);
+			CreateMounting (container.mapView.Frame.Size);
 			View = new UIView(MountingView.Frame);
 			View.AddSubviews (MountingView, container.mapView);
 

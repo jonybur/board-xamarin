@@ -1,9 +1,8 @@
-﻿using CoreGraphics;
-using UIKit;
-using Board.Utilities;
+﻿using System;
 using System.Runtime.Serialization;
-using System;
+using CoreGraphics;
 using Foundation;
+using UIKit;
 
 namespace Board.Schema
 {
@@ -15,17 +14,20 @@ namespace Board.Schema
 		public string UrlText;
 
 		[IgnoreDataMember]
-		public UIImageView ThumbnailView;
+		public UIImage Thumbnail;
 
 		public string Description;
 
-		public Video() { }
+		public Video() { 
+			Type = "videos";
+		}
 
-		public Video(NSUrl url, UIImageView thumbnailView, float rotation, CGPoint center, string creatorid, DateTime creationdate)
+		public Video(NSUrl url, UIImage thumbnail, float rotation, CGPoint center, string creatorid, DateTime creationdate)
 		{
+			Type = "videos";
 			Url = url;
 			UrlText = url.AbsoluteString;
-			ThumbnailView = thumbnailView;
+			Thumbnail = thumbnail;
 			Rotation = rotation;
 			Center = center;
 			CreatorId = creatorid;

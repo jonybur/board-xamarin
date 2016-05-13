@@ -31,7 +31,7 @@ namespace Board.Interface.Widgets
 			var totalRect = new CGRect (calendarBox.Frame.X, calendarBox.Frame.Y, calendarBox.Frame.Width + pictureBox.Frame.Width + 5, calendarBox.Frame.Height);
 
 			// mounting
-			CreateMounting (totalRect);
+			CreateMounting (totalRect.Size);
 
 			pictureBox.Center = new CGPoint (MountingView.Frame.Width - pictureBox.Frame.Width / 2 - SideMargin * 2, pictureBox.Center.Y);
 

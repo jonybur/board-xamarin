@@ -1,13 +1,12 @@
 using System;
 using Board.Interface;
+using Board.Infrastructure;
 using Board.Interface.Buttons;
-
 using Board.Interface.Widgets;
 using Board.Schema;
-
+using Board.Utilities;
 using CoreGraphics;
 using Facebook.CoreKit;
-using Board.Utilities;
 using UIKit;
 
 namespace Board.Interface
@@ -83,7 +82,7 @@ namespace Board.Interface
 			IsAlive = true;
 
 			// switches to confbar
-			ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.ConfirmationBar);
+			ButtonInterface.SwitchButtonLayout (ButtonInterface.ButtonLayout.ConfirmationBar);
 		}
 
 		public static UIPanGestureRecognizer SetNewPanGestureRecognizer()
@@ -91,7 +90,7 @@ namespace Board.Interface
 			float dx = 0;
 			float dy = 0;
 
-			UIPanGestureRecognizer panGesture = new UIPanGestureRecognizer (pg => {
+			var panGesture = new UIPanGestureRecognizer (pg => {
 				if ((pg.State == UIGestureRecognizerState.Began || pg.State == UIGestureRecognizerState.Changed) && (pg.NumberOfTouches == 1)) {
 
 					var p0 = pg.LocationInView(view.Superview);
@@ -126,7 +125,7 @@ namespace Board.Interface
 				view.Transform = CGAffineTransform.MakeRotation (r);
 			}
 
-			UIRotationGestureRecognizer rotateGesture = new UIRotationGestureRecognizer (rg => {
+			var rotateGesture = new UIRotationGestureRecognizer (rg => {
 				if ((rg.State == UIGestureRecognizerState.Began || rg.State == UIGestureRecognizerState.Changed) && (rg.NumberOfTouches == 2)) {
 					view.Transform = CGAffineTransform.MakeRotation (rg.Rotation + r);
 					Rotation = (float)(rg.Rotation + r);
@@ -160,12 +159,15 @@ namespace Board.Interface
 			if (widget is PictureWidget) {
 				
 				var pictureWidget = (PictureWidget)widget;
-				content = new Picture (pictureWidget.picture.ImageView.Image, pictureWidget.picture.ThumbnailView.Image, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
+
+				var imageURL = CloudController.UploadToAmazon (pictureWidget.picture.Image);
+				
+				content = new Picture (pictureWidget.picture.Image, imageURL, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
 
 			} else if (widget is VideoWidget) {
 				
 				var videoWidget = (VideoWidget)widget;
-				content = new Video (videoWidget.video.Url, videoWidget.video.ThumbnailView, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
+				content = new Video (videoWidget.video.Url, videoWidget.video.Thumbnail, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
 
 			} else if (widget is AnnouncementWidget) {
 				

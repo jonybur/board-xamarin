@@ -1,12 +1,20 @@
 ﻿using System;
 using CoreGraphics;
-using CoreAnimation;
+using Board.Schema;
 using UIKit;
 
 namespace Board.Interface
 {
+	public static class UIPreviewSticker {
+		public static UISticker PreviewSticker;
+		public static Content GetContent(){
+			return new Sticker ();
+		}
+	}
+
 	public class UISticker : UITextView
 	{
+		UIGestureRecognizer panGestureRecognizer, rotationGestureRecognizer, pinchGestureRecognizer;
 		CGAffineTransform ReferenceTransform;
 
 		class CustomDelegate: UITextViewDelegate{
@@ -18,6 +26,36 @@ namespace Board.Interface
 				}
 				return true;
 			}
+
+			CGPoint auxCenter;
+			CGAffineTransform auxTransform;
+
+			public override void EditingStarted (UITextView textView)
+			{
+				((UISticker)textView).UnsuscribeToGestures ();
+				auxCenter = textView.Center;
+				auxTransform = textView.Transform;
+				textView.BackgroundColor = UIColor.FromRGBA(0, 0, 0, 100);
+				textView.Transform = new CGAffineTransform (1, 0, 0, 1, 0, 0);
+				var scrollView = AppDelegate.BoardInterface.BoardScroll.ScrollView;
+				scrollView.ScrollEnabled = false;
+				textView.Frame = new CGRect (scrollView.ContentOffset.X, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
+			}
+
+			public override void EditingEnded (UITextView textView)
+			{
+				((UISticker)textView).SuscribeToGestures ();
+				textView.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
+				textView.SizeToFit ();
+				textView.Center = auxCenter;
+				textView.Transform = auxTransform;
+				var scrollView = AppDelegate.BoardInterface.BoardScroll.ScrollView;
+				scrollView.ScrollEnabled = true;
+			}
+		}
+
+		public UISticker (Sticker content){
+			// generates sticker from content
 		}
 
 		public UISticker ()
@@ -43,17 +81,30 @@ namespace Board.Interface
 			Delegate = new CustomDelegate ();
 
 			TextColor = UIColor.White;
+
 			BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 
 			AppDelegate.BoardInterface.BoardScroll.ScrollView.AddSubview (this);
 
-			AddGestureRecognizer (SetNewPanGestureRecognizer ());
-
-			AddGestureRecognizer (SetNewRotationGestureRecognizer (false));
-
-			AddGestureRecognizer (SetNewPinchGestureRecognizer ());
+			panGestureRecognizer = SetNewPanGestureRecognizer ();
+			rotationGestureRecognizer = SetNewRotationGestureRecognizer (false);
+			pinchGestureRecognizer = SetNewPinchGestureRecognizer ();
 
 			UserInteractionEnabled = true;
+
+			SuscribeToGestures ();
+		}
+
+		public void SuscribeToGestures(){
+			AddGestureRecognizer (panGestureRecognizer);
+			AddGestureRecognizer (rotationGestureRecognizer);
+			AddGestureRecognizer (pinchGestureRecognizer);
+		}
+
+		public void UnsuscribeToGestures(){
+			RemoveGestureRecognizer (panGestureRecognizer);
+			RemoveGestureRecognizer (rotationGestureRecognizer);
+			RemoveGestureRecognizer (pinchGestureRecognizer);
 		}
 
 		public UIPanGestureRecognizer SetNewPanGestureRecognizer()

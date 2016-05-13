@@ -22,7 +22,7 @@ namespace Board.Interface.LookUp
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			ScrollView.UserInteractionEnabled = true;
 
-			UIImageView lookUpImage = CreateImageFrame (picture.ImageView.Image);
+			UIImageView lookUpImage = CreateImageFrame (picture.Image);
 			ScrollView.AddSubview (lookUpImage);
 			ScrollView.MaximumZoomScale = 4f;
 			ScrollView.MinimumZoomScale = 1f;
@@ -55,7 +55,7 @@ namespace Board.Interface.LookUp
 		private async void SavePhoto(UIAlertAction action)
 		{
 			ALAssetsLibrary lib = new ALAssetsLibrary ();
-			await lib.WriteImageToSavedPhotosAlbumAsync(((Picture)content).ImageView.Image.CGImage, ALAssetOrientation.Up);
+			await lib.WriteImageToSavedPhotosAlbumAsync(((Picture)content).Image.CGImage, ALAssetOrientation.Up);
 			lib.Dispose();
 		}
 

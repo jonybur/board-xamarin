@@ -16,7 +16,7 @@ namespace Board.Interface
 		public static int ScrollViewWidthSize = 2600;
 
 		float virtualLeftBound;
-		int leftScreenNumber = 0, rightScreenNumber = 0;
+		int leftScreenNumber, rightScreenNumber;
 
 		public UIScrollView ScrollView;
 		private UIImageView TopBanner;

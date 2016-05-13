@@ -187,15 +187,6 @@
     <BundleResource Include="Resources\boardinterface\backgrounds\intern.png" />
     <BundleResource Include="Resources\boardinterface\backgrounds\logobackground.png" />
     <BundleResource Include="Resources\boardinterface\backgrounds\outer.png" />
-    <BundleResource Include="Resources\boardinterface\buttons\chat.png" />
-    <BundleResource Include="Resources\boardinterface\buttons\gallery.png" />
-    <BundleResource Include="Resources\boardinterface\buttons\picture.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\accept_3px.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\back_3px.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\camera_3px.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\cancel_3px.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\card_3px.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\cog_3px.png" />
     <BundleResource Include="Resources\boardinterface\widget\closedeye.png" />
     <BundleResource Include="Resources\boardinterface\widget\like.png" />
     <BundleResource Include="Resources\boardinterface\widget\openeye.png" />
@@ -229,16 +220,12 @@
     <BundleResource Include="Resources\boardinterface\screens\share\twitter\logo.png" />
     <BundleResource Include="Resources\boardinterface\screens\share\link\logo.png" />
     <BundleResource Include="Resources\boardinterface\screens\event\placeholder.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\facebook2.png" />
     <BundleResource Include="Resources\boardinterface\lookup\uber.png" />
     <BundleResource Include="Resources\boardinterface\widget\radiobut2.png" />
     <BundleResource Include="Resources\boardinterface\lookup\waze.png" />
     <BundleResource Include="Resources\boardinterface\widget\radiobutfull.png" />
     <BundleResource Include="Resources\screens\main\map\marker_blue.png" />
     <BundleResource Include="Resources\screens\main\map\marker_orange.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\info_3px.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\info_3px2.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\info_3px3.png" />
     <BundleResource Include="Resources\boardinterface\lookup\edit.png" />
     <BundleResource Include="Resources\screens\main\map\markercontainer.png" />
     <BundleResource Include="Resources\boardinterface\screens\share\save\6.jpg" />
@@ -302,10 +289,10 @@
     <BundleResource Include="Resources\boardinterface\nubuttons\nusettings.png" />
     <BundleResource Include="Resources\boardinterface\nubuttons\nucamera.png" />
     <BundleResource Include="Resources\demo\infobox\american_cover.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\left.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\openeye_2.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\openeye.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\closedeye.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nuaccept.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nucancel.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -433,6 +420,7 @@
     <Compile Include="Classes\Screens\Controls\UIBoardBannerPage.cs" />
     <Compile Include="Classes\Interface\UISticker.cs" />
     <Compile Include="Classes\Infrastructure\AppsController.cs" />
+    <Compile Include="Classes\Schema\Sticker.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -470,7 +458,6 @@
     <Folder Include="Resources\demo\videos\" />
     <Folder Include="Resources\demo\events\" />
     <Folder Include="Resources\boardinterface\widget\" />
-    <Folder Include="Resources\boardinterface\buttons\" />
     <Folder Include="Classes\Interface\LookUp\" />
     <Folder Include="Classes\Interface\CreateScreens\" />
     <Folder Include="Classes\Interface\SettingsScreen\" />

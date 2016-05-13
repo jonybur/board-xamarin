@@ -110,7 +110,7 @@ namespace Board.Interface.LookUp
 			backTap = new UITapGestureRecognizer (tg => {
 				// user tapped on "Done" button
 				AppDelegate.PopViewLikeDismissView();
-				ButtonInterface.SwitchButtonLayout((int)ButtonInterface.ButtonLayout.NavigationBar);
+				ButtonInterface.SwitchButtonLayout(ButtonInterface.ButtonLayout.NavigationBar);
 				if (!(content is Map))
 				{
 					MemoryUtility.ReleaseUIViewWithChildren (View);

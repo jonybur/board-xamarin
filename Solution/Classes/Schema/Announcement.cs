@@ -13,10 +13,13 @@ namespace Board.Schema
 		// TODO: keep this until i sort out how to serialize a nsattributedstring
 		public string Text;
 
-		public Announcement() {}
+		public Announcement() {
+			Type = "announcements";
+		}
 
 		public Announcement(NSAttributedString text, float rotation, CGPoint center, string creatorid, DateTime creationdate)
 		{
+			Type = "announcements";
 			Text = text.Value;
 			AttributedText = text;
 			Rotation = rotation;

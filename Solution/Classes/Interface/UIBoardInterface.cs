@@ -28,6 +28,7 @@ namespace Board.Interface
 
 		public static Dictionary<string, Content> DictionaryContent;
 		public static Dictionary<string, Widget> DictionaryWidgets;
+		public static Dictionary<string, UISticker> DictionaryStickers;
 
 		bool firstLoad;
 
@@ -43,6 +44,9 @@ namespace Board.Interface
 
 		public override void ViewDidLoad ()
 		{
+			var json = JsonUtilty.GenerateDeleteJson ("stickers");
+			CloudController.UpdateBoard (board.Id, json);
+
 			// if it reaches this section, user has been logged in and authorized
 			base.ViewDidLoad ();
 
@@ -65,6 +69,8 @@ namespace Board.Interface
 			DictionaryContent = new Dictionary<string, Content> ();
 
 			DictionaryWidgets = new Dictionary<string, Widget> ();
+
+			DictionaryStickers = new Dictionary<string, UISticker> ();
 		}
 
 		private void InitializeInterface()
@@ -91,9 +97,10 @@ namespace Board.Interface
 		{
 			if (firstLoad) {
 
+				// gets content, puts it in dictionarycontent
+				DictionaryContent = CloudController.GetBoardContent (board.Id);
+				
 				GenerateTestContent ();
-
-				CloudController.GetBoardSnapshot (board.Id);
 
 				GenerateWidgets ();
 
@@ -163,10 +170,10 @@ namespace Board.Interface
 			if (UserCanEditBoard) {
 				View.AddSubviews (ButtonInterface.GetCreatorButtons().ToArray());
 			} else {
-				View.AddSubviews (ButtonInterface.GetUserButtons (board.FBPage != null).ToArray());
+				View.AddSubviews (ButtonInterface.GetUserButtons ().ToArray());
 			}
 
-			ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.NavigationBar);
+			ButtonInterface.SwitchButtonLayout (ButtonInterface.ButtonLayout.NavigationBar);
 		}
 
 
@@ -189,6 +196,11 @@ namespace Board.Interface
 			BTProgressHUD.Dismiss ();
 		}
 
+		public void AddStickerToDictionaryFromContent(Sticker content){
+			var sticker = new UISticker (content);
+			DictionaryStickers.Add (content.Id, sticker);
+		}
+
 		public void AddWidgetToDictionaryFromContent(Content content)
 		{
 			Widget widget;
@@ -197,6 +209,8 @@ namespace Board.Interface
 				widget = new VideoWidget (content as Video);
 			} else if (content is Picture) {
 				widget = new PictureWidget (content as Picture);
+				((PictureWidget)widget).Initialize ();
+
 			} else if (content is BoardEvent) {
 				widget = new EventWidget (content as BoardEvent);
 			} else if (content is Announcement) {

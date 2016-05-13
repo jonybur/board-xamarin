@@ -76,6 +76,8 @@ namespace Board.Interface.Widgets
 
 			View = new UIButton ();
 
+			View.Layer.CornerRadius = 10;
+
 			View.Layer.ShadowOffset = new CGSize (0, 0);
 			View.Layer.ShadowRadius = 10f;
 			View.Layer.ShadowColor = UIColor.Black.CGColor;
@@ -94,9 +96,9 @@ namespace Board.Interface.Widgets
 			View.Transform = CGAffineTransform.MakeRotation(content.Rotation);
 		}
 
-		protected void CreateMounting(CGRect frame)
+		protected void CreateMounting(CGSize size)
 		{
-			MountingView = new UIImageView (new CGRect (0, 0, frame.Width + SideMargin * 2, frame.Height + 40 + TopMargin));
+			MountingView = new UIImageView (new CGRect (0, 0, size.Width + SideMargin * 2, size.Height + 40 + TopMargin));
 			MountingView.BackgroundColor = UIColor.White;
 
 			CreateEye ();
@@ -143,7 +145,27 @@ namespace Board.Interface.Widgets
 			LikeComponent.AddSubviews (likeView, likeLabel);
 		}
 
-		public UIView CreateHeader(){
+
+		public UIView CreateLogoHeader(){
+			var header = new UIView ();
+			header.Frame = new CGRect (0, 0, View.Frame.Width - SideMargin * 2 - 10, TopMargin);
+
+			var headerLogo = new UIImageView ();
+			var size = new CGSize(TopMargin, TopMargin);
+			headerLogo.Image = UIBoardInterface.board.Image.ImageScaledToFitSize (size);
+			headerLogo.Frame = new CGRect (0, 0, headerLogo.Image.Size.Width, headerLogo.Image.Size.Height);
+			headerLogo.Center = new CGPoint (headerLogo.Center.X, header.Center.Y);
+
+			header.AddSubviews (headerLogo);
+
+			header.Frame = new CGRect (0, 0, headerLogo.Frame.Right, TopMargin);
+			header.Center = new CGPoint (View.Frame.Width / 2, TopMargin / 2 + 2);
+
+			return header;
+		}
+
+
+		public UIView CreateFullHeader(){
 			var header = new UIView ();
 			header.Frame = new CGRect (0, 0, View.Frame.Width - SideMargin * 2 - 10, TopMargin);
 
@@ -164,7 +186,7 @@ namespace Board.Interface.Widgets
 			header.AddSubviews (headerLogo, headerText);
 
 			header.Frame = new CGRect (0, 0, headerText.Frame.Right, TopMargin);
-			header.Center = new CGPoint (View.Frame.Width / 2 - TopMargin / 2, TopMargin / 2);
+			header.Center = new CGPoint (View.Frame.Width / 2 - TopMargin / 2, TopMargin / 2 + 2);
 
 			return header;
 		}

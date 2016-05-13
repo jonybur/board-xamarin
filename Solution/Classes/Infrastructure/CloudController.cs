@@ -4,6 +4,7 @@ using CoreLocation;
 using System.Threading.Tasks;
 using Board.JsonResponses;
 using System;
+using Newtonsoft.Json.Linq;
 using Board.Utilities;
 using Board.Schema;
 using Facebook.CoreKit;
@@ -33,13 +34,52 @@ namespace Board.Infrastructure
 			return true;
 		}
 
-		public static void UpdateBoard(string boardId, string json){
+		public static bool UpdateBoard(string boardId, string json){
 			string result = JsonPOSTRequest ("http://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/updates?authToken="+AppDelegate.EncodedBoardToken, json);
 
+			if (result == "200" || result == string.Empty) {
+				return true;
+			} else {
+				return false;
+			} 
 		}
 
-		public static void GetBoardSnapshot(string boardId){
+		public static Dictionary<string, Content> GetBoardContent(string boardId){
 			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/snapshot?authToken="+AppDelegate.EncodedBoardToken);
+			//JsonConvert.DeserializeObject<GoogleGeolocatorObject>(json);
+			var fullJson = JsonConvert.DeserializeObject<Dictionary<string, object>> (result);
+
+			var compiledDictionary = new Dictionary<string, Content> ();
+			if (fullJson.ContainsKey ("updates")) {
+				string updatesJson = fullJson ["updates"].ToString ();
+
+				var contentsLevel = JsonConvert.DeserializeObject<Dictionary<string, object>> (updatesJson);
+
+				FillDictionary<Picture> (contentsLevel, "pictures", ref compiledDictionary);
+				FillDictionary<Announcement> (contentsLevel, "announcements", ref compiledDictionary);
+				FillDictionary<Poll> (contentsLevel, "polls", ref compiledDictionary);
+				FillDictionary<Video> (contentsLevel, "videos", ref compiledDictionary);
+				//FillDictionary<Sticker> (contentsLevel, "stickers", ref compiledDictionary);
+
+			}
+			return compiledDictionary;
+		}
+
+		private static void FillDictionary<T>(Dictionary<string, object> contentsLevel, 
+			string jsonTypeName,
+			ref Dictionary<string, Content> dictionaryToFill) where T : Content
+		{
+
+			//var returnDictionary = new Dictionary<string, T> ();
+			if (contentsLevel.ContainsKey (jsonTypeName)) {
+				string contents = contentsLevel [jsonTypeName].ToString ();
+				var contentsDictionary = JsonConvert.DeserializeObject<Dictionary<string, T>> (contents);
+
+				foreach (var cnt in contentsDictionary) {
+					dictionaryToFill.Add (cnt.Key, cnt.Value);
+				}
+			}
+			//return returnDictionary;
 		}
 
 		public static bool GetAmazonS3Ticket(){
@@ -107,10 +147,8 @@ namespace Board.Infrastructure
 			}
 		}
 
-		public static string UploadObject(string amazonUrl, UIImage image)
+		private static string UploadObject(string amazonUrl, UIImage image)
 		{
-			//ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
-
 			HttpWebRequest httpRequest = WebRequest.Create(amazonUrl) as HttpWebRequest;
 			httpRequest.Method = "PUT";
 			httpRequest.ContentType = "application/octet-stream";
@@ -132,14 +170,22 @@ namespace Board.Infrastructure
 			return absoluteURL;
 		}
 
-
-		public static bool CreateBoard(Board.Schema.Board board){
+		public static string UploadToAmazon(UIImage image){
 			GetAmazonS3Ticket ();
 
-			string logoURL;
+			string url;
 			if (AppDelegate.AmazonS3Ticket != null) {
-				logoURL = UploadObject (AppDelegate.AmazonS3Ticket.url, board.Image);
+				url = UploadObject (AppDelegate.AmazonS3Ticket.url, image);
 			} else {
+				return null;
+			}
+			return url;
+		}
+
+		public static bool CreateBoard(Board.Schema.Board board){
+			string logoURL = UploadToAmazon (board.Image);
+
+			if (logoURL == null) {
 				return false;
 			}
 			

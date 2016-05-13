@@ -13,7 +13,7 @@ namespace Board.Interface.Buttons
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/strokebuttons/accept_3px.png")) {
+			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/nubuttons/nuaccept.png")) {
 				uiButton.SetImage (uiImage, UIControlState.Normal);
 			}
 
@@ -22,29 +22,49 @@ namespace Board.Interface.Buttons
 				(AppDelegate.ScreenWidth - ButtonSize) / 4, AppDelegate.ScreenHeight - ButtonSize / 2);
 			
 			eventHandlers.Add ((sender, e) => {
-				
-				// remove interaction capabilities from the preview
-				Preview.RemoveUserInteraction ();
+				Content content;
 
-				// takes out the confirmation bar and resets navigation
-				ButtonInterface.SwitchButtonLayout ((int)ButtonInterface.ButtonLayout.NavigationBar);
+				if (Preview.IsAlive){
+					// remove interaction capabilities from the preview
+					Preview.RemoveUserInteraction ();
 
-				Content content = Preview.GetContent();
+					// takes out the confirmation bar and resets navigation
+					ButtonInterface.SwitchButtonLayout (ButtonInterface.ButtonLayout.NavigationBar);
 
-				string jsonString = JsonUtilty.GenerateUpdateJson(content);
+					content = Preview.GetContent ();
+				} else {
+					UIPreviewSticker.PreviewSticker.UserInteractionEnabled = false;
 
-				CloudController.UpdateBoard(UIBoardInterface.board.Id, jsonString);
+					ButtonInterface.SwitchButtonLayout(ButtonInterface.ButtonLayout.NavigationBar);
+
+					content = UIPreviewSticker.GetContent();
+				}
+
+				string jsonString = JsonUtilty.GenerateUpdateJson (content);
+
+				bool wasUploaded = CloudController.UpdateBoard (UIBoardInterface.board.Id, jsonString);
+				if (!wasUploaded){
+					return;
+				}
 
 				UIBoardInterface.DictionaryContent.Add (content.Id, content);
 
-				// remove the preview imageview from the superview
-				Preview.RemoveFromSuperview ();
+				if (Preview.IsAlive){
+					// remove the preview imageview from the superview
+					Preview.RemoveFromSuperview ();
 
-				// adds widget to dictionary
-				AppDelegate.BoardInterface.AddWidgetToDictionaryFromContent (content);
+					// adds widget to dictionary
+					AppDelegate.BoardInterface.AddWidgetToDictionaryFromContent (content);
+				} else {
+					// remove previewsticker
+					UIPreviewSticker.PreviewSticker.RemoveFromSuperview();
+
+					// add sticker to dictionary
+					AppDelegate.BoardInterface.AddStickerToDictionaryFromContent (content as Sticker);
+				}
 
 				// renders scrollview
-				AppDelegate.BoardInterface.BoardScroll.SelectiveRendering();
+				AppDelegate.BoardInterface.BoardScroll.SelectiveRendering ();
 			});
 
 			uiButton.Alpha = 0f;

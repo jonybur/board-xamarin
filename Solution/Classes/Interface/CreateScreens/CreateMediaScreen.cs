@@ -3,6 +3,7 @@ using Board.Schema;
 using Board.Utilities;
 using CoreGraphics;
 using MediaPlayer;
+using Foundation;
 using UIKit;
 
 namespace Board.Interface.CreateScreens
@@ -13,11 +14,18 @@ namespace Board.Interface.CreateScreens
 
 		UITapGestureRecognizer scrollViewTap;
 		EventHandler nextButtonTap;
+		UIImageView thumbView;
 
 		float positionY;
 
-		public CreateMediaScreen (Content _content){
-			content = _content;
+		public CreateMediaScreen (NSUrl videoURL){
+			content = new Video ();
+			((Video)content).Url = videoURL;
+		}
+
+		public CreateMediaScreen (){
+			content = new Picture ();
+			((Picture)content).SetImageFromUIImage(AppDelegate.CameraPhoto);
 		}
 
 		public override void ViewDidLoad ()
@@ -25,8 +33,6 @@ namespace Board.Interface.CreateScreens
 			base.ViewDidLoad ();
 
 			LoadContent ();
-
-			string imagePath = "./boardinterface/screens/share/banner/" + AppDelegate.PhoneVersion + ".jpg";
 
 			LoadBanner (null, null, "SHARE", "cross_left");
 			LoadNextButton (false);
@@ -51,6 +57,8 @@ namespace Board.Interface.CreateScreens
 			base.ViewDidDisappear (animated);
 			ScrollView.RemoveGestureRecognizer (scrollViewTap);
 			NextButton.TouchUpInside -= nextButtonTap;
+			thumbView.Image = null;
+
 			MemoryUtility.ReleaseUIViewWithChildren (View);
 		}
 
@@ -65,7 +73,7 @@ namespace Board.Interface.CreateScreens
 					((Video)content).Description = textview.Text;
 				}
 
-				Preview.Initialize(content);
+				Preview.Initialize (content);
 
 				content.SocialChannel = ShareButtons.GetActiveSocialChannels ();
 
@@ -83,24 +91,24 @@ namespace Board.Interface.CreateScreens
 			const float autosize = 50;
 			float imgw, imgh;
 
-			UIImageView imageView;
+			UIImage image;
 			if (content is Picture) {
-				imageView = ((Picture)content).ImageView;
+				image = ((Picture)content).Image;
 			} else if (content is Video) {
 				MPMoviePlayerController moviePlayer = new MPMoviePlayerController (((Video)content).Url);
-				imageView = new UIImageView (moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact));
+				image = moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact);
 				moviePlayer.Pause ();
 				moviePlayer.Dispose ();
 			} else {
-				imageView = new UIImageView ();
+				image = new UIImage ();
 			}
 
-			float scale = (float)(imageView.Frame.Height / imageView.Frame.Width);
+			float scale = (float)(image.Size.Height / image.Size.Width);
 			imgw = autosize;
 			imgh = autosize * scale;
 
-			UIImageView thumbView = new UIImageView (new CGRect (10, Banner.Frame.Bottom + 10, imgw, imgh));
-			thumbView.Image = imageView.Image;
+			thumbView = new UIImageView (new CGRect (10, Banner.Frame.Bottom + 10, imgw, imgh));
+			thumbView.Image = image;
 
 			var frame = new CGRect(70, Banner.Frame.Bottom, 
 				AppDelegate.ScreenWidth - 50 - 23,

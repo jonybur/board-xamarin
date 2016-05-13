@@ -12,8 +12,8 @@ namespace Board.Interface.Buttons
 		{
 			uiButton = new UIButton (UIButtonType.Custom);
 
-			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/nubuttons/nucard.png")) {
-				uiButton.SetImage (uiImage, UIControlState.Normal);
+			using (var img = UIImage.FromFile ("./boardinterface/nubuttons/nucard.png")) {
+				uiButton.SetImage (img, UIControlState.Normal);
 			}
 
 			uiButton.Frame = new CGRect (0,0, ButtonSize, ButtonSize);
@@ -22,7 +22,7 @@ namespace Board.Interface.Buttons
 				(AppDelegate.ScreenWidth - ButtonSize) / 8 + 10, AppDelegate.ScreenHeight - ButtonSize / 2);
 			
 			eventHandlers.Add ((sender, e) => {
-				UIAlertController alert = UIAlertController.Create(null, "Select the type of widget", UIAlertControllerStyle.ActionSheet);
+				var alert = UIAlertController.Create(null, "Select the type of widget", UIAlertControllerStyle.ActionSheet);
 
 				alert.AddAction (UIAlertAction.Create ("Announcement", UIAlertActionStyle.Default, CreateAnnouncement));
 				alert.AddAction (UIAlertAction.Create ("Event", UIAlertActionStyle.Default, CreateEvent));
@@ -38,26 +38,28 @@ namespace Board.Interface.Buttons
 
 		private static void CreateAnnouncement(UIAlertAction act)
 		{
-			CreateAnnouncementScreen announcementScreen = new CreateAnnouncementScreen ();
+			var announcementScreen = new CreateAnnouncementScreen ();
 			AppDelegate.PushViewLikePresentView (announcementScreen);
 		}
 
 		private static void CreateEvent(UIAlertAction act)
 		{
-			CreateEventScreen eventScreen = new CreateEventScreen ();
+			var eventScreen = new CreateEventScreen ();
 			AppDelegate.PushViewLikePresentView (eventScreen);
 		}
 
 		private static void CreatePoll(UIAlertAction act)
 		{
-			CreatePollScreen pollScreen = new CreatePollScreen ();
+			var pollScreen = new CreatePollScreen ();
 			AppDelegate.PushViewLikePresentView (pollScreen);
 		}
 
 		private static void CreateSticker(UIAlertAction act){
-			UISticker sticker = new UISticker ();
-			System.Console.WriteLine (sticker.CanBecomeFirstResponder);
-			sticker.BecomeFirstResponder ();
+			UIPreviewSticker.PreviewSticker = new UISticker ();
+			UIPreviewSticker.PreviewSticker.BecomeFirstResponder ();
+
+			// switches to confbar
+			ButtonInterface.SwitchButtonLayout (ButtonInterface.ButtonLayout.ConfirmationBar);
 		}
 
 		private static void CreateMap(UIAlertAction act)

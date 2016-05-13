@@ -1,7 +1,5 @@
-using System;
-using CoreGraphics;
-using UIKit;
 using System.Collections.Generic;
+using UIKit;
 
 namespace Board.Interface.Buttons
 {
@@ -22,7 +20,7 @@ namespace Board.Interface.Buttons
 			navigationButton = new NavigationButton ();			
 		}
 
-		public static List<UIView> GetUserButtons(bool facebookPage)
+		public static List<UIView> GetUserButtons()
 		{
 			List<UIView> views = new List<UIView>();
 			views.Add(actionsButtonSet.arrayButtons [0].uiButton);
@@ -45,22 +43,22 @@ namespace Board.Interface.Buttons
 		}
 
 		public static void DisableAllLayouts()
-		{
+		{	
 			actionsButtonSet.DisableAllButtons ();
 			confirmationButtonSet.DisableAllButtons ();
 			navigationButton.DisableButton ();
 		}
 
-		public static void SwitchButtonLayout(int newLayout)
+		public static void SwitchButtonLayout(ButtonLayout newLayout)
 		{
 			DisableAllLayouts ();
 
 			switch (newLayout) {
-			case (int)ButtonLayout.ConfirmationBar:
+			case ButtonLayout.ConfirmationBar:
 					confirmationButtonSet.EnableAllButtons ();
 					break;
 
-			case (int)ButtonLayout.NavigationBar:
+			case ButtonLayout.NavigationBar:
 					actionsButtonSet.EnableAllButtons ();
 					break;
 			}

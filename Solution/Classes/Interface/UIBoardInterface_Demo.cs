@@ -17,6 +17,10 @@ namespace Board.Interface
 			const float fix = 100;
 			const float fix2 = 90;
 
+			AddTestVideo ("http://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_1mb.mp4", new CGPoint(330+fix, 415+fix), -.02f, DateTime.Now.AddMinutes(-701));
+
+			/*
+
 			board.FBPage = new Board.Facebook.FacebookPage("SatelitesOficial", "Satelites Oficial", "Music Band");
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/0.jpg")) {
 				AddTestPicture (img, new CGPoint(70+fix, 20+fix), -.03f, DateTime.Now.AddHours(-1));
@@ -76,7 +80,7 @@ namespace Board.Interface
 				AddTestPicture (img, new CGPoint(50+fix, 410+fix), .03f, DateTime.Now.AddMinutes(-605));
 			}
 
-			AddTestVideo ("./demo/videos/2.mp4", new CGPoint(330+fix, 415+fix), -.02f, DateTime.Now.AddMinutes(-701));
+
 
 			AddTestVideo ("./demo/videos/3.mp4", new CGPoint(615+fix, 420+fix), .0f, DateTime.Now.AddMinutes(-50));
 
@@ -163,7 +167,7 @@ namespace Board.Interface
 
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/4.jpg")) {
 				AddTestPicture (img, new CGPoint(1510+fix2, 515), .01f, DateTime.Now.AddMinutes (-39));
-			}
+			}*/
 		}
 
 		private void AddTestMap(CGPoint position, float rotation, string creatorid, DateTime creationdate){
@@ -194,7 +198,7 @@ namespace Board.Interface
 		private void AddTestPicture(UIImage image, CGPoint center, float rotation, DateTime creationDate)
 		{
 			Picture pic = new Picture ();
-			pic.ImageView = new UIImageView(image);
+			pic.SetImageFromUIImage(image);
 			pic.CreationDate = creationDate;
 			pic.Center = center;
 			pic.Rotation = rotation;
@@ -205,11 +209,11 @@ namespace Board.Interface
 		{
 			Video vid = new Video ();
 
-			using (MPMoviePlayerController moviePlayer = new MPMoviePlayerController (NSUrl.FromFilename (url))) {
+			/*using (var moviePlayer = new MPMoviePlayerController (NSUrl.FromString (url))) {
 				vid.ThumbnailView = new UIImageView(moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact));
 				moviePlayer.Pause ();
 				moviePlayer.Dispose ();	
-			}
+			}*/
 
 			vid.Url = NSUrl.FromFilename (url);
 			vid.UrlText = vid.Url.AbsoluteString;

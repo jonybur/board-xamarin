@@ -147,10 +147,7 @@ namespace Board.Picker
 
 		private void LaunchVideoPreview(NSUrl url)
 		{
-			Video video = new Video ();
-			video.Url = url;
-
-			CreateMediaScreen shareScreen = new CreateMediaScreen(video);
+			var shareScreen = new CreateMediaScreen(url);
 
 			AppDelegate.NavigationController.PushViewController(shareScreen, false);
 		}
@@ -158,10 +155,11 @@ namespace Board.Picker
 		private void LaunchPicturePreview(UIImage image)
 		{	
 			Picture picture = new Picture ();
-			picture.ImageView = new UIImageView (image);
+			picture.SetImageFromUIImage(image);
 
+			AppDelegate.CameraPhoto = image;
 
-			CreateMediaScreen shareScreen = new CreateMediaScreen(picture);
+			var shareScreen = new CreateMediaScreen();
 
 			AppDelegate.NavigationController.PushViewController(shareScreen, false);
 		}

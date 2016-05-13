@@ -19,7 +19,8 @@ namespace Board.Interface.Camera
 		UIImageView BackButton, TrashButton, FlipButton, FlashButton, NextButton, FocusImage;
 		UIShutterButton ShutterButton;
 
-		Content Media;
+		UIImage PhotoTaken;
+		NSUrl VideoTakenURL;
 
 		public static PBJVision Vision;
 		public static string CaptureDirectory;
@@ -27,6 +28,10 @@ namespace Board.Interface.Camera
 
 		public override void ViewDidAppear (bool animated)
 		{ 
+			AppDelegate.CameraPhoto = null;
+			PhotoTaken = null;
+			VideoTakenURL = null;
+
 			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
 			NavigationController.NavigationBarHidden = true;
 
@@ -160,8 +165,7 @@ namespace Board.Interface.Camera
 			View.BringSubviewToFront (NextButton);
 			View.BringSubviewToFront (TrashButton);
 
-			Media = new Picture ();
-			((Picture)Media).ImageView = new UIImageView (photoPreview.Image);
+			PhotoTaken = photoPreview.Image;
 			View.RemoveGestureRecognizer (FocusTap);
 		}
 
@@ -187,8 +191,7 @@ namespace Board.Interface.Camera
 			InvokeOnMainThread (() => NextButton.Alpha = 1f);
 			InvokeOnMainThread (() => View.RemoveGestureRecognizer (FocusTap));
 
-			Media = new Video ();
-			((Video)Media).Url = CustomPBJVisionDelegate.VideoPath;
+			VideoTakenURL = CustomPBJVisionDelegate.VideoPath;
 		}
 
 		private void CreateNextButton(UIColor buttonColor)
@@ -208,7 +211,15 @@ namespace Board.Interface.Camera
 			NextButton.UserInteractionEnabled = true;
 
 			NextTap = new UITapGestureRecognizer (tg => {
-				var createScreen = new CreateMediaScreen(Media);
+				CreateMediaScreen createScreen;
+				if (VideoTakenURL != null){
+					createScreen = new CreateMediaScreen(VideoTakenURL);
+				} else {
+					AppDelegate.CameraPhoto = PhotoTaken;
+					PhotoTaken = null;
+					photoPreview.Image = null;
+					createScreen = new CreateMediaScreen();
+				}
 				AppDelegate.NavigationController.PushViewController(createScreen, true);
 			});
 			NextButton.Alpha = 0f;
@@ -291,7 +302,8 @@ namespace Board.Interface.Camera
 				ShutterButton.Alpha = 1f;
 				FlipButton.Alpha = 1f;
 				FlashButton.Alpha = 1f;
-				Media = null;
+				VideoTakenURL = null;
+				PhotoTaken = null;
 
 				View.AddSubview(cameraPreview);
 				View.BringSubviewToFront(BackButton);

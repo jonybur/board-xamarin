@@ -16,10 +16,13 @@ namespace Board.Schema
 
 		public List<string> Answers;
 
-		public Poll(){}
+		public Poll(){
+			Type = "polls";
+		}
 
 		public Poll(NSAttributedString question, float rotation, CGPoint center, string creatorid, DateTime creationdate, params string[] answers)
 		{
+			Type = "polls";
 			Question = question;
 			QuestionText = question.Value;
 			Rotation = rotation;
@@ -31,6 +34,7 @@ namespace Board.Schema
 
 		public Poll(NSAttributedString question, float rotation, CGPoint center, string creatorid, DateTime creationdate, List<string> answers)
 		{
+			Type = "polls";
 			Question = question;
 			QuestionText = question.Value;
 			Rotation = rotation;

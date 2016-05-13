@@ -1,29 +1,64 @@
-using CoreGraphics;
-using UIKit;
-using System.Runtime.Serialization;
 using System;
+using System.Runtime.Serialization;
+using System.Threading.Tasks;
+using Board.Interface.Widgets;
+using Board.Utilities;
+using CoreGraphics;
+using MGImageUtilitiesBinding;
+using UIKit;
 
 namespace Board.Schema
 {
 	public class Picture : Content
 	{
 		[IgnoreDataMember]
-		public UIImageView ImageView;
+		private UIImage _image;
 
 		[IgnoreDataMember]
-		public UIImageView ThumbnailView;
+		public UIImage Image{
+			get { 
+				return _image;
+			}
+		}
+
+		[IgnoreDataMember]
+		private UIImage _thumbnail;
+
+		[IgnoreDataMember]
+		public UIImage Thumbnail{
+			get { 
+				return _thumbnail;
+			}
+		}
 
 		public string ImageUrl;
+
+		public void SetImageFromUIImage(UIImage image){
+			_image = image;
+			SetThumbnail ();
+		}
+
+		public async Task GetImageFromUrl(string imageUrl){
+			ImageUrl = imageUrl;
+			_image = await CommonUtils.DownloadUIImageFromURL (ImageUrl);
+			SetThumbnail ();
+		}
+
+		private void SetThumbnail(){
+			_thumbnail = Image.ImageScaledToFitSize(new CGSize (Widget.Autosize, Widget.Autosize));
+		}
 
 		public string Description;
 
 		public Picture() {
+			Type = "pictures";
 		}
 
-		public Picture(UIImage image, UIImage thumbnail, float rotation, CGPoint center, string creatorid, DateTime creationdate)
+		public Picture(UIImage image, string imageUrl, float rotation, CGPoint center, string creatorid, DateTime creationdate)
 		{
-			ImageView = new UIImageView(image);
-			ThumbnailView = new UIImageView(thumbnail);
+			ImageUrl = imageUrl;
+			SetImageFromUIImage (image);
+			Type = "pictures";
 			Rotation = rotation;
 			Center = center;
 			CreatorId = creatorid;

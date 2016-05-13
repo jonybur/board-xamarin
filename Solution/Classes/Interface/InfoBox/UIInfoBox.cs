@@ -31,11 +31,18 @@ namespace Board.Interface
 			BackgroundColor = UIColor.White;
 			ClipsToBounds = true;
 
-			Container = new MapContainer (Frame);
-
 			Banner = new TopBanner (board.Image, (float)Frame.Width);
 
-			AddSubviews (Banner, Container.button);
+			NameLabel = new UILabel ();
+			NameLabel.Frame = new CGRect (0, Banner.Bottom + 15, Frame.Width, 24);
+			NameLabel.Font = UIFont.SystemFontOfSize (22);
+			NameLabel.TextColor = UIColor.Black;
+			NameLabel.Text = UIBoardInterface.board.Name;
+			NameLabel.TextAlignment = UITextAlignment.Center;
+
+			Container = new MapContainer (Frame);
+
+			AddSubviews (Banner, Container.button, NameLabel);
 		}
 
 		class UIActionButton : UIButton{
@@ -53,6 +60,13 @@ namespace Board.Interface
 			UIImageView BackgroundImage;
 			UIBoardBannerPage BannerPage;
 
+			public float Bottom{
+				get { 
+					return (float)BackgroundImage.Frame.Bottom;
+				}
+			}
+
+
 			public TopBanner(UIImage boardImage, float width){
 				BackgroundImage = new UIImageView (new CGRect(0, 0, width, UIMagazineBannerPage.Height));
 
@@ -69,13 +83,11 @@ namespace Board.Interface
 
 		private class MapContainer : UIViewController{
 			private MapView mapView;
-			private UIMapMarker mapMarker;
-			public UIButton button;
-			UITapGestureRecognizer MapTap;
-
 			const int ButtonHeight = 40;
 			public UIButton uberButton, directionsButton;
-			UITapGestureRecognizer uberTap, directionsTap;
+			UITapGestureRecognizer uberTap, directionsTap, MapTap;
+			public UIButton button;
+			UIMapMarker mapMarker;
 
 			public MapContainer(CGRect frame){
 				CreateMap ((float)frame.Width);
@@ -137,21 +149,29 @@ namespace Board.Interface
 				directionsButton.SetTitle ("DIRECTIONS", UIControlState.Normal);
 
 				directionsTap = new UITapGestureRecognizer (tg => {
-
+					
 					var location = new CLLocationCoordinate2D(UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lat,
 						UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lng);
-					
-					if (AppsController.CanOpenGoogleMaps()){
 
-						UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
-						alert.AddAction (UIAlertAction.Create ("Google Maps", UIAlertActionStyle.Default, obj => AppsController.OpenGoogleMaps (location)));
+					UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
+
+					bool canOpenWaze = AppsController.CanOpenWaze();
+					bool canOpenGoogleMaps = AppsController.CanOpenGoogleMaps();
+
+					if (canOpenWaze || canOpenGoogleMaps){
+
+						if (canOpenGoogleMaps){
+							alert.AddAction (UIAlertAction.Create ("Google Maps", UIAlertActionStyle.Default, obj => AppsController.OpenGoogleMaps (location)));
+						}
 						alert.AddAction (UIAlertAction.Create ("Apple Maps", UIAlertActionStyle.Default, obj => AppsController.OpenAppleMaps (location)));
+						if (canOpenWaze){
+							alert.AddAction (UIAlertAction.Create ("Waze", UIAlertActionStyle.Default, obj => AppsController.OpenWaze (location)));
+						}
+
 						alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 
 						AppDelegate.NavigationController.PresentViewController(alert, true, null);
 
-						// display two alternatives
-						AppsController.OpenGoogleMaps (location);
 					} else {
 						AppsController.OpenAppleMaps (location);
 						

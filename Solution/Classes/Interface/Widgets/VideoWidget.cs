@@ -29,16 +29,16 @@ namespace Board.Interface.Widgets
 		{
 			content = vid;
 
-			CGRect frame = GetFrame (vid);
+			var size = new CGSize (300, 100);//GetFrame (vid);
 
 			// mounting
 
-			CreateMounting (frame);
+			CreateMounting (size);
 			View = new UIView(MountingView.Frame);
 			View.AddSubview (MountingView);
 
 			// picture
-			CGRect pictureFrame = new CGRect (MountingView.Frame.X + SideMargin, TopMargin, frame.Width, frame.Height);
+			CGRect pictureFrame = new CGRect (MountingView.Frame.X + SideMargin, TopMargin, size.Width, size.Height);
 			AVPlayerLayer videoLayer = LoadVideoThumbnail (pictureFrame);
 			View.Layer.AddSublayer (videoLayer);
 			videoLayer.AllowsEdgeAntialiasing = true;
@@ -76,21 +76,24 @@ namespace Board.Interface.Widgets
 			return playButton;
 		}
 
-		private CGRect GetFrame(Video vid)
+		private CGSize GetFrame(Video vid)
 		{
 			float autosize = Widget.Autosize;
 
-			using (MPMoviePlayerController moviePlayer = new MPMoviePlayerController (vid.Url)) {
-				vid.ThumbnailView = new UIImageView(moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact));
-				moviePlayer.Pause ();
-				moviePlayer.Dispose ();	
+			using (MPMoviePlayerViewController moviePlayer = new MPMoviePlayerViewController (vid.Url)) {
+				moviePlayer.MoviePlayer.Play ();
+
+				vid.Thumbnail = moviePlayer.MoviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact);
+
+				moviePlayer.MoviePlayer.Pause ();
+				moviePlayer.MoviePlayer.Dispose ();	
 			}
 
-			vid.ThumbnailView = new UIImageView(vid.ThumbnailView.Image.ImageScaledToFitSize(new CGSize (autosize, autosize)));
+			vid.Thumbnail = vid.Thumbnail.ImageScaledToFitSize(new CGSize (autosize, autosize));
 
-			CGRect frame = new CGRect (0, 0, vid.ThumbnailView.Frame.Width, vid.ThumbnailView.Frame.Height);
+			var size = new CGSize (vid.Thumbnail.Size.Width, vid.Thumbnail.Size.Height);
 
-			return frame;
+			return size;
 		}
 
 		public void SetFrame(CGRect frame)

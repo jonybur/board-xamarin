@@ -1,10 +1,7 @@
 ﻿using Board.Schema;
-using Board.Utilities;
-using System;
 using CoreGraphics;
 using UIKit;
-using MGImageUtilitiesBinding;
-using Board.Interface.LookUp;
+using System.Threading.Tasks;
 
 namespace Board.Interface.Widgets
 {
@@ -12,6 +9,9 @@ namespace Board.Interface.Widgets
 	{
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
+
+		UIImageView PictureFrame;
+
 
 		public Picture picture
 		{
@@ -23,40 +23,59 @@ namespace Board.Interface.Widgets
 
 		}
 
-		public PictureWidget(Picture pic)
-		{
-			content = pic;
+		public async Task Initialize(){
+			if (picture.Image == null || picture.Thumbnail == null) {
+				await picture.GetImageFromUrl (picture.ImageUrl);
+			}
 
-			CGRect frame = GetFrame (pic);
+			var size = picture.Thumbnail.Size;
+
+			MountingView.RemoveFromSuperview ();
+			PictureFrame.RemoveFromSuperview ();
 
 			// mounting
 
-			CreateMounting (frame);
+			CreateMounting (size);
 			View = new UIView(MountingView.Frame);
 			View.AddSubview (MountingView);
 
 			// picture
 
-			CGRect pictureFrame = new CGRect (MountingView.Frame.X + SideMargin, TopMargin, frame.Width, frame.Height);
-			UIImageView uiv = new UIImageView (pictureFrame);
-			uiv.Image = picture.ThumbnailView.Image;
-			uiv.Layer.AllowsEdgeAntialiasing = true;
-			View.AddSubview (uiv);
+			PictureFrame = new UIImageView ();
+			PictureFrame.Frame = new CGRect (MountingView.Frame.X + SideMargin, TopMargin, size.Width, size.Height);
+			PictureFrame.Image = picture.Thumbnail;
+			PictureFrame.Layer.AllowsEdgeAntialiasing = true;
+			View.AddSubview (PictureFrame);
 
 			EyeOpen = false;
 
 			CreateGestures ();
+
+			AppDelegate.BoardInterface.BoardScroll.SelectiveRendering ();
 		}
 
-		private CGRect GetFrame(Picture picture)
+		public PictureWidget(Picture pic)
 		{
-			float autosize = Widget.Autosize;
+			content = pic;
 
-			picture.ThumbnailView = new UIImageView(picture.ImageView.Image.ImageScaledToFitSize(new CGSize (autosize, autosize)));
+			var size = new CGSize(200,200);
 
-			CGRect frame = new CGRect (0, 0, picture.ThumbnailView.Frame.Width, picture.ThumbnailView.Frame.Height);
+			// mounting
 
-			return frame;
+			CreateMounting (size);
+			View = new UIView(MountingView.Frame);
+			View.AddSubview (MountingView);
+
+			// picture
+
+			PictureFrame = new UIImageView ();
+			PictureFrame.Frame = new CGRect (MountingView.Frame.X + SideMargin, TopMargin, size.Width, size.Height);
+			PictureFrame.Layer.AllowsEdgeAntialiasing = true;
+			View.AddSubview (PictureFrame);
+
+			EyeOpen = false;
+
+			CreateGestures ();
 		}
 
 		public void SetFrame(CGRect frame)

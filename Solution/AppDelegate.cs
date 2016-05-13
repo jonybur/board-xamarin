@@ -24,6 +24,7 @@ namespace Board
 		UIWindow window;
 
 		// until we get backend support and we can actually store new boards online
+		public static UIImage CameraPhoto;
 		public static UINavigationController NavigationController;
 		public static float ScreenWidth;
 		public static float ScreenHeight;

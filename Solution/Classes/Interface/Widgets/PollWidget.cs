@@ -41,7 +41,7 @@ namespace Board.Interface.Widgets
 			}
 
 			// mounting
-			CreateMounting (new CGRect(insideText.Frame.X, insideText.Frame.Y, insideText.Frame.Width, yposition));
+			CreateMounting (new CGSize(insideText.Frame.Width, yposition));
 			View = new UIView();
 
 			View.AddSubviews (MountingView, insideText);
