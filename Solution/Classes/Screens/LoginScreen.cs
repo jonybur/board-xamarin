@@ -1,17 +1,8 @@
 ﻿using System.Drawing;
-using System.Threading;
-
-using AVFoundation;
-using Board.JsonResponses;
-
-using Board.Utilities;
-using CoreGraphics;
 using Board.Infrastructure;
-using CoreMedia;
-using Facebook.CoreKit;
-using Newtonsoft.Json;
+using Board.Screens.Controls;
+using CoreGraphics;
 using Facebook.LoginKit;
-
 using Foundation;
 using UIKit;
   
@@ -20,9 +11,6 @@ namespace Board.Screens
 	public class LoginScreen : UIViewController
 	{
 		const int fontSize = 18;
-
-		AVPlayer _player;
-		Thread looper;
 
 		bool keepLooping = true;
 
@@ -85,49 +73,11 @@ namespace Board.Screens
 			LoadFBButton ();
 		}
 
-
-		private void LooperMethod()
-		{
-			const int NSEC_PER_SEC = 1000000000;
-
-			while (keepLooping) {
-
-				int time = 0;
-
-				while (time < 9) {
-					Thread.Sleep (1000);
-					time++;
-				}
-
-				InvokeOnMainThread (() => {
-					_player.Seek (new CMTime (0, NSEC_PER_SEC));
-				});
-			}
-		}
-
-
-
 		private void LoadBackground()
 		{
 			this.AutomaticallyAdjustsScrollViewInsets = false;
-			AVPlayerItem _playerItem;
-			using (AVAsset _asset = AVAsset.FromUrl (NSUrl.FromFilename ("./timelapse.mp4"))) {
-				_playerItem = new AVPlayerItem (_asset);
-			}
-			_player = new AVPlayer (_playerItem);
-			AVPlayerLayer _playerLayer = AVPlayerLayer.FromPlayer (_player);
 
-			_playerLayer.VideoGravity = AVLayerVideoGravity.Resize;
-
-			_playerLayer.Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
-
-			_player.ActionAtItemEnd = AVPlayerActionAtItemEnd.Pause;
-			_player.Volume = 0;
-
-			_player.Play ();
-
-			looper = new Thread (new ThreadStart (LooperMethod));
-			looper.Start ();
+			var repeaterVideo = new UIRepeatVideo (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight), NSUrl.FromFilename ("./timelapse.mp4"));
 
 			UIImageView logoView;
 			using (UIImage logo = UIImage.FromFile ("./screens/login/logo.png")) {
@@ -136,8 +86,7 @@ namespace Board.Screens
 			}
 			logoView.Center = new PointF (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight/6);
 
-			View.Layer.AddSublayer (_playerLayer);
-			View.AddSubviews (logoView);
+			View.AddSubviews (repeaterVideo.View, logoView);
 		}
 	}
 }

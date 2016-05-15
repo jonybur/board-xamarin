@@ -1,87 +1,33 @@
-﻿using System;
-using AVFoundation;
-using UIKit;
-using CoreMedia;
-using System.Threading;
+﻿using AVFoundation;
 using CoreGraphics;
 using Foundation;
+using Board.Screens.Controls;
 
 namespace Board.Interface
 {
-	public class VideoPreview : UIView
+	public class VideoPreview : UIRepeatVideo
 	{
-		AVPlayer _player;
-		Thread looper;
-		bool loop;
-		int videoDuration;
-		int time;
-
-		public VideoPreview()
-		{
-			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
+		public VideoPreview(CGRect frame) {
+			View.Frame = frame;
 		}
 
-		private void LooperMethod()
-		{
-			while (loop) {
+		public void LoadVideo(NSUrl url) {
 
-				time = 0;
+			var playerAsset = AVAsset.FromUrl (url);
+			var playerItem = new AVPlayerItem (playerAsset);
 
-				while (time < videoDuration) {
-					Thread.Sleep (1000);
-					time++;
-				}
+			if (Player == null) {
+				Player = new AVPlayer (playerItem);
+				Player.ActionAtItemEnd = AVPlayerActionAtItemEnd.None;
 
-				if (_player != null) {
-					try{
-						InvokeOnMainThread (() => _player.Seek (new CMTime (0, 1000000000)));
-					} catch (Exception ex) {
-						Console.WriteLine (ex.Message);
-					}
-				}
+				SuscribeToObserver ();
+				ShowsPlaybackControls = false;
 
-			}
-		}
-
-		public void LoadVideo(NSUrl videoPath)
-		{
-			AVPlayerItem _playerItem;
-			using (AVAsset _asset = AVAsset.FromUrl (videoPath)) {
-				_playerItem = new AVPlayerItem (_asset);
-			}
-			_player = new AVPlayer (_playerItem);
-			var _playerLayer = AVPlayerLayer.FromPlayer (_player);
-			_playerLayer.Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
-			_player.ActionAtItemEnd = AVPlayerActionAtItemEnd.Pause;
-			_player.Play ();
-			//_player.ActionAtItemEnd = 
-			videoDuration = (int)Math.Floor (_player.CurrentItem.Asset.Duration.Seconds);
-
-			looper = new Thread (new ThreadStart (LooperMethod));
-			looper.Start ();
-			loop = true;
-
-			Alpha = 1f;
-
-			Layer.AddSublayer (_playerLayer);
-		}
-
-		public void KillVideo()
-		{
-			loop = false;
-			time = videoDuration;
-
-			if (Layer.Sublayers != null) {
-				foreach (var layer in Layer.Sublayers) {
-					layer.RemoveFromSuperLayer ();
-				}
-			}
-
-			if (_player != null) {
-				_player.Pause ();
-				_player.Dispose ();
+				Player.Play ();
+				Player.Muted = true;
+			} else {
+				Player.ReplaceCurrentItemWithPlayerItem (playerItem);
 			}
 		}
 	}
 }
-

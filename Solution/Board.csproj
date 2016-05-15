@@ -381,7 +381,6 @@
     <Compile Include="Classes\Interface\CameraScreen\CameraController.cs" />
     <Compile Include="Classes\Interface\CameraScreen\CustomPBJVisionDelegate.cs" />
     <Compile Include="Classes\Interface\CameraScreen\ShutterButton.cs" />
-    <Compile Include="Classes\Interface\CameraScreen\VideoPreview.cs" />
     <Compile Include="Classes\Interface\CameraScreen\CameraPreview.cs" />
     <Compile Include="Classes\Interface\BoardScroll.cs" />
     <Compile Include="Classes\Interface\LookUp\UILookUP.cs" />
@@ -421,6 +420,8 @@
     <Compile Include="Classes\Interface\UISticker.cs" />
     <Compile Include="Classes\Infrastructure\AppsController.cs" />
     <Compile Include="Classes\Schema\Sticker.cs" />
+    <Compile Include="Classes\Screens\Controls\UIRepeatVideo.cs" />
+    <Compile Include="Classes\Interface\CameraScreen\VideoPreview.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

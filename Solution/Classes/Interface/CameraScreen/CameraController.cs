@@ -41,7 +41,8 @@ namespace Board.Interface.Camera
 				NSSearchPathDirectory.LibraryDirectory, 
 				NSSearchPathDomain.User) [0]).Path;
 			
-			videoPreview = new VideoPreview ();
+			videoPreview = new VideoPreview (new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			videoPreview.View.Alpha = 0f;
 			photoPreview = new UIImageView (new CGRect(0,0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			cameraPreview = new CameraPreview ();
 			ShutterButton = new UIShutterButton ();
@@ -52,7 +53,7 @@ namespace Board.Interface.Camera
 			CreateFlipButton (UIColor.White);
 			CreateFlashButton (UIColor.White);
 
-			View.AddSubviews (cameraPreview, videoPreview, photoPreview, BackButton, TrashButton, FlipButton, NextButton, ShutterButton, FlashButton);
+			View.AddSubviews (cameraPreview, videoPreview.View, photoPreview, BackButton, TrashButton, FlipButton, NextButton, ShutterButton, FlashButton);
 
 			FocusImage = new UIImageView (new CGRect(0, 0, 50, 50));
 			using (UIImage img = UIImage.FromFile("./camera/focus.png")) {
@@ -127,8 +128,6 @@ namespace Board.Interface.Camera
 			View.RemoveGestureRecognizer (FocusTap);
 			View.RemoveGestureRecognizer (DoubleTap);
 
-			videoPreview.KillVideo ();
-
 			if (cameraPreview.Layer.Sublayers != null) {
 				foreach (var layer in cameraPreview.Layer.Sublayers) {
 					layer.RemoveFromSuperLayer ();
@@ -139,7 +138,6 @@ namespace Board.Interface.Camera
 			Vision.Delegate.Dispose ();
 			Vision.Dispose ();
 
-			MemoryUtility.ReleaseUIViewWithChildren (videoPreview);
 			MemoryUtility.ReleaseUIViewWithChildren (cameraPreview);
 			MemoryUtility.ReleaseUIViewWithChildren (View);
 
@@ -151,7 +149,7 @@ namespace Board.Interface.Camera
 
 			FlipButton.Alpha = 0f;
 			ShutterButton.Alpha = 0f;
-			videoPreview.Alpha = 0f;
+			videoPreview.View.Alpha = 0f;
 			cameraPreview.Alpha = 0f;
 			FlashButton.Alpha = 0f;
 
@@ -183,6 +181,7 @@ namespace Board.Interface.Camera
 			//compressedGuid = null;
 
 			InvokeOnMainThread (() => videoPreview.LoadVideo (CustomPBJVisionDelegate.VideoPath));
+			InvokeOnMainThread (() => videoPreview.View.Alpha = 1f);
 			InvokeOnMainThread (() => cameraPreview.Alpha = 0f);
 			InvokeOnMainThread (() => ShutterButton.Alpha = 0f);
 			InvokeOnMainThread (() => FlashButton.Alpha = 0f);
@@ -289,12 +288,11 @@ namespace Board.Interface.Camera
 			TrashButton.UserInteractionEnabled = true;
 
 			TrashTap = new UITapGestureRecognizer (tg => {
-				videoPreview.KillVideo();
 
 				cameraPreview = new CameraPreview();
 				photoPreview.RemoveFromSuperview();
 
-				videoPreview.Alpha = 0f;
+				videoPreview.View.Alpha = 0f;
 				TrashButton.Alpha = 0f;
 				photoPreview.Alpha = 0f;
 				NextButton.Alpha = 0f;
