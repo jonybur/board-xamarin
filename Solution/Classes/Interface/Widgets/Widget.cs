@@ -382,7 +382,8 @@ namespace Board.Interface.Widgets
 			View.RemoveFromSuperview ();
 			MemoryUtility.ReleaseUIViewWithChildren (View);
 			UIBoardInterface.DictionaryWidgets.Remove (content.Id);
-			string deleteJson = JsonUtilty.GenerateDeleteJson (content.Id);
+			string deleteJson = JsonUtilty.GenerateDeleteJson (content);
+			CloudController.UpdateBoard (UIBoardInterface.board.Id, deleteJson);
 		}
 
 		public void Like()

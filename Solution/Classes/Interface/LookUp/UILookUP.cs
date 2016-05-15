@@ -186,9 +186,10 @@ namespace Board.Interface.LookUp
 				widget.View.RemoveFromSuperview ();
 				MemoryUtility.ReleaseUIViewWithChildren (widget.View);
 				UIBoardInterface.DictionaryWidgets.Remove (content.Id);
-			}
 
-			string deleteJson = JsonUtilty.GenerateDeleteJson (content.Id);
+				string deleteJson = JsonUtilty.GenerateDeleteJson (content);
+				CloudController.UpdateBoard (UIBoardInterface.board.Id, deleteJson);
+			}
 
 			window.Hidden = true;
 

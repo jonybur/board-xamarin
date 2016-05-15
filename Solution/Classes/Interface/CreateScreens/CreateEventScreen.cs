@@ -22,8 +22,9 @@ namespace Board.Interface.CreateScreens
 
 		UITextField StartDateView;
 		UITextField EndDateView;
-
 		UIImageView whiteBack;
+
+		UIToolbar toolbar, toolbar2;
 
 		public CreateEventScreen()
 		{}
@@ -57,8 +58,8 @@ namespace Board.Interface.CreateScreens
 			LoadPostToButtons ((float) EndDateView.Frame.Bottom + 60);
 			LoadNextButton (isEditing);
 
-			if (((BoardEvent)content).ImageView != null && ((BoardEvent)content).ImageView.Image != null) {
-				SetImage (((BoardEvent)content).ImageView.Image);
+			if (((BoardEvent)content).Image != null) {
+				SetImage (((BoardEvent)content).Image);
 			} else {
 				using (UIImage img = UIImage.FromFile ("./boardinterface/screens/event/placeholder.png")) {
 					SetImage (img);
@@ -84,18 +85,19 @@ namespace Board.Interface.CreateScreens
 				((BoardEvent)content).EndDate = selectedDate;
 			};
 
-			UIToolbar toolbar = new UIToolbar (new CGRect(0, DatePicker.Frame.Top- 40, AppDelegate.ScreenWidth, 40));
+			toolbar2 = new UIToolbar (new CGRect(0, DatePicker.Frame.Top- 40, AppDelegate.ScreenWidth, 40));
 			UIBarButtonItem btnLeft = new UIBarButtonItem(UIBarButtonSystemItem.Cancel, null);
 			UIBarButtonItem btnCenter = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace, null);
 			UIBarButtonItem btnRight = new UIBarButtonItem(UIBarButtonSystemItem.Done, delegate(object sender, EventArgs e) {
 				EndDateView.ResignFirstResponder();
 				StartDateView.ResignFirstResponder();
 				toolbar.Alpha = 0f;
+				toolbar2.Alpha = 0f;
 			});
-			toolbar.SetItems (new []{btnLeft, btnCenter, btnRight}, true);
-			toolbar.UserInteractionEnabled = true;
-			toolbar.Alpha = 0f;
-			View.AddSubview (toolbar);
+			toolbar2.SetItems (new []{btnLeft, btnCenter, btnRight}, true);
+			toolbar2.UserInteractionEnabled = true;
+			toolbar2.Alpha = 0f;
+			View.AddSubview (toolbar2);
 
 			EndDateView = new UITextField(new CGRect (15, yPosition, AppDelegate.ScreenWidth - 30, 24));
 			EndDateView.InputView = DatePicker;
@@ -112,7 +114,8 @@ namespace Board.Interface.CreateScreens
 
 			EndDateView.TextColor = AppDelegate.BoardBlue;
 			EndDateView.Started += (sender, e) => {
-				toolbar.Alpha = 1f;
+				toolbar.Alpha = 0f;
+				toolbar2.Alpha = 1f;
 				ScrollView.SetContentOffset(new CGPoint(0, EndDateView.Frame.Y - 200), true);
 			};
 
@@ -138,13 +141,14 @@ namespace Board.Interface.CreateScreens
 				((BoardEvent)content).StartDate = selectedDate;
 			};
 
-			UIToolbar toolbar = new UIToolbar (new CGRect(0, DatePicker.Frame.Top- 40, AppDelegate.ScreenWidth, 40));
+			toolbar = new UIToolbar (new CGRect(0, DatePicker.Frame.Top- 40, AppDelegate.ScreenWidth, 40));
 			UIBarButtonItem btnLeft = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace, null);
 			UIBarButtonItem btnCenter = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace, null);
-			UIBarButtonItem btnRight = new UIBarButtonItem(UIBarButtonSystemItem.Done, delegate(object sender, EventArgs e) {
+			UIBarButtonItem btnRight = new UIBarButtonItem(UIBarButtonSystemItem.Done, delegate {
 				StartDateView.ResignFirstResponder();
 				EndDateView.ResignFirstResponder();
 				toolbar.Alpha = 0f;
+				toolbar2.Alpha = 0f;
 			});
 			toolbar.SetItems (new []{btnLeft, btnCenter, btnRight}, true);
 			toolbar.UserInteractionEnabled = true;
@@ -167,6 +171,7 @@ namespace Board.Interface.CreateScreens
 			StartDateView.TextColor = AppDelegate.BoardBlue;
 			StartDateView.Started += (sender, e) => {
 				toolbar.Alpha = 1f;
+				toolbar2.Alpha = 0f;
 				ScrollView.SetContentOffset(new CGPoint(0, StartDateView.Frame.Y - 200), true);
 			};
 
@@ -350,7 +355,11 @@ namespace Board.Interface.CreateScreens
 			scrollViewTap = new UITapGestureRecognizer (obj => {
 				DescriptionView.ResignFirstResponder ();
 				StartDateView.ResignFirstResponder();
+				EndDateView.ResignFirstResponder();
 				NameLabel.ResignFirstResponder();
+
+				toolbar.Alpha = 0f;
+				toolbar2.Alpha = 0f;
 			});
 
 			nextButtonTap += (sender, e) => {
@@ -361,7 +370,7 @@ namespace Board.Interface.CreateScreens
 					BoardEvent boardEvent = (BoardEvent)content;
 
 					boardEvent.Description = DescriptionView.Text;
-					boardEvent.ImageView = new UIImageView(PictureBox.Image);
+					boardEvent.SetImageFromUIImage(PictureBox.Image);
 					boardEvent.CreationDate = DateTime.Now;
 
 					Preview.Initialize(boardEvent);
@@ -375,7 +384,9 @@ namespace Board.Interface.CreateScreens
 				ScrollView.RemoveGestureRecognizer (scrollViewTap);
 				Banner.UnsuscribeToEvents ();
 
-				MemoryUtility.ReleaseUIViewWithChildren (View, true);
+				PictureBox.Image = null;
+
+				MemoryUtility.ReleaseUIViewWithChildren (View);
 
 				if (!isEditing) {
 					NavigationController.PopViewController(false);

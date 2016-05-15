@@ -88,7 +88,7 @@ namespace Board.Interface.LookUp
 
 		private UIImageView CreatePictureBox()
 		{
-			CGSize imageSize = ((BoardEvent)content).ImageView.Frame.Size;
+			CGSize imageSize = ((BoardEvent)content).Image.Size;
 
 			CGSize posterSize = new CGSize (AppDelegate.ScreenWidth - 20, 500);
 
@@ -99,7 +99,7 @@ namespace Board.Interface.LookUp
 			imgh = imgw * scale;
 
 			UIImageView box = new UIImageView (new CGRect (0, 0, imgw, imgh));
-			box.Image = ((BoardEvent)content).ImageView.Image;
+			box.Image = ((BoardEvent)content).Image;
 
 			return box;
 		}

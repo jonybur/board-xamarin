@@ -110,6 +110,8 @@ namespace Board.Interface
 					dy = 0;
 				}
 			});
+			panGesture.WeakDelegate = view;
+
 			return panGesture;
 		}
 
@@ -133,6 +135,8 @@ namespace Board.Interface
 					r += (float)rg.Rotation;
 				}
 			});
+			rotateGesture.WeakDelegate = view;
+
 			return rotateGesture;
 		}
 
@@ -167,6 +171,9 @@ namespace Board.Interface
 			} else if (widget is VideoWidget) {
 				
 				var videoWidget = (VideoWidget)widget;
+
+				//Board.Interface.Camera.CustomPBJVisionDelegate.VideoPath
+
 				content = new Video (videoWidget.video.Url, videoWidget.video.Thumbnail, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
 
 			} else if (widget is AnnouncementWidget) {
@@ -179,7 +186,10 @@ namespace Board.Interface
 			} else if (widget is EventWidget) {
 				
 				var eventWidget = (EventWidget)widget;
-				content = new BoardEvent (eventWidget.boardEvent.Name, eventWidget.boardEvent.ImageView.Image, eventWidget.boardEvent.StartDate, eventWidget.boardEvent.EndDate, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
+
+				var imageURL = CloudController.UploadToAmazon (eventWidget.boardEvent.Image);
+
+				content = new BoardEvent (eventWidget.boardEvent.Name, eventWidget.boardEvent.Image, imageURL, eventWidget.boardEvent.StartDate, eventWidget.boardEvent.EndDate, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
 				((BoardEvent)content).Description = eventWidget.boardEvent.Description;
 				content.FacebookId = eventWidget.boardEvent.FacebookId;
 

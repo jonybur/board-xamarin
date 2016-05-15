@@ -59,6 +59,7 @@ namespace Board.Infrastructure
 				FillDictionary<Announcement> (contentsLevel, "announcements", ref compiledDictionary);
 				FillDictionary<Poll> (contentsLevel, "polls", ref compiledDictionary);
 				FillDictionary<Video> (contentsLevel, "videos", ref compiledDictionary);
+				FillDictionary<BoardEvent> (contentsLevel, "events", ref compiledDictionary);
 				//FillDictionary<Sticker> (contentsLevel, "stickers", ref compiledDictionary);
 
 			}
@@ -74,7 +75,7 @@ namespace Board.Infrastructure
 			if (contentsLevel.ContainsKey (jsonTypeName)) {
 				string contents = contentsLevel [jsonTypeName].ToString ();
 				var contentsDictionary = JsonConvert.DeserializeObject<Dictionary<string, T>> (contents);
-
+				
 				foreach (var cnt in contentsDictionary) {
 					dictionaryToFill.Add (cnt.Key, cnt.Value);
 				}

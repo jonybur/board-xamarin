@@ -47,11 +47,28 @@ namespace Board.Infrastructure
 			return new Dictionary<string, Content> ();
 		}
 
-		public static string GenerateDeleteJson(params string[] contentids)
+		public static string GenerateDeleteJson(string contentType, string contentId)
 		{
+			var InternalJson = new string[1];
+			InternalJson[0] = contentType+"."+contentId;
+
 			var FinalJson = new Dictionary<string, object> ();
 
-			FinalJson.Add ("deletes", contentids);
+			FinalJson.Add ("deletes", InternalJson);
+
+			FinalJson.Add ("timestamp", CommonUtils.GetUnixTimeStamp ());
+
+			return JsonConvert.SerializeObject (FinalJson);
+		}
+
+		public static string GenerateDeleteJson(params Content[] contents)
+		{
+			var InternalJson = new string[1];
+			InternalJson[0] = contents [0].Type+"."+contents[0].Id;
+
+			var FinalJson = new Dictionary<string, object> ();
+
+			FinalJson.Add ("deletes", InternalJson);
 
 			FinalJson.Add ("timestamp", CommonUtils.GetUnixTimeStamp ());
 

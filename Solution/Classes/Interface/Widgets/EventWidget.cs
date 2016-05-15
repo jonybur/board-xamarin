@@ -2,6 +2,7 @@
 using Board.Schema;
 using CoreGraphics;
 using UIKit;
+using System.Threading.Tasks;
 using MGImageUtilitiesBinding;
 
 namespace Board.Interface.Widgets
@@ -10,6 +11,8 @@ namespace Board.Interface.Widgets
 	{
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
+
+		UIImageView PictureBox, CalendarBox;
 
 		public BoardEvent boardEvent
 		{
@@ -25,25 +28,49 @@ namespace Board.Interface.Widgets
 		{
 			content = ev;
 
-			UIImageView calendarBox = CreateCalendarBox();
-			UIImageView pictureBox = CreatePictureBox (calendarBox.Frame);
+			CalendarBox = CreateCalendarBox();
+			//PictureBox = CreatePictureBox (calendarBox.Frame);
 
-			var totalRect = new CGRect (calendarBox.Frame.X, calendarBox.Frame.Y, calendarBox.Frame.Width + pictureBox.Frame.Width + 5, calendarBox.Frame.Height);
+			var totalRect = new CGRect (CalendarBox.Frame.X, CalendarBox.Frame.Y, CalendarBox.Frame.Width + 100 + 5, CalendarBox.Frame.Height);
 
 			// mounting
 			CreateMounting (totalRect.Size);
 
-			pictureBox.Center = new CGPoint (MountingView.Frame.Width - pictureBox.Frame.Width / 2 - SideMargin * 2, pictureBox.Center.Y);
+			//PictureBox.Center = new CGPoint (MountingView.Frame.Width - PictureBox.Frame.Width / 2 - SideMargin * 2, PictureBox.Center.Y);
 
 			View = new UIView(MountingView.Frame);
 
-			MountingView.AddSubviews (calendarBox, pictureBox);
+			MountingView.AddSubview (CalendarBox);
 
-			View.AddSubviews (MountingView);
+			View.AddSubview (MountingView);
 
 			EyeOpen = false;
 
 			CreateGestures ();
+		}
+
+		public async Task Initialize(){
+			if (boardEvent.Image == null || boardEvent.Thumbnail == null) {
+				await boardEvent.GetImageFromUrl (boardEvent.ImageUrl);
+			}
+
+			UnsuscribeToEvents ();
+
+			var size = boardEvent.Thumbnail.Size;
+
+			// picture
+
+			PictureBox = CreatePictureBox ();/*new UIImageView ();
+			PictureBox.Frame = new CGRect (CalendarBox.Frame.Right + 10, CalendarBox.Frame.Top, 100, CalendarBox.Frame.Height);
+			PictureBox.Image = boardEvent.Thumbnail;*/
+			PictureBox.Layer.AllowsEdgeAntialiasing = true;
+			MountingView.AddSubview (PictureBox);
+
+			EyeOpen = false;
+
+			AppDelegate.BoardInterface.BoardScroll.SelectiveRendering ();
+
+			SuscribeToEvents ();
 		}
 
 		private UIImageView CreateCalendarBox()
@@ -96,18 +123,18 @@ namespace Board.Interface.Widgets
 			return box;
 		}
 
-		private UIImageView CreatePictureBox(CGRect calendarBoxFrame)
+		private UIImageView CreatePictureBox()
 		{
-			var box = new UIImageView (new CGRect (calendarBoxFrame.Right + 10, calendarBoxFrame.Top, 100, calendarBoxFrame.Height));
+			var box = new UIImageView (new CGRect (100 + SideMargin, TopMargin, 100, 140));
 			box.BackgroundColor = UIColor.White;
 
 			float imgw, imgh;
 			const float autosize = 100;
 
-			float scale = (float)(boardEvent.ImageView.Frame.Width/boardEvent.ImageView.Frame.Height);
+			float scale = (float)(boardEvent.Image.Size.Width/boardEvent.Image.Size.Height);
 
 			if (scale >= 1) {
-				scale = (float)(boardEvent.ImageView.Frame.Height/boardEvent.ImageView.Frame.Width);
+				scale = (float)(boardEvent.Image.Size.Height/boardEvent.Image.Size.Width);
 				imgw = (float)box.Frame.Width;
 				imgh = imgw * scale;
 
@@ -117,7 +144,7 @@ namespace Board.Interface.Widgets
 			}
 
 			var eventPoster = new UIImageView (new CGRect(0, 0, imgw, imgh));
-			eventPoster.Image = boardEvent.ImageView.Image.ImageScaledToFitSize(eventPoster.Frame.Size);
+			eventPoster.Image = boardEvent.Thumbnail.ImageScaledToFitSize(eventPoster.Frame.Size);
 			eventPoster.Center = new CGPoint (box.Frame.Width / 2, box.Frame.Height / 2);
 			eventPoster.Layer.AllowsEdgeAntialiasing = true;
 

@@ -8,7 +8,6 @@ namespace Board.Schema
 {
 	public class Content
 	{
-		[IgnoreDataMember]
 		public string Id;
 		public string CreatorId;
 		public string FacebookId;

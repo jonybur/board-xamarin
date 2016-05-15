@@ -95,7 +95,7 @@ namespace Board.Interface.CreateScreens
 			if (content is Picture) {
 				image = ((Picture)content).Image;
 			} else if (content is Video) {
-				MPMoviePlayerController moviePlayer = new MPMoviePlayerController (((Video)content).Url);
+				var moviePlayer = new MPMoviePlayerController (((Video)content).Url);
 				image = moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact);
 				moviePlayer.Pause ();
 				moviePlayer.Dispose ();

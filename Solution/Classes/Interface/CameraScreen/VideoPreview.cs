@@ -54,6 +54,7 @@ namespace Board.Interface
 			_playerLayer.Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
 			_player.ActionAtItemEnd = AVPlayerActionAtItemEnd.Pause;
 			_player.Play ();
+			//_player.ActionAtItemEnd = 
 			videoDuration = (int)Math.Floor (_player.CurrentItem.Asset.Duration.Seconds);
 
 			looper = new Thread (new ThreadStart (LooperMethod));

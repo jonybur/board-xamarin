@@ -14,10 +14,14 @@ namespace Board.Interface
 
 		private void GenerateTestContent()
 		{
-			AddTestVideo ("http://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_1mb.mp4", new CGPoint(330, 415), -.02f, DateTime.Now.AddMinutes(-701));
+			AddTestVideo ("http://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_1mb.mp4", new CGPoint(330, 140), 0f, DateTime.Now.AddMinutes(-701));
 
+			AddTestVideo ("http://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_1mb.mp4", new CGPoint(330, 430), 0f, DateTime.Now.AddMinutes(-701));
+
+			AddTestVideo ("http://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_1mb.mp4", new CGPoint(550, 140), 0f, DateTime.Now.AddMinutes(-701));
 			/*
-
+			 * 
+			 * 
 			board.FBPage = new Board.Facebook.FacebookPage("SatelitesOficial", "Satelites Oficial", "Music Band");
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/0.jpg")) {
 				AddTestPicture (img, new CGPoint(70+fix, 20+fix), -.03f, DateTime.Now.AddHours(-1));
@@ -186,7 +190,7 @@ namespace Board.Interface
 
 		private void AddTestEvent(string name, string description, UIImage img, DateTime startdate, DateTime enddate, CGPoint position, float rotation, DateTime creationDate)
 		{
-			BoardEvent bevent = new BoardEvent (name, img, startdate, enddate, rotation, position, null, creationDate);
+			BoardEvent bevent = new BoardEvent (name, img, null, startdate, enddate, rotation, position, null, creationDate);
 			bevent.Rotation = rotation;
 			bevent.Description = description;
 			DictionaryContent.Add (bevent.Id, bevent);

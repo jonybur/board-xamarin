@@ -58,17 +58,21 @@ namespace Board.Interface.Widgets
 		{
 			UILabel label = new UILabel ();
 			label.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
-			label.AttributedText = poll.Question;
+			if (poll.Question != null) {
+				label.AttributedText = poll.Question;
+			} else {
+				label.Text = poll.QuestionText;
+			}
 			label.TextColor = Widget.HighlightColor;
 			label.Lines = 0;
 			label.Font = AppDelegate.SystemFontOfSize18;
 
-			NSString lorum = new NSString(poll.Question.Value);
 			UIStringAttributes stringAttributes = new UIStringAttributes ();
 			stringAttributes.Font = AppDelegate.SystemFontOfSize18;
-			CGRect labrect = lorum.GetBoundingRect(new CGSize(250,450), NSStringDrawingOptions.UsesLineFragmentOrigin, stringAttributes, null);
+			var stringForBoundingRect = new NSString(poll.QuestionText);
+			var labrect = stringForBoundingRect.GetBoundingRect(new CGSize(250,450), NSStringDrawingOptions.UsesLineFragmentOrigin, stringAttributes, null);
 
-			label.Frame = new CGRect (SideMargin + 5, TopMargin + 5, 250, labrect.Size.Height);
+			label.Frame = new CGRect (SideMargin + 5, TopMargin + 5, 250, labrect.Height);
 
 			return label;
 		}

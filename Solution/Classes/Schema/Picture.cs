@@ -56,9 +56,9 @@ namespace Board.Schema
 
 		public Picture(UIImage image, string imageUrl, float rotation, CGPoint center, string creatorid, DateTime creationdate)
 		{
+			Type = "pictures";
 			ImageUrl = imageUrl;
 			SetImageFromUIImage (image);
-			Type = "pictures";
 			Rotation = rotation;
 			Center = center;
 			CreatorId = creatorid;

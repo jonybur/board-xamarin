@@ -37,13 +37,16 @@ namespace Board.Interface
 			firstLoad = true;
 		}
 
-		public override void DidReceiveMemoryWarning ()
+		public override void DidReceiveMemoryWarning  ()
 		{
 			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 		}
 
 		public override void ViewDidLoad ()
 		{
+			//var json = JsonUtilty.GenerateDeleteJson ("videos", "36ace705-c3f3-4762-a9c4-71fa7d3c9dc4");
+			//CloudController.UpdateBoard (board.Id, json);
+
 			// if it reaches this section, user has been logged in and authorized
 			base.ViewDidLoad ();
 
@@ -128,11 +131,6 @@ namespace Board.Interface
 		{
 			foreach(KeyValuePair<string, Widget> widget in DictionaryWidgets)
 			{
-				if (widget.Value is VideoWidget) {
-					Thread killVideoThread = new Thread (new ThreadStart((widget.Value as VideoWidget).KillVideo));
-					killVideoThread.Start ();
-				}
-
 				widget.Value.View.RemoveFromSuperview ();
 			}
 		}
@@ -141,11 +139,6 @@ namespace Board.Interface
 		{
 			foreach(KeyValuePair<string, Widget> widget in DictionaryWidgets)
 			{
-				if (widget.Value is VideoWidget) {
-					Thread killVideoThread = new Thread (new ThreadStart((widget.Value as VideoWidget).KillVideo));
-					killVideoThread.Start ();
-				}
-
 				widget.Value.UnsuscribeToEvents ();
 				widget.Value.View.RemoveFromSuperview ();
 
@@ -210,6 +203,8 @@ namespace Board.Interface
 
 			} else if (content is BoardEvent) {
 				widget = new EventWidget (content as BoardEvent);
+
+				((EventWidget)widget).Initialize ();
 			} else if (content is Announcement) {
 				widget = new AnnouncementWidget (content as Announcement);
 			} else if (content is Poll) {
