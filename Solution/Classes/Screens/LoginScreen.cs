@@ -12,8 +12,6 @@ namespace Board.Screens
 	{
 		const int fontSize = 18;
 
-		bool keepLooping = true;
-
 		LoginButton logInButton;
 
 		public LoginScreen (){

@@ -212,7 +212,7 @@ namespace Board.Interface.Camera
 			NextTap = new UITapGestureRecognizer (tg => {
 				CreateMediaScreen createScreen;
 				if (VideoTakenURL != null){
-					createScreen = new CreateMediaScreen(VideoTakenURL);
+					createScreen = new CreateMediaScreen(VideoTakenURL, true);
 				} else {
 					AppDelegate.CameraPhoto = PhotoTaken;
 					PhotoTaken = null;

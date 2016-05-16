@@ -9,9 +9,15 @@ namespace Board.Schema
 	public class Video : Content
 	{
 		[IgnoreDataMember]
-		public NSUrl Url;
+		public NSUrl AmazonNSUrl {
+			get{ return NSUrl.FromString (AmazonUrl); }
+			set{ AmazonUrl = value.AbsoluteString; }
+		}
 
-		public string UrlText;
+		public string AmazonUrl;
+
+		[IgnoreDataMember]
+		public NSUrl LocalNSUrl;
 
 		[IgnoreDataMember]
 		public UIImage Thumbnail;
@@ -22,11 +28,18 @@ namespace Board.Schema
 			Type = "videos";
 		}
 
-		public Video(NSUrl url, UIImage thumbnail, float rotation, CGPoint center, string creatorid, DateTime creationdate)
+		public NSUrl GetNSUrlForDisplay(){
+			if (LocalNSUrl != null) {
+				return LocalNSUrl;
+			} else {
+				return AmazonNSUrl;
+			}
+		}
+
+		public Video(string amazonurl, UIImage thumbnail, float rotation, CGPoint center, string creatorid, DateTime creationdate)
 		{
 			Type = "videos";
-			Url = url;
-			UrlText = url.AbsoluteString;
+			AmazonUrl = amazonurl;
 			Thumbnail = thumbnail;
 			Rotation = rotation;
 			Center = center;

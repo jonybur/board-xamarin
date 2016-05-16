@@ -2,8 +2,8 @@
 {
 	public class FacebookVideo : FacebookElement
 	{
-		string Description;
-		string UpdatedTime;
+		public string Description;
+		public string UpdatedTime;
 
 		public FacebookVideo (string description, string updatedTime, string id)
 		{
@@ -14,11 +14,13 @@
 	}
 
 	public class FacebookVideoSource : FacebookElement{
-		string Source;
+		public string Source;
+		public string ThumbnailUrl;
 
-		public FacebookVideoSource(string source, string id){
-			Source = source;
+		public FacebookVideoSource(string id, string source, string thumburl){
 			Id = id;
+			Source = source;
+			ThumbnailUrl = thumburl;
 		}
 		
 	}

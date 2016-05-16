@@ -147,7 +147,7 @@ namespace Board.Picker
 
 		private void LaunchVideoPreview(NSUrl url)
 		{
-			var shareScreen = new CreateMediaScreen(url);
+			var shareScreen = new CreateMediaScreen(url, true);
 
 			AppDelegate.NavigationController.PushViewController(shareScreen, false);
 		}

@@ -1,11 +1,8 @@
 ﻿using System;
+using Board.Schema;
 using CoreGraphics;
-
 using Foundation;
 using UIKit;
-
-using MediaPlayer;
-using Board.Schema;
 
 namespace Board.Interface
 {
@@ -14,14 +11,13 @@ namespace Board.Interface
 
 		private void GenerateTestContent()
 		{
-			AddTestVideo ("http://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_1mb.mp4", new CGPoint(330, 140), 0f, DateTime.Now.AddMinutes(-701));
+			/*
+			AddTestVideo ("https://board-alpha-media.s3.amazonaws.com/716598f1-f0f7-4ac0-b33f-3c2871c4c935/1d307d82-b90a-4045-a870-3c55b4e0a914", new CGPoint(330, 140), 0f, DateTime.Now.AddMinutes(-701));
 
 			AddTestVideo ("http://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_1mb.mp4", new CGPoint(330, 430), 0f, DateTime.Now.AddMinutes(-701));
 
 			AddTestVideo ("http://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_1mb.mp4", new CGPoint(550, 140), 0f, DateTime.Now.AddMinutes(-701));
-			/*
-			 * 
-			 * 
+
 			board.FBPage = new Board.Facebook.FacebookPage("SatelitesOficial", "Satelites Oficial", "Music Band");
 			using (UIImage img = UIImage.FromFile ("./demo/pictures/0.jpg")) {
 				AddTestPicture (img, new CGPoint(70+fix, 20+fix), -.03f, DateTime.Now.AddHours(-1));
@@ -210,14 +206,7 @@ namespace Board.Interface
 		{
 			Video vid = new Video ();
 
-			/*using (var moviePlayer = new MPMoviePlayerController (NSUrl.FromString (url))) {
-				vid.ThumbnailView = new UIImageView(moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact));
-				moviePlayer.Pause ();
-				moviePlayer.Dispose ();	
-			}*/
-
-			vid.Url = NSUrl.FromString (url);
-			vid.UrlText = vid.Url.AbsoluteString;
+			vid.AmazonNSUrl = NSUrl.FromString (url);
 			vid.Center = center;
 			vid.CreationDate = creationDate;
 			vid.Rotation = rotation;

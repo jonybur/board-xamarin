@@ -46,8 +46,8 @@ namespace Board.Interface.Widgets
 
 		private UIColor WidgetGrey;
 
-		int randomLike;
 		bool liked;
+		int likes;
 
 		public Widget()
 		{
@@ -106,6 +106,7 @@ namespace Board.Interface.Widgets
 			CreateTimeStamp ();
 
 			MountingView.Layer.AllowsEdgeAntialiasing = true;
+			MountingView.Layer.CornerRadius = 10;
 
 			MountingView.AddSubviews (LikeComponent, EyeView, TimeStamp);
 		}
@@ -256,16 +257,13 @@ namespace Board.Interface.Widgets
 			int fontSize = 14;
 
 			UIFont likeFont = UIFont.SystemFontOfSize (fontSize);
-			Random rand = new Random ();
-			randomLike = rand.Next (16, 98);
 
-			string likeText = randomLike.ToString();
-			CGSize likeLabelSize = likeText.StringSize (likeFont);
+			CGSize likeLabelSize = likes.ToString().StringSize (likeFont);
 
 			UILabel likeLabel = new UILabel(new CGRect(0, 0, likeLabelSize.Width + 20, likeLabelSize.Height));
 			likeLabel.TextColor = WidgetGrey;
 			likeLabel.Font = likeFont;
-			likeLabel.Text = likeText;
+			likeLabel.Text = likes.ToString();
 			likeLabel.Center = new CGPoint (center.X - likeLabel.Frame.Width / 2 - 5, center.Y);
 			likeLabel.TextAlignment = UITextAlignment.Center;
 
@@ -390,8 +388,8 @@ namespace Board.Interface.Widgets
 		{
 			if (!liked)
 			{
-				randomLike ++;
-				likeLabel.Text = randomLike.ToString();
+				likes ++;
+				likeLabel.Text = likes.ToString();
 				likeView.TintColor = AppDelegate.BoardOrange;
 				likeLabel.TextColor = AppDelegate.BoardOrange;
 
@@ -417,8 +415,8 @@ namespace Board.Interface.Widgets
 				liked = true;
 			}
 			else {
-				randomLike --;
-				likeLabel.Text = randomLike.ToString();
+				likes --;
+				likeLabel.Text = likes.ToString();
 				likeView.TintColor = WidgetGrey;
 				likeLabel.TextColor = WidgetGrey;
 				liked = false;

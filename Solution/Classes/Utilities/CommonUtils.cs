@@ -56,6 +56,20 @@ namespace Board.Utilities
 			}
 		}
 
+		public static async Task<byte[]> DownloadByteArrayFromURL(string webAddress)
+		{
+			var webClient = new WebClient ();
+			var uri = new Uri (webAddress);
+			byte[] bytes = null;
+			try
+			{
+				bytes = await webClient.DownloadDataTaskAsync(uri);
+				return bytes;
+			}catch{
+				return null;
+			}
+		}
+
 		public static List<string> NSObjectToString(string fetch, NSObject obj)
 		{
 			NSString nsString = new NSString (fetch);

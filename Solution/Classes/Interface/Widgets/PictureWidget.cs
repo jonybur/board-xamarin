@@ -73,6 +73,8 @@ namespace Board.Interface.Widgets
 			PictureFrame = new UIImageView ();
 			PictureFrame.Frame = new CGRect (MountingView.Frame.X + SideMargin, TopMargin, size.Width, size.Height);
 			PictureFrame.Layer.AllowsEdgeAntialiasing = true;
+			PictureFrame.Layer.CornerRadius = 10;
+
 			View.AddSubview (PictureFrame);
 
 			EyeOpen = false;

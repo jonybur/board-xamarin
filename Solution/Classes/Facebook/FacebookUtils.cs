@@ -70,7 +70,6 @@ namespace Board.Facebook
 					var fbvideo = new FacebookVideo (objects [i, 0], objects [i, 1], objects [i, 2]);
 					ElementList.Add (fbvideo);
 				}
-
 			} else if (Element == "photos") {
 				string[,] objects = NSObjectToElement (obj, "data.id", "data.name", "data.created_time");
 
@@ -92,7 +91,6 @@ namespace Board.Facebook
 					var fbalbum = new FacebookAlbum (objects [i, 0], objects [i, 1], objects [i, 2]);
 					ElementList.Add (fbalbum);
 				}
-
 			} else if (Element == "?fields=images") {
 				string[,] objects = NSObjectToElement (obj, "images.height", "images.source", "images.width");
 
@@ -107,11 +105,12 @@ namespace Board.Facebook
 					var fbcover = new FacebookCover (objects [i, 0], objects [i, 1]);
 					ElementList.Add (fbcover);
 				}
-			} else if (Element == "?fields=source") {
-				string[,] objects = NSObjectToElement (obj, "data.source", "data.id");
+			} else if (Element == "?fields=id,source,thumbnails") {
+				string[,] objects = NSObjectToElement (obj, "id", "source", "thumbnails.data.uri");
 
 				for (int i = 0; i < objects.GetLength (0); i++) {
-					var fbvideosource = new FacebookVideoSource (objects [i, 0], objects [i, 1]);
+					// TODO: take is_preferred thumbnail
+					var fbvideosource = new FacebookVideoSource (objects [i, 0], objects [i, 1], objects[i, 2]);
 					ElementList.Add (fbvideosource);
 				}
 			}

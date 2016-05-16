@@ -9,7 +9,6 @@ namespace Board.Schema
 	public class Content
 	{
 		public string Id;
-		public string CreatorId;
 		public string FacebookId;
 		public string Type;
 
@@ -26,17 +25,18 @@ namespace Board.Schema
 			get { return (float)Center.Y; }
 		}
 
-		public DateTime CreationDate;
-
-		[IgnoreDataMember]
-		public List<int> SocialChannel;
-
-		public float Rotation;
-
 		public Content(){
 			Id = CommonUtils.GenerateGuid ();
 		}
 
+		public DateTime CreationDate;
+		public float Rotation;
+
+		[IgnoreDataMember]
+		public List<int> SocialChannel;
+
+		[IgnoreDataMember]
+		public string CreatorId;
 	}
 }
 

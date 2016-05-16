@@ -10,15 +10,14 @@ namespace Board.Interface.LookUp
 	public class VideoLookUp : UILookUp
 	{
 		AVPlayerViewController playerView;
-		AVPlayer player;
 		UILongPressGestureRecognizer longpress;
 
 		public override void ViewDidDisappear(bool animated)
 		{
 			base.ViewDidDisappear (animated);
 
-			player.Pause ();
-			player.Dispose ();
+			playerView.Player.Pause ();
+			playerView.Player.Dispose ();
 			playerView.Dispose ();
 			ScrollView.RemoveGestureRecognizer (longpress);
 
@@ -64,7 +63,7 @@ namespace Board.Interface.LookUp
 		private async void SaveVideo(UIAlertAction action)
 		{
 			ALAssetsLibrary lib = new ALAssetsLibrary ();
-			await lib.WriteVideoToSavedPhotosAlbumAsync(((Video)content).Url);
+			await lib.WriteVideoToSavedPhotosAlbumAsync(((Video)content).LocalNSUrl);
 			lib.Dispose();
 		}
 
@@ -72,12 +71,12 @@ namespace Board.Interface.LookUp
 		{	
 			AVPlayerItem playerItem;
 
-			using (AVAsset _asset = AVAsset.FromUrl (video.Url)) {
+			using (AVAsset _asset = AVAsset.FromUrl (video.AmazonNSUrl)) {
 				playerItem = new AVPlayerItem (_asset);
 			}
 
 			playerItem.AudioMix = new AVAudioMix ();
-			player = new AVPlayer (playerItem);
+			var player = new AVPlayer (playerItem);
 			player.Seek (new CoreMedia.CMTime (0, 1000000000));
 			player.Play ();
 

@@ -2,7 +2,7 @@
 using Board.Schema;
 using Board.Utilities;
 using CoreGraphics;
-using MediaPlayer;
+using AVFoundation;
 using Foundation;
 using UIKit;
 
@@ -18,14 +18,22 @@ namespace Board.Interface.CreateScreens
 
 		float positionY;
 
-		public CreateMediaScreen (NSUrl videoURL){
+		public CreateMediaScreen (NSUrl videoURL, bool isLocalUrl){
 			content = new Video ();
-			((Video)content).Url = videoURL;
+			if (isLocalUrl) {
+				((Video)content).LocalNSUrl = videoURL;
+			} else {
+				((Video)content).AmazonNSUrl = videoURL;
+			}
 		}
 
 		public CreateMediaScreen (){
 			content = new Picture ();
 			((Picture)content).SetImageFromUIImage(AppDelegate.CameraPhoto);
+		}
+
+		public CreateMediaScreen (Picture picture){
+			content = picture;
 		}
 
 		public override void ViewDidLoad ()
@@ -77,12 +85,7 @@ namespace Board.Interface.CreateScreens
 
 				content.SocialChannel = ShareButtons.GetActiveSocialChannels ();
 
-				var mightBeBoardInterface = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 3];
-				if (mightBeBoardInterface is UIBoardInterface) {
-					AppDelegate.NavigationController.PopToViewController (mightBeBoardInterface, false);
-				} else {
-					AppDelegate.NavigationController.PopToViewController(AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 2], false);
-				}
+				AppDelegate.NavigationController.PopToViewController(AppDelegate.BoardInterface, false);
 			};
 		}
 
@@ -95,10 +98,22 @@ namespace Board.Interface.CreateScreens
 			if (content is Picture) {
 				image = ((Picture)content).Image;
 			} else if (content is Video) {
-				var moviePlayer = new MPMoviePlayerController (((Video)content).Url);
-				image = moviePlayer.ThumbnailImageAt (0, MPMovieTimeOption.Exact);
-				moviePlayer.Pause ();
-				moviePlayer.Dispose ();
+				var video = (Video)content;
+
+				AVAsset asset;
+				if (video.LocalNSUrl != null) {
+					asset = AVAsset.FromUrl (video.LocalNSUrl);
+				} else {
+					asset = AVAsset.FromUrl (video.AmazonNSUrl);
+				}
+
+				var generator = new AVAssetImageGenerator (asset);
+				var requestedTime = new CoreMedia.CMTime (1, 60);
+				var outTime = new CoreMedia.CMTime ();
+				var outError = new NSError ();
+				var imgRef = generator.CopyCGImageAtTime (requestedTime, out outTime, out outError);
+				image = new UIImage (imgRef);
+
 			} else {
 				image = new UIImage ();
 			}

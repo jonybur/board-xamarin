@@ -13,10 +13,13 @@ namespace Board.Interface.FacebookImport
 		UIMenuBanner Banner;
 		UIScrollView ScrollView;
 		List<UIMenuButton> Buttons;
+		bool pressed;
+		float yPosition;
 
-		private void Completion(List<FacebookElement> elementList) {
+		private void AlbumsCompletion(List<FacebookElement> elementList) {
 			LoadAlbums (elementList);
-			BTProgressHUD.Dismiss();
+
+			BTProgressHUD.Dismiss ();
 		}
 
 		public override void ViewDidLoad(){
@@ -29,13 +32,15 @@ namespace Board.Interface.FacebookImport
 			Buttons = new List<UIMenuButton> ();
 
 			BTProgressHUD.Show ();
-			FacebookUtils.MakeGraphRequest (UIBoardInterface.board.FBPage.Id, "albums", Completion);
+			FacebookUtils.MakeGraphRequest (UIBoardInterface.board.FBPage.Id, "albums", AlbumsCompletion);
 
 			View.AddSubviews (ScrollView, Banner);
 		}
 
 		public override void ViewDidAppear(bool animated) {
 			Banner.SuscribeToEvents ();
+
+			yPosition = (float)Banner.Frame.Bottom - 21;
 
 			pressed = false;
 
@@ -57,8 +62,6 @@ namespace Board.Interface.FacebookImport
 
 		private void LoadAlbums(List<FacebookElement> elementList)
 		{
-			float yPosition = (float)Banner.Frame.Bottom - 21;
-
 			int i = 0;
 			float buttonheight = 0;
 				
@@ -71,11 +74,32 @@ namespace Board.Interface.FacebookImport
 				buttonheight = (float)albumButton.Frame.Height;
 				yPosition += buttonheight + 1;
 			}
+			var videosButton = VideoButton ();
+			videosButton.SuscribeToEvent ();
+			Buttons.Add (videosButton);
+			ScrollView.AddSubview (videosButton);
 					
-			ScrollView.ContentSize = new CGSize(AppDelegate.ScreenWidth, elementList.Count * (buttonheight + 1) + Banner.Frame.Height);
+			ScrollView.ContentSize = new CGSize(AppDelegate.ScreenWidth, (elementList.Count + 1) * (buttonheight + 1) + Banner.Frame.Height);
 		}
 
-		bool pressed;
+		private UIOneLineMenuButton VideoButton(){
+			var videosButton = new UIOneLineMenuButton (yPosition);
+			videosButton.SetLabel ("Videos >");
+			videosButton.SetUnpressedColors ();
+
+			videosButton.TapEvent = new System.EventHandler (delegate {
+				if (!pressed){
+					var videosScreen = new VideosScreen();
+					AppDelegate.NavigationController.PushViewController(videosScreen, true);
+
+					pressed = true;
+					videosButton.SetPressedColors();
+				}
+			});
+
+			return videosButton;
+		}
+
 		private UIOneLineMenuButton AlbumButton(float yPosition, FacebookAlbum album)
 		{
 			UIOneLineMenuButton albumButton = new UIOneLineMenuButton (yPosition);
@@ -111,4 +135,3 @@ namespace Board.Interface.FacebookImport
 		}
 	}
 }
-

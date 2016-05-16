@@ -5,7 +5,6 @@ using Board.Utilities;
 
 namespace Board.Schema
 {
-	// add udid
 	public class Board
 	{
 		public UIImage Image;

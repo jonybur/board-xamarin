@@ -23,9 +23,7 @@ namespace Board.Interface.LookUp
 		UITapGestureRecognizer backTap;
 		UITapGestureRecognizer likeTap;
 		UITapGestureRecognizer facebookTap;
-		UITapGestureRecognizer wazeTap;
 		UITapGestureRecognizer editTap;
-		UITapGestureRecognizer uberTap;
 		UITapGestureRecognizer shareTap;
 		UITapGestureRecognizer trashTap;
 
@@ -54,8 +52,6 @@ namespace Board.Interface.LookUp
 			CreateShareButton (buttonColor);
 			CreateTrashButton (buttonColor);
 			CreateEditButton (buttonColor);
-			//CreateWazeButton (buttonColor);
-			//CreateUberButton (buttonColor);
 		
 			if (string.IsNullOrEmpty(content.FacebookId)) {
 				FacebookButton.Alpha = 0f;
@@ -75,8 +71,6 @@ namespace Board.Interface.LookUp
 			ShareButton.AddGestureRecognizer (shareTap);
 			EditButton.AddGestureRecognizer (editTap);
 			TrashButton.AddGestureRecognizer (trashTap);
-			//WazeButton.AddGestureRecognizer (wazeTap);
-			//UberButton.AddGestureRecognizer (uberTap);
 		}
 
 		public override void ViewDidDisappear(bool animated)
@@ -87,8 +81,6 @@ namespace Board.Interface.LookUp
 			EditButton.RemoveGestureRecognizer (editTap);
 			ShareButton.RemoveGestureRecognizer (shareTap);
 			TrashButton.RemoveGestureRecognizer (trashTap);
-			//WazeButton.RemoveGestureRecognizer (wazeTap);
-			//UberButton.RemoveGestureRecognizer (uberTap);
 		}
 
 		protected void CreateBackButton(UIColor buttonColor)
@@ -210,24 +202,21 @@ namespace Board.Interface.LookUp
 		{
 			UIImageView subView;
 			UILabel lblLikes;
-			int randomLike;
+			int likes = 0;
 
 			using (UIImage img = UIImage.FromFile ("./boardinterface/lookup/like.png")) {
-				Random rand = new Random ();
-				randomLike = rand.Next (16, 98);
-				string text = randomLike.ToString();
 				UIFont font = UIFont.SystemFontOfSize (14);
 
-				LikeButton = new UIImageView(new CGRect(0, 0, img.Size.Width + text.StringSize(font).Width + 5, img.Size.Height * 2));
+				LikeButton = new UIImageView(new CGRect(0, 0, img.Size.Width + likes.ToString().StringSize(font).Width + 5, img.Size.Height * 2));
 
 				subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
 				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 				subView.TintColor = buttonColor;
 				subView.Center = new CGPoint (img.Size.Width / 2, BackButton.Frame.Height / 2);
 
-				lblLikes = new UILabel (new CGRect (0, 0, text.StringSize(font).Width + 10, 14));
+				lblLikes = new UILabel (new CGRect (0, 0, likes.ToString().StringSize(font).Width + 10, 14));
 				lblLikes.Font = font;
-				lblLikes.Text = text;
+				lblLikes.Text = likes.ToString();
 				lblLikes.TextColor = buttonColor;
 				lblLikes.Center = new CGPoint (subView.Center.X + lblLikes.Frame.Width / 2 + 15, subView.Center.Y);
 
@@ -242,87 +231,22 @@ namespace Board.Interface.LookUp
 			likeTap = new UITapGestureRecognizer (tg => {
 				if (!liked)
 				{
-					randomLike ++;
-					lblLikes.Text = randomLike.ToString();
+					likes++;
+					lblLikes.Text = likes.ToString();
 					subView.TintColor = AppDelegate.BoardOrange;
 					lblLikes.TextColor = AppDelegate.BoardOrange;
 					liked = true;
 				}
-				else {
-					randomLike --;
-					lblLikes.Text = randomLike.ToString();
+				else 
+				{
+					likes--;
+					lblLikes.Text = likes.ToString();
 					subView.TintColor = buttonColor;
 					lblLikes.TextColor = buttonColor;
 					liked = false;
 				}
 			});
 		}
-
-		protected void CreateWazeButton(UIColor buttonColor)
-		{
-			using (UIImage img = UIImage.FromFile ("./boardinterface/lookup/waze.png")) {
-				const string text = "Open in Waze";
-				UIFont font = UIFont.SystemFontOfSize (14);
-
-				WazeButton = new UIImageView(new CGRect(0, 0, img.Size.Width + text.StringSize(font).Width + 5, img.Size.Height * 2));
-
-				UIImageView subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
-				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-				subView.TintColor = buttonColor;
-				subView.Center = new CGPoint (img.Size.Width / 2, BackButton.Frame.Height / 2);
-
-				UILabel lblLikes = new UILabel (new CGRect (0, 0, text.StringSize(font).Width, 14));
-				lblLikes.Font = font;
-				lblLikes.Text = text;
-				lblLikes.TextColor = buttonColor;
-				lblLikes.Center = new CGPoint (subView.Center.X + lblLikes.Frame.Width / 2 + 15, subView.Center.Y);
-
-				WazeButton.AddSubviews(subView, lblLikes);
-				WazeButton.Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - 25);
-			}
-
-			WazeButton.UserInteractionEnabled = true;
-
-			wazeTap = new UITapGestureRecognizer (tg => {
-
-				var destination = new CLLocationCoordinate2D(UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lat,
-					UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lng);
-
-				if (AppsController.CanOpenWaze()) {
-					AppsController.OpenWaze(destination);
-				}
-				else {
-					// No Waze app! Open mobile website.
-				}
-			});
-		}
-
-		protected void CreateUberButton(UIColor buttonColor)
-		{
-			using (UIImage img = UIImage.FromFile ("./boardinterface/lookup/uber.png")) {
-				const string text = "Open in Uber";
-				UIFont font = UIFont.SystemFontOfSize (14);
-
-				UberButton = new UIImageView(new CGRect(0, 0, img.Size.Width + text.StringSize(font).Width + 5, img.Size.Height * 2));
-
-				UIImageView subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
-				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-				subView.TintColor = buttonColor;
-				subView.Center = new CGPoint (img.Size.Width / 2, BackButton.Frame.Height / 2);
-
-				UILabel lblLikes = new UILabel (new CGRect (0, 0, text.StringSize(font).Width, 14));
-				lblLikes.Font = font;
-				lblLikes.Text = text;
-				lblLikes.TextColor = buttonColor;
-				lblLikes.Center = new CGPoint (subView.Center.X + lblLikes.Frame.Width / 2 + 15, subView.Center.Y);
-
-				UberButton.AddSubviews(subView, lblLikes);
-				UberButton.Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - 25);
-			}
-
-			UberButton.UserInteractionEnabled = true;
-		}
-
 
 		protected void CreateFacebookButton(UIColor buttonColor)
 		{

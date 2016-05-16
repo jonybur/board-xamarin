@@ -44,6 +44,8 @@ namespace Board.Interface
 
 		public override void ViewDidLoad ()
 		{
+			board.FBPage = new Board.Facebook.FacebookPage ("AmericanSocialBrickell", "American Social Brickell", "Nightclub");
+
 			//var json = JsonUtilty.GenerateDeleteJson ("videos", "36ace705-c3f3-4762-a9c4-71fa7d3c9dc4");
 			//CloudController.UpdateBoard (board.Id, json);
 

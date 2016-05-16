@@ -70,14 +70,14 @@ namespace Board.Infrastructure
 			database.CreateTable<ProfilePictureL> ();
 		}
 
-		public static NSUrl StoreVideoInCache(NSData data, string id){
+		/*public static NSUrl StoreVideoInCache(NSData data, string id){
 			string path = Path.Combine (docsPathCaches, id, ".mp4");
 
 			NSError error;
 			data.Save (path, NSDataWritingOptions.Atomic, out error);
 
 			return NSUrl.FromFilename (path);
-		}
+		}*/
 
 		public static Board.Schema.Board BoardIsStored(string id){
 			var boardL = database.Query<BoardL> ("SELECT * FROM Boards WHERE id = ?", id);

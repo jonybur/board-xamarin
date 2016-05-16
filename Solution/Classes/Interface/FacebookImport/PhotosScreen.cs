@@ -1,13 +1,12 @@
-﻿using UIKit;
-using Board.Utilities;
-using Board.Screens.Controls;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BigTed;
-using Board.Utilities;
 using Board.Facebook;
+using Board.Screens.Controls;
+using Board.Utilities;
 using System.Linq;
 using CoreGraphics;
-using System;
+using Board.Schema;
+using UIKit;
 
 namespace Board.Interface.FacebookImport
 {
@@ -15,7 +14,10 @@ namespace Board.Interface.FacebookImport
 	{
 		UIMenuBanner Banner;
 		string AlbumID;
-
+		int PictureCount;
+		int DownloadedImages;
+		bool CanGoBack;
+		bool CanEnterImport;
 		UIGalleryScrollView GallerySV;
 		List<FacebookImage> FacebookImages;
 
@@ -38,10 +40,15 @@ namespace Board.Interface.FacebookImport
 			View.AddSubviews (Banner);
 		}
 
+		public override void ViewDidAppear(bool animated){
+			CanEnterImport = true;
+			Banner.SuscribeToEvents ();
+		}
+
 		private void Completion(List<FacebookElement> elementList) {
 			FacebookImages = new List<FacebookImage> ();
 		
-			PictureCount = elementList.Count - 1;
+			PictureCount = elementList.Count;
 			DownloadedImages = 0;
 
 			foreach (var element in elementList) {
@@ -53,27 +60,27 @@ namespace Board.Interface.FacebookImport
 			}
 		}
 
-		int PictureCount;
-		int DownloadedImages;
-		bool CanGoBack;
-
 		private async void LoadImageURL(List<FacebookElement> elementList){
-			
-			int minwidth = -1;
+			if (elementList.Count == 0){return;}
 
-			FacebookImage minImage = new FacebookImage();
+			elementList = elementList.OrderByDescending(x => ((FacebookImage)x).Height).ToList();
 
-			foreach (var element in elementList) {
-				var fbImage = ((FacebookImage)element);
-				if (fbImage.Width < minwidth || minwidth == -1) {
-					minwidth = fbImage.Width;
-					minImage = fbImage;
+			var minElement = (FacebookImage)elementList [elementList.Count - 1];
+			var maxElement = (FacebookImage)elementList [0];
+
+			FacebookImages.Add (minElement);
+			var minImage = await CommonUtils.DownloadUIImageFromURL(minElement.Source);
+
+			GallerySV.SetImage (minImage, new System.EventHandler(async delegate {
+				if (CanEnterImport){
+					CanEnterImport = false;
+					var picture = new Picture();
+					var maxImage = await CommonUtils.DownloadUIImageFromURL(maxElement.Source);
+					picture.SetImageFromUIImage(maxImage);
+					var importLookUp = new PictureImportLookUp(picture);
+					AppDelegate.PushViewLikePresentView(importLookUp);
 				}
-			}
-
-			FacebookImages.Add (minImage);
-			var image = await CommonUtils.DownloadUIImageFromURL(minImage.Source);
-			GallerySV.SetImage (image);
+			}));
 			DownloadedImages++;
 
 			if (DownloadedImages == PictureCount) {
@@ -81,11 +88,6 @@ namespace Board.Interface.FacebookImport
 				CanGoBack = true;
 				BTProgressHUD.Dismiss ();
 			}
-		}
-
-		public override void ViewDidAppear(bool animated)
-		{
-			Banner.SuscribeToEvents ();
 		}
 			
 		private void LoadBanner()
@@ -98,9 +100,10 @@ namespace Board.Interface.FacebookImport
 				}
 
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
+					CanGoBack = false;
 					AppDelegate.NavigationController.PopViewController(true);
 					Banner.UnsuscribeToEvents ();
-					MemoryUtility.ReleaseUIViewWithChildren (View);
+					//MemoryUtility.ReleaseUIViewWithChildren (View);
 				}
 			});
 

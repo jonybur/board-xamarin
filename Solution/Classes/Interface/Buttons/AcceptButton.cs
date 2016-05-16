@@ -21,7 +21,7 @@ namespace Board.Interface.Buttons
 			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth + ButtonSize) / 2 +
 				(AppDelegate.ScreenWidth - ButtonSize) / 4, AppDelegate.ScreenHeight - ButtonSize / 2);
 			
-			eventHandlers.Add ((sender, e) => {
+			eventHandlers.Add (async (sender, e) => {
 				Content content;
 
 				if (Preview.IsAlive){
@@ -31,7 +31,7 @@ namespace Board.Interface.Buttons
 					// takes out the confirmation bar and resets navigation
 					ButtonInterface.SwitchButtonLayout (ButtonInterface.ButtonLayout.NavigationBar);
 
-					content = Preview.GetContent ();
+					content = await Preview.GetContent ();
 				} else {
 					UIPreviewSticker.PreviewSticker.UserInteractionEnabled = false;
 

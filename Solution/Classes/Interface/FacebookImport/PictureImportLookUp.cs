@@ -1,20 +1,21 @@
-using AssetsLibrary;
+﻿using AssetsLibrary;
 using Board.Schema;
 using Board.Utilities;
 using CoreGraphics;
 using UIKit;
+using Board.Interface.LookUp;
+using Board.Interface.CreateScreens;
 
-namespace Board.Interface.LookUp
+namespace Board.Interface.FacebookImport
 {
-	public class PictureLookUp : UILookUp
+	public class PictureImportLookUp : UILookUp
 	{
-		UITapGestureRecognizer doubletap;
+		UITapGestureRecognizer doubletap, NextTap;
 		UILongPressGestureRecognizer longpress;
 		UIScrollViewGetZoomView zoomView;
+		UIImageView InternalImageView, NextButton;
 
-		UIImageView InternalImageView;
-
-		public PictureLookUp(Picture picture)
+		public PictureImportLookUp(Picture picture)
 		{
 			content = picture;
 
@@ -53,7 +54,34 @@ namespace Board.Interface.LookUp
 
 			longpress.MinimumPressDuration = .3f;
 
-			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, TrashButton);
+			CreateNextButton (UIColor.White);
+			View.AddSubviews (ScrollView, BackButton, FacebookButton, NextButton);
+		}
+
+
+		private void CreateNextButton(UIColor buttonColor)
+		{
+			using (UIImage img = UIImage.FromFile ("./camera/nextbutton.png")) {
+				NextButton = new UIImageView(new CGRect(0,0,img.Size.Width * 2,img.Size.Height * 2));
+
+				UIImageView subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
+				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+				subView.Center = new CGPoint (NextButton.Frame.Width / 2, NextButton.Frame.Height / 2);
+				subView.TintColor = buttonColor;
+
+				NextButton.AddSubview (subView);
+				NextButton.Center = new CGPoint (AppDelegate.ScreenWidth - img.Size.Width / 2 - 5, AppDelegate.ScreenHeight - img.Size.Height / 2 - 5);
+			}
+
+			NextButton.UserInteractionEnabled = true;
+
+			NextTap = new UITapGestureRecognizer (tg => {
+				var createScreen = new CreateMediaScreen((Picture)content);
+
+				AppDelegate.NavigationController.PushViewController(createScreen, true);
+
+
+			});
 		}
 
 		private async void SavePhoto(UIAlertAction action)
@@ -91,6 +119,7 @@ namespace Board.Interface.LookUp
 			base.ViewDidAppear (animated);
 			ScrollView.AddGestureRecognizer (doubletap);
 			ScrollView.AddGestureRecognizer (longpress);
+			NextButton.AddGestureRecognizer (NextTap);
 			ScrollView.ViewForZoomingInScrollView += zoomView;
 		}
 
@@ -99,6 +128,7 @@ namespace Board.Interface.LookUp
 			base.ViewDidDisappear (animated);
 			ScrollView.RemoveGestureRecognizer (doubletap);
 			ScrollView.RemoveGestureRecognizer (longpress);
+			NextButton.RemoveGestureRecognizer (NextTap);
 			ScrollView.ViewForZoomingInScrollView -= zoomView;
 			ScrollView = null;
 

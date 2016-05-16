@@ -1,14 +1,14 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Net;
-using CoreLocation;
 using System.Threading.Tasks;
 using Board.JsonResponses;
-using System;
-using Newtonsoft.Json.Linq;
-using Board.Utilities;
 using Board.Schema;
+using Board.Utilities;
+using CoreLocation;
 using Facebook.CoreKit;
-using System.Collections.Generic;
+using Foundation;
 using Newtonsoft.Json;
 using UIKit;
 
@@ -46,7 +46,6 @@ namespace Board.Infrastructure
 
 		public static Dictionary<string, Content> GetBoardContent(string boardId){
 			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/snapshot?authToken="+AppDelegate.EncodedBoardToken);
-			//JsonConvert.DeserializeObject<GoogleGeolocatorObject>(json);
 			var fullJson = JsonConvert.DeserializeObject<Dictionary<string, object>> (result);
 
 			var compiledDictionary = new Dictionary<string, Content> ();
@@ -81,6 +80,18 @@ namespace Board.Infrastructure
 				}
 			}
 			//return returnDictionary;
+		}
+
+		public static bool GetAmazonS3Ticket(string mimeType){
+			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/media/ticket?authToken="+AppDelegate.EncodedBoardToken+"&contentType="+mimeType);
+
+			try{
+				AppDelegate.AmazonS3Ticket = JsonConvert.DeserializeObject<AmazonS3TicketResponse>(result);
+				return true;
+			} catch {
+				AppDelegate.AmazonS3Ticket = null;
+				return false;
+			}
 		}
 
 		public static bool GetAmazonS3Ticket(){
@@ -148,13 +159,11 @@ namespace Board.Infrastructure
 			}
 		}
 
-		private static string UploadObject(string amazonUrl, UIImage image)
+		private static string UploadStream(string amazonUrl, Stream data, string mimeType)
 		{
 			HttpWebRequest httpRequest = WebRequest.Create(amazonUrl) as HttpWebRequest;
 			httpRequest.Method = "PUT";
-			httpRequest.ContentType = "application/octet-stream";
-
-			var data = image.AsJPEG ().AsStream();
+			httpRequest.ContentType = mimeType;
 
 			using (Stream dataStream = httpRequest.GetRequestStream()) {
 				data.CopyTo (dataStream);
@@ -171,12 +180,42 @@ namespace Board.Infrastructure
 			return absoluteURL;
 		}
 
-		public static string UploadToAmazon(UIImage image){
-			GetAmazonS3Ticket ();
+		public static string UploadToAmazon(byte[] byteArray){
+			string mime = "video/mp4";
+			GetAmazonS3Ticket (mime);
 
 			string url;
 			if (AppDelegate.AmazonS3Ticket != null) {
-				url = UploadObject (AppDelegate.AmazonS3Ticket.url, image);
+				var stream = new MemoryStream(byteArray);
+				url = UploadStream (AppDelegate.AmazonS3Ticket.url, stream, mime);
+			} else {
+				return null;
+			}
+			return url;
+		}
+
+		public static string UploadToAmazon(NSUrl nsurl){
+			string mime = "video/mp4";
+			GetAmazonS3Ticket (mime);
+
+			string url;
+			if (AppDelegate.AmazonS3Ticket != null) {
+				var byteArray = File.ReadAllBytes(nsurl.Path);
+				var stream = new MemoryStream(byteArray);
+				url = UploadStream (AppDelegate.AmazonS3Ticket.url, stream, mime);
+			} else {
+				return null;
+			}
+			return url;
+		}
+
+		public static string UploadToAmazon(UIImage image){
+			string mime = "image/jpeg";
+			GetAmazonS3Ticket (mime);
+
+			string url;
+			if (AppDelegate.AmazonS3Ticket != null) {
+				url = UploadStream (AppDelegate.AmazonS3Ticket.url, image.AsJPEG().AsStream(), mime);
 			} else {
 				return null;
 			}
@@ -230,7 +269,6 @@ namespace Board.Infrastructure
 			return boards;
 		}
 
-		// hernan lo tiene que arreglar
 		public static async Task<List<Board.Schema.Board>> GetUserBoards(){
 			
 			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/user/boards?authToken=" + AppDelegate.EncodedBoardToken);

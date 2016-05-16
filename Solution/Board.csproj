@@ -422,6 +422,9 @@
     <Compile Include="Classes\Schema\Sticker.cs" />
     <Compile Include="Classes\Screens\Controls\UIRepeatVideo.cs" />
     <Compile Include="Classes\Interface\CameraScreen\VideoPreview.cs" />
+    <Compile Include="Classes\Interface\FacebookImport\VideosScreen.cs" />
+    <Compile Include="Classes\Interface\FacebookImport\PictureImportLookUp.cs" />
+    <Compile Include="Classes\Interface\FacebookImport\VideoImportLookUp.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

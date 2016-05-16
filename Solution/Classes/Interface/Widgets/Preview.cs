@@ -2,6 +2,8 @@ using System;
 using Board.Interface;
 using Board.Infrastructure;
 using Board.Interface.Buttons;
+using Foundation;
+using Board.Interface.Camera;
 using Board.Interface.Widgets;
 using Board.Schema;
 using Board.Utilities;
@@ -152,7 +154,7 @@ namespace Board.Interface
 			MemoryUtility.ReleaseUIViewWithChildren (view);
 		}
 
-		public static Content GetContent(){
+		public static async System.Threading.Tasks.Task<Content> GetContent(){
 			var boardScroll = AppDelegate.BoardInterface.BoardScroll;
 
 			view.Transform = CGAffineTransform.MakeRotation (0);
@@ -172,9 +174,16 @@ namespace Board.Interface
 				
 				var videoWidget = (VideoWidget)widget;
 
-				//Board.Interface.Camera.CustomPBJVisionDelegate.VideoPath
+				// if the video is from facebook, set local url, upload to amazon
+				string amazonUrl;
+				if (videoWidget.video.AmazonUrl != null) {
+					var byteArray = await CommonUtils.DownloadByteArrayFromURL (videoWidget.video.AmazonUrl);
+					amazonUrl = CloudController.UploadToAmazon (byteArray);
+				} else {
+					amazonUrl = CloudController.UploadToAmazon (videoWidget.video.LocalNSUrl);
+				}
 
-				content = new Video (videoWidget.video.Url, videoWidget.video.Thumbnail, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
+				content = new Video (amazonUrl, videoWidget.video.Thumbnail, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
 
 			} else if (widget is AnnouncementWidget) {
 				
@@ -186,9 +195,7 @@ namespace Board.Interface
 			} else if (widget is EventWidget) {
 				
 				var eventWidget = (EventWidget)widget;
-
 				var imageURL = CloudController.UploadToAmazon (eventWidget.boardEvent.Image);
-
 				content = new BoardEvent (eventWidget.boardEvent.Name, eventWidget.boardEvent.Image, imageURL, eventWidget.boardEvent.StartDate, eventWidget.boardEvent.EndDate, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
 				((BoardEvent)content).Description = eventWidget.boardEvent.Description;
 				content.FacebookId = eventWidget.boardEvent.FacebookId;

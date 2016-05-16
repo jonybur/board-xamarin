@@ -2,15 +2,32 @@
 using System.Collections.Generic;
 using CoreGraphics;
 using MGImageUtilitiesBinding;
+using System;
 
 namespace Board.Screens.Controls
 {
 	public class UIGalleryScrollView : UIScrollView {
-		private List<UIButton> Pictures;
+		private List<UIPictureButton> Pictures;
+
+		private class UIPictureButton : UIButton{
+			public EventHandler TouchUpInsideEvent;
+
+			protected override void Dispose (bool disposing)
+			{
+				if (TouchUpInsideEvent != null) {
+					TouchUpInside -= TouchUpInsideEvent;
+				}
+			}
+
+			public UIPictureButton(CGRect frame){
+				Frame = frame;
+			}
+		}
+
 		float ButtonSize;
 
 		public void SetImages (List<UIImage> listImages){
-			var button = new UIButton(new CGRect (0, 0, ButtonSize, ButtonSize));
+			var button = new UIPictureButton(new CGRect (0, 0, ButtonSize, ButtonSize));
 
 			foreach (var img in listImages){
 				UIImage fixedImg = img.ImageCroppedToFitSize(button.Frame.Size);
@@ -20,11 +37,14 @@ namespace Board.Screens.Controls
 
 		}
 
-		public void SetImage (UIImage image){
-			var button = new UIButton(new CGRect (0, 0, ButtonSize, ButtonSize));
-			UIImage fixedImg = image.ImageCroppedToFitSize(button.Frame.Size);
+		public void SetImage (UIImage image, EventHandler touchUpInsideEvent){
+			var button = new UIPictureButton(new CGRect (0, 0, ButtonSize, ButtonSize));
+			var fixedImg = image.ImageCroppedToFitSize(button.Frame.Size);
 			button.SetImage (fixedImg, UIControlState.Normal);
 			Pictures.Add(button);
+
+			button.TouchUpInsideEvent = touchUpInsideEvent;
+			button.TouchUpInside += touchUpInsideEvent;
 		}
 
 		public void SetDemoImages(){
@@ -32,7 +52,7 @@ namespace Board.Screens.Controls
 
 			for (int i = 0; i < 15; i++) {
 
-				var button = new UIButton(new CGRect (0, 0, ButtonSize, ButtonSize));
+				var button = new UIPictureButton(new CGRect (0, 0, ButtonSize, ButtonSize));
 				button.BackgroundColor = UIColor.Black;
 
 				using (UIImage img = UIImage.FromFile("./demo/pictures/"+j+".jpg")) {
@@ -52,7 +72,7 @@ namespace Board.Screens.Controls
 
 		public UIGalleryScrollView(float width, float height = 200) {
 			Frame = new CGRect (0, 0, width, height);
-			Pictures = new List<UIButton>();
+			Pictures = new List<UIPictureButton>();
 			ScrollEnabled = true;
 			UserInteractionEnabled = true;
 			ButtonSize = (width / 4 - 2);
