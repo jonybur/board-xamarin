@@ -1,6 +1,7 @@
 ﻿using CoreGraphics;
 using UIKit;
 using MGImageUtilitiesBinding;
+using Board.Interface;
 
 namespace Board.Screens.Controls
 {
@@ -8,9 +9,9 @@ namespace Board.Screens.Controls
 	{
 		public const int Height = 175;
 
-		public UIBoardBannerPage(UIImage boardImage)
+		public UIBoardBannerPage(UIImage boardImage, float width)
 		{
-			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, Height);
+			Frame = new CGRect (0, 0, width, Height);
 			BackgroundColor = UIColor.White;
 
 			ClipsToBounds = true;
@@ -24,7 +25,7 @@ namespace Board.Screens.Controls
 
 		private UIImageView GenerateFlag(UIImage boardImage){
 			var flagView = new UIImageView ();
-			flagView.Frame = new CGRect (0, 0, 200, 110);
+			flagView.Frame = new CGRect (0, 0, 100, 100);
 
 			var flagBackground = new UIImageView ();
 			flagBackground.Frame = flagView.Frame;
@@ -32,7 +33,7 @@ namespace Board.Screens.Controls
 			flagBackground.Center = Center;
 
 			var flagLogo = new UIImageView ();
-			flagLogo.Image = boardImage.ImageScaledToFitSize (new CGSize(flagView.Frame.Height - 10, flagView.Frame.Height - 10));
+			flagLogo.Image = boardImage.ImageScaledToFitSize (new CGSize(flagView.Frame.Width - 10, flagView.Frame.Height - 10));
 			flagLogo.Frame = new CGRect (0, 0, flagLogo.Image.Size.Width, flagLogo.Image.Size.Height);
 			flagLogo.Center = flagBackground.Center;
 

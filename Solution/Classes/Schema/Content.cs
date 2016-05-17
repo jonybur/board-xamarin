@@ -10,7 +10,6 @@ namespace Board.Schema
 	{
 		public string Id;
 		public string FacebookId;
-		public string Type;
 
 		[IgnoreDataMember]
 		public CGPoint Center;

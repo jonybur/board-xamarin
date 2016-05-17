@@ -33,6 +33,8 @@ namespace Board.Schema
 
 		public string ImageUrl;
 
+		public const string Type = "pictures";
+
 		public void SetImageFromUIImage(UIImage image){
 			_image = image;
 			SetThumbnail ();
@@ -51,12 +53,10 @@ namespace Board.Schema
 		public string Description;
 
 		public Picture() {
-			Type = "pictures";
 		}
 
 		public Picture(UIImage image, string imageUrl, float rotation, CGPoint center, string creatorid, DateTime creationdate)
 		{
-			Type = "pictures";
 			ImageUrl = imageUrl;
 			SetImageFromUIImage (image);
 			Rotation = rotation;

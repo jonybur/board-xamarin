@@ -44,7 +44,7 @@ namespace Board.Interface
 
 		public override void ViewDidLoad ()
 		{
-			board.FBPage = new Board.Facebook.FacebookPage ("AmericanSocialBrickell", "American Social Brickell", "Nightclub");
+			board.FBPage = new Board.Facebook.FacebookPage ("camelotwestpalm", "American Social Brickell", "Nightclub");
 
 			//var json = JsonUtilty.GenerateDeleteJson ("videos", "36ace705-c3f3-4762-a9c4-71fa7d3c9dc4");
 			//CloudController.UpdateBoard (board.Id, json);
@@ -78,7 +78,7 @@ namespace Board.Interface
 		private void InitializeInterface()
 		{
 			// This was main color
-			View.BackgroundColor = UIColor.FromRGB(8, 22, 62);
+			View.BackgroundColor = board.MainColor;
 
 			BoardScroll = new UIBoardScroll ();
 			BoardScroll.Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);

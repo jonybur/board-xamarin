@@ -299,12 +299,14 @@ namespace Board.Screens
 					AppDelegate.NavigationController.PopViewController (false);
 
 				} else if (tg.LocationInView(this.View).X > (AppDelegate.ScreenWidth / 4) * 3 && nextEnabled){
-					Board.Schema.Board newBoard = new Board.Schema.Board();
+					Board.Facebook.FacebookAutoImporter.ImportPage(nameView.Text);
+
+					/*Board.Schema.Board newBoard = new Board.Schema.Board();
 					newBoard.GeolocatorObject = geolocatorObject;
 					newBoard.Name = nameView.Text;
 
 					CreateScreen2 createScreen2 = new CreateScreen2(newBoard);
-					NavigationController.PushViewController(createScreen2, false);
+					NavigationController.PushViewController(createScreen2, false);*/
 				}
 			});
 

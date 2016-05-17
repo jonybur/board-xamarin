@@ -22,10 +22,11 @@ namespace Board.Schema
 		[IgnoreDataMember]
 		public UIImage Thumbnail;
 
+		public const string Type = "videos";
+
 		public string Description;
 
 		public Video() { 
-			Type = "videos";
 		}
 
 		public NSUrl GetNSUrlForDisplay(){
@@ -38,7 +39,6 @@ namespace Board.Schema
 
 		public Video(string amazonurl, UIImage thumbnail, float rotation, CGPoint center, string creatorid, DateTime creationdate)
 		{
-			Type = "videos";
 			AmazonUrl = amazonurl;
 			Thumbnail = thumbnail;
 			Rotation = rotation;

@@ -17,13 +17,10 @@ namespace Board.Interface
 		public const int XMargin = 10;
 
 		MapContainer Container;
-		UILabel NameLabel, PhoneLabel, OpenLabel;
-		UIActionButton[] ActionButtons;
+		UILabel NameLabel;
 		UIGalleryScrollView GallerySV;
 		TopBanner Banner;
 		UITextView AboutBox;
-
-		int CantActionButtons = 3;
 
 		public UIInfoBox(Board.Schema.Board board){
 			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth - XMargin * 2, AppDelegate.ScreenHeight - UIBoardScroll.ButtonBarHeight);
@@ -34,8 +31,8 @@ namespace Board.Interface
 			Banner = new TopBanner (board.Image, (float)Frame.Width);
 
 			NameLabel = new UILabel ();
-			NameLabel.Frame = new CGRect (0, Banner.Bottom + 15, Frame.Width, 24);
-			NameLabel.Font = UIFont.SystemFontOfSize (22);
+			NameLabel.Frame = new CGRect (10, Banner.Bottom + 20, Frame.Width - 20, 24);
+			NameLabel.Font = AppDelegate.Narwhal20;//UIFont.SystemFontOfSize (22);
 			NameLabel.TextColor = UIColor.Black;
 			NameLabel.Text = UIBoardInterface.board.Name;
 			NameLabel.TextAlignment = UITextAlignment.Center;
@@ -43,25 +40,14 @@ namespace Board.Interface
 			Container = new MapContainer (Frame);
 
 			AboutBox = new UITextView ();
-			AboutBox.Frame = new CGRect (0, NameLabel.Frame.Bottom + 15, Frame.Width, 100);
+			AboutBox.Frame = new CGRect (10, NameLabel.Frame.Bottom + 10, Frame.Width - 20, 100);
 			AboutBox.Text = board.About;
-			AboutBox.Font = UIFont.SystemFontOfSize (16);
+			AboutBox.Font = UIFont.SystemFontOfSize (14);
 			AboutBox.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 			AboutBox.Editable = false;
 			AboutBox.Selectable = false;
 
 			AddSubviews (Banner, Container.button, NameLabel, AboutBox);
-		}
-
-		class UIActionButton : UIButton{
-			public UIActionButton(string imageName){
-				Frame = new CGRect (0, 0, 50, 50);
-
-				using (UIImage img = UIImage.FromFile("./boardinterface/infobox/"+imageName+".png"))
-				{
-					SetImage(img, UIControlState.Normal);
-				}
-			}
 		}
 
 		private class TopBanner : UIView {
@@ -74,27 +60,50 @@ namespace Board.Interface
 				}
 			}
 
-
 			public TopBanner(UIImage boardImage, float width){
 				BackgroundImage = new UIImageView (new CGRect(0, 0, width, UIMagazineBannerPage.Height));
 
-				using (UIImage img = UIImage.FromFile ("./demo/infobox/american_cover.png")) {
-					var scaledImage = img.ImageScaledToFitSize (BackgroundImage.Frame.Size);
-					BackgroundImage.Image = scaledImage;
-				}
-
-				BannerPage = new UIBoardBannerPage (boardImage);
+				BackgroundImage.ClipsToBounds = true;
+				BannerPage = new UIBoardBannerPage (boardImage, width);
 
 				AddSubviews(BackgroundImage, BannerPage);
+
+				LoadCoverImage();
+			}
+
+			public async void LoadCoverImage(){
+				var localBoard = UIBoardInterface.board;
+
+				if (localBoard.CoverImage == null){
+					localBoard.CoverImage = await CommonUtils.DownloadUIImageFromURL(localBoard.CoverImageUrl);
+
+					if (localBoard.CoverImage == null) {
+						return;
+					}
+				}
+
+				using (var img = UIBoardInterface.board.CoverImage) {
+					var scaledImage = img.ImageScaledToFitSize (new CGSize(BackgroundImage.Frame.Width, BackgroundImage.Frame.Width));
+
+					var scaledImageView = new UIImageView (scaledImage);
+					// hacer que la imagen esté en un subview de backgroundimage
+					if (scaledImageView.Frame.Height < BackgroundImage.Frame.Height){
+						scaledImageView.Frame = new CGRect(0,0, (BackgroundImage.Frame.Height * BackgroundImage.Frame.Width) / scaledImageView.Frame.Height, BackgroundImage.Frame.Height);
+						scaledImageView.Center = BackgroundImage.Center;
+					}
+
+
+					BackgroundImage.AddSubview (scaledImageView);
+				}
 			}
 		}
 
 		private class MapContainer : UIViewController{
-			private MapView mapView;
 			const int ButtonHeight = 40;
+			private MapView mapView;
 			public UIButton uberButton, directionsButton;
-			UITapGestureRecognizer uberTap, directionsTap, MapTap;
 			public UIButton button;
+			UITapGestureRecognizer uberTap, directionsTap, MapTap;
 			UIMapMarker mapMarker;
 
 			public MapContainer(CGRect frame){
@@ -112,7 +121,6 @@ namespace Board.Interface
 				CreateDirectionsButton();
 				CreateUberButton();
 			}
-
 
 			private void CreateUberButton(){
 				uberButton = new UIButton ();

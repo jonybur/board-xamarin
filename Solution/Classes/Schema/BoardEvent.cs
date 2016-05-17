@@ -3,8 +3,11 @@ using UIKit;
 using CoreGraphics;
 using System.Threading.Tasks;
 using Board.Utilities;
+using System.Collections.Generic;
+using BigTed;
 using MGImageUtilitiesBinding;
 using Board.Interface.Widgets;
+using Board.Facebook;
 using System.Runtime.Serialization;
 
 namespace Board.Schema
@@ -13,10 +16,6 @@ namespace Board.Schema
 	// Board's way of storing its UIImageViews on the DB
 	public class BoardEvent : Content
 	{
-		public string Name;
-	
-		public string Description;
-
 		[IgnoreDataMember]
 		private UIImage _image;
 
@@ -37,11 +36,15 @@ namespace Board.Schema
 			}
 		}
 
+		[IgnoreDataMember]
+		public bool CoverLoaded;
+
+		public string Name;
+		public string Description;
 		public DateTime StartDate;
-
 		public DateTime EndDate;
-
 		public string ImageUrl;
+		public const string Type = "events";
 
 		public void SetImageFromUIImage(UIImage image){
 			_image = image;
@@ -60,21 +63,32 @@ namespace Board.Schema
 
 	
 		public BoardEvent() {
-			Type = "events";
 		}
 
 		public BoardEvent(string name, UIImage image, string imageUrl, DateTime startdate, DateTime enddate, float rotation, CGPoint center, string creatorid, DateTime creationdate)
 		{
-			Type = "events";
-			SetImageFromUIImage (image);
-			Name = name;
-			ImageUrl = imageUrl;
 			StartDate = startdate;
 			EndDate = enddate;
-			Rotation = rotation;
+			Name = name;
 			Center = center;
+			Rotation = rotation;
+
+			SetImageFromUIImage (image);
+			ImageUrl = imageUrl;
 			CreatorId = creatorid;
 			CreationDate = creationdate;
+		}
+
+		public BoardEvent(FacebookEvent facebookEvent, CGPoint center, float rotation){
+			StartDate = DateTime.Parse (facebookEvent.StartTime);
+			EndDate = DateTime.Parse (facebookEvent.EndTime);
+			Name = facebookEvent.Name;
+			Description = facebookEvent.Description;
+			Center = center;
+			Rotation = rotation;
+			FacebookId = facebookEvent.Id;
+
+			CoverLoaded = false;
 		}
 	}
 }

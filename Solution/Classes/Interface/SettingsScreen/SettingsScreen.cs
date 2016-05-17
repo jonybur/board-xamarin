@@ -1,8 +1,14 @@
-﻿using UIKit;
-using Board.Utilities;
-using Board.Screens.Controls;
+﻿using System.Collections.Generic;
+using BigTed;
+using Board.Facebook;
 using Board.Infrastructure;
+using Board.Schema;
 using Board.Screens;
+using Board.Screens.Controls;
+using Board.Utilities;
+using System.Linq;
+using CoreGraphics;
+using UIKit;
 
 namespace Board.Interface
 {
@@ -10,6 +16,9 @@ namespace Board.Interface
 	{
 		UIMenuBanner Banner;
 		UIOneLineMenuButton SyncButton, AnalyticsButton, DeleteButton, ImportButton;
+
+		List<Content> ContentToImport;
+		CGPoint ItemLocation = new CGPoint(0,120);
 
 		public override void ViewDidLoad ()
 		{
@@ -83,16 +92,92 @@ namespace Board.Interface
 				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate {
 					ImportButton.SetUnpressedColors();
 
+					ContentToImport = new List<Content>();
+
 					// gets 5 announcements
-					// gets 5 events
-					// gets 5 pictures
-					// gets 5 videos
+					BTProgressHUD.Show("Downloading Announcements...");
+					FacebookUtils.MakeGraphRequest(UIBoardInterface.board.FBPage.Id, "?fields=posts.limit(5)", GetAnnouncements);
 
 					// - updates board -
+
 				}));
 				NavigationController.PresentViewController (alert, true, null);
 
 			};
+		}
+
+		void GetAnnouncements(List<FacebookElement> FacebookElements){
+			// parses all posts
+			foreach (var fbelement in FacebookElements) {
+				FacebookPost fbpost = (FacebookPost)fbelement;
+
+				if (fbpost.Message != "<null>" && fbpost.Message != null) {
+					ItemLocation.X += 290;
+					var announcement = new Announcement (fbpost, ItemLocation, 0);
+
+					ContentToImport.Add (announcement);
+				} else {
+					continue;
+				}
+			}
+
+			// gets 5 events
+			BTProgressHUD.Show("Downloading Events...");
+			FacebookUtils.MakeGraphRequest(UIBoardInterface.board.FBPage.Id, "?fields=events.limit(5)", GetEvents);
+		}
+
+		void GetEvents(List<FacebookElement> FacebookElements){
+			// parses all events
+			int coversToLoad = 0;
+			ItemLocation = new CGPoint (0, 300);
+
+			foreach (var fbelement in FacebookElements) {
+				var fbevent = (FacebookEvent)fbelement;
+				ItemLocation.X += 290;
+				var boardEvent = new BoardEvent (fbevent, ItemLocation, 0);
+
+				FacebookUtils.MakeGraphRequest (fbevent.Id, "?fields=cover", delegate(List<FacebookElement> elementList) {
+					if (elementList.Count > 0) {
+						var cover = elementList [0] as FacebookCover;
+						if (cover != null) {
+							boardEvent.ImageUrl = cover.Source;
+						}
+					}
+
+					ContentToImport.Add (boardEvent);
+					coversToLoad++;
+
+					if (coversToLoad == FacebookElements.Count){
+						// gets 5 pictures
+						// TODO estamos acá
+						// to get the pictures first I need to get an album id
+						//FacebookUtils.MakeGraphRequest(UIBoardInterface.board.FBPage.Id, "?fields=events.limit(5)", GetPictures);
+
+						UploadContent();
+					}
+				});
+			}
+					
+
+		}
+			
+		void UploadContent(){
+			var json = JsonUtilty.GenerateUpdateJson (ContentToImport);
+			CloudController.UpdateBoard (UIBoardInterface.board.Id, json);
+			BTProgressHUD.Dismiss();
+		}
+
+		void GetPictures(List<FacebookElement> FacebookElements){
+			// parses all pictures
+
+			// gets 5 videos
+		}
+
+		void GetVideos(List<FacebookElement> FacebookElements){
+			// parses all videos
+
+			var json = JsonUtilty.GenerateUpdateJson (ContentToImport);
+			//CloudController.UpdateBoard (UIBoardInterface.board.Id, json);
 		}
 
 		private void CreateAnalyticsButton(float yPosition)

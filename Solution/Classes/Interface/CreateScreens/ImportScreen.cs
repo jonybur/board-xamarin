@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Board.Facebook;
-using System;
+using Board.Screens.Controls;
+using Board.Utilities;
 using CoreGraphics;
 using UIKit;
-using Board.Utilities;
-using Board.Screens.Controls;
 
 namespace Board.Interface.CreateScreens
 {
@@ -13,9 +13,9 @@ namespace Board.Interface.CreateScreens
 	{
 		UIMenuBanner Banner;
 		UIScrollView ScrollView;
+		Action<FacebookElement> OnReturn;
 		List<UIMenuButton> Buttons;
 		string TypeOfImport;
-		Action<FacebookElement> OnReturn;
 		bool pressed;
 
 		public ImportScreen(string typeOfImport, Action<FacebookElement> onReturn)

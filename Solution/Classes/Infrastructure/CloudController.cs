@@ -307,7 +307,6 @@ namespace Board.Infrastructure
 						board.Image = boardImage;
 						board.GeolocatorObject = geolocatorObject;
 
-
 						board.Id = r.uuid;
 
 						StorageController.StoreBoard (board, jsonobj);
@@ -315,6 +314,8 @@ namespace Board.Infrastructure
 
 					// finishes compiling board
 					board.Name = r.name;
+					board.About = r.about;
+					board.CoverImageUrl = r.coverURL;
 					board.MainColor = CommonUtils.HexToUIColor (r.mainColorCode);
 					board.SecondaryColor = CommonUtils.HexToUIColor (r.secondaryColorCode);
 					board.CreatorId = r.userId;

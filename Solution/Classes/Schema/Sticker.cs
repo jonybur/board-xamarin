@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Runtime.Serialization;
 
 namespace Board.Schema
 {
@@ -6,8 +6,9 @@ namespace Board.Schema
 	{
 		// tiene todo lo necesario para construir un uisticker
 
+		public const string Type = "stickers";
+
 		public Sticker(){
-			Type = "stickers";
 		}
 	}
 }

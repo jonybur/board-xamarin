@@ -7,10 +7,11 @@ using Board.Utilities;
 
 namespace Board.Facebook
 {
-	public static class FacebookPageImporter
+	public static class FacebookAutoImporter
 	{
 		public static void ImportPage (string pageId)
 		{
+			BigTed.BTProgressHUD.Show ("Importing Board...");
 			FacebookUtils.MakeGraphRequest (pageId, "?fields=name,location,about,cover,picture.type(large)", Completion);
 		}
 
@@ -41,6 +42,8 @@ namespace Board.Facebook
 			// - creates board -
 
 			CloudController.CreateBoard (board);
+
+			BigTed.BTProgressHUD.Dismiss ();
 		}
 	}
 }

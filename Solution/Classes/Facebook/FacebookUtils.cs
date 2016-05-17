@@ -41,13 +41,22 @@ namespace Board.Facebook
 			Callback = callback;
 			Element = element;
 
-			GraphRequest graph = new GraphRequest (id + "/" + element, null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
+			var graph = new GraphRequest (id + "/" + element, null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
 			graph.Start (LoadList);
+		}
+
+		enum GraphRequestType{
+			Events = 1, Posts, Videos, Photos, Accounts, Albums, FieldsImages, FieldsCover, FieldsIdSourceThumbnails, FieldsNameLocationAboutCoverPicture
 		}
 
 		private static void LoadList(GraphRequestConnection connection, NSObject obj, NSError err)
 		{
-			List<FacebookElement> ElementList = new List<FacebookElement> ();
+			var ElementList = new List<FacebookElement> ();
+
+			if (obj == null) {
+				Callback (ElementList);
+			}
+
 
 			if (Element == "events") {
 				string[,] objects = NSObjectToElement (obj, "data.id", "data.name", "data.description", "data.start_time", "data.end_time");
@@ -117,11 +126,25 @@ namespace Board.Facebook
 				string[,] objects = NSObjectToElement (obj, "id", "name", "location.latitude", "location.longitude", "about", "cover.source", "picture.data.url");
 
 				for (int i = 0; i < objects.GetLength (0); i++) {
-					var fbimportedpage = new FacebookImportedPage (objects [i, 0], objects [i, 1], new CoreLocation.CLLocationCoordinate2D (Double.Parse(objects [i, 2]), Double.Parse(objects [i, 3])),
+					var fbimportedpage = new FacebookImportedPage (objects [i, 0], objects [i, 1], new CoreLocation.CLLocationCoordinate2D (Double.Parse (objects [i, 2]), Double.Parse (objects [i, 3])),
 						                     objects [i, 4], objects [i, 5], objects [i, 6]);
 					ElementList.Add (fbimportedpage);
 				}
+			} else if (Element == "?fields=posts.limit(5)") {
+				string[,] objects = NSObjectToElement (obj, "posts.data.id", "posts.data.message", "posts.data.story", "posts.data.created_time");
 
+				for (int i = 0; i < objects.GetLength (0); i++) {
+					var fbposts = new FacebookPost (objects [i, 0], objects [i, 1], objects[i, 2], objects[i, 3]);
+					ElementList.Add (fbposts);
+				}
+			} else if (Element == "?fields=events.limit(5)") {
+				string[,] objects = NSObjectToElement (obj, "events.data.id", "events.data.name", "events.data.description",
+														"events.data.start_time", "events.data.end_time");
+
+				for (int i = 0; i < objects.GetLength (0); i++) {
+					var fbevent = new FacebookEvent (objects [i, 0], objects [i, 1], objects [i, 2], objects [i, 3], objects [i, 4]);
+					ElementList.Add (fbevent);
+				}
 			}
 
 			if (Callback != null) {

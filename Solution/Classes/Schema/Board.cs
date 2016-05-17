@@ -19,6 +19,7 @@ namespace Board.Schema
 		public string Id;
 		public double Distance;
 		public string About;
+		public string CoverImageUrl;
 
 		public Board()
 		{
