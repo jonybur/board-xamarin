@@ -110,9 +110,18 @@ namespace Board.Facebook
 
 				for (int i = 0; i < objects.GetLength (0); i++) {
 					// TODO: take is_preferred thumbnail
-					var fbvideosource = new FacebookVideoSource (objects [i, 0], objects [i, 1], objects[i, 2]);
+					var fbvideosource = new FacebookVideoSource (objects [i, 0], objects [i, 1], objects [i, 2]);
 					ElementList.Add (fbvideosource);
 				}
+			} else if (Element == "?fields=name,location,about,cover,picture.type(large)") {
+				string[,] objects = NSObjectToElement (obj, "id", "name", "location.latitude", "location.longitude", "about", "cover.source", "picture.data.url");
+
+				for (int i = 0; i < objects.GetLength (0); i++) {
+					var fbimportedpage = new FacebookImportedPage (objects [i, 0], objects [i, 1], new CoreLocation.CLLocationCoordinate2D (Double.Parse(objects [i, 2]), Double.Parse(objects [i, 3])),
+						                     objects [i, 4], objects [i, 5], objects [i, 6]);
+					ElementList.Add (fbimportedpage);
+				}
+
 			}
 
 			if (Callback != null) {

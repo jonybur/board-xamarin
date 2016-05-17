@@ -1,6 +1,7 @@
 ﻿using Board.Infrastructure;
 using Board.Screens.Controls;
 using Board.Utilities;
+using Board.Facebook;
 using Foundation;
 using UIKit;
 
@@ -13,12 +14,14 @@ namespace Board.Screens
 
 		public override void ViewDidLoad ()
 		{
+			//FacebookPageImporter.ImportPage ("subculturecoffee");
+
 			View.BackgroundColor = UIColor.White;
 
 			AutomaticallyAdjustsScrollViewInsets = false;
 
 			NavigationController.NavigationBarHidden = true;
-
+		 
 			LoadMainMenu ();
 
 			LoadChangelogAlert ();

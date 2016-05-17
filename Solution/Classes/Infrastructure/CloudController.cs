@@ -224,6 +224,7 @@ namespace Board.Infrastructure
 
 		public static bool CreateBoard(Board.Schema.Board board){
 			string logoURL = UploadToAmazon (board.Image);
+			string coverURL = UploadToAmazon (board.CoverImage);
 
 			if (logoURL == null) {
 				return false;
@@ -233,10 +234,11 @@ namespace Board.Infrastructure
 				"\"latitude\": \"" + board.GeolocatorObject.Coordinate.Latitude  + "\", " +
 				"\"longitude\": \"" + board.GeolocatorObject.Coordinate.Longitude  + "\", " +
 				"\"name\": \"" + board.Name + "\", " +
-				"\"description\": \"" + board.Description + "\", " +
+				"\"about\": \"" + board.About + "\", " +
 				"\"mainColorCode\": \"" + CommonUtils.UIColorToHex(board.MainColor)  + "\", " +
 				"\"secondaryColorCode\": \"" + CommonUtils.UIColorToHex(board.SecondaryColor) + "\", " +
-				"\"logoURL\": \"" + logoURL + "\" }";
+				"\"logoURL\": \"" + logoURL + "\", " + 
+				"\"coverURL\": \"" + coverURL + "\" }";
 
 			string result = JsonPOSTRequest ("http://"+AppDelegate.APIAddress+"/api/board?authToken=" + AppDelegate.EncodedBoardToken, json);
 
@@ -304,6 +306,7 @@ namespace Board.Infrastructure
 						// saves it to storage
 						board.Image = boardImage;
 						board.GeolocatorObject = geolocatorObject;
+
 
 						board.Id = r.uuid;
 

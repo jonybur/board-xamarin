@@ -94,7 +94,6 @@ namespace Board.Interface
 
 			var panGesture = new UIPanGestureRecognizer (pg => {
 				if ((pg.State == UIGestureRecognizerState.Began || pg.State == UIGestureRecognizerState.Changed) && (pg.NumberOfTouches == 1)) {
-
 					var p0 = pg.LocationInView(view.Superview);
 
 					if (dx == 0)
@@ -112,7 +111,6 @@ namespace Board.Interface
 					dy = 0;
 				}
 			});
-			panGesture.WeakDelegate = view;
 
 			return panGesture;
 		}
@@ -137,9 +135,15 @@ namespace Board.Interface
 					r += (float)rg.Rotation;
 				}
 			});
-			rotateGesture.WeakDelegate = view;
 
 			return rotateGesture;
+		}
+
+		class CustomDelegate : UIGestureRecognizerDelegate{
+			public override bool ShouldRecognizeSimultaneously (UIGestureRecognizer gestureRecognizer, UIGestureRecognizer otherGestureRecognizer)
+			{
+				return true;
+			}
 		}
 
 		public static void RemoveUserInteraction()

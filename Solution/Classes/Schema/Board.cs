@@ -1,6 +1,7 @@
 using Board.JsonResponses;
 using Board.Facebook;
 using UIKit;
+using CoreLocation;
 using Board.Utilities;
 
 namespace Board.Schema
@@ -8,6 +9,7 @@ namespace Board.Schema
 	public class Board
 	{
 		public UIImage Image;
+		public UIImage CoverImage;
 		public UIColor MainColor;
 		public UIColor SecondaryColor;
 		public GoogleGeolocatorObject GeolocatorObject;
@@ -16,7 +18,7 @@ namespace Board.Schema
 		public FacebookPage FBPage;
 		public string Id;
 		public double Distance;
-		public string Description;
+		public string About;
 
 		public Board()
 		{

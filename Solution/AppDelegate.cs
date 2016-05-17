@@ -166,7 +166,6 @@ namespace Board
 			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 		}
 
-		// TODO: use to kill screens (memoryutility) after popping them
 		public static void PopViewControllerWithCallback(Action callback)
 		{
 			CATransaction.Begin ();
@@ -177,6 +176,18 @@ namespace Board
 
 			CATransaction.Begin ();
 		}
+
+		public static void PopToViewControllerWithCallback(UIViewController viewController, Action callback)
+		{
+			CATransaction.Begin ();
+
+			CATransaction.CompletionBlock = callback;
+
+			NavigationController.PopToViewController(viewController, true);
+
+			CATransaction.Begin ();
+		}
+
 
 		public static void PushViewLikePresentView(UIViewController screen)
 		{

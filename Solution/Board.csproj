@@ -425,6 +425,8 @@
     <Compile Include="Classes\Interface\FacebookImport\VideosScreen.cs" />
     <Compile Include="Classes\Interface\FacebookImport\PictureImportLookUp.cs" />
     <Compile Include="Classes\Interface\FacebookImport\VideoImportLookUp.cs" />
+    <Compile Include="Classes\Facebook\FacebookPageImporter.cs" />
+    <Compile Include="Classes\Facebook\FacebookImportedPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

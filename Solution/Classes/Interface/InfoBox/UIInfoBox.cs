@@ -16,12 +16,12 @@ namespace Board.Interface
 	{
 		public const int XMargin = 10;
 
-		UITextView DescriptionBox;
 		MapContainer Container;
 		UILabel NameLabel, PhoneLabel, OpenLabel;
 		UIActionButton[] ActionButtons;
 		UIGalleryScrollView GallerySV;
 		TopBanner Banner;
+		UITextView AboutBox;
 
 		int CantActionButtons = 3;
 
@@ -42,7 +42,15 @@ namespace Board.Interface
 
 			Container = new MapContainer (Frame);
 
-			AddSubviews (Banner, Container.button, NameLabel);
+			AboutBox = new UITextView ();
+			AboutBox.Frame = new CGRect (0, NameLabel.Frame.Bottom + 15, Frame.Width, 100);
+			AboutBox.Text = board.About;
+			AboutBox.Font = UIFont.SystemFontOfSize (16);
+			AboutBox.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
+			AboutBox.Editable = false;
+			AboutBox.Selectable = false;
+
+			AddSubviews (Banner, Container.button, NameLabel, AboutBox);
 		}
 
 		class UIActionButton : UIButton{

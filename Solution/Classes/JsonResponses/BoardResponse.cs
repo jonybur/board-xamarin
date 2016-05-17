@@ -23,13 +23,14 @@ namespace Board.JsonResponses
 			public double latitude { get; set; }
 			public double longitude { get; set; }
 			public string name { get; set; }
-			public string description { get; set; }
+			public string about { get; set; }
 			public string userId { get; set; }
 			public string mainColor { get; set; }
 			public string secondaryColor { get; set; }
 			public string mainColorCode { get; set; }
 			public string secondaryColorCode { get; set; }
 			public string logoURL { get; set; }
+			public string coverURL { get; set; }
 		}
 
 		[Preserve(AllMembers = true)]
