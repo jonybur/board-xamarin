@@ -77,23 +77,18 @@ namespace Board.Interface
 				if (localBoard.CoverImage == null){
 					localBoard.CoverImage = await CommonUtils.DownloadUIImageFromURL(localBoard.CoverImageUrl);
 
-					if (localBoard.CoverImage == null) {
-						return;
+					if (localBoard.CoverImage != null) {
+						var scaledImage = localBoard.CoverImage.ImageScaledToFitSize (new CGSize(BackgroundImage.Frame.Width, BackgroundImage.Frame.Width));
+
+						var scaledImageView = new UIImageView (scaledImage);
+						// hacer que la imagen esté en un subview de backgroundimage
+						if (scaledImageView.Frame.Height < BackgroundImage.Frame.Height){
+							scaledImageView.Frame = new CGRect(0,0, (BackgroundImage.Frame.Height * BackgroundImage.Frame.Width) / scaledImageView.Frame.Height, BackgroundImage.Frame.Height);
+							scaledImageView.Center = BackgroundImage.Center;
+						}
+
+						BackgroundImage.AddSubview (scaledImageView);
 					}
-				}
-
-				using (var img = UIBoardInterface.board.CoverImage) {
-					var scaledImage = img.ImageScaledToFitSize (new CGSize(BackgroundImage.Frame.Width, BackgroundImage.Frame.Width));
-
-					var scaledImageView = new UIImageView (scaledImage);
-					// hacer que la imagen esté en un subview de backgroundimage
-					if (scaledImageView.Frame.Height < BackgroundImage.Frame.Height){
-						scaledImageView.Frame = new CGRect(0,0, (BackgroundImage.Frame.Height * BackgroundImage.Frame.Width) / scaledImageView.Frame.Height, BackgroundImage.Frame.Height);
-						scaledImageView.Center = BackgroundImage.Center;
-					}
-
-
-					BackgroundImage.AddSubview (scaledImageView);
 				}
 			}
 		}

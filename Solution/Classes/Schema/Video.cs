@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Board.Facebook;
 using CoreGraphics;
 using Foundation;
 using UIKit;
@@ -45,6 +46,13 @@ namespace Board.Schema
 			Center = center;
 			CreatorId = creatorid;
 			CreationDate = creationdate;
+		}
+
+		public Video(FacebookVideo fbVideo, CGPoint center, float rotation){
+			Description = fbVideo.Description;
+			CreationDate = DateTime.Parse(fbVideo.UpdatedTime);
+			Center = center;
+			Rotation = rotation;
 		}
 	}
 }

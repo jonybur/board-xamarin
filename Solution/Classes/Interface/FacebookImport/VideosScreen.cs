@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using BigTed;
+using System.Threading.Tasks;
 using Board.Facebook;
 using Board.Screens.Controls;
 using Board.Utilities;
@@ -12,7 +13,7 @@ namespace Board.Interface.FacebookImport
 	{
 		UIMenuBanner Banner;
 		bool CanGoBack;
-		int VideoCount, DownloadedImages;
+		int VideoCount;
 		UIGalleryScrollView GallerySV;
 		List<FacebookVideo> FacebookVideos;
 
@@ -31,7 +32,7 @@ namespace Board.Interface.FacebookImport
 			View.AddSubview (GallerySV);
 
 			BTProgressHUD.Show ();
-			FacebookUtils.MakeGraphRequest (UIBoardInterface.board.FBPage.Id, "videos", Completion);
+			FacebookUtils.MakeGraphRequest (UIBoardInterface.board.FBPage.Id, "videos?fields=source,description,updated_time,thumbnails", Completion);
 
 			View.AddSubviews (Banner);
 		}
@@ -40,38 +41,32 @@ namespace Board.Interface.FacebookImport
 			Banner.SuscribeToEvents ();
 		}
 
-		private void Completion(List<FacebookElement> elementList) {
+		private async void Completion(List<FacebookElement> elementList) {
 			FacebookVideos = new List<FacebookVideo> ();
 
 			VideoCount = elementList.Count;
 
 			foreach (var element in elementList) {
-				FacebookUtils.MakeGraphRequest (element.Id, "?fields=id,source,thumbnails", LoadVideoURL);
+				//FacebookUtils.MakeGraphRequest (element.Id, "?fields=id,source,thumbnails", LoadVideoURL);
+
+				await LoadVideoURL(element as FacebookVideo);
 			}
 
+			GallerySV.Fill (false, (float)Banner.Frame.Bottom - 20);
+			CanGoBack = true;
 			BTProgressHUD.Dismiss ();
 		}
 
-		private async void LoadVideoURL(List<FacebookElement> elementList){
-			if (elementList.Count == 0){return;}
-
-			var fbVideoSource = (FacebookVideoSource)elementList[0];
-			var thumbImage = await CommonUtils.DownloadUIImageFromURL(fbVideoSource.ThumbnailUrl);
+		private async Task LoadVideoURL(FacebookVideo fbVideo){
+						
+			var thumbImage = await CommonUtils.DownloadUIImageFromURL(fbVideo.ThumbnailUris[0]);
 
 			GallerySV.SetImage (thumbImage, new System.EventHandler(async delegate {
 				var video = new Board.Schema.Video();
-				video.AmazonUrl = fbVideoSource.Source;
+				video.AmazonUrl = fbVideo.Source;
 				var importLookUp = new VideoImportLookUp(video);
 				AppDelegate.PushViewLikePresentView(importLookUp);
 			}));
-
-			DownloadedImages++;
-
-			if (DownloadedImages == VideoCount) {
-				GallerySV.Fill (false, (float)Banner.Frame.Bottom - 20);
-				CanGoBack = true;
-				BTProgressHUD.Dismiss ();
-			}
 		}
 
 		private void LoadBanner()
@@ -87,7 +82,6 @@ namespace Board.Interface.FacebookImport
 					CanGoBack = false;
 					AppDelegate.NavigationController.PopViewController(true);
 					Banner.UnsuscribeToEvents ();
-					//MemoryUtility.ReleaseUIViewWithChildren (View);
 				}
 			});
 

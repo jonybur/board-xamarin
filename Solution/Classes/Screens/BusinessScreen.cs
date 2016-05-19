@@ -101,8 +101,33 @@ namespace Board.Screens
 					AppDelegate.containerScreen.BringSideMenuUp("business");
 				}
 				else if (AppDelegate.ScreenWidth / 4 * 3 < tg.LocationInView(this.View).X){
+
+					UIAlertController alert = UIAlertController.Create("Facebook Page Importer", null, UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
+					alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate {
+						if (alert.TextFields.Length == 0){
+							return;
+						}
+
+						var textField = alert.TextFields[0];
+
+						if (textField.Text == string.Empty || textField.Text == null){ 
+							return;
+						}
+
+						Board.Facebook.FacebookAutoImporter.ImportPage(textField.Text);
+					}));
+
+					alert.AddTextField(delegate(UITextField obj) {
+						obj.Placeholder = "Facebook Page ID";
+					});
+
+					NavigationController.PresentViewController(alert, false, null);
+
+					/*
 					CreateScreen1 createScreen1 = new CreateScreen1();
 					AppDelegate.NavigationController.PushViewController(createScreen1, false);
+					*/
 				}
 			});
 

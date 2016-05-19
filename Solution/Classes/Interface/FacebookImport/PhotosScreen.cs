@@ -66,7 +66,14 @@ namespace Board.Interface.FacebookImport
 			elementList = elementList.OrderByDescending(x => ((FacebookImage)x).Height).ToList();
 
 			var minElement = (FacebookImage)elementList [elementList.Count - 1];
-			var maxElement = (FacebookImage)elementList [0];
+			FacebookImage maxElement;
+			if (elementList.Count > 2) {
+				maxElement = elementList [2] as FacebookImage;
+			} else if (elementList.Count > 1){
+				maxElement = elementList [1] as FacebookImage;
+			} else {
+				maxElement = elementList [0] as FacebookImage;
+			}
 
 			FacebookImages.Add (minElement);
 			var minImage = await CommonUtils.DownloadUIImageFromURL(minElement.Source);

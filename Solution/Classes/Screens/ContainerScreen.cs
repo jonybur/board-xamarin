@@ -14,8 +14,6 @@ namespace Board.Screens
 
 		public override void ViewDidLoad ()
 		{
-			//FacebookPageImporter.ImportPage ("subculturecoffee");
-
 			View.BackgroundColor = UIColor.White;
 
 			AutomaticallyAdjustsScrollViewInsets = false;

@@ -52,7 +52,7 @@ namespace Board.Utilities
 				bytes = await webClient.DownloadDataTaskAsync(uri);
 				return CommonUtils.GetImagefromByteArray(bytes);
 			}catch{
-				return new UIImage ();
+				return null;
 			}
 		}
 

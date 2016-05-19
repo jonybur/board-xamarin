@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Board.Interface.Widgets;
 using Board.Utilities;
 using CoreGraphics;
+using Board.Facebook;
 using MGImageUtilitiesBinding;
 using UIKit;
 
@@ -63,6 +64,13 @@ namespace Board.Schema
 			Center = center;
 			CreatorId = creatorid;
 			CreationDate = creationdate;
+		}
+
+		public Picture(FacebookPhoto facebookPhoto, CGPoint center, float rotation){
+			CreationDate = DateTime.Parse(facebookPhoto.CreatedTime);
+			FacebookId = facebookPhoto.Id;
+			Center = center;
+			Rotation = rotation;
 		}
 	}
 }

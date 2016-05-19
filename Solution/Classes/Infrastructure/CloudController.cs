@@ -46,6 +46,11 @@ namespace Board.Infrastructure
 
 		public static Dictionary<string, Content> GetBoardContent(string boardId){
 			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/snapshot?authToken="+AppDelegate.EncodedBoardToken);
+
+			if (result == "Timeout") {
+				return new Dictionary<string, Content> ();
+			}
+
 			var fullJson = JsonConvert.DeserializeObject<Dictionary<string, object>> (result);
 
 			var compiledDictionary = new Dictionary<string, Content> ();
@@ -59,8 +64,6 @@ namespace Board.Infrastructure
 				FillDictionary<Poll> (contentsLevel, "polls", ref compiledDictionary);
 				FillDictionary<Video> (contentsLevel, "videos", ref compiledDictionary);
 				FillDictionary<BoardEvent> (contentsLevel, "events", ref compiledDictionary);
-				//FillDictionary<Sticker> (contentsLevel, "stickers", ref compiledDictionary);
-
 			}
 			return compiledDictionary;
 		}
@@ -69,8 +72,7 @@ namespace Board.Infrastructure
 			string jsonTypeName,
 			ref Dictionary<string, Content> dictionaryToFill) where T : Content
 		{
-
-			//var returnDictionary = new Dictionary<string, T> ();
+			
 			if (contentsLevel.ContainsKey (jsonTypeName)) {
 				string contents = contentsLevel [jsonTypeName].ToString ();
 				var contentsDictionary = JsonConvert.DeserializeObject<Dictionary<string, T>> (contents);
@@ -79,7 +81,6 @@ namespace Board.Infrastructure
 					dictionaryToFill.Add (cnt.Key, cnt.Value);
 				}
 			}
-			//return returnDictionary;
 		}
 
 		public static bool GetAmazonS3Ticket(string mimeType){
@@ -107,8 +108,7 @@ namespace Board.Infrastructure
 		}
 
 		public static bool DeleteBoard(string boardId){
-			///api/boards/<Board ID>?authToken=<Authorization Token>
-
+			
 			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/board/" + boardId + "?authToken=" + AppDelegate.EncodedBoardToken, "DELETE");
 
 			if (result == "200" || result == string.Empty) {
@@ -146,7 +146,6 @@ namespace Board.Infrastructure
 			try{
 				tk = JsonConvert.DeserializeObject<TokenResponse> (result);
 			} catch {
-				// TODO: handle connect failure or something
 				tk = null;
 			}
 
@@ -180,8 +179,7 @@ namespace Board.Infrastructure
 			return absoluteURL;
 		}
 
-		public static string UploadToAmazon(byte[] byteArray){
-			string mime = "video/mp4";
+		public static string UploadToAmazon(byte[] byteArray, string mime = "video/mp4"){
 			GetAmazonS3Ticket (mime);
 
 			string url;
@@ -194,13 +192,12 @@ namespace Board.Infrastructure
 			return url;
 		}
 
-		public static string UploadToAmazon(NSUrl nsurl){
-			string mime = "video/mp4";
+		public static string UploadToAmazon(NSUrl localnsurl, string mime = "video/mp4"){
 			GetAmazonS3Ticket (mime);
 
 			string url;
 			if (AppDelegate.AmazonS3Ticket != null) {
-				var byteArray = File.ReadAllBytes(nsurl.Path);
+				var byteArray = File.ReadAllBytes(localnsurl.Path);
 				var stream = new MemoryStream(byteArray);
 				url = UploadStream (AppDelegate.AmazonS3Ticket.url, stream, mime);
 			} else {
@@ -209,8 +206,7 @@ namespace Board.Infrastructure
 			return url;
 		}
 
-		public static string UploadToAmazon(UIImage image){
-			string mime = "image/jpeg";
+		public static string UploadToAmazon(UIImage image, string mime = "image/jpeg"){
 			GetAmazonS3Ticket (mime);
 
 			string url;
@@ -240,7 +236,7 @@ namespace Board.Infrastructure
 				"\"logoURL\": \"" + logoURL + "\", " + 
 				"\"coverURL\": \"" + coverURL + "\" }";
 
-			string result = JsonPOSTRequest ("http://"+AppDelegate.APIAddress+"/api/board?authToken=" + AppDelegate.EncodedBoardToken, json);
+			string result = JsonPOSTRequest ("http://" + AppDelegate.APIAddress + "/api/board?authToken=" + AppDelegate.EncodedBoardToken, json);
 
 			if (result == "200" || result == string.Empty) {
 				StorageController.StoreImage (board.Image, board.Id);

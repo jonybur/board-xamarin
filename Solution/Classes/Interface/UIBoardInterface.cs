@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using BigTed;
-using Board.Interface;
 using Board.Infrastructure;
+using Board.Interface;
 using Board.Interface.Buttons;
 using Board.Interface.Widgets;
 using Board.Schema;
 using Board.Utilities;
 using CoreGraphics;
-using Facebook.CoreKit;
 using UIKit;
 
 namespace Board.Interface
