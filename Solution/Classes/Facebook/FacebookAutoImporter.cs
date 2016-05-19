@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using BigTed;
+using Board.Infrastructure;
 using Board.JsonResponses;
 using Board.Schema;
-using UIKit;
-using Board.Infrastructure;
 using Board.Utilities;
+using UIKit;
 
 namespace Board.Facebook
 {
@@ -43,7 +44,7 @@ namespace Board.Facebook
 
 			CloudController.CreateBoard (board);
 
-			BigTed.BTProgressHUD.Dismiss ();
+			BTProgressHUD.Dismiss ();
 		}
 	}
 }

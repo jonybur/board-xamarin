@@ -116,15 +116,7 @@ namespace Board.Facebook
 					var fbcover = new FacebookCover (objects [i, 0], objects [i, 1]);
 					ElementList.Add (fbcover);
 				}
-			} /*else if (Element == "?fields=id,source,thumbnails") {
-				string[,] objects = NSObjectToElement (obj, "id", "source", "thumbnails.data.uri");
-
-				for (int i = 0; i < objects.GetLength (0); i++) {
-					// TODO: take is_preferred thumbnail
-					var fbvideosource = new FacebookVideoSource (objects [i, 0], objects [i, 1], objects [i, 2]);
-					ElementList.Add (fbvideosource);
-				}
-			} */else if (Element.StartsWith ("?fields=name,location,about,cover,picture", StringComparison.Ordinal)) {
+			} else if (Element.StartsWith ("?fields=name,location,about,cover,picture", StringComparison.Ordinal)) {
 				string[,] objects = NSObjectToElement (obj, "id", "name", "location.latitude", "location.longitude", "about", "cover.source", "picture.data.url");
 
 				for (int i = 0; i < objects.GetLength (0); i++) {

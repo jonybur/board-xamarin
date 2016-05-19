@@ -45,6 +45,16 @@ namespace Board.Screens.Controls
 			
 		}
 
+		bool IsAllUpper(string input)
+		{
+			for (int i = 0; i < input.Length; i++)
+			{
+				if (Char.IsLetter(input[i]) && !Char.IsUpper(input[i]))
+					return false;
+			}
+			return true;
+		}
+
 		private UILabel CreateNameLabel(string nameString, double distance, float width)
 		{
 			UILabel label = new UILabel ();
@@ -61,6 +71,10 @@ namespace Board.Screens.Controls
 			string distanceString = distance.ToString ("F1");
 			if (distanceString == "0.0") {
 				distanceString = "0";
+			}
+
+			if (IsAllUpper(nameString) && nameString.Length > 14) {
+				nameString = nameString.Substring (0, 14) + "...";
 			}
 
 			string distanceTotalString = distanceString + farAway;

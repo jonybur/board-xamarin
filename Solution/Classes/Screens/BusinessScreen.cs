@@ -122,7 +122,7 @@ namespace Board.Screens
 						obj.Placeholder = "Facebook Page ID";
 					});
 
-					NavigationController.PresentViewController(alert, false, null);
+					NavigationController.PresentViewController(alert, true, null);
 
 					/*
 					CreateScreen1 createScreen1 = new CreateScreen1();
