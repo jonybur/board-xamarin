@@ -241,7 +241,7 @@ namespace Board.Interface.Camera
 
 			BackButton.UserInteractionEnabled = true;
 
-			BackTap = new UITapGestureRecognizer (tg => AppDelegate.PopViewLikeDismissView ());
+			BackTap = new UITapGestureRecognizer (tg => AppDelegate.PopViewControllerLikeDismissView ());
 		}
 
 		private void CreateFlipButton(UIColor buttonColor)

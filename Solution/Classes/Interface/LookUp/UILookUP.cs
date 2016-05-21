@@ -101,7 +101,7 @@ namespace Board.Interface.LookUp
 
 			backTap = new UITapGestureRecognizer (tg => {
 				// user tapped on "Done" button
-				AppDelegate.PopViewLikeDismissView();
+				AppDelegate.PopViewControllerLikeDismissView();
 				ButtonInterface.SwitchButtonLayout(ButtonInterface.ButtonLayout.NavigationBar);
 			});
 		}
@@ -190,7 +190,7 @@ namespace Board.Interface.LookUp
 				MemoryUtility.ReleaseUIViewWithChildren (View);
 			}
 
-			AppDelegate.PopViewLikeDismissView ();
+			AppDelegate.PopViewControllerLikeDismissView ();
 		}
 
 		private void HideWindow(UIAlertAction action)

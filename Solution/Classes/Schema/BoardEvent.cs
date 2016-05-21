@@ -80,8 +80,16 @@ namespace Board.Schema
 		}
 
 		public BoardEvent(FacebookEvent facebookEvent, CGPoint center, float rotation){
-			StartDate = DateTime.Parse (facebookEvent.StartTime);
-			EndDate = DateTime.Parse (facebookEvent.EndTime);
+			try{
+				StartDate = DateTime.Parse (facebookEvent.StartTime);
+			}catch{
+				StartDate = new DateTime();
+			}
+			try {
+				EndDate = DateTime.Parse (facebookEvent.EndTime);
+			}catch{
+				EndDate = StartDate.AddHours(1);
+			}
 			Name = facebookEvent.Name;
 			Description = facebookEvent.Description;
 			Center = center;

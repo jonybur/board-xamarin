@@ -110,6 +110,8 @@ namespace Board.Interface
 					dx = 0;
 					dy = 0;
 				}
+
+				Console.WriteLine("Pan");
 			});
 
 			return panGesture;
@@ -134,6 +136,8 @@ namespace Board.Interface
 				} else if (rg.State == UIGestureRecognizerState.Ended) {
 					r += (float)rg.Rotation;
 				}
+
+				Console.WriteLine("Rotate");
 			});
 
 			return rotateGesture;

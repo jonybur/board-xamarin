@@ -42,7 +42,7 @@ namespace Board.Interface.CreateScreens
 
 			var leftTap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4) {
-					AppDelegate.PopViewLikeDismissView();
+					AppDelegate.PopToViewControllerLikeDismissView(AppDelegate.BoardInterface);
 				} else if (AppDelegate.ScreenWidth * 3 / 4 < tg.LocationInView(this.View).X && toImport != null) {
 					
 					if (UIBoardInterface.board.FBPage != null)

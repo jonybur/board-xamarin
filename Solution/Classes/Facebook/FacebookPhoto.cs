@@ -7,11 +7,11 @@ namespace Board.Facebook
 	{
 		public string Name;
 		public string CreatedTime;
+		public string Description;
 
-		List<FacebookImage> Images;
-
-		public FacebookPhoto(string id, string name, string createdtime)
+		public FacebookPhoto(string id, string name, string createdtime, string description)
 		{
+			Description = description;
 			Name = name;
 			CreatedTime = createdtime;
 			Id = id;
@@ -25,10 +25,11 @@ namespace Board.Facebook
 
 		public FacebookImage(){}
 
-		public FacebookImage (string height, string source, string width){
+		public FacebookImage (string id, string height, string source, string width){
 			Height = Int32.Parse(height);
 			Source = source;
 			Width = Int32.Parse(width);
+			Id = id;
 		}
 	}
 }

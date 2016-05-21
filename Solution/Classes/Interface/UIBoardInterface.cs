@@ -203,8 +203,8 @@ namespace Board.Interface
 
 			} else if (content is BoardEvent) {
 				widget = new EventWidget (content as BoardEvent);
-
 				((EventWidget)widget).Initialize ();
+
 			} else if (content is Announcement) {
 				widget = new AnnouncementWidget (content as Announcement);
 			} else if (content is Poll) {

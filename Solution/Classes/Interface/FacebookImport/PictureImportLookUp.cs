@@ -77,10 +77,7 @@ namespace Board.Interface.FacebookImport
 
 			NextTap = new UITapGestureRecognizer (tg => {
 				var createScreen = new CreateMediaScreen((Picture)content);
-
 				AppDelegate.NavigationController.PushViewController(createScreen, true);
-
-
 			});
 		}
 

@@ -51,7 +51,8 @@ namespace Board.Utilities
 			{
 				bytes = await webClient.DownloadDataTaskAsync(uri);
 				return CommonUtils.GetImagefromByteArray(bytes);
-			}catch{
+			}catch (Exception ex){
+				Console.WriteLine (ex.Message);
 				return null;
 			}
 		}

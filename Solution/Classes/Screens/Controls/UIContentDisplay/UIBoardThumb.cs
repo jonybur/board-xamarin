@@ -69,8 +69,8 @@ namespace Board.Screens.Controls
 			}
 
 			string distanceString = distance.ToString ("F1");
-			if (distanceString == "0.0") {
-				distanceString = "0";
+			if (distanceString.EndsWith(".0")) {
+				distanceString = distanceString.Substring (0, distanceString.Length - 2);
 			}
 
 			if (IsAllUpper(nameString) && nameString.Length > 14) {

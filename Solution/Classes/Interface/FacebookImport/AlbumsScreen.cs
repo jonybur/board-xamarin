@@ -125,7 +125,7 @@ namespace Board.Interface.FacebookImport
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					AppDelegate.PopViewLikeDismissView();
+					AppDelegate.PopViewControllerLikeDismissView();
 					Banner.UnsuscribeToEvents ();
 					MemoryUtility.ReleaseUIViewWithChildren (View);
 				}

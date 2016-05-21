@@ -140,7 +140,7 @@ namespace Board.Screens.Controls
 			// TODO: usar user en lugar de profile
 			UILabel name = new UILabel (new CGRect(10, profileView.Frame.Bottom + nameYPosition, sidemenu.Frame.Width - 20, 20));
 			name.Font = namefont;
-			name.Text = Profile.CurrentProfile.FirstName;
+			name.Text = AppDelegate.BoardUser.FirstName;
 			name.TextColor = UIColor.White;
 			name.TextAlignment = UITextAlignment.Center;
 			name.AdjustsFontSizeToFitWidth = true;
@@ -149,7 +149,7 @@ namespace Board.Screens.Controls
 			UILabel lastname = new UILabel (new CGRect(10, name.Frame.Bottom + 3, sidemenu.Frame.Width - 20, 24));
 			lastname.Font = lastnamefont;
 			lastname.AdjustsFontSizeToFitWidth = true;
-			lastname.Text = Profile.CurrentProfile.LastName;
+			lastname.Text = AppDelegate.BoardUser.LastName;
 			lastname.TextColor = UIColor.White;
 			lastname.TextAlignment = UITextAlignment.Center;
 			sidemenu.AddSubview (lastname);

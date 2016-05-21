@@ -38,6 +38,10 @@ namespace Board.Screens.Controls
 		}
 
 		public void SetImage (UIImage image, EventHandler touchUpInsideEvent){
+			if (image == null) {
+				return;
+			}
+
 			var button = new UIPictureButton(new CGRect (0, 0, ButtonSize, ButtonSize));
 			var fixedImg = image.ImageCroppedToFitSize(button.Frame.Size);
 			button.SetImage (fixedImg, UIControlState.Normal);

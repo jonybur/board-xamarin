@@ -39,9 +39,7 @@ namespace Board.Screens
 				defaults.Synchronize ();
 
 				UIAlertController alert = UIAlertController.Create ("Welcome to Board 0.4.1", "Changelog:\n" +
-					"· Server integration\n" +
-					"· Whole new main menu\n" +
-					"· Ability to post Boards"
+					"· Boards have been autoimported from Facebook"
 					, UIAlertControllerStyle.Alert);
 
 				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));	

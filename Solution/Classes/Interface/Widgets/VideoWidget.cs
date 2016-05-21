@@ -31,6 +31,8 @@ namespace Board.Interface.Widgets
 
 			var repeaterVideo = new UIRepeatVideo (new CGRect (SideMargin, TopMargin, size.Width, size.Height), video.GetNSUrlForDisplay ());
 
+			repeaterVideo.VideoGravity = AVFoundation.AVLayerVideoGravity.ResizeAspectFill;
+
 			View.AddSubview (repeaterVideo.View);
 
 			View.Layer.AllowsEdgeAntialiasing = true;

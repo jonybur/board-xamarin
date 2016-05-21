@@ -82,10 +82,10 @@ namespace Board.Facebook
 				}
 
 			} else if (Element.StartsWith("photos", StringComparison.Ordinal)) {
-				string[,] objects = NSObjectToElement (obj, "data.id", "data.name", "data.created_time");
+				string[,] objects = NSObjectToElement (obj, "data.id", "data.name", "data.created_time", "data.name");
 
 				for (int i = 0; i < objects.GetLength (0); i++) {
-					var fbphoto = new FacebookPhoto (objects [i, 0], objects [i, 1], objects [i, 2]);
+					var fbphoto = new FacebookPhoto (objects [i, 0], objects [i, 1], objects [i, 2], objects[i, 3]);
 					ElementList.Add (fbphoto);
 				}
 			} else if (Element == "accounts") {
@@ -103,10 +103,10 @@ namespace Board.Facebook
 					ElementList.Add (fbalbum);
 				}
 			} else if (Element == "?fields=images") {
-				string[,] objects = NSObjectToElement (obj, "images.height", "images.source", "images.width");
+				string[,] objects = NSObjectToElement (obj, "id", "images.height", "images.source", "images.width");
 
 				for (int i = 0; i < objects.GetLength (0); i++) {
-					var fbimage = new FacebookImage (objects [i, 0], objects [i, 1], objects [i, 2]);
+					var fbimage = new FacebookImage (objects [i, 0], objects [i, 1], objects [i, 2], objects[i, 3]);
 					ElementList.Add (fbimage);
 				}
 			} else if (Element == "?fields=cover") {
@@ -163,7 +163,10 @@ namespace Board.Facebook
 
 			if (ids == null) {
 				NSMutableArray array = new NSMutableArray (1);
-				array.Add (obj.ValueForKeyPath (idString));
+				var valueForKeyPath = obj.ValueForKeyPath (idString);
+				if (valueForKeyPath != null) {
+					array.Add (valueForKeyPath);
+				}
 				ids = array;
 			}
 

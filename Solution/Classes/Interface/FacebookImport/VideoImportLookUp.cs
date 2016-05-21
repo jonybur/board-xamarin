@@ -55,7 +55,8 @@ namespace Board.Interface.FacebookImport
 			NextButton.UserInteractionEnabled = true;
 
 			NextTap = new UITapGestureRecognizer (tg => {
-				var createScreen = new CreateMediaScreen(((Video)content).AmazonNSUrl, false);
+				var video = content as Video;
+				var createScreen = new CreateMediaScreen(video);
 				AppDelegate.NavigationController.PushViewController(createScreen, true);
 			});
 		}

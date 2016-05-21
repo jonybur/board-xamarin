@@ -11,7 +11,6 @@ namespace Board.Interface.CreateScreens
 	public class CreateMediaScreen : CreateScreen
 	{
 		PlaceholderTextView textview;
-
 		UITapGestureRecognizer scrollViewTap;
 		EventHandler nextButtonTap;
 		UIImageView thumbView;
@@ -36,6 +35,10 @@ namespace Board.Interface.CreateScreens
 			content = picture;
 		}
 
+		public CreateMediaScreen (Video video){
+			content = video;
+		}
+
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
@@ -49,6 +52,21 @@ namespace Board.Interface.CreateScreens
 			positionY = (float)textview.Frame.Bottom + 60;
 
 			LoadPostToButtons (positionY);
+
+			if (content.FacebookId != null) {
+				
+				if (content is Picture) {
+					if (((Picture)content).Description != null) {
+						textview.Text = ((Picture)content).Description;
+					}
+				} else if (content is Video) {
+					if (((Video)content).Description != null) {
+						textview.Text = ((Video)content).Description;
+					}
+				}
+
+				ShareButtons.ActivateFacebook();
+			}
 
 			CreateGestures ();
 		}
@@ -76,9 +94,9 @@ namespace Board.Interface.CreateScreens
 
 			nextButtonTap += (sender, e) => {
 				if (content is Picture){
-					((Picture)content).Description = textview.Text;
+					textview.SetText(((Picture)content).Description);
 				} else if (content is Video){
-					((Video)content).Description = textview.Text;
+					textview.SetText(((Video)content).Description);
 				}
 
 				Preview.Initialize (content);
@@ -112,10 +130,14 @@ namespace Board.Interface.CreateScreens
 				var outTime = new CoreMedia.CMTime ();
 				var outError = new NSError ();
 				var imgRef = generator.CopyCGImageAtTime (requestedTime, out outTime, out outError);
-				image = new UIImage (imgRef);
+				try{
+					image = new UIImage (imgRef);
+				}catch{
+					image = null;
+				}
 
 			} else {
-				image = new UIImage ();
+				image = null;
 			}
 
 			float scale = (float)(image.Size.Height / image.Size.Width);

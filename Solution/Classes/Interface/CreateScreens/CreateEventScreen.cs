@@ -391,7 +391,7 @@ namespace Board.Interface.CreateScreens
 				if (!isEditing) {
 					NavigationController.PopViewController(false);
 				} else {
-					AppDelegate.PopViewLikeDismissView();
+					AppDelegate.PopViewControllerLikeDismissView();
 				}
 			};
 

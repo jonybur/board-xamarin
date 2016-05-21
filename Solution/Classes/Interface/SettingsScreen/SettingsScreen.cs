@@ -173,11 +173,17 @@ namespace Board.Interface
 						// gets albums
 						BTProgressHUD.Show("Importing Photos...");
 						//FacebookUtils.MakeGraphRequest(UIBoardInterface.board.FBPage.Id, "albums", GetAlbums);
-						FacebookUtils.MakeGraphRequest(FBIdToImportFrom, "photos/uploaded?limit=3", GetPhotos);
+						FacebookUtils.MakeGraphRequest(FBIdToImportFrom, "photos/uploaded?limit=9", GetPhotos);
 					}
 				});
 			}
-					
+
+			if (FacebookElements.Count == 0) {
+				// gets albums
+				BTProgressHUD.Show("Importing Photos...");
+				//FacebookUtils.MakeGraphRequest(UIBoardInterface.board.FBPage.Id, "albums", GetAlbums);
+				FacebookUtils.MakeGraphRequest(FBIdToImportFrom, "photos/uploaded?limit=9", GetPhotos);
+			}
 
 		}
 			
@@ -195,11 +201,17 @@ namespace Board.Interface
 			int picturesToLoad = 0;
 			ItemLocation = new CGPoint (0, 510);
 
+			int photoNumber = 0;
 			foreach (FacebookPhoto fbPhoto in FacebookElements) {
+				if (photoNumber == 3) {
+					ItemLocation = new CGPoint (1400, 310);
+				} else if (photoNumber == 6) {
+					ItemLocation = new CGPoint (1400, 500);
+				}
 				ItemLocation.X += 290;
 				var picture = new Picture (fbPhoto, ItemLocation, 0);
 				pictures.Add (picture);
-
+				photoNumber++;
 				FacebookUtils.MakeGraphRequest (fbPhoto.Id, "?fields=images", async delegate(List<FacebookElement> elementList) {
 					if (elementList.Count > 0) {
 						elementList = elementList.OrderByDescending(x => ((FacebookImage)x).Height).ToList();
@@ -215,7 +227,6 @@ namespace Board.Interface
 
 						if (fbImage != null) {
 							int forDisplay = picturesToLoad+1;
-							BTProgressHUD.Show("Importing Photos... " + forDisplay + "/" + FacebookElements.Count);
 							var image = await CommonUtils.DownloadUIImageFromURL(fbImage.Source);
 							var amazonUrl = CloudController.UploadToAmazon(image);
 							pictures[picturesToLoad].ImageUrl = amazonUrl;
@@ -234,6 +245,11 @@ namespace Board.Interface
 				});
 			}
 
+			if (FacebookElements.Count == 0) {
+				BTProgressHUD.Show("Importing Videos...");
+				FacebookUtils.MakeGraphRequest (FBIdToImportFrom, "videos?fields=source,description,updated_time,thumbnails&limit=3", GetVideos);
+			}
+
 			// gets 5 videos
 		}
 
@@ -245,7 +261,7 @@ namespace Board.Interface
 		async void GetVideos(List<FacebookElement> FacebookElements){
 			// parses all videos
 
-			ItemLocation = new CGPoint (1000, 110);
+			ItemLocation = new CGPoint (1700, 130);
 			int i = 1;
 			foreach (FacebookVideo fbVideo in FacebookElements) {
 				
@@ -259,7 +275,7 @@ namespace Board.Interface
 				i++;
 			}
 
-			Test ();
+			UploadContent (); 
 		}
 
 		void UploadContent(){
@@ -300,7 +316,7 @@ namespace Board.Interface
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					AppDelegate.PopViewLikeDismissView();
+					AppDelegate.PopViewControllerLikeDismissView();
 					Banner.UnsuscribeToEvents ();
 					MemoryUtility.ReleaseUIViewWithChildren (View);
 				}

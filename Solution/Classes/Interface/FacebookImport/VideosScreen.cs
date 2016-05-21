@@ -17,9 +17,6 @@ namespace Board.Interface.FacebookImport
 		UIGalleryScrollView GallerySV;
 		List<FacebookVideo> FacebookVideos;
 
-		public VideosScreen(){
-		}
-
 		public override void ViewDidLoad () {
 			View.BackgroundColor = UIColor.White;
 
@@ -55,15 +52,32 @@ namespace Board.Interface.FacebookImport
 			GallerySV.Fill (false, (float)Banner.Frame.Bottom - 20);
 			CanGoBack = true;
 			BTProgressHUD.Dismiss ();
+
+			if (connectionError) {
+				UIAlertController alert = UIAlertController.Create("Couldn't access videos", "Please ensure you have a connection to the Internet.", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+				NavigationController.PresentViewController (alert, true, null);
+
+				connectionError = false;
+			}
 		}
+
+		bool connectionError;
 
 		private async Task LoadVideoURL(FacebookVideo fbVideo){
 						
 			var thumbImage = await CommonUtils.DownloadUIImageFromURL(fbVideo.ThumbnailUris[0]);
 
+			if (thumbImage == null) {
+				connectionError = true;
+				return;
+			}
+
 			GallerySV.SetImage (thumbImage, new System.EventHandler(async delegate {
 				var video = new Board.Schema.Video();
 				video.AmazonUrl = fbVideo.Source;
+				video.FacebookId = fbVideo.Id;
+				video.Description = fbVideo.Description;
 				var importLookUp = new VideoImportLookUp(video);
 				AppDelegate.PushViewLikePresentView(importLookUp);
 			}));

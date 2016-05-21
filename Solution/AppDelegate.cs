@@ -188,7 +188,6 @@ namespace Board
 			CATransaction.Begin ();
 		}
 
-
 		public static void PushViewLikePresentView(UIViewController screen)
 		{
 			CATransition transition = new CATransition ();
@@ -203,7 +202,7 @@ namespace Board
 			NavigationController.PushViewController (screen, false);
 		}
 
-		public static void PopViewLikeDismissView()
+		public static void PopViewControllerLikeDismissView()
 		{
 			CATransition transition = new CATransition ();
 
@@ -215,6 +214,21 @@ namespace Board
 			NavigationController.View.Layer.AddAnimation (transition, null);
 
 			NavigationController.PopViewController (false);
+		}
+
+
+		public static void PopToViewControllerLikeDismissView(UIViewController screen)
+		{
+			CATransition transition = new CATransition ();
+
+			transition.Duration = .3f;
+			transition.TimingFunction = CAMediaTimingFunction.FromName (CAMediaTimingFunction.Linear);
+			transition.Type = CAAnimation.TransitionReveal;
+			transition.Subtype = CAAnimation.TransitionFromBottom;
+			NavigationController.View.Layer.RemoveAllAnimations ();
+			NavigationController.View.Layer.AddAnimation (transition, null);
+
+			NavigationController.PopToViewController(screen, false);
 		}
 	}
 }
