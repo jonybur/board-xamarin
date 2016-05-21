@@ -132,7 +132,7 @@ namespace Board.Interface
 
 				if (fbPost.Message != "<null>" && fbPost.Message != null) {
 					ItemLocation.X += 290;
-					var announcement = new Announcement (fbPost, ItemLocation, 0);
+					var announcement = new Announcement (fbPost, ItemLocation, CGAffineTransform.MakeIdentity());
 
 					ContentToImport.Add (announcement);
 				} else {
@@ -154,7 +154,7 @@ namespace Board.Interface
 			foreach (FacebookEvent fbEvent in FacebookElements) {
 
 				ItemLocation.X += 290;
-				var boardEvent = new BoardEvent (fbEvent, ItemLocation, 0);
+				var boardEvent = new BoardEvent (fbEvent, ItemLocation, CGAffineTransform.MakeIdentity());
 				boardEvents.Add (boardEvent);
 
 				FacebookUtils.MakeGraphRequest (fbEvent.Id, "?fields=cover", delegate(List<FacebookElement> elementList) {
@@ -209,7 +209,7 @@ namespace Board.Interface
 					ItemLocation = new CGPoint (1400, 500);
 				}
 				ItemLocation.X += 290;
-				var picture = new Picture (fbPhoto, ItemLocation, 0);
+				var picture = new Picture (fbPhoto, ItemLocation, CGAffineTransform.MakeIdentity());
 				pictures.Add (picture);
 				photoNumber++;
 				FacebookUtils.MakeGraphRequest (fbPhoto.Id, "?fields=images", async delegate(List<FacebookElement> elementList) {
@@ -265,7 +265,7 @@ namespace Board.Interface
 			int i = 1;
 			foreach (FacebookVideo fbVideo in FacebookElements) {
 				
-				var video = new Video (fbVideo, ItemLocation, 0);
+				var video = new Video (fbVideo, ItemLocation, CGAffineTransform.MakeIdentity());
 				BTProgressHUD.Show("Importing Videos... " + i + "/" + FacebookElements.Count);
 				var byteArray = await CommonUtils.DownloadByteArrayFromURL (fbVideo.Source);
 				video.AmazonUrl = CloudController.UploadToAmazon (byteArray);

@@ -30,7 +30,7 @@ namespace Board.Interface.Widgets
 			View.AddSubview (MountingView);
 
 			var repeaterVideo = new UIRepeatVideo (new CGRect (SideMargin, TopMargin, size.Width, size.Height), video.GetNSUrlForDisplay ());
-
+			repeaterVideo.View.UserInteractionEnabled = false;
 			repeaterVideo.VideoGravity = AVFoundation.AVLayerVideoGravity.ResizeAspectFill;
 
 			View.AddSubview (repeaterVideo.View);

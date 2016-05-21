@@ -57,11 +57,11 @@ namespace Board.Interface.CreateScreens
 				
 				if (content is Picture) {
 					if (((Picture)content).Description != null) {
-						textview.Text = ((Picture)content).Description;
+						textview.SetText (((Picture)content).Description);
 					}
 				} else if (content is Video) {
 					if (((Video)content).Description != null) {
-						textview.Text = ((Video)content).Description;
+						textview.SetText(((Video)content).Description);
 					}
 				}
 

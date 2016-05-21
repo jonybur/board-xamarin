@@ -56,21 +56,21 @@ namespace Board.Schema
 		public Picture() {
 		}
 
-		public Picture(UIImage image, string imageUrl, float rotation, CGPoint center, string creatorid, DateTime creationdate)
+		public Picture(UIImage image, string imageUrl, CGPoint center, string creatorid, DateTime creationdate, CGAffineTransform transform)
 		{
 			ImageUrl = imageUrl;
 			SetImageFromUIImage (image);
-			Rotation = rotation;
+			Transform = transform;
 			Center = center;
 			CreatorId = creatorid;
 			CreationDate = creationdate;
 		}
 
-		public Picture(FacebookPhoto facebookPhoto, CGPoint center, float rotation){
+		public Picture(FacebookPhoto facebookPhoto, CGPoint center, CGAffineTransform transform){
 			CreationDate = DateTime.Parse(facebookPhoto.CreatedTime);
 			FacebookId = facebookPhoto.Id;
 			Center = center;
-			Rotation = rotation;
+			Transform = transform;
 		}
 	}
 }

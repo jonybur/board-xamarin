@@ -65,13 +65,13 @@ namespace Board.Schema
 		public BoardEvent() {
 		}
 
-		public BoardEvent(string name, UIImage image, string imageUrl, DateTime startdate, DateTime enddate, float rotation, CGPoint center, string creatorid, DateTime creationdate)
+		public BoardEvent(string name, UIImage image, string imageUrl, DateTime startdate, DateTime enddate, CGAffineTransform transform, CGPoint center, string creatorid, DateTime creationdate)
 		{
 			StartDate = startdate;
 			EndDate = enddate;
 			Name = name;
 			Center = center;
-			Rotation = rotation;
+			Transform = transform;
 
 			SetImageFromUIImage (image);
 			ImageUrl = imageUrl;
@@ -79,7 +79,7 @@ namespace Board.Schema
 			CreationDate = creationdate;
 		}
 
-		public BoardEvent(FacebookEvent facebookEvent, CGPoint center, float rotation){
+		public BoardEvent(FacebookEvent facebookEvent, CGPoint center, CGAffineTransform transform){
 			try{
 				StartDate = DateTime.Parse (facebookEvent.StartTime);
 			}catch{
@@ -93,7 +93,7 @@ namespace Board.Schema
 			Name = facebookEvent.Name;
 			Description = facebookEvent.Description;
 			Center = center;
-			Rotation = rotation;
+			Transform = transform;
 			FacebookId = facebookEvent.Id;
 
 			CoverLoaded = false;

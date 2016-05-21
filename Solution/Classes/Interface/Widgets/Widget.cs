@@ -93,7 +93,7 @@ namespace Board.Interface.Widgets
 
 			View.Frame = new CGRect (0, 0, MountingView.Frame.Width, MountingView.Frame.Height);
 			View.Center = new CGPoint (content.Center.X + xOffset, content.Center.Y);
-			View.Transform = CGAffineTransform.MakeRotation(content.Rotation);
+			View.Transform = content.Transform;
 		}
 
 		protected void CreateMounting(CGSize size)

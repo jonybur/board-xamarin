@@ -10,9 +10,9 @@ namespace Board.Schema
 		public Map() {
 		}
 
-		public Map(float rotation, CGPoint center, string creatorid, DateTime creationdate)
+		public Map(CGAffineTransform transform, CGPoint center, string creatorid, DateTime creationdate)
 		{
-			Rotation = rotation;
+			Transform = transform;
 			Center = center;
 			CreatorId = creatorid;
 			CreationDate = creationdate;

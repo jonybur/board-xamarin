@@ -99,8 +99,6 @@ namespace Board.Interface
 
 				// gets content, puts it in dictionarycontent
 				DictionaryContent = CloudController.GetBoardContent (board.Id);
-				
-				GenerateTestContent ();
 
 				GenerateWidgets ();
 

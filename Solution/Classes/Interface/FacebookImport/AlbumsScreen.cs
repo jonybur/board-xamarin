@@ -56,8 +56,6 @@ namespace Board.Interface.FacebookImport
 			foreach (var but in Buttons) {
 				but.UnsuscribeToEvent ();
 			}
-
-			// TODO: release with MemoryUtility
 		}
 
 		private void LoadAlbums(List<FacebookElement> elementList)

@@ -190,23 +190,7 @@
     <BundleResource Include="Resources\boardinterface\widget\closedeye.png" />
     <BundleResource Include="Resources\boardinterface\widget\like.png" />
     <BundleResource Include="Resources\boardinterface\widget\openeye.png" />
-    <BundleResource Include="Resources\demo\pictures\0.jpg" />
-    <BundleResource Include="Resources\demo\pictures\1.jpg" />
-    <BundleResource Include="Resources\demo\pictures\2.jpg" />
-    <BundleResource Include="Resources\demo\pictures\3.jpg" />
-    <BundleResource Include="Resources\demo\pictures\5.jpg" />
-    <BundleResource Include="Resources\demo\pictures\6.jpg" />
-    <BundleResource Include="Resources\demo\events\0.jpg" />
-    <BundleResource Include="Resources\demo\videos\0.mp4" />
-    <BundleResource Include="Resources\demo\videos\1.mp4" />
-    <BundleResource Include="Resources\demo\videos\2.mp4" />
-    <BundleResource Include="Resources\demo\videos\3.mp4" />
-    <BundleResource Include="Resources\demo\videos\4.mp4" />
-    <BundleResource Include="Resources\demo\videos\5.mp4" />
-    <BundleResource Include="Resources\demo\videos\6.mp4" />
     <BundleResource Include="Resources\boardinterface\widget\time.png" />
-    <BundleResource Include="Resources\demo\events\1.jpg" />
-    <BundleResource Include="Resources\demo\events\2.jpg" />
     <BundleResource Include="Resources\boardinterface\lookup\cancel.png" />
     <BundleResource Include="Resources\boardinterface\lookup\like.png" />
     <BundleResource Include="Resources\boardinterface\lookup\facebook.png" />
@@ -230,7 +214,6 @@
     <BundleResource Include="Resources\screens\main\map\markercontainer.png" />
     <BundleResource Include="Resources\boardinterface\screens\share\save\6.jpg" />
     <BundleResource Include="Resources\boardinterface\screens\share\save\6plus.jpg" />
-    <BundleResource Include="Resources\demo\pictures\4.jpg" />
     <BundleResource Include="Resources\camera\cameraback.png" />
     <BundleResource Include="Resources\camera\camerafront.png" />
     <BundleResource Include="Resources\camera\flipcamera.png" />
@@ -288,7 +271,6 @@
     <BundleResource Include="Resources\boardinterface\nubuttons\nucard.png" />
     <BundleResource Include="Resources\boardinterface\nubuttons\nusettings.png" />
     <BundleResource Include="Resources\boardinterface\nubuttons\nucamera.png" />
-    <BundleResource Include="Resources\demo\infobox\american_cover.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\openeye.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\closedeye.png" />
     <BundleResource Include="Resources\boardinterface\nubuttons\nuaccept.png" />
@@ -414,7 +396,6 @@
     <Compile Include="Classes\Screens\Controls\UIContentDisplay\UIThumbsContentDisplay.cs" />
     <Compile Include="Classes\Screens\Controls\UIContentDisplay\UITimelineContentDisplay.cs" />
     <Compile Include="Classes\Screens\Controls\UIMapMarker.cs" />
-    <Compile Include="Classes\Interface\UIBoardInterface_Demo.cs" />
     <Compile Include="Classes\Interface\InfoBox\UIInfoBox.cs" />
     <Compile Include="Classes\Screens\Controls\UIBoardBannerPage.cs" />
     <Compile Include="Classes\Interface\UISticker.cs" />
@@ -460,9 +441,6 @@
     <Folder Include="Resources\boardinterface\backgrounds\" />
     <Folder Include="Resources\demo\" />
     <Folder Include="Resources\boardinterface\strokebuttons\" />
-    <Folder Include="Resources\demo\pictures\" />
-    <Folder Include="Resources\demo\videos\" />
-    <Folder Include="Resources\demo\events\" />
     <Folder Include="Resources\boardinterface\widget\" />
     <Folder Include="Classes\Interface\LookUp\" />
     <Folder Include="Classes\Interface\CreateScreens\" />
@@ -494,7 +472,6 @@
     <Folder Include="Resources\screens\sidemenus\6plus\" />
     <Folder Include="Resources\demo\magazine\" />
     <Folder Include="Resources\boardinterface\nubuttons\" />
-    <Folder Include="Resources\demo\infobox\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

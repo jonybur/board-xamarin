@@ -38,21 +38,21 @@ namespace Board.Schema
 			}
 		}
 
-		public Video(string amazonurl, UIImage thumbnail, float rotation, CGPoint center, string creatorid, DateTime creationdate)
+		public Video(string amazonurl, UIImage thumbnail, CGPoint center, string creatorid, DateTime creationdate, CGAffineTransform transform)
 		{
 			AmazonUrl = amazonurl;
 			Thumbnail = thumbnail;
-			Rotation = rotation;
+			Transform = transform;
 			Center = center;
 			CreatorId = creatorid;
 			CreationDate = creationdate;
 		}
 
-		public Video(FacebookVideo fbVideo, CGPoint center, float rotation){
+		public Video(FacebookVideo fbVideo, CGPoint center, CGAffineTransform transform){
 			Description = fbVideo.Description;
 			CreationDate = DateTime.Parse(fbVideo.UpdatedTime);
 			Center = center;
-			Rotation = rotation;
+			Transform = transform;
 		}
 	}
 }

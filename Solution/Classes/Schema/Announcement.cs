@@ -19,28 +19,28 @@ namespace Board.Schema
 		public Announcement() {
 		}
 
-		public Announcement(NSAttributedString text, float rotation, CGPoint center, string creatorid, DateTime creationdate)
+		public Announcement(NSAttributedString text, CGPoint center, string creatorid, DateTime creationdate, CGAffineTransform transform)
 		{
 			Text = text.Value;
 			AttributedText = text;
-			Rotation = rotation;
+			Transform = transform;
 			Center = center;
 			CreatorId = creatorid;
 			CreationDate = creationdate;
 		}
 
-		public Announcement(FacebookPost facebookPost, CGPoint center, float rotation){
+		public Announcement(FacebookPost facebookPost, CGPoint center, CGAffineTransform transform){
 			Text = facebookPost.Message;
 			CreationDate = DateTime.Parse (facebookPost.CreatedTime);
-			Rotation = rotation;
+			Transform = transform;
 			Center = center;
 			FacebookId = facebookPost.Id;
 		}
 
-		public Announcement(string text, float rotation, CGPoint center, string creatorid, DateTime creationdate)
+		public Announcement(string text, CGPoint center, string creatorid, DateTime creationdate, CGAffineTransform transform)
 		{
 			Text = text;
-			Rotation = rotation;
+			Transform = transform;
 			Center = center;
 			CreatorId = creatorid;
 			CreationDate = creationdate;

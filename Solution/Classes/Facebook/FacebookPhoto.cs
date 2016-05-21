@@ -11,7 +11,9 @@ namespace Board.Facebook
 
 		public FacebookPhoto(string id, string name, string createdtime, string description)
 		{
-			Description = description;
+			if (description != "<null>") {
+				Description = description;
+			}
 			Name = name;
 			CreatedTime = createdtime;
 			Id = id;

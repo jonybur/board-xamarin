@@ -2,8 +2,6 @@ using System;
 using Board.Interface;
 using Board.Infrastructure;
 using Board.Interface.Buttons;
-using Foundation;
-using Board.Interface.Camera;
 using Board.Interface.Widgets;
 using Board.Schema;
 using Board.Utilities;
@@ -50,6 +48,7 @@ namespace Board.Interface
 			} else if (content is Picture) {
 				
 				widget = new PictureWidget ((Picture)content);
+				((PictureWidget)widget).Initialize ();
 				TypeOfPreview = (int)Type.Picture;
 
 			} else if (content is Video) {
@@ -77,8 +76,9 @@ namespace Board.Interface
 			widget.View.Frame = new CGRect(0, 0, view.Frame.Width, view.Frame.Height);
 
 			view.Alpha = .5f;
-			view.AddGestureRecognizer (SetNewPanGestureRecognizer());
 			view.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
+			view.AddGestureRecognizer (SetNewPinchGestureRecognizer());
+			view.AddGestureRecognizer (SetNewPanGestureRecognizer());
 			view.AddSubviews(widget.View);
 
 			IsAlive = true;
@@ -93,7 +93,7 @@ namespace Board.Interface
 			float dy = 0;
 
 			var panGesture = new UIPanGestureRecognizer (pg => {
-				if ((pg.State == UIGestureRecognizerState.Began || pg.State == UIGestureRecognizerState.Changed) && (pg.NumberOfTouches == 1)) {
+				if ((pg.State == UIGestureRecognizerState.Began || pg.State == UIGestureRecognizerState.Changed)) {
 					var p0 = pg.LocationInView(view.Superview);
 
 					if (dx == 0)
@@ -111,8 +111,9 @@ namespace Board.Interface
 					dy = 0;
 				}
 
-				Console.WriteLine("Pan");
 			});
+
+			panGesture.Delegate = new CustomDelegate ();
 
 			return panGesture;
 		}
@@ -131,21 +132,59 @@ namespace Board.Interface
 
 			var rotateGesture = new UIRotationGestureRecognizer (rg => {
 				if ((rg.State == UIGestureRecognizerState.Began || rg.State == UIGestureRecognizerState.Changed) && (rg.NumberOfTouches == 2)) {
-					view.Transform = CGAffineTransform.MakeRotation (rg.Rotation + r);
+
+					view.Transform = CGAffineTransform.Rotate(view.Transform, rg.Rotation);
+
 					Rotation = (float)(rg.Rotation + r);
+
+					rg.Rotation = 0;
+
 				} else if (rg.State == UIGestureRecognizerState.Ended) {
 					r += (float)rg.Rotation;
 				}
 
-				Console.WriteLine("Rotate");
 			});
 
+			rotateGesture.Delegate = new CustomDelegate ();
+
 			return rotateGesture;
+		}
+
+		private static UIPinchGestureRecognizer SetNewPinchGestureRecognizer(){
+			
+			var panGesture = new UIPinchGestureRecognizer (pinch => {
+				if ((pinch.State == UIGestureRecognizerState.Began || pinch.State == UIGestureRecognizerState.Changed) && (pinch.NumberOfTouches == 2)) {
+					var pinchView = pinch.View;
+					var bounds = pinchView.Bounds;
+					var pinchCenter = pinch.LocationInView(pinchView);
+					pinchCenter.X -= bounds.GetMidX();
+					pinchCenter.Y -= bounds.GetMidY();
+					var transform = pinchView.Transform;
+					transform = CGAffineTransform.Translate(transform, pinchCenter.X, pinchCenter.Y);
+					var scale = pinch.Scale;
+					transform = CGAffineTransform.Scale(transform, scale, scale);
+					transform = CGAffineTransform.Translate(transform, -pinchCenter.X, -pinchCenter.Y);
+
+					if (transform.xx < 1.5f && transform.xx > .75f && transform.yx < 1.5f && transform.yy > .75f) {
+						pinchView.Transform = transform;
+					}
+
+					pinch.Scale = 1f;
+				} 
+
+			});
+
+			panGesture.Delegate = new CustomDelegate ();
+
+			return panGesture;
 		}
 
 		class CustomDelegate : UIGestureRecognizerDelegate{
 			public override bool ShouldRecognizeSimultaneously (UIGestureRecognizer gestureRecognizer, UIGestureRecognizer otherGestureRecognizer)
 			{
+				if (gestureRecognizer.View != otherGestureRecognizer.View) {
+					return false;
+				}
 				return true;
 			}
 		}
@@ -165,7 +204,6 @@ namespace Board.Interface
 		public static async System.Threading.Tasks.Task<Content> GetContent(){
 			var boardScroll = AppDelegate.BoardInterface.BoardScroll;
 
-			view.Transform = CGAffineTransform.MakeRotation (0);
 			view.Center = new CGPoint (view.Center.X - boardScroll.LastScreen * UIBoardScroll.ScrollViewWidthSize, view.Center.Y);
 
 			Content content;
@@ -176,7 +214,7 @@ namespace Board.Interface
 
 				var imageURL = CloudController.UploadToAmazon (pictureWidget.picture.Image);
 				
-				content = new Picture (pictureWidget.picture.Image, imageURL, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
+				content = new Picture (pictureWidget.picture.Image, imageURL, view.Center, Profile.CurrentProfile.UserID, DateTime.Now, view.Transform);
 
 			} else if (widget is VideoWidget) {
 				
@@ -191,12 +229,12 @@ namespace Board.Interface
 					amazonUrl = CloudController.UploadToAmazon (videoWidget.video.LocalNSUrl);
 				}
 
-				content = new Video (amazonUrl, videoWidget.video.Thumbnail, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
+				content = new Video (amazonUrl, videoWidget.video.Thumbnail, view.Center, Profile.CurrentProfile.UserID, DateTime.Now, view.Transform);
 
 			} else if (widget is AnnouncementWidget) {
 				
 				var announcementWidget = (AnnouncementWidget)widget;
-				content = new Announcement (announcementWidget.announcement.AttributedText, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
+				content = new Announcement (announcementWidget.announcement.AttributedText, view.Center, Profile.CurrentProfile.UserID, DateTime.Now, view.Transform);
 				content.FacebookId = announcementWidget.announcement.FacebookId;
 				content.SocialChannel = announcementWidget.announcement.SocialChannel;
 
@@ -204,18 +242,18 @@ namespace Board.Interface
 				
 				var eventWidget = (EventWidget)widget;
 				var imageURL = CloudController.UploadToAmazon (eventWidget.boardEvent.Image);
-				content = new BoardEvent (eventWidget.boardEvent.Name, eventWidget.boardEvent.Image, imageURL, eventWidget.boardEvent.StartDate, eventWidget.boardEvent.EndDate, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
+				content = new BoardEvent (eventWidget.boardEvent.Name, eventWidget.boardEvent.Image, imageURL, eventWidget.boardEvent.StartDate, eventWidget.boardEvent.EndDate, view.Transform, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
 				((BoardEvent)content).Description = eventWidget.boardEvent.Description;
 				content.FacebookId = eventWidget.boardEvent.FacebookId;
 
 			} else if (widget is PollWidget) {
 				
 				var pollWidget = (PollWidget)widget;
-				content = new Poll (pollWidget.poll.Question, Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now, pollWidget.poll.Answers);
+				content = new Poll (pollWidget.poll.Question, view.Transform, view.Center, Profile.CurrentProfile.UserID, DateTime.Now, pollWidget.poll.Answers);
 				
 			} else if (widget is MapWidget) {
 				
-				content = new Map(Rotation, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
+				content = new Map(view.Transform, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
 
 			} else {
 				

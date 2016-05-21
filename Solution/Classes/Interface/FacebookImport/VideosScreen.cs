@@ -16,6 +16,7 @@ namespace Board.Interface.FacebookImport
 		int VideoCount;
 		UIGalleryScrollView GallerySV;
 		List<FacebookVideo> FacebookVideos;
+		bool ConnectionError;
 
 		public override void ViewDidLoad () {
 			View.BackgroundColor = UIColor.White;
@@ -53,23 +54,21 @@ namespace Board.Interface.FacebookImport
 			CanGoBack = true;
 			BTProgressHUD.Dismiss ();
 
-			if (connectionError) {
+			if (ConnectionError) {
 				UIAlertController alert = UIAlertController.Create("Couldn't access videos", "Please ensure you have a connection to the Internet.", UIAlertControllerStyle.Alert);
 				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
 				NavigationController.PresentViewController (alert, true, null);
 
-				connectionError = false;
+				ConnectionError = false;
 			}
 		}
-
-		bool connectionError;
 
 		private async Task LoadVideoURL(FacebookVideo fbVideo){
 						
 			var thumbImage = await CommonUtils.DownloadUIImageFromURL(fbVideo.ThumbnailUris[0]);
 
 			if (thumbImage == null) {
-				connectionError = true;
+				ConnectionError = true;
 				return;
 			}
 
