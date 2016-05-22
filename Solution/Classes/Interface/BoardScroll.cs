@@ -200,10 +200,10 @@ namespace Board.Interface
 			if (!(UIBoardInterface.DictionaryWidgets == null || UIBoardInterface.DictionaryWidgets.Count == 0))
 			{
 				List<Widget> WidgetsToDraw = UIBoardInterface.DictionaryWidgets.Values.ToList ().FindAll (item =>
-					((item.content.Center.X - item.View.Frame.Width / 2) > (virtualLeftBound - AppDelegate.ScreenWidth) &&
-                     (item.content.Center.X - item.View.Frame.Width / 2 < (virtualLeftBound + AppDelegate.ScreenWidth))) ||
-					((item.content.Center.X + item.View.Frame.Width / 2) < (virtualRightBound + AppDelegate.ScreenWidth) &&
-					 (item.content.Center.X + item.View.Frame.Width / 2 > (virtualRightBound - AppDelegate.ScreenWidth))));
+					((item.content.Center.X - item.Frame.Width / 2) > (virtualLeftBound - AppDelegate.ScreenWidth) &&
+                     (item.content.Center.X - item.Frame.Width / 2 < (virtualLeftBound + AppDelegate.ScreenWidth))) ||
+					((item.content.Center.X + item.Frame.Width / 2) < (virtualRightBound + AppDelegate.ScreenWidth) &&
+					 (item.content.Center.X + item.Frame.Width / 2 > (virtualRightBound - AppDelegate.ScreenWidth))));
 
 				rightScreenNumber = (int)Math.Floor((physicalRightBound + AppDelegate.ScreenWidth) / ScrollViewWidthSize);
 				virtualRightBound = physicalRightBound + AppDelegate.ScreenWidth - ScrollViewWidthSize * rightScreenNumber;
@@ -223,13 +223,13 @@ namespace Board.Interface
 
 				if (ShouldOpenEyes) {
 					List<Widget> WidgetsToOpenEyes = WidgetsToDraw.FindAll (item => !item.EyeOpen &&
-					                                ((item.content.Center.X - item.View.Frame.Width / 2 > virtualLeftBound &&
-					                                item.content.Center.X - item.View.Frame.Width / 2 < virtualLeftBound + AppDelegate.ScreenWidth &&
-					                                item.content.Center.X + item.View.Frame.Width / 2 < virtualRightBound &&
-					                                item.content.Center.X + item.View.Frame.Width / 2 > virtualRightBound - AppDelegate.ScreenWidth &&
+					                                ((item.content.Center.X - item.Frame.Width / 2 > virtualLeftBound &&
+					                                item.content.Center.X - item.Frame.Width / 2 < virtualLeftBound + AppDelegate.ScreenWidth &&
+					                                item.content.Center.X + item.Frame.Width / 2 < virtualRightBound &&
+					                                item.content.Center.X + item.Frame.Width / 2 > virtualRightBound - AppDelegate.ScreenWidth &&
 					                                leftScreenNumber == rightScreenNumber) || (leftScreenNumber != rightScreenNumber &&
-					                                (item.content.Center.X + item.View.Frame.Width / 2 < virtualRightBound ||
-					                                item.content.Center.X - item.View.Frame.Width / 2 > virtualLeftBound))));
+					                                (item.content.Center.X + item.Frame.Width / 2 < virtualRightBound ||
+					                                item.content.Center.X - item.Frame.Width / 2 > virtualLeftBound))));
 			
 			
 					if (WidgetsToOpenEyes != null && WidgetsToOpenEyes.Count > 0) {
@@ -265,19 +265,19 @@ namespace Board.Interface
 			List<Widget> WidgetsToRemove = DrawnWidgets.FindAll (item => !widgetsToDraw.Contains (item));
 
 			foreach (var wid in WidgetsToRemove) {
-				wid.View.RemoveFromSuperview ();
+				wid.RemoveFromSuperview ();
 				DrawnWidgets.Remove (wid);
 			}
 
 			foreach (var wid in widgetsToDraw) {
 				// if the widget hasnt been drawn
-				if (wid.View.Superview != ScrollView) {
+				if (wid.Superview != ScrollView) {
 
 					if (rightScreenNumber != leftScreenNumber) {
 
-						if (virtualLeftBound < wid.content.Center.X + wid.View.Frame.Width / 2) {
+						if (virtualLeftBound < wid.content.Center.X + wid.Frame.Width / 2) {
 							wid.SetTransforms (ScrollViewWidthSize * leftScreenNumber);
-						} else if (wid.content.Center.X - wid.View.Frame.Width / 2 < virtualRightBound) {
+						} else if (wid.content.Center.X - wid.Frame.Width / 2 < virtualRightBound) {
 							wid.SetTransforms (ScrollViewWidthSize * rightScreenNumber);
 						}
 							
@@ -287,7 +287,7 @@ namespace Board.Interface
 					}
 
 					//wid.SetTransforms (2600);
-					ScrollView.AddSubview (wid.View);
+					ScrollView.AddSubview (wid);
 					DrawnWidgets.Add (wid);
 				}
 			}

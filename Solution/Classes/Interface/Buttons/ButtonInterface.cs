@@ -23,8 +23,8 @@ namespace Board.Interface.Buttons
 		public static List<UIView> GetUserButtons()
 		{
 			List<UIView> views = new List<UIView>();
-			views.Add(actionsButtonSet.arrayButtons [0].uiButton);
-			views.Add(navigationButton.uiButton);
+			views.Add(actionsButtonSet.arrayButtons [0]);
+			views.Add(navigationButton);
 
 			return views;
 		}
@@ -32,13 +32,13 @@ namespace Board.Interface.Buttons
 		public static List<UIView> GetCreatorButtons()
 		{
 			List<UIView> views = new List<UIView> ();
-			views.Add(actionsButtonSet.arrayButtons [0].uiButton);
-			views.Add(actionsButtonSet.arrayButtons [1].uiButton);
-			views.Add(actionsButtonSet.arrayButtons [2].uiButton);
-			views.Add(actionsButtonSet.arrayButtons [3].uiButton);
-			views.Add(confirmationButtonSet.arrayButtons [0].uiButton);
-			views.Add(confirmationButtonSet.arrayButtons [1].uiButton);
-			views.Add(navigationButton.uiButton);
+			views.Add(actionsButtonSet.arrayButtons [0]);
+			views.Add(actionsButtonSet.arrayButtons [1]);
+			views.Add(actionsButtonSet.arrayButtons [2]);
+			views.Add(actionsButtonSet.arrayButtons [3]);
+			views.Add(confirmationButtonSet.arrayButtons [0]);
+			views.Add(confirmationButtonSet.arrayButtons [1]);
+			views.Add(navigationButton);
 			return views;
 		}
 

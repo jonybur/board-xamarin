@@ -6,19 +6,17 @@ using Board.Schema;
 
 namespace Board.Interface.Buttons
 {
-	public class CardButton : Button
+	public class CardButton : BIButton
 	{
 		public CardButton ()
 		{
-			uiButton = new UIButton (UIButtonType.Custom);
-
 			using (var img = UIImage.FromFile ("./boardinterface/nubuttons/nucard.png")) {
-				uiButton.SetImage (img, UIControlState.Normal);
+				SetImage (img, UIControlState.Normal);
 			}
 
-			uiButton.Frame = new CGRect (0,0, ButtonSize, ButtonSize);
+			Frame = new CGRect (0,0, ButtonSize, ButtonSize);
 
-			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth + ButtonSize) / 2 +
+			Center = new CGPoint ((AppDelegate.ScreenWidth + ButtonSize) / 2 +
 				(AppDelegate.ScreenWidth - ButtonSize) / 8 + 10, AppDelegate.ScreenHeight - ButtonSize / 2);
 			
 			eventHandlers.Add ((sender, e) => {

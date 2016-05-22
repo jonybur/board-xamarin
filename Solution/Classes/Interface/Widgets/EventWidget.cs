@@ -38,11 +38,11 @@ namespace Board.Interface.Widgets
 
 			//PictureBox.Center = new CGPoint (MountingView.Frame.Width - PictureBox.Frame.Width / 2 - SideMargin * 2, PictureBox.Center.Y);
 
-			View = new UIView(MountingView.Frame);
+			Frame = MountingView.Frame;
 
 			MountingView.AddSubview (CalendarBox);
 
-			View.AddSubview (MountingView);
+			AddSubview (MountingView);
 
 			EyeOpen = false;
 
@@ -155,7 +155,7 @@ namespace Board.Interface.Widgets
 
 		public void SetFrame(CGRect frame)
 		{
-			View.Frame = frame;
+			Frame = frame;
 		}
 
 	}

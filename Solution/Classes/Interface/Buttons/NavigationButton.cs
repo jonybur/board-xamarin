@@ -8,7 +8,7 @@ using UIKit;
 
 namespace Board.Interface.Buttons
 {
-	public class NavigationButton : Button
+	public class NavigationButton : BIButton
 	{
 		private static UILabel numberLabel;
 		public static Widget HighlightedWidget;
@@ -17,7 +17,7 @@ namespace Board.Interface.Buttons
 		private void SetImage (string buttonName)
 		{
 			using (UIImage image = UIImage.FromFile ("./boardinterface/strokebuttons/" + buttonName + ".png")) {
-				uiButton.SetImage (image, UIControlState.Normal);
+				SetImage (image, UIControlState.Normal);
 			}
 		}
 
@@ -25,12 +25,10 @@ namespace Board.Interface.Buttons
 		{
 			int highlitedContent = 0;
 
-			uiButton = new UIButton (UIButtonType.Custom);
-
 			SetImage ("closedeye");
 
-			uiButton.Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
-			uiButton.Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - ButtonSize / 2);
+			Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
+			Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - ButtonSize / 2);
 
 			// deprecated, not used
 			UITapGestureRecognizer doubletap = new UITapGestureRecognizer (tg => {
@@ -133,7 +131,7 @@ namespace Board.Interface.Buttons
 			gestureRecognizers.Add (tapGesture);
 			//gestureRecognizers.Add (longPressGesture);
 
-			uiButton.UserInteractionEnabled = true;
+			UserInteractionEnabled = true;
 		}
 
 		public void SubtractNavigationButtonText()
@@ -163,7 +161,7 @@ namespace Board.Interface.Buttons
 			numberLabel.AdjustsFontSizeToFitWidth = true;
 			numberLabel.TextColor = UIColor.Black;
 
-			uiButton.AddSubview (numberLabel);
+			AddSubview (numberLabel);
 		}
 
 		public void RefreshNavigationButtonText(int content)
@@ -192,7 +190,7 @@ namespace Board.Interface.Buttons
 			numberLabel.AdjustsFontSizeToFitWidth = true;
 			numberLabel.TextColor = UIColor.Black;
 
-			uiButton.AddSubview (numberLabel);
+			AddSubview (numberLabel);
 		}
 	}
 }

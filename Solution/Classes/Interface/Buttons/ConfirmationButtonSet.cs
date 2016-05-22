@@ -9,7 +9,7 @@ namespace Board.Interface.Buttons
 
 		public ConfirmationButtonSet ()
 		{
-			arrayButtons = new Button[CantButtons];
+			arrayButtons = new BIButton[CantButtons];
 
 			arrayButtons [0] = new CancelButton ();
 			arrayButtons [1] = new AcceptButton ();

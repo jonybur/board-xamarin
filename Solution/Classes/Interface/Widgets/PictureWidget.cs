@@ -38,8 +38,8 @@ namespace Board.Interface.Widgets
 			// mounting
 
 			CreateMounting (size);
-			View = new UIView(MountingView.Frame);
-			View.AddSubview (MountingView);
+			Frame = MountingView.Frame;
+			AddSubview (MountingView);
 
 			// picture
 
@@ -47,7 +47,7 @@ namespace Board.Interface.Widgets
 			PictureFrame.Frame = new CGRect (MountingView.Frame.X + SideMargin, TopMargin, size.Width, size.Height);
 			PictureFrame.Image = picture.Thumbnail;
 			PictureFrame.Layer.AllowsEdgeAntialiasing = true;
-			View.AddSubview (PictureFrame);
+			AddSubview (PictureFrame);
 
 			EyeOpen = false;
 
@@ -65,8 +65,8 @@ namespace Board.Interface.Widgets
 			// mounting
 
 			CreateMounting (size);
-			View = new UIView(MountingView.Frame);
-			View.AddSubview (MountingView);
+			Frame = MountingView.Frame;
+			AddSubview (MountingView);
 
 			// picture
 
@@ -75,7 +75,7 @@ namespace Board.Interface.Widgets
 			PictureFrame.Layer.AllowsEdgeAntialiasing = true;
 			PictureFrame.Layer.CornerRadius = 10;
 
-			View.AddSubview (PictureFrame);
+			AddSubview (PictureFrame);
 
 			EyeOpen = false;
 
@@ -84,7 +84,7 @@ namespace Board.Interface.Widgets
 
 		public void SetFrame(CGRect frame)
 		{
-			View.Frame = frame;
+			Frame = frame;
 		}
 
 	}

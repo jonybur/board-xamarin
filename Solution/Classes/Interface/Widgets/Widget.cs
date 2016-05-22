@@ -13,12 +13,10 @@ using Board.Utilities;
 
 namespace Board.Interface.Widgets
 {
-	public class Widget
+	public partial class Widget : UIButton
 	{
 		public static UIImageView ClosedEyeImageView;
 		public static UIImageView OpenEyeImageView;
-
-		public UIView View;
 
 		public static UIColor HighlightColor;
 
@@ -30,6 +28,7 @@ namespace Board.Interface.Widgets
 		public static bool Highlighted;
 
 		// mounting, likeheart, likelabel and eye
+		protected UIButton DeleteButton;
 		protected UIImageView MountingView;
 		protected UIImageView LikeComponent;
 		protected UIImageView EyeView;
@@ -48,6 +47,22 @@ namespace Board.Interface.Widgets
 
 		bool liked;
 		int likes;
+
+
+		public override UIView HitTest (CGPoint point, UIEvent uievent)
+		{
+			if (DeleteButton == null) {
+				return base.HitTest(point, uievent);
+			}
+
+			var pointForTargetView = DeleteButton.ConvertPointFromView (point, this);
+			
+			if (DeleteButton.Frame.Contains (pointForTargetView)) {
+				return DeleteButton.HitTest(pointForTargetView, uievent);
+			}
+
+			return base.HitTest(point, uievent);
+		}
 
 		public Widget()
 		{
@@ -74,26 +89,23 @@ namespace Board.Interface.Widgets
 				}
 			}
 
-			View = new UIButton ();
-
-			View.Layer.CornerRadius = 10;
-
-			View.Layer.ShadowOffset = new CGSize (0, 0);
-			View.Layer.ShadowRadius = 10f;
-			View.Layer.ShadowColor = UIColor.Black.CGColor;
-			View.Layer.ShadowOpacity = 0f;
+			Layer.ShadowOffset = new CGSize (0, 0);
+			Layer.CornerRadius = 10;
+			Layer.ShadowRadius = 10f;
+			Layer.ShadowOpacity = 0f;
+			Layer.ShadowColor = UIColor.Black.CGColor;
 
 			GestureRecognizers = new List<UIGestureRecognizer> ();
 		}
 
 		public void SetTransforms(float xOffset = 0){
 
-			View.Transform = CGAffineTransform.MakeRotation(0);
+			Transform = CGAffineTransform.MakeRotation(0);
 			MountingView.Transform = CGAffineTransform.MakeRotation(0);
 
-			View.Frame = new CGRect (0, 0, MountingView.Frame.Width, MountingView.Frame.Height);
-			View.Center = new CGPoint (content.Center.X + xOffset, content.Center.Y);
-			View.Transform = content.Transform;
+			Frame = new CGRect (0, 0, MountingView.Frame.Width, MountingView.Frame.Height);
+			Center = new CGPoint (content.Center.X + xOffset, content.Center.Y);
+			Transform = content.Transform;
 		}
 
 		protected void CreateMounting(CGSize size)
@@ -110,6 +122,34 @@ namespace Board.Interface.Widgets
 
 			MountingView.AddSubviews (LikeComponent, EyeView, TimeStamp);
 		}
+
+		protected void CreateDeleteButton(){
+			DeleteButton = new UIButton ();
+
+			using (var image = UIImage.FromFile ("./boardinterface/widget/deletebut.png")) {
+				DeleteButton.Frame = new CGRect (new CGPoint(), new CGSize(50, 50));
+
+				var imageView = new UIImageView ();
+				imageView.Frame = new CGRect (0, 0, image.Size.Width / 2, image.Size.Height / 2);
+				imageView.Image = image;
+				imageView.Center = new CGPoint (DeleteButton.Frame.Width / 2, DeleteButton.Frame.Height / 2);
+
+				DeleteButton.AddSubview (imageView);
+			}
+
+			DeleteButton.TouchUpInside += (sender, e) => {
+				
+				var alert = UIAlertController.Create("Delete widget?", null, UIAlertControllerStyle.Alert);
+
+				alert.AddAction (UIAlertAction.Create ("Delete", UIAlertActionStyle.Default, RemoveWidget));
+				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));	
+
+				AppDelegate.NavigationController.PresentViewController(alert, true, null);
+			};
+
+			DeleteButton.Center = new CGPoint (0, 0);
+		}
+
 
 		private void CreateTimeStamp()
 		{
@@ -149,7 +189,7 @@ namespace Board.Interface.Widgets
 
 		public UIView CreateLogoHeader(){
 			var header = new UIView ();
-			header.Frame = new CGRect (0, 0, View.Frame.Width - SideMargin * 2 - 10, TopMargin);
+			header.Frame = new CGRect (0, 0, Frame.Width - SideMargin * 2 - 10, TopMargin);
 
 			var headerLogo = new UIImageView ();
 			var size = new CGSize(TopMargin, TopMargin);
@@ -160,7 +200,7 @@ namespace Board.Interface.Widgets
 			header.AddSubviews (headerLogo);
 
 			header.Frame = new CGRect (0, 0, headerLogo.Frame.Right, TopMargin);
-			header.Center = new CGPoint (View.Frame.Width / 2, TopMargin / 2 + 2);
+			header.Center = new CGPoint (Frame.Width / 2, TopMargin / 2 + 2);
 
 			return header;
 		}
@@ -168,7 +208,7 @@ namespace Board.Interface.Widgets
 
 		public UIView CreateFullHeader(){
 			var header = new UIView ();
-			header.Frame = new CGRect (0, 0, View.Frame.Width - SideMargin * 2 - 10, TopMargin);
+			header.Frame = new CGRect (0, 0, Frame.Width - SideMargin * 2 - 10, TopMargin);
 
 			var headerLogo = new UIImageView ();
 			var size = new CGSize(TopMargin, TopMargin);
@@ -187,7 +227,7 @@ namespace Board.Interface.Widgets
 			header.AddSubviews (headerLogo, headerText);
 
 			header.Frame = new CGRect (0, 0, headerText.Frame.Right, TopMargin);
-			header.Center = new CGPoint (View.Frame.Width / 2 - TopMargin / 2, TopMargin / 2 + 2);
+			header.Center = new CGPoint (Frame.Width / 2 - TopMargin / 2, TopMargin / 2 + 2);
 
 			return header;
 		}
@@ -220,9 +260,9 @@ namespace Board.Interface.Widgets
 				scale.Duration = .5f;
 				scale.RemovedOnCompletion = false;
 
-				View.Layer.AddAnimation (scale, "highlight");
-				View.Layer.ZPosition = 1;
-				View.Layer.ShadowOpacity = .75f;
+				Layer.AddAnimation (scale, "highlight");
+				Layer.ZPosition = 1;
+				Layer.ShadowOpacity = .75f;
 
 				CATransaction.Commit();
 			}
@@ -232,9 +272,9 @@ namespace Board.Interface.Widgets
 			Highlighted = false;
 			NavigationButton.HighlightedWidget = null;
 
-			if (View.Layer != null) {
-				View.Layer.ZPosition = 0;
-				View.Layer.ShadowOpacity = 0f;
+			if (Layer != null) {
+				Layer.ZPosition = 0;
+				Layer.ShadowOpacity = 0f;
 			}
 		}
 	
@@ -280,14 +320,14 @@ namespace Board.Interface.Widgets
 		public void SuscribeToEvents ()
 		{
 			foreach (UIGestureRecognizer gr in GestureRecognizers) {
-				View.AddGestureRecognizer(gr);
+				AddGestureRecognizer(gr);
 			}
 		}
 
 		public void UnsuscribeToEvents()
 		{
 			foreach (UIGestureRecognizer gr in GestureRecognizers) {
-				View.RemoveGestureRecognizer(gr);
+				RemoveGestureRecognizer(gr);
 			}
 		}
 
@@ -297,17 +337,13 @@ namespace Board.Interface.Widgets
 				if (Preview.IsAlive) { return; }
 
 				Like();
-
-				// focus on widget on doubletap like
-				//CGPoint position = new CGPoint ((float)(View.Frame.X - AppDelegate.ScreenWidth/2 + View.Frame.Width/2), 0f);
-				//BoardInterface.scrollView.SetContentOffset (position, true);
 			});
 
 			var tap = new UITapGestureRecognizer (tg => {
 				if (Preview.IsAlive) { return;	}
 
-				if (LikeComponent.Frame.Left < tg.LocationInView(this.View).X &&
-					LikeComponent.Frame.Top < tg.LocationInView(this.View).Y)
+				if (LikeComponent.Frame.Left < tg.LocationInView(this).X &&
+					LikeComponent.Frame.Top < tg.LocationInView(this).Y)
 				{
 					Like();
 				}
@@ -351,12 +387,18 @@ namespace Board.Interface.Widgets
 			});
 
 			var longPress = new UILongPressGestureRecognizer (tg => {
-				UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
+				// TODO: allow widget movement, transform, etc, then update.
 
-				alert.AddAction (UIAlertAction.Create ("Remove Widget", UIAlertActionStyle.Default, RemoveWidget));
-				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));	
 
-				AppDelegate.NavigationController.PresentViewController(alert, true, null);	
+				AddGestureRecognizer(SetNewPanGestureRecognizer());
+				AddGestureRecognizer(SetNewPinchGestureRecognizer());
+				AddGestureRecognizer(SetNewRotationGestureRecognizer());
+
+				CreateDeleteButton ();
+				AddSubview(DeleteButton);
+
+				ButtonInterface.SwitchButtonLayout(ButtonInterface.ButtonLayout.ConfirmationBar);
+
 			});
 
 			tap.NumberOfTapsRequired = 1;
@@ -374,11 +416,98 @@ namespace Board.Interface.Widgets
 				GestureRecognizers.Add (longPress);
 			}
 		}
+	
+		public UIPanGestureRecognizer SetNewPanGestureRecognizer()
+		{
+			float dx = 0;
+			float dy = 0;
+
+			var panGesture = new UIPanGestureRecognizer (pg => {
+				if ((pg.State == UIGestureRecognizerState.Began || pg.State == UIGestureRecognizerState.Changed)) {
+					var p0 = pg.LocationInView(Superview);
+
+					if (dx == 0)
+						dx = (float)(p0.X - Center.X);
+
+					if (dy == 0)
+						dy = (float)(p0.Y - Center.Y);
+
+					var p1 = new CGPoint (p0.X - dx, p0.Y - dy);
+
+					Center = p1;
+
+				} else if (pg.State == UIGestureRecognizerState.Ended) {
+					dx = 0;
+					dy = 0;
+				}
+
+			});
+
+			panGesture.Delegate = new CustomGestureRecognizerDelegate ();
+
+			return panGesture;
+		}
+
+		private UIRotationGestureRecognizer SetNewRotationGestureRecognizer()
+		{
+			var rotateGesture = new UIRotationGestureRecognizer (rg => {
+				if ((rg.State == UIGestureRecognizerState.Began || rg.State == UIGestureRecognizerState.Changed) && (rg.NumberOfTouches == 2)) {
+
+					Transform = CGAffineTransform.Rotate(Transform, rg.Rotation);
+
+					rg.Rotation = 0;
+
+				}
+			});
+
+			rotateGesture.Delegate = new CustomGestureRecognizerDelegate ();
+
+			return rotateGesture;
+		}
+
+
+		private UIPinchGestureRecognizer SetNewPinchGestureRecognizer(){
+
+			var panGesture = new UIPinchGestureRecognizer (pinch => {
+				if ((pinch.State == UIGestureRecognizerState.Began || pinch.State == UIGestureRecognizerState.Changed) && (pinch.NumberOfTouches == 2)) {
+					
+					var bounds = Bounds;
+					var pinchCenter = pinch.LocationInView(this);
+					pinchCenter.X -= bounds.GetMidX();
+					pinchCenter.Y -= bounds.GetMidY();
+					var transform = Transform;
+					transform = CGAffineTransform.Translate(transform, pinchCenter.X, pinchCenter.Y);
+					var scale = pinch.Scale;
+					transform = CGAffineTransform.Scale(transform, scale, scale);
+					transform = CGAffineTransform.Translate(transform, -pinchCenter.X, -pinchCenter.Y);
+
+					if (transform.xx < 1.5f && transform.xx > .75f && transform.yx < 1.5f && transform.yy > .75f) {
+						Transform = transform;
+					}
+
+					pinch.Scale = 1f;
+				} 
+
+			});
+
+			panGesture.Delegate = new CustomGestureRecognizerDelegate ();
+
+			return panGesture;
+		}
+
+		class CustomGestureRecognizerDelegate : UIGestureRecognizerDelegate{
+			public override bool ShouldRecognizeSimultaneously (UIGestureRecognizer gestureRecognizer, UIGestureRecognizer otherGestureRecognizer)
+			{
+				if (gestureRecognizer.View != otherGestureRecognizer.View) {
+					return false;
+				}
+				return true;
+			}
+		}
 
 		private void RemoveWidget(UIAlertAction alertAction){
 			UnsuscribeToEvents ();
-			View.RemoveFromSuperview ();
-			MemoryUtility.ReleaseUIViewWithChildren (View);
+			RemoveFromSuperview ();
 			UIBoardInterface.DictionaryWidgets.Remove (content.Id);
 			string deleteJson = JsonUtilty.GenerateDeleteJson (content);
 			CloudController.UpdateBoard (UIBoardInterface.board.Id, deleteJson);

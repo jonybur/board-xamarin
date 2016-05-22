@@ -16,6 +16,12 @@ namespace Board.Interface.FacebookImport
 		bool pressed;
 		float yPosition;
 
+		public AlbumsScreen(){}
+
+		public AlbumsScreen(string id){
+			UIBoardInterface.board.FBPage = new FacebookPage (id, null, null);
+		}
+
 		private void AlbumsCompletion(List<FacebookElement> elementList) {
 			LoadAlbums (elementList);
 
@@ -123,9 +129,8 @@ namespace Board.Interface.FacebookImport
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
+					MemoryUtility.ReleaseUIViewWithChildren(View);
 					AppDelegate.PopViewControllerLikeDismissView();
-					Banner.UnsuscribeToEvents ();
-					MemoryUtility.ReleaseUIViewWithChildren (View);
 				}
 			});
 

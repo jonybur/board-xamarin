@@ -1,24 +1,20 @@
-using System;
 using Board.Schema;
-using Board.Utilities;
 using Board.Infrastructure;
 using CoreGraphics;
 using UIKit;
 
 namespace Board.Interface.Buttons
 {
-	public class AcceptButton : Button
+	public class AcceptButton : BIButton
 	{
 		public AcceptButton ()
 		{
-			uiButton = new UIButton (UIButtonType.Custom);
-
 			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/nubuttons/nuaccept.png")) {
-				uiButton.SetImage (uiImage, UIControlState.Normal);
+				SetImage (uiImage, UIControlState.Normal);
 			}
 
-			uiButton.Frame = new CGRect (0,0, ButtonSize, ButtonSize);
-			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth + ButtonSize) / 2 +
+			Frame = new CGRect (0,0, ButtonSize, ButtonSize);
+			Center = new CGPoint ((AppDelegate.ScreenWidth + ButtonSize) / 2 +
 				(AppDelegate.ScreenWidth - ButtonSize) / 4, AppDelegate.ScreenHeight - ButtonSize / 2);
 			
 			eventHandlers.Add (async (sender, e) => {
@@ -67,7 +63,7 @@ namespace Board.Interface.Buttons
 				AppDelegate.BoardInterface.BoardScroll.SelectiveRendering ();
 			});
 
-			uiButton.Alpha = 0f;
+			Alpha = 0f;
 		}
 	}
 }

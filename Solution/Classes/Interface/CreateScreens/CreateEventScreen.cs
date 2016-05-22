@@ -326,8 +326,11 @@ namespace Board.Interface.CreateScreens
 			((BoardEvent)content).StartDate = Convert.ToDateTime (FBEvent.StartTime);
 			StartDateView.Text = "Starts: " + ((BoardEvent)content).StartDate.ToString("g");
 
-			((BoardEvent)content).EndDate = Convert.ToDateTime (FBEvent.EndTime);
-			EndDateView.Text = "Ends: " +((BoardEvent)content).EndDate.ToString("g");
+			EndDateView.Text = "Ends: ";
+			if (FBEvent.EndTime != null) {
+				((BoardEvent)content).EndDate = Convert.ToDateTime (FBEvent.EndTime);
+				EndDateView.Text += ((BoardEvent)content).EndDate.ToString ("g");
+			}
 
 			BTProgressHUD.Show ();
 			FacebookUtils.MakeGraphRequest (FBEvent.Id, "?fields=cover", LoadCover);

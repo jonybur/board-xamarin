@@ -2,7 +2,7 @@ namespace Board.Interface.Buttons
 {
 	public class ButtonSet
 	{
-		public Button[] arrayButtons;
+		public BIButton[] arrayButtons;
 
 		public ButtonSet ()
 		{
@@ -10,14 +10,14 @@ namespace Board.Interface.Buttons
 
 		public void DisableAllButtons()
 		{
-			foreach (Button b in arrayButtons) {
+			foreach (var b in arrayButtons) {
 				b.DisableButton ();
 			}
 		}
 
 		public void EnableAllButtons()
 		{
-			foreach (Button b in arrayButtons){
+			foreach (var b in arrayButtons){
 				b.EnableButton();
 			}
 		}

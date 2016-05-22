@@ -275,6 +275,7 @@
     <BundleResource Include="Resources\boardinterface\strokebuttons\closedeye.png" />
     <BundleResource Include="Resources\boardinterface\nubuttons\nuaccept.png" />
     <BundleResource Include="Resources\boardinterface\nubuttons\nucancel.png" />
+    <BundleResource Include="Resources\boardinterface\widget\deletebut.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -308,7 +309,6 @@
     <Compile Include="Classes\Interface\Buttons\ConfirmationButtonSet.cs" />
     <Compile Include="Classes\Interface\Buttons\AcceptButton.cs" />
     <Compile Include="Classes\Interface\Buttons\BackButton.cs" />
-    <Compile Include="Classes\Interface\Buttons\Button.cs" />
     <Compile Include="Classes\Interface\Buttons\CameraButton.cs" />
     <Compile Include="Classes\Interface\Buttons\CancelButton.cs" />
     <Compile Include="Classes\Interface\Buttons\CardButton.cs" />
@@ -408,6 +408,8 @@
     <Compile Include="Classes\Interface\FacebookImport\VideoImportLookUp.cs" />
     <Compile Include="Classes\Facebook\FacebookImportedPage.cs" />
     <Compile Include="Classes\Facebook\FacebookAutoImporter.cs" />
+    <Compile Include="Classes\Interface\Widgets\Widget_Components.cs" />
+    <Compile Include="Classes\Interface\Buttons\BIButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

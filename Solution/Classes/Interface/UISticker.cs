@@ -2,6 +2,7 @@
 using CoreGraphics;
 using Board.Schema;
 using UIKit;
+using Board.Interface.Buttons;
 
 namespace Board.Interface
 {
@@ -68,7 +69,7 @@ namespace Board.Interface
 			var boardScroll = AppDelegate.BoardInterface.BoardScroll;
 
 			Frame = new CGRect (boardScroll.ScrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - size.Width / 2,
-				boardScroll.ScrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - size.Height / 2 - Board.Interface.Buttons.Button.ButtonSize / 2, size.Width, size.Height);
+				boardScroll.ScrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - size.Height / 2 - BIButton.ButtonSize / 2, size.Width, size.Height);
 			
 			TextAlignment = UITextAlignment.Center;
 

@@ -12,8 +12,12 @@
 			Name = name;
 			Id = id;
 			Description = description;
-			EndTime = endtime;
-			StartTime = starttime;
+			if (endtime != "<null>") {
+				EndTime = endtime;
+			}
+			if (starttime != "<null>") {
+				StartTime = starttime;
+			}
 		}
 	}
 }

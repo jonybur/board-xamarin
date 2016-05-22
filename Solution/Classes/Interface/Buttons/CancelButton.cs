@@ -4,18 +4,16 @@ using UIKit;
 
 namespace Board.Interface.Buttons
 {
-	public class CancelButton : Button
+	public class CancelButton : BIButton
 	{
 		public CancelButton ()
 		{
-			uiButton = new UIButton (UIButtonType.Custom);
-
 			using (UIImage image = UIImage.FromFile ("./boardinterface/nubuttons/nucancel.png")) {
-				uiButton.SetImage (image, UIControlState.Normal);
+				SetImage (image, UIControlState.Normal);
 			}
 
-			uiButton.Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
-			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth - ButtonSize) / 4, AppDelegate.ScreenHeight - ButtonSize / 2);
+			Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
+			Center = new CGPoint ((AppDelegate.ScreenWidth - ButtonSize) / 4, AppDelegate.ScreenHeight - ButtonSize / 2);
 
 			eventHandlers.Add ((sender, e) => {
 				
@@ -31,7 +29,7 @@ namespace Board.Interface.Buttons
 				ButtonInterface.SwitchButtonLayout (ButtonInterface.ButtonLayout.NavigationBar);
 			});
 
-			uiButton.Alpha = 0f;
+			Alpha = 0f;
 		}
 	}
 }

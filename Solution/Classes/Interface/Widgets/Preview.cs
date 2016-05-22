@@ -67,19 +67,19 @@ namespace Board.Interface
 
 			}
 
-			var frame = widget.View.Frame;
+			var frame = widget.Frame;
 
 			var boardScroll = AppDelegate.BoardInterface.BoardScroll;
 
 			view = new UIView (new CGRect (boardScroll.ScrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2 - frame.Width / 2,
-				boardScroll.ScrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - Board.Interface.Buttons.Button.ButtonSize / 2, frame.Width, frame.Height));
-			widget.View.Frame = new CGRect(0, 0, view.Frame.Width, view.Frame.Height);
+				boardScroll.ScrollView.ContentOffset.Y + AppDelegate.ScreenHeight / 2 - frame.Height / 2 - BIButton.ButtonSize / 2, frame.Width, frame.Height));
+			widget.Frame = new CGRect(0, 0, view.Frame.Width, view.Frame.Height);
 
 			view.Alpha = .5f;
-			view.AddGestureRecognizer (SetNewRotationGestureRecognizer(false));
+			view.AddGestureRecognizer (SetNewRotationGestureRecognizer());
 			view.AddGestureRecognizer (SetNewPinchGestureRecognizer());
 			view.AddGestureRecognizer (SetNewPanGestureRecognizer());
-			view.AddSubviews(widget.View);
+			view.AddSubviews(widget);
 
 			IsAlive = true;
 
@@ -113,42 +113,28 @@ namespace Board.Interface
 
 			});
 
-			panGesture.Delegate = new CustomDelegate ();
+			panGesture.Delegate = new CustomGestureRecognizerDelegate ();
 
 			return panGesture;
 		}
 
-		private static UIRotationGestureRecognizer SetNewRotationGestureRecognizer(bool autoRotate)
+		private static UIRotationGestureRecognizer SetNewRotationGestureRecognizer()
 		{
-			float r = 0;
-			Rotation = 0;
-
-			if (autoRotate) {
-				Random rnd = new Random ();
-				r = (float)(rnd.NextDouble () / 3);
-				Rotation = r;
-				view.Transform = CGAffineTransform.MakeRotation (r);
-			}
-
 			var rotateGesture = new UIRotationGestureRecognizer (rg => {
 				if ((rg.State == UIGestureRecognizerState.Began || rg.State == UIGestureRecognizerState.Changed) && (rg.NumberOfTouches == 2)) {
 
-					view.Transform = CGAffineTransform.Rotate(view.Transform, rg.Rotation);
-
-					Rotation = (float)(rg.Rotation + r);
+					View.Transform = CGAffineTransform.Rotate(View.Transform, rg.Rotation);
 
 					rg.Rotation = 0;
 
-				} else if (rg.State == UIGestureRecognizerState.Ended) {
-					r += (float)rg.Rotation;
 				}
-
 			});
 
-			rotateGesture.Delegate = new CustomDelegate ();
+			rotateGesture.Delegate = new CustomGestureRecognizerDelegate ();
 
 			return rotateGesture;
 		}
+
 
 		private static UIPinchGestureRecognizer SetNewPinchGestureRecognizer(){
 			
@@ -174,12 +160,12 @@ namespace Board.Interface
 
 			});
 
-			panGesture.Delegate = new CustomDelegate ();
+			panGesture.Delegate = new CustomGestureRecognizerDelegate ();
 
 			return panGesture;
 		}
 
-		class CustomDelegate : UIGestureRecognizerDelegate{
+		class CustomGestureRecognizerDelegate : UIGestureRecognizerDelegate{
 			public override bool ShouldRecognizeSimultaneously (UIGestureRecognizer gestureRecognizer, UIGestureRecognizer otherGestureRecognizer)
 			{
 				if (gestureRecognizer.View != otherGestureRecognizer.View) {

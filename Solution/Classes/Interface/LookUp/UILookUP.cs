@@ -175,8 +175,8 @@ namespace Board.Interface.LookUp
 
 			if (widget != null) {
 				widget.UnsuscribeToEvents ();
-				widget.View.RemoveFromSuperview ();
-				MemoryUtility.ReleaseUIViewWithChildren (widget.View);
+				widget.RemoveFromSuperview ();
+				MemoryUtility.ReleaseUIViewWithChildren (widget);
 				UIBoardInterface.DictionaryWidgets.Remove (content.Id);
 
 				string deleteJson = JsonUtilty.GenerateDeleteJson (content);

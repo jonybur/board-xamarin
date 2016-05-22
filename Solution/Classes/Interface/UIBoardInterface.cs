@@ -42,8 +42,6 @@ namespace Board.Interface
 
 		public override void ViewDidLoad ()
 		{
-			board.FBPage = new Board.Facebook.FacebookPage ("camelotwestpalm", "American Social Brickell", "Nightclub");
-
 			//var json = JsonUtilty.GenerateDeleteJson ("videos", "36ace705-c3f3-4762-a9c4-71fa7d3c9dc4");
 			//CloudController.UpdateBoard (board.Id, json);
 
@@ -129,7 +127,7 @@ namespace Board.Interface
 		{
 			foreach(KeyValuePair<string, Widget> widget in DictionaryWidgets)
 			{
-				widget.Value.View.RemoveFromSuperview ();
+				widget.Value.RemoveFromSuperview ();
 			}
 		}
 
@@ -138,9 +136,9 @@ namespace Board.Interface
 			foreach(KeyValuePair<string, Widget> widget in DictionaryWidgets)
 			{
 				widget.Value.UnsuscribeToEvents ();
-				widget.Value.View.RemoveFromSuperview ();
+				widget.Value.RemoveFromSuperview ();
 
-				MemoryUtility.ReleaseUIViewWithChildren (widget.Value.View);
+				MemoryUtility.ReleaseUIViewWithChildren (widget.Value);
 			}
 
 			DictionaryWidgets = new Dictionary<string, Widget>();

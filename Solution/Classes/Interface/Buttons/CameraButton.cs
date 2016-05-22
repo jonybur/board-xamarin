@@ -6,19 +6,16 @@ using Board.Interface.FacebookImport;
 
 namespace Board.Interface.Buttons
 {
-	public class CameraButton : Button
+	public class CameraButton : BIButton
 	{
 		public CameraButton ()
 		{
-			uiButton = new UIButton (UIButtonType.Custom);
-
 			using (UIImage uiImage = UIImage.FromFile ("./boardinterface/nubuttons/nucamera.png")) {
-				uiButton = new UIButton (UIButtonType.Custom);
-				uiButton.SetImage (uiImage, UIControlState.Normal);
+				SetImage (uiImage, UIControlState.Normal);
 			}
 
-			uiButton.Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
-			uiButton.Center = new CGPoint ((AppDelegate.ScreenWidth - ButtonSize) / 8 * 3 - 10, AppDelegate.ScreenHeight - ButtonSize / 2);
+			Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
+			Center = new CGPoint ((AppDelegate.ScreenWidth - ButtonSize) / 8 * 3 - 10, AppDelegate.ScreenHeight - ButtonSize / 2);
 
 			var tapPress = new UITapGestureRecognizer(tg => {
 				UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
@@ -43,13 +40,26 @@ namespace Board.Interface.Buttons
 				var importScreen = new AlbumsScreen();
 				AppDelegate.PushViewLikePresentView (importScreen);
 			} else { 
-				UIAlertController alert = UIAlertController.Create("Board not connected to a page", "Do you wish to go to settings to connect to a Facebook page?", UIAlertControllerStyle.Alert);
+				UIAlertController alert = UIAlertController.Create("Facebook Page Importer", null, UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
+				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate {
+					var importScreen = new AlbumsScreen(alert.TextFields[0].Text);
+					AppDelegate.PushViewLikePresentView (importScreen);
+				}));
+
+				alert.AddTextField(delegate(UITextField obj) {
+					obj.Placeholder = "Facebook Page ID";
+				});
+
+				AppDelegate.NavigationController.PresentViewController(alert, true, null);
+
+				/*UIAlertController alert = UIAlertController.Create("Board not connected to a page", "Do you wish to go to settings to connect to a Facebook page?", UIAlertControllerStyle.Alert);
 				alert.AddAction (UIAlertAction.Create ("Later", UIAlertActionStyle.Cancel, null));
 				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate(UIAlertAction obj) {
 					SettingsScreen settingsScreen = new SettingsScreen();
 					AppDelegate.PushViewLikePresentView(settingsScreen);
 				}));
-				AppDelegate.NavigationController.PresentViewController (alert, true, null);
+				AppDelegate.NavigationController.PresentViewController (alert, true, null);*/
 			}
 		}
 

@@ -42,11 +42,10 @@ namespace Board.Interface.Widgets
 
 			// mounting
 			CreateMounting (new CGSize(insideText.Frame.Width, yposition));
-			View = new UIView();
 
-			View.AddSubviews (MountingView, insideText);
+			AddSubviews (MountingView, insideText);
 			foreach (UIButton but in lstAnswers) {
-				View.AddSubview (but);
+				AddSubview (but);
 			}
 
 			EyeOpen = false;
@@ -106,7 +105,7 @@ namespace Board.Interface.Widgets
 
 		public void SetFrame(CGRect frame)
 		{
-			View.Frame = frame;
+			Frame = frame;
 		}
 
 

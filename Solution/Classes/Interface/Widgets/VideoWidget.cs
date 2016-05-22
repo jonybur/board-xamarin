@@ -26,16 +26,16 @@ namespace Board.Interface.Widgets
 			// mounting
 
 			CreateMounting (size);
-			View = new UIView(MountingView.Frame);
-			View.AddSubview (MountingView);
+			Frame = MountingView.Frame;
+			AddSubview (MountingView);
 
 			var repeaterVideo = new UIRepeatVideo (new CGRect (SideMargin, TopMargin, size.Width, size.Height), video.GetNSUrlForDisplay ());
 			repeaterVideo.View.UserInteractionEnabled = false;
 			repeaterVideo.VideoGravity = AVFoundation.AVLayerVideoGravity.ResizeAspectFill;
 
-			View.AddSubview (repeaterVideo.View);
+			AddSubview (repeaterVideo.View);
 
-			View.Layer.AllowsEdgeAntialiasing = true;
+			Layer.AllowsEdgeAntialiasing = true;
 
 			EyeOpen = false;
 
@@ -44,7 +44,7 @@ namespace Board.Interface.Widgets
 
 		public void SetFrame(CGRect frame)
 		{
-			View.Frame = frame;
+			Frame = frame;
 		}
 			
 	}

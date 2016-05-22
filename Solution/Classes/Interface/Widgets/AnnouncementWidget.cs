@@ -30,10 +30,10 @@ namespace Board.Interface.Widgets
 
 			// mounting
 			CreateMounting (insideText.Frame.Size);
-			View = new UIView (MountingView.Frame);
+			Frame = MountingView.Frame;
 			HeaderLogo = CreateLogoHeader ();
 
-			View.AddSubviews (MountingView, insideText, HeaderLogo);
+			AddSubviews (MountingView, insideText, HeaderLogo);
 
 			EyeOpen = false;
 
@@ -85,7 +85,7 @@ namespace Board.Interface.Widgets
 
 		public void SetFrame(CGRect frame)
 		{
-			View.Frame = frame;
+			Frame = frame;
 		}
 
 	}

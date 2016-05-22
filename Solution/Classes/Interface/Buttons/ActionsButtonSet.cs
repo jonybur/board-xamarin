@@ -6,7 +6,7 @@ namespace Board.Interface.Buttons
 
 		public ActionsButtonSet ()
 		{
-			arrayButtons = new Button[CantButtons];
+			arrayButtons = new BIButton[CantButtons];
 
 			arrayButtons[0] = new BackButton ();
 			arrayButtons[1] = new CameraButton ();
