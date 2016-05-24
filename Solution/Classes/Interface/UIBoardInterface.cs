@@ -32,6 +32,7 @@ namespace Board.Interface
 
 		public UIBoardInterface (Board.Schema.Board _board){
 			board = _board;
+			board.FBPage = new Board.Facebook.FacebookPage ("muulecheria", null, null);
 			firstLoad = true;
 		}
 
@@ -54,7 +55,10 @@ namespace Board.Interface
 
 			InitializeLists ();
 
-			UserCanEditBoard = CloudController.UserCanEditBoard (board.Id);
+			UserCanEditBoard = false;//CloudController.UserCanEditBoard (board.Id);
+
+			// gets content, puts it in dictionarycontent
+			DictionaryContent = CloudController.GetBoardContent (board.Id);
 
 			InitializeInterface ();
 
@@ -94,10 +98,7 @@ namespace Board.Interface
 		public override void ViewDidAppear(bool animated)
 		{
 			if (firstLoad) {
-
-				// gets content, puts it in dictionarycontent
-				DictionaryContent = CloudController.GetBoardContent (board.Id);
-
+				
 				GenerateWidgets ();
 
 				firstLoad = false;
@@ -118,9 +119,9 @@ namespace Board.Interface
 		{
 			View.BackgroundColor = UIColor.Black;
 			RemoveAndDisposeAllContent ();
+			ButtonInterface.DisableAllLayouts();
 			MemoryUtility.ReleaseUIViewWithChildren (BoardScroll);
 			MemoryUtility.ReleaseUIViewWithChildren (View);
-			ButtonInterface.DisableAllLayouts();
 		}
 
 		public void RemoveAllContent()
@@ -135,7 +136,8 @@ namespace Board.Interface
 		{
 			foreach(KeyValuePair<string, Widget> widget in DictionaryWidgets)
 			{
-				widget.Value.UnsuscribeToEvents ();
+				widget.Value.UnsuscribeFromEditingEvents ();
+				widget.Value.UnsuscribeFromUsabilityEvents ();
 				widget.Value.RemoveFromSuperview ();
 
 				MemoryUtility.ReleaseUIViewWithChildren (widget.Value);
@@ -148,9 +150,8 @@ namespace Board.Interface
 		{
 			ButtonInterface.Initialize ();
 
-			UIImageView buttonBackground = new UIImageView (new CGRect (0, AppDelegate.ScreenHeight - 45, AppDelegate.ScreenWidth, ButtonBarHeight));
+			var buttonBackground = new UIImageView (new CGRect (0, AppDelegate.ScreenHeight - 45, AppDelegate.ScreenWidth, ButtonBarHeight));
 			buttonBackground.BackgroundColor = UIColor.White;
-
 			View.AddSubview (buttonBackground);
 
 			if (UserCanEditBoard) {
@@ -211,7 +212,7 @@ namespace Board.Interface
 				widget = new Widget ();
 			}
 
-			widget.SuscribeToEvents ();
+			widget.SuscribeToUsabilityEvents ();
 			DictionaryWidgets.Add (content.Id, widget);
 		}
 

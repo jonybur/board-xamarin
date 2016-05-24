@@ -44,9 +44,14 @@ namespace Board.Utilities
 
 		public static async Task<UIImage> DownloadUIImageFromURL(string webAddress)
 		{
+			if (webAddress == null) {
+				return null;
+			}
+
 			var webClient = new WebClient ();
 			var uri = new Uri (webAddress);
 			byte[] bytes = null;
+
 			try
 			{
 				bytes = await webClient.DownloadDataTaskAsync(uri);

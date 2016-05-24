@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Board.Utilities;
 using System;
 using System.Runtime.Serialization;
+using Board.Interface;
 
 namespace Board.Schema
 {

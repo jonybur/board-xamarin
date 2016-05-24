@@ -21,14 +21,13 @@ namespace Board.Schema
 		public Poll(){
 		}
 
-		public Poll(NSAttributedString question, CGAffineTransform transform, CGPoint center, string creatorid, DateTime creationdate, params string[] answers)
+		public Poll(NSAttributedString question, CGAffineTransform transform, CGPoint center, string creatorid, params string[] answers)
 		{
 			Question = question;
 			QuestionText = question.Value;
 			Transform = transform;
 			Center = center;
 			CreatorId = creatorid;
-			CreationDate = creationdate;
 			Answers = answers.ToList ();
 		}
 

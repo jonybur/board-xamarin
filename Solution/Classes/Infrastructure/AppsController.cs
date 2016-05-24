@@ -21,6 +21,17 @@ namespace Board.Infrastructure
 			return UIApplication.SharedApplication.CanOpenUrl (url);
 		}
 
+		public static bool CanOpenFacebookMessenger(){
+			NSUrl url = new NSUrl ("fb-messenger://");
+			return UIApplication.SharedApplication.CanOpenUrl (url);
+		}
+
+
+		public static void OpenFacebookMessenger(string recieverId){
+			NSUrl url = new NSUrl("fb-messenger://user-thread/"+recieverId);
+			UIApplication.SharedApplication.OpenUrl (url);
+		}
+
 		public static void OpenUber(string productId, CLLocationCoordinate2D dropoff){
 			NSUrl uberRequest = new NSUrl("uber://?" +
 				"client_id=7-UVBjdHfUrKKeZU9nDlP_HktFs3iWVT&" +

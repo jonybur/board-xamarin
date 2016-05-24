@@ -56,14 +56,13 @@ namespace Board.Schema
 		public Picture() {
 		}
 
-		public Picture(UIImage image, string imageUrl, CGPoint center, string creatorid, DateTime creationdate, CGAffineTransform transform)
+		public Picture(UIImage image, string imageUrl, CGPoint center, string creatorid, CGAffineTransform transform)
 		{
 			ImageUrl = imageUrl;
 			SetImageFromUIImage (image);
 			Transform = transform;
 			Center = center;
 			CreatorId = creatorid;
-			CreationDate = creationdate;
 		}
 
 		public Picture(FacebookPhoto facebookPhoto, CGPoint center, CGAffineTransform transform){

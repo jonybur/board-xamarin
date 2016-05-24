@@ -19,14 +19,13 @@ namespace Board.Schema
 		public Announcement() {
 		}
 
-		public Announcement(NSAttributedString text, CGPoint center, string creatorid, DateTime creationdate, CGAffineTransform transform)
+		public Announcement(NSAttributedString text, CGPoint center, string creatorid, CGAffineTransform transform)
 		{
 			Text = text.Value;
 			AttributedText = text;
 			Transform = transform;
 			Center = center;
 			CreatorId = creatorid;
-			CreationDate = creationdate;
 		}
 
 		public Announcement(FacebookPost facebookPost, CGPoint center, CGAffineTransform transform){

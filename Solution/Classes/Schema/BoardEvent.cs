@@ -65,7 +65,7 @@ namespace Board.Schema
 		public BoardEvent() {
 		}
 
-		public BoardEvent(string name, UIImage image, string imageUrl, DateTime startdate, DateTime enddate, CGAffineTransform transform, CGPoint center, string creatorid, DateTime creationdate)
+		public BoardEvent(string name, UIImage image, string imageUrl, DateTime startdate, DateTime enddate, CGAffineTransform transform, CGPoint center, string creatorid)
 		{
 			StartDate = startdate;
 			EndDate = enddate;
@@ -76,7 +76,6 @@ namespace Board.Schema
 			SetImageFromUIImage (image);
 			ImageUrl = imageUrl;
 			CreatorId = creatorid;
-			CreationDate = creationdate;
 		}
 
 		public BoardEvent(FacebookEvent facebookEvent, CGPoint center, CGAffineTransform transform){

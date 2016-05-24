@@ -1,12 +1,11 @@
-﻿using Board.Utilities;
-using System;
-using CoreGraphics;
-using UIKit;
-using Foundation;
-using Board.Schema;
-using PBJVisionBinding;
-using Board.Interface.CreateScreens;
+﻿using System;
 using System.Threading;
+using Board.Interface.CreateScreens;
+using Board.Utilities;
+using CoreGraphics;
+using Foundation;
+using PBJVisionBinding;
+using UIKit;
 
 namespace Board.Interface.Camera
 {

@@ -1,5 +1,4 @@
 ﻿using CoreGraphics;
-using System;
 
 namespace Board.Schema
 {
@@ -10,12 +9,11 @@ namespace Board.Schema
 		public Map() {
 		}
 
-		public Map(CGAffineTransform transform, CGPoint center, string creatorid, DateTime creationdate)
+		public Map(CGAffineTransform transform, CGPoint center, string creatorid)
 		{
 			Transform = transform;
 			Center = center;
 			CreatorId = creatorid;
-			CreationDate = creationdate;
 		}
 	}
 }

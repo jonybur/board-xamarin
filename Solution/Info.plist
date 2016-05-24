@@ -93,6 +93,7 @@
 		<string>uber</string>
 		<string>waze</string>
 		<string>comgooglemaps</string>
+		<string>fb-messenger</string>
 	</array>
 	<key>CFBundleIdentifier</key>
 	<string>com.boardinc.Board</string>

@@ -28,7 +28,7 @@ namespace Board.Interface.Widgets
 				await picture.GetImageFromUrl (picture.ImageUrl);
 			}
 
-			UnsuscribeToEvents ();
+			UnsuscribeFromUsabilityEvents ();
 
 			var size = picture.Thumbnail.Size;
 
@@ -53,7 +53,7 @@ namespace Board.Interface.Widgets
 
 			AppDelegate.BoardInterface.BoardScroll.SelectiveRendering ();
 
-			SuscribeToEvents ();
+			SuscribeToUsabilityEvents ();
 		}
 
 		public PictureWidget(Picture pic)

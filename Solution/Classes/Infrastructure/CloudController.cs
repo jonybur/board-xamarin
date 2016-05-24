@@ -293,7 +293,12 @@ namespace Board.Infrastructure
 						board = new Board.Schema.Board ();
 
 						// gets image and location from cloud
-						boardImage = await CommonUtils.DownloadUIImageFromURL (r.logoURL);
+						if (r.logoURL != null) {
+							boardImage = await CommonUtils.DownloadUIImageFromURL (r.logoURL);
+						} else {
+							// TODO: manage no image (should never happen)
+							boardImage = new UIImage();
+						}
 
 						string jsonobj = JsonHandler.GET ("https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
 							r.latitude + "," + r.longitude + "&key=" + AppDelegate.GoogleMapsAPIKey);

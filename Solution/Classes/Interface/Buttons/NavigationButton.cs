@@ -31,13 +31,13 @@ namespace Board.Interface.Buttons
 			Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - ButtonSize / 2);
 
 			// deprecated, not used
-			UITapGestureRecognizer doubletap = new UITapGestureRecognizer (tg => {
+			var doubletap = new UITapGestureRecognizer (tg => {
 				tg.NumberOfTapsRequired = 2;
 
 				//AppDelegate.boardInterface.BoardScroll.SetContentOffset(new CGPoint(BoardInterface.ScrollViewWidthSize / 2 - AppDelegate.ScreenWidth / 2, 0), true);
 			});
 
-			UITapGestureRecognizer tapGesture= new UITapGestureRecognizer (tg => {
+			var tapGesture= new UITapGestureRecognizer (tg => {
 				tg.NumberOfTapsRequired = 1;
 
 				if (UIBoardInterface.DictionaryWidgets == null)
@@ -73,34 +73,7 @@ namespace Board.Interface.Buttons
 				rightCurrentScreenNumber = boardScroll.CurrentRightScreenNumber;
 				leftCurrentScreenNumber = boardScroll.CurrentLeftScreenNumber;
 
-				float scrollViewOffsetToPan = UIBoardScroll.ScrollViewWidthSize;
-
-				// el offset está en la mitad derecha del scroll
-				if (scrollOffset > 1300){
-					
-					if (widgetPosition > 1300){
-						// los dos a la derecha
-						// mismo board
-						scrollViewOffsetToPan = scrollViewOffsetToPan * leftCurrentScreenNumber;
-					} else {
-						// widget está del otro lado del infobox
-						// board derecho
-						scrollViewOffsetToPan = scrollViewOffsetToPan * rightScreenNumber;
-					}
-
-				} else {
-
-					if (widgetPosition > 1300){
-						// widget está del otro lado del infobox 
-						// board izquierdo
-						scrollViewOffsetToPan = scrollViewOffsetToPan * leftScreenNumber;
-					} else {
-						// los dos a la izquierda
-						// mismo board
-						scrollViewOffsetToPan = scrollViewOffsetToPan * rightCurrentScreenNumber;
-					}
-
-				}
+				var scrollViewOffsetToPan = UIBoardScroll.ScrollViewWidthSize * leftCurrentScreenNumber;
 
 				position = new PointF ((float)(widgetPosition + scrollViewOffsetToPan), 0f);
 
@@ -119,7 +92,7 @@ namespace Board.Interface.Buttons
 			});
 
 			// unzooms
-			UILongPressGestureRecognizer longPressGesture = new UILongPressGestureRecognizer ((tg) => {
+			var longPressGesture = new UILongPressGestureRecognizer ((tg) => {
 				/*if (tg.State == UIGestureRecognizerState.Began) {
 					BoardInterface.UnzoomScrollview();
 				}
@@ -157,7 +130,7 @@ namespace Board.Interface.Buttons
 			numberLabel = new UILabel (new CGRect (0, ButtonSize / 2 + 10, ButtonSize, 10));
 			numberLabel.Font = font;
 			numberLabel.TextAlignment = UITextAlignment.Center;
-			numberLabel.Text = contentAmmount.ToString () + " NEW";
+			numberLabel.Text = contentAmmount + " NEW";
 			numberLabel.AdjustsFontSizeToFitWidth = true;
 			numberLabel.TextColor = UIColor.Black;
 
@@ -186,7 +159,7 @@ namespace Board.Interface.Buttons
 			numberLabel = new UILabel (new CGRect (0, ButtonSize / 2 + 10, ButtonSize, 10));
 			numberLabel.Font = font;
 			numberLabel.TextAlignment = UITextAlignment.Center;
-			numberLabel.Text = content.ToString () + " NEW";
+			numberLabel.Text = content + " NEW";
 			numberLabel.AdjustsFontSizeToFitWidth = true;
 			numberLabel.TextColor = UIColor.Black;
 

@@ -3,20 +3,48 @@ using System.Collections.Generic;
 using System.Linq;
 using Board.Interface;
 using Board.Interface.Widgets;
+using Board.Screens;
 using CoreGraphics;
-using MGImageUtilitiesBinding;
 using UIKit;
+using Board.Schema;
 
 namespace Board.Interface
 {
 	public class UIBoardScroll : UIScrollView
 	{
 		public static int BannerHeight = 66, ButtonBarHeight = 45;
-		public static int ScrollViewTotalWidthSize = 2600 * 53;
-		public static int ScrollViewWidthSize = 2600;
+		public static float ScrollViewTotalWidthSize = 2600 * 54;
+		public static float ScrollViewWidthSize = 2600;
 
 		float virtualLeftBound;
 		int leftScreenNumber, rightScreenNumber;
+
+		sealed class UIBackButton : UIButton {
+			public UIBackButton(){
+				Frame = new CGRect(0, 0, 70, 60);
+
+				using (var image = UIImage.FromFile ("./boardinterface/back_button3.png")) {
+					var imageView = new UIImageView ();
+					imageView.Frame = new CGRect (0, 0, image.Size.Width / 2, image.Size.Height / 2);
+					imageView.Image = image;
+					imageView.Center = new CGPoint (Frame.Width / 2 + 5, Frame.Height / 2 + 10);
+
+					AddSubview (imageView);
+				}
+
+				bool blockButton = false;
+				TouchUpInside += (sender, e) => {
+					if (!blockButton){
+						var containerScreen = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 2] as ContainerScreen;
+						if (containerScreen!= null) {
+							containerScreen.LoadMainMenu();
+						}
+						AppDelegate.PopViewControllerWithCallback(AppDelegate.ExitBoardInterface);
+						blockButton = true;
+					}
+				};
+			}
+		}
 
 		public UIScrollView ScrollView;
 		private UIImageView TopBanner;
@@ -85,9 +113,76 @@ namespace Board.Interface
 			SuscribeToEvents ();
 		}
 
+		private void CalculateBoardSize(){
+			ScrollViewWidthSize = 2600;
+
+			var centerOfScreen = (ScrollViewWidthSize + AppDelegate.ScreenWidth) / 2;
+			var orderedContent = UIBoardInterface.DictionaryContent.Values.ToList ().OrderByDescending (x => x.Center.X).ToList();
+
+			if (orderedContent.Count == 0) {
+				ScrollViewWidthSize = AppDelegate.ScreenWidth * 2;
+				ScrollViewTotalWidthSize = ScrollViewWidthSize * 100;
+				return;
+			}
+
+			if (orderedContent.Count == 1) {
+				var contentX = orderedContent [0].CenterX;
+				if (contentX < AppDelegate.ScreenWidth * 1.5f) {
+					ScrollViewWidthSize = AppDelegate.ScreenWidth * 2;
+					ScrollViewTotalWidthSize = ScrollViewWidthSize * 100;
+					return;
+				}
+
+				orderedContent [0].Center = new CGPoint(AppDelegate.ScreenWidth, orderedContent [0].Center.Y);
+				ScrollViewWidthSize = AppDelegate.ScreenWidth * 2;
+				ScrollViewTotalWidthSize = ScrollViewWidthSize * 100;
+				return;
+			}
+
+			float lastRightContentX = 0, lastLeftContentX = 0;
+			foreach (var content in orderedContent) {
+				if (content.Center.X > centerOfScreen) {
+					lastLeftContentX = content.CenterX;
+				} else {
+					lastRightContentX = content.CenterX;
+					break;
+				}
+			}
+
+			var awidth = (lastLeftContentX - lastRightContentX);
+
+			// x2 - x1 = a
+
+			foreach (var content in orderedContent) {
+				if (content.Center.X >= lastLeftContentX) {
+					content.Center = new CGPoint (content.Center.X - awidth + AppDelegate.ScreenWidth, content.Center.Y);
+				}
+			}
+
+			ScrollViewWidthSize -= (float)awidth;
+			ScrollViewWidthSize += AppDelegate.ScreenWidth;
+			ScrollViewTotalWidthSize = ScrollViewWidthSize * 54;
+
+			// x obj a la izq - a = nueva pos de obj a la izq
+			// ancho del board = 2600 - a 
+		}
+
+		public CGPoint ConvertPointToBoardScrollPoint(CGPoint center){
+			return new CGPoint (center.X - LastScreen * UIBoardScroll.ScrollViewWidthSize, center.Y);
+		}
+
 		private void GenerateScrollViews()
 		{
+			if (!UIBoardInterface.UserCanEditBoard) {
+				CalculateBoardSize ();
+			}
+
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+
+			ScrollView.ShowsHorizontalScrollIndicator = false;
+			ScrollView.ShowsVerticalScrollIndicator = false;
+			ShowsHorizontalScrollIndicator = false;
+			ShowsVerticalScrollIndicator = false;
 
 			ScrollView.Bounces = false;
 
@@ -142,9 +237,10 @@ namespace Board.Interface
 
 			Frame = new CGRect (0, 0, ScrollViewTotalWidthSize, AppDelegate.ScreenHeight);
 
-			LoadMainLogo ();
+			AddSubview (ScrollView);
 
-			AddSubview (ScrollView); 
+			var backButton = new UIBackButton ();
+			AddSubview (backButton);
 
 			ScrollView.SetNeedsDisplay ();
 		}
@@ -156,7 +252,7 @@ namespace Board.Interface
 			// this limits the size of the scrollview
 			ScrollView.ContentSize = new CGSize(ScrollViewTotalWidthSize, AppDelegate.ScreenHeight);
 			// sets the scrollview on the middle of the view
-			ScrollView.SetContentOffset (new CGPoint(ScrollViewTotalWidthSize / 2 - AppDelegate.ScreenWidth/2, 0), false);
+			ScrollView.SetContentOffset (new CGPoint(ScrollViewTotalWidthSize / 2 + AppDelegate.ScreenWidth / 2 - UIInfoBox.XMargin, 0), false);
 
 			MaximumZoomScale = 1f;
 			MinimumZoomScale = .15f;
@@ -164,30 +260,13 @@ namespace Board.Interface
 			RemoveGestureRecognizer (PinchGestureRecognizer);
 		}
 
-		private void LoadMainLogo()
-		{
-			TopBanner = new UIImageView (new CGRect(0, 0, AppDelegate.ScreenWidth, BannerHeight));
-			TopBanner.BackgroundColor = UIColor.White;
-
-			float autosize = (float)TopBanner.Frame.Height - 25;
-
-			UIImage logo = UIBoardInterface.board.Image;
-			UIImage logoImage = logo.ImageScaledToFitSize  (new CGSize (autosize, autosize));
-			UIImageView mainLogo = new UIImageView(logoImage);
-			mainLogo.Center = new CGPoint (TopBanner.Frame.Width / 2, TopBanner.Frame.Height / 2 + 10);
-
-			TopBanner.Tag = (int)Tags.Background;
-
-			TopBanner.AddSubview (mainLogo);
-
-			//AddSubview (TopBanner);
-		}
-
+		// TODO: always render widgets that are being edited.
+		// TODO: fix stutter on scroll limit
 		public void SelectiveRendering(){
 			
 			// clusterfuck
-			float physicalRightBound = (float)(ScrollView.ContentOffset.X + AppDelegate.ScreenWidth);
-			float physicalLeftBound = (float)(ScrollView.ContentOffset.X);
+			float physicalRightBound = (float)(ScrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2);
+			float physicalLeftBound = (float)(ScrollView.ContentOffset.X - AppDelegate.ScreenWidth / 2);
 
 			rightScreenNumber = (int)Math.Floor((physicalRightBound) / ScrollViewWidthSize);
 			float virtualRightBound = physicalRightBound - ScrollViewWidthSize * rightScreenNumber;
@@ -200,10 +279,10 @@ namespace Board.Interface
 			if (!(UIBoardInterface.DictionaryWidgets == null || UIBoardInterface.DictionaryWidgets.Count == 0))
 			{
 				List<Widget> WidgetsToDraw = UIBoardInterface.DictionaryWidgets.Values.ToList ().FindAll (item =>
-					((item.content.Center.X - item.Frame.Width / 2) > (virtualLeftBound - AppDelegate.ScreenWidth) &&
-                     (item.content.Center.X - item.Frame.Width / 2 < (virtualLeftBound + AppDelegate.ScreenWidth))) ||
-					((item.content.Center.X + item.Frame.Width / 2) < (virtualRightBound + AppDelegate.ScreenWidth) &&
-					 (item.content.Center.X + item.Frame.Width / 2 > (virtualRightBound - AppDelegate.ScreenWidth))));
+					((item.content.Center.X - item.Frame.Width / 2) > (virtualLeftBound - AppDelegate.ScreenWidth * 1.5f) &&
+                     (item.content.Center.X - item.Frame.Width / 2 < (virtualLeftBound + AppDelegate.ScreenWidth * 1.5f))) ||
+					((item.content.Center.X + item.Frame.Width / 2) < (virtualRightBound + AppDelegate.ScreenWidth * 1.5f) &&
+					 (item.content.Center.X + item.Frame.Width / 2 > (virtualRightBound - AppDelegate.ScreenWidth * 1.5f))));
 
 				rightScreenNumber = (int)Math.Floor((physicalRightBound + AppDelegate.ScreenWidth) / ScrollViewWidthSize);
 				virtualRightBound = physicalRightBound + AppDelegate.ScreenWidth - ScrollViewWidthSize * rightScreenNumber;
@@ -241,22 +320,25 @@ namespace Board.Interface
 			}
 
 			// manages topbanner opacity
-			float midScroll = (ScrollViewWidthSize * leftScreenNumber) + ScrollViewWidthSize / 2;
-			float midScreen = (float)ScrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2;
-			float absoluteDifference = Math.Abs (midScreen - midScroll);
+			//float leftScroll = (ScrollViewWidthSize * leftScreenNumber);
+			//float midScroll = leftScroll + ScrollViewWidthSize / 2;
+			//float midScreen = (float)ScrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2;
+			//float absoluteDifference = Math.Abs (midScreen - midScroll);
 
-			if (absoluteDifference > AppDelegate.ScreenWidth / 2) {
+			/*if (absoluteDifference > AppDelegate.ScreenWidth / 2) {
 				float distance = Math.Abs (absoluteDifference - AppDelegate.ScreenWidth / 2);
 				float alpha = (100 - distance) / 100;
 
 				TopBanner.Alpha = alpha;
 			} else {
 				TopBanner.Alpha = 1f;
-			}
+			}*/
 
-			if (leftScreenNumber != LastScreen) {
-				LastScreen = leftScreenNumber;
-				infoBox.Center = new CGPoint (midScroll, infoBox.Center.Y);
+			// manages infobox 'teleportation'
+			if (rightScreenNumber != LastScreen) {
+				
+				LastScreen = rightScreenNumber;
+				infoBox.Center = new CGPoint ((ScrollViewWidthSize * rightScreenNumber) + infoBox.Frame.Width + UIInfoBox.XMargin, infoBox.Center.Y);
 			}
 		}
 
@@ -291,23 +373,6 @@ namespace Board.Interface
 					DrawnWidgets.Add (wid);
 				}
 			}
-		}
-
-		public void ZoomScrollview() {
-			AddSubview (TopBanner);
-			SetZoomScale(1f, true);
-			ScrollView.Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, ScrollView.Frame.Height);
-			ScrollView.SetContentOffset (new CGPoint (TempContentOffset, 0), false);
-			SendSubviewToBack (TopBanner);
-		}
-
-		// TODO: change this to work with transform, probably even kill ZoomingScrollView (!)
-		public void UnzoomScrollview()
-		{
-			TopBanner.RemoveFromSuperview ();
-			TempContentOffset = (float)ScrollView.ContentOffset.X;
-			ScrollView.Frame = new CGRect(0, AppDelegate.ScreenHeight/2 - 70, ScrollViewWidthSize, ScrollView.Frame.Height);
-			SetZoomScale(.15f, true);
 		}
 
 		private void SuscribeToEvents()

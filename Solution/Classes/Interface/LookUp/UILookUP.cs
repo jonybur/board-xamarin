@@ -174,7 +174,8 @@ namespace Board.Interface.LookUp
 			UIBoardInterface.DictionaryWidgets.TryGetValue (content.Id, out widget);
 
 			if (widget != null) {
-				widget.UnsuscribeToEvents ();
+				widget.UnsuscribeFromEditingEvents ();
+				widget.UnsuscribeFromUsabilityEvents ();
 				widget.RemoveFromSuperview ();
 				MemoryUtility.ReleaseUIViewWithChildren (widget);
 				UIBoardInterface.DictionaryWidgets.Remove (content.Id);

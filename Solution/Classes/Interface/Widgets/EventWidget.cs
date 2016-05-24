@@ -54,7 +54,7 @@ namespace Board.Interface.Widgets
 				await boardEvent.GetImageFromUrl (boardEvent.ImageUrl);
 			}
 
-			UnsuscribeToEvents ();
+			UnsuscribeFromUsabilityEvents ();
 
 			var size = boardEvent.Thumbnail.Size;
 
@@ -70,7 +70,7 @@ namespace Board.Interface.Widgets
 
 			AppDelegate.BoardInterface.BoardScroll.SelectiveRendering ();
 
-			SuscribeToEvents ();
+			SuscribeToUsabilityEvents ();
 		}
 
 		private UIImageView CreateCalendarBox()

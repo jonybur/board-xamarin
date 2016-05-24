@@ -52,6 +52,7 @@ namespace Board
 		public static string PhoneVersion;
 
 		public const string APIAddress = "45.55.232.144";
+		//public const string APIAddress = "192.168.0.101:5000";
 		public const string FacebookAppId = "793699580736093";
 		public const string FacebookDisplayName = "Board Alpha - Deve­l­o­p­ment";
 		public const string GoogleMapsAPIKey = "AIzaSyAUO-UX9QKVWK421yjXqoo02N5TYrG_hY8";
@@ -73,10 +74,10 @@ namespace Board
 
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
-			BoardOrange = UIColor.FromRGB(244, 108, 85);
-			BoardBlue = UIColor.FromRGB(38, 106, 154);
-			BoardLightBlue = UIColor.FromRGB(45, 121, 180);
+			BoardLightBlue = UIColor.FromRGB (45, 121, 180);
+			BoardOrange = UIColor.FromRGB (244, 108, 85);
 			BoardBlack = UIColor.FromRGB (40, 40, 40);
+			BoardBlue = UIColor.FromRGB (38, 106, 154);
 			Narwhal12 = UIFont.FromName ("narwhal-bold", 12);
 			Narwhal14 = UIFont.FromName ("narwhal-bold", 14);
 			Narwhal16 = UIFont.FromName ("narwhal-bold", 16);

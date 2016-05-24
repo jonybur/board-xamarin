@@ -8,7 +8,7 @@ namespace Board.Interface.Buttons
 		{
 			arrayButtons = new BIButton[CantButtons];
 
-			arrayButtons[0] = new BackButton ();
+			arrayButtons[0] = new ImportButton ();
 			arrayButtons[1] = new CameraButton ();
 			arrayButtons[2] = new CardButton ();
 			arrayButtons[3] = new SettingsButton ();

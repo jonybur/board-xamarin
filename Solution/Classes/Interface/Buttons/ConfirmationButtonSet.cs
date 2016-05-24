@@ -7,12 +7,12 @@ namespace Board.Interface.Buttons
 	{
 		public static int CantButtons = 2;
 
-		public ConfirmationButtonSet ()
+		public ConfirmationButtonSet (EventHandler acceptTapEvent, EventHandler cancelTapEvent)
 		{
 			arrayButtons = new BIButton[CantButtons];
 
-			arrayButtons [0] = new CancelButton ();
-			arrayButtons [1] = new AcceptButton ();
+			arrayButtons [0] = new CancelButton (cancelTapEvent);
+			arrayButtons [1] = new AcceptButton (acceptTapEvent);
 		}
 	}
 }

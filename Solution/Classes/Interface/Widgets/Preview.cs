@@ -190,7 +190,7 @@ namespace Board.Interface
 		public static async System.Threading.Tasks.Task<Content> GetContent(){
 			var boardScroll = AppDelegate.BoardInterface.BoardScroll;
 
-			view.Center = new CGPoint (view.Center.X - boardScroll.LastScreen * UIBoardScroll.ScrollViewWidthSize, view.Center.Y);
+			view.Center = AppDelegate.BoardInterface.BoardScroll.ConvertPointToBoardScrollPoint (view.Center);
 
 			Content content;
 
@@ -200,7 +200,7 @@ namespace Board.Interface
 
 				var imageURL = CloudController.UploadToAmazon (pictureWidget.picture.Image);
 				
-				content = new Picture (pictureWidget.picture.Image, imageURL, view.Center, Profile.CurrentProfile.UserID, DateTime.Now, view.Transform);
+				content = new Picture (pictureWidget.picture.Image, imageURL, view.Center, Profile.CurrentProfile.UserID, view.Transform);
 
 			} else if (widget is VideoWidget) {
 				
@@ -215,12 +215,12 @@ namespace Board.Interface
 					amazonUrl = CloudController.UploadToAmazon (videoWidget.video.LocalNSUrl);
 				}
 
-				content = new Video (amazonUrl, videoWidget.video.Thumbnail, view.Center, Profile.CurrentProfile.UserID, DateTime.Now, view.Transform);
+				content = new Video (amazonUrl, videoWidget.video.Thumbnail, view.Center, Profile.CurrentProfile.UserID, view.Transform);
 
 			} else if (widget is AnnouncementWidget) {
 				
 				var announcementWidget = (AnnouncementWidget)widget;
-				content = new Announcement (announcementWidget.announcement.AttributedText, view.Center, Profile.CurrentProfile.UserID, DateTime.Now, view.Transform);
+				content = new Announcement (announcementWidget.announcement.AttributedText, view.Center, Profile.CurrentProfile.UserID, view.Transform);
 				content.FacebookId = announcementWidget.announcement.FacebookId;
 				content.SocialChannel = announcementWidget.announcement.SocialChannel;
 
@@ -228,24 +228,26 @@ namespace Board.Interface
 				
 				var eventWidget = (EventWidget)widget;
 				var imageURL = CloudController.UploadToAmazon (eventWidget.boardEvent.Image);
-				content = new BoardEvent (eventWidget.boardEvent.Name, eventWidget.boardEvent.Image, imageURL, eventWidget.boardEvent.StartDate, eventWidget.boardEvent.EndDate, view.Transform, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
+				content = new BoardEvent (eventWidget.boardEvent.Name, eventWidget.boardEvent.Image, imageURL, eventWidget.boardEvent.StartDate, eventWidget.boardEvent.EndDate, view.Transform, view.Center, Profile.CurrentProfile.UserID);
 				((BoardEvent)content).Description = eventWidget.boardEvent.Description;
 				content.FacebookId = eventWidget.boardEvent.FacebookId;
 
 			} else if (widget is PollWidget) {
 				
 				var pollWidget = (PollWidget)widget;
-				content = new Poll (pollWidget.poll.Question, view.Transform, view.Center, Profile.CurrentProfile.UserID, DateTime.Now, pollWidget.poll.Answers);
+				content = new Poll (pollWidget.poll.Question, view.Transform, view.Center, Profile.CurrentProfile.UserID, pollWidget.poll.Answers.ToArray());
 				
 			} else if (widget is MapWidget) {
 				
-				content = new Map(view.Transform, view.Center, Profile.CurrentProfile.UserID, DateTime.Now);
+				content = new Map(view.Transform, view.Center, Profile.CurrentProfile.UserID);
 
 			} else {
 				
 				content = new Content ();
 
 			}
+
+			content.CreationDate = DateTime.Now;
 
 			return content;
 		}

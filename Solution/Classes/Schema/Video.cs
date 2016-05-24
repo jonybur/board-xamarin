@@ -38,14 +38,13 @@ namespace Board.Schema
 			}
 		}
 
-		public Video(string amazonurl, UIImage thumbnail, CGPoint center, string creatorid, DateTime creationdate, CGAffineTransform transform)
+		public Video(string amazonurl, UIImage thumbnail, CGPoint center, string creatorid, CGAffineTransform transform)
 		{
 			AmazonUrl = amazonurl;
 			Thumbnail = thumbnail;
 			Transform = transform;
 			Center = center;
 			CreatorId = creatorid;
-			CreationDate = creationdate;
 		}
 
 		public Video(FacebookVideo fbVideo, CGPoint center, CGAffineTransform transform){

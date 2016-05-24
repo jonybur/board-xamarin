@@ -226,16 +226,6 @@
     <BundleResource Include="Resources\camera\flash_off.png" />
     <BundleResource Include="Resources\camera\flash_on.png" />
     <BundleResource Include="Resources\camera\focus.png" />
-    <BundleResource Include="Resources\boardinterface\infobox\call.png" />
-    <BundleResource Include="Resources\boardinterface\infobox\message.png" />
-    <BundleResource Include="Resources\boardinterface\infobox\addstar.png" />
-    <BundleResource Include="Resources\boardinterface\infobox\removestar.png" />
-    <BundleResource Include="Resources\boardinterface\infobox\call2.png" />
-    <BundleResource Include="Resources\boardinterface\infobox\call3.png" />
-    <BundleResource Include="Resources\boardinterface\infobox\addstar2.png" />
-    <BundleResource Include="Resources\boardinterface\infobox\addstar3.png" />
-    <BundleResource Include="Resources\boardinterface\infobox\addstar4.png" />
-    <BundleResource Include="Resources\boardinterface\infobox\message2.png" />
     <BundleResource Include="Resources\boardinterface\backgrounds\diamonds.png" />
     <BundleResource Include="Resources\screens\main\magazine\pin.png" />
     <BundleResource Include="Resources\screens\main\map\markercontainer_black.png" />
@@ -267,15 +257,21 @@
     <BundleResource Include="Resources\screens\sidemenus\5\support.png" />
     <BundleResource Include="Resources\demo\magazine\1.png" />
     <BundleResource Include="Resources\demo\magazine\westpalmbeach.png" />
-    <BundleResource Include="Resources\boardinterface\nubuttons\nuback.png" />
-    <BundleResource Include="Resources\boardinterface\nubuttons\nucard.png" />
-    <BundleResource Include="Resources\boardinterface\nubuttons\nusettings.png" />
-    <BundleResource Include="Resources\boardinterface\nubuttons\nucamera.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\openeye.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\closedeye.png" />
-    <BundleResource Include="Resources\boardinterface\nubuttons\nuaccept.png" />
-    <BundleResource Include="Resources\boardinterface\nubuttons\nucancel.png" />
     <BundleResource Include="Resources\boardinterface\widget\deletebut.png" />
+    <BundleResource Include="Resources\boardinterface\back_button3.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nuaccept.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nucamera.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nucancel.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nuback.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nusettings.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nucard.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\white\closedeye.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\white\openeye.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\call.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\like.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\message.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -410,6 +406,8 @@
     <Compile Include="Classes\Facebook\FacebookAutoImporter.cs" />
     <Compile Include="Classes\Interface\Widgets\Widget_Components.cs" />
     <Compile Include="Classes\Interface\Buttons\BIButton.cs" />
+    <Compile Include="Classes\Interface\Widgets\Widget_Gestures.cs" />
+    <Compile Include="Classes\Interface\Buttons\ImportButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -474,6 +472,7 @@
     <Folder Include="Resources\screens\sidemenus\6plus\" />
     <Folder Include="Resources\demo\magazine\" />
     <Folder Include="Resources\boardinterface\nubuttons\" />
+    <Folder Include="Resources\boardinterface\strokebuttons\white\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookios">

@@ -1,14 +1,14 @@
-﻿using Board.Screens.Controls;
+﻿using System;
+using System.Collections.Generic;
+using Board.Infrastructure;
+using Board.Interface.LookUp;
+using Board.Screens.Controls;
+using Board.Utilities;
 using CoreGraphics;
+using CoreLocation;
 using Google.Maps;
 using MGImageUtilitiesBinding;
 using UIKit;
-using Board.Utilities;
-using Board.Interface.LookUp;
-using BigTed;
-using Board.Infrastructure;
-using Foundation;
-using CoreLocation;
 
 namespace Board.Interface
 {
@@ -18,36 +18,114 @@ namespace Board.Interface
 
 		MapContainer Container;
 		UILabel NameLabel;
-		UIGalleryScrollView GallerySV;
 		TopBanner Banner;
 		UITextView AboutBox;
+		UIActionButtons ActionButtons;
 
 		public UIInfoBox(Board.Schema.Board board){
-			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth - XMargin * 2, AppDelegate.ScreenHeight - UIBoardScroll.ButtonBarHeight);
-			Center = new CGPoint (UIBoardScroll.ScrollViewWidthSize / 2 + XMargin, AppDelegate.ScreenHeight / 2 - UIBoardScroll.ButtonBarHeight / 2);
+			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth - XMargin * 2, AppDelegate.ScreenHeight);
+			Center = new CGPoint (XMargin + Frame.Width / 2, AppDelegate.ScreenHeight / 2);
 			BackgroundColor = UIColor.White;
 			ClipsToBounds = true;
 
 			Banner = new TopBanner (board.Image, (float)Frame.Width);
 
-			NameLabel = new UILabel ();
-			NameLabel.Frame = new CGRect (10, Banner.Bottom + 20, Frame.Width - 20, 24);
-			NameLabel.Font = AppDelegate.Narwhal20;//UIFont.SystemFontOfSize (22);
-			NameLabel.TextColor = UIColor.Black;
-			NameLabel.Text = UIBoardInterface.board.Name;
-			NameLabel.TextAlignment = UITextAlignment.Center;
+			NameLabel = new UINameLabel (Banner.Bottom + 20, (float)Frame.Width);
+
+			AboutBox = new UIAboutBox (board.About, (float)NameLabel.Frame.Bottom + 10, (float)Frame.Width);
+
+			ActionButtons = new UIActionButtons (board, (float)AboutBox.Frame.Bottom + 10, (float)Frame.Width);
 
 			Container = new MapContainer (Frame);
 
-			AboutBox = new UITextView ();
-			AboutBox.Frame = new CGRect (10, NameLabel.Frame.Bottom + 10, Frame.Width - 20, 100);
-			AboutBox.Text = board.About;
-			AboutBox.Font = UIFont.SystemFontOfSize (14);
-			AboutBox.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
-			AboutBox.Editable = false;
-			AboutBox.Selectable = false;
-
 			AddSubviews (Banner, Container.button, NameLabel, AboutBox);
+			foreach (var button in ActionButtons.ListActionButton) {
+				AddSubview (button);
+			}
+		}
+
+		class UIActionButtons{
+			public List<UIActionButton> ListActionButton;
+
+			public UIActionButtons(Board.Schema.Board board, float yposition, float infoboxWidth){
+				ListActionButton = new List<UIActionButton>();
+
+				ListActionButton.Add(CreateLikeButton());
+
+				if (board.FBPage != null){
+					ListActionButton.Add(CreateMessageButton(board.FBPage.Id));
+				}
+
+				ListActionButton.Add(CreateCallButton("test"));
+
+				for (int i = 0; i < ListActionButton.Count; i++) {
+					float xposition = (infoboxWidth / (ListActionButton.Count + 1)) * (i + 1);
+					ListActionButton[i].Center = new CGPoint(xposition, yposition + ListActionButton[i].Frame.Height / 2);
+				}
+			}
+
+			private UIActionButton CreateLikeButton(){
+				var likeButton = new UIActionButton ("like", delegate {
+					
+				});
+				return likeButton;
+			}
+
+			private UIActionButton CreateMessageButton(string facebookId){
+				var messageButton = new UIActionButton ("message", delegate {
+					if (AppsController.CanOpenFacebookMessenger ()) {
+						AppsController.OpenFacebookMessenger (facebookId);
+					}
+				});
+				return messageButton;
+			}
+
+			private UIActionButton CreateCallButton(string phoneNumber){
+				var callButton = new UIActionButton ("call", delegate{
+					
+				});
+				return callButton;
+			}
+
+			public class UIActionButton : UIButton{
+				public UIActionButton(string buttonName, EventHandler touchUpInside){
+					Frame = new CGRect (0, 0, 50, 50);
+					//BackgroundColor = UIColor.Red;
+					var imageView = new UIImageView();
+					using (var image = UIImage.FromFile("./boardinterface/infobox/"+buttonName+".png")){
+						imageView.Frame = new CGRect(0, 0, image.Size.Width * .6f, image.Size.Height * .6f);
+						imageView.Image = image;
+						//SetImage(image, UIControlState.Normal);
+					}
+					imageView.Center = new CGPoint(Frame.Width / 2, Frame.Height / 2);
+
+					AddSubview(imageView);
+
+					TouchUpInside += touchUpInside;
+				}
+			}
+
+		}
+
+		sealed class UIAboutBox : UITextView{
+			public UIAboutBox(string about, float yposition, float infoboxwidth){
+				Frame = new CGRect (UIInfoBox.XMargin, yposition, infoboxwidth - UIInfoBox.XMargin * 2, 100);
+				Text = about;
+				Font = UIFont.SystemFontOfSize (14);
+				BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
+				Editable = false;
+				Selectable = false;
+			}
+		}
+
+		sealed class UINameLabel : UILabel{
+			public UINameLabel(float yposition, float infoboxwidth){
+				Frame = new CGRect (UIInfoBox.XMargin, yposition, infoboxwidth - UIInfoBox.XMargin *2, 24);
+				Font = AppDelegate.Narwhal20;
+				TextColor = UIColor.Black;
+				Text = UIBoardInterface.board.Name;
+				TextAlignment = UITextAlignment.Center;
+			}
 		}
 
 		private class TopBanner : UIView {
@@ -93,7 +171,7 @@ namespace Board.Interface
 			}
 		}
 
-		private class MapContainer : UIViewController{
+		private sealed class MapContainer : UIViewController{
 			const int ButtonHeight = 40;
 			private MapView mapView;
 			public UIButton uberButton, directionsButton;
@@ -110,7 +188,7 @@ namespace Board.Interface
 				});
 
 				button.AddGestureRecognizer (MapTap);
-				button.Center = new CGPoint (frame.Width / 2, frame.Height - button.Frame.Height / 2 - 10);
+				button.Center = new CGPoint (frame.Width / 2, frame.Height - button.Frame.Height / 2 - 10 - UIBoardScroll.ButtonBarHeight);
 				button.ClipsToBounds = true;
 
 				CreateDirectionsButton();

@@ -15,6 +15,7 @@ namespace Board.Interface.FacebookImport
 		List<UIMenuButton> Buttons;
 		bool pressed;
 		float yPosition;
+		bool canGoBack;
 
 		public AlbumsScreen(){}
 
@@ -25,6 +26,7 @@ namespace Board.Interface.FacebookImport
 		private void AlbumsCompletion(List<FacebookElement> elementList) {
 			LoadAlbums (elementList);
 
+			canGoBack = true;
 			BTProgressHUD.Dismiss ();
 		}
 
@@ -68,7 +70,11 @@ namespace Board.Interface.FacebookImport
 		{
 			int i = 0;
 			float buttonheight = 0;
-				
+
+			var videosButton = VideoButton ();
+			videosButton.SuscribeToEvent ();
+			Buttons.Add (videosButton);
+			ScrollView.AddSubview (videosButton);
 			foreach (FacebookElement album in elementList) {
 				var albumButton = AlbumButton (yPosition, (FacebookAlbum)album);
 				ScrollView.AddSubview (albumButton);
@@ -78,10 +84,6 @@ namespace Board.Interface.FacebookImport
 				buttonheight = (float)albumButton.Frame.Height;
 				yPosition += buttonheight + 1;
 			}
-			var videosButton = VideoButton ();
-			videosButton.SuscribeToEvent ();
-			Buttons.Add (videosButton);
-			ScrollView.AddSubview (videosButton);
 					
 			ScrollView.ContentSize = new CGSize(AppDelegate.ScreenWidth, (elementList.Count + 1) * (buttonheight + 1) + Banner.Frame.Height);
 		}
@@ -128,6 +130,10 @@ namespace Board.Interface.FacebookImport
 			Banner = new UIMenuBanner ("ALBUMS", "cross_left");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
+				if (!canGoBack){
+					return;
+				}
+
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					MemoryUtility.ReleaseUIViewWithChildren(View);
 					AppDelegate.PopViewControllerLikeDismissView();
