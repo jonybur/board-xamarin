@@ -9,10 +9,7 @@ namespace Board.Schema
 {
 	public class Poll : Content
 	{
-		[IgnoreDataMember]
-		public NSAttributedString Question;
-
-		public string QuestionText;
+		public string Question;
 
 		public List<string> Answers;
 
@@ -21,20 +18,18 @@ namespace Board.Schema
 		public Poll(){
 		}
 
-		public Poll(NSAttributedString question, CGAffineTransform transform, CGPoint center, string creatorid, params string[] answers)
+		public Poll(string question, CGAffineTransform transform, CGPoint center, string creatorid, params string[] answers)
 		{
 			Question = question;
-			QuestionText = question.Value;
 			Transform = transform;
 			Center = center;
 			CreatorId = creatorid;
 			Answers = answers.ToList ();
 		}
 
-		public Poll(NSAttributedString question, CGAffineTransform transform, CGPoint center, string creatorid, DateTime creationdate, List<string> answers)
+		public Poll(string question, CGAffineTransform transform, CGPoint center, string creatorid, DateTime creationdate, List<string> answers)
 		{
 			Question = question;
-			QuestionText = question.Value;
 			Transform = transform;
 			Center = center;
 			CreatorId = creatorid;

@@ -48,7 +48,6 @@ namespace Board.Interface
 			} else if (content is Picture) {
 				
 				widget = new PictureWidget ((Picture)content);
-				((PictureWidget)widget).Initialize ();
 				TypeOfPreview = (int)Type.Picture;
 
 			} else if (content is Video) {
@@ -201,6 +200,8 @@ namespace Board.Interface
 				var imageURL = CloudController.UploadToAmazon (pictureWidget.picture.Image);
 				
 				content = new Picture (pictureWidget.picture.Image, imageURL, view.Center, Profile.CurrentProfile.UserID, view.Transform);
+				content.FacebookId = pictureWidget.picture.FacebookId;
+				((Picture)content).Description = pictureWidget.picture.Description;
 
 			} else if (widget is VideoWidget) {
 				
@@ -216,13 +217,16 @@ namespace Board.Interface
 				}
 
 				content = new Video (amazonUrl, videoWidget.video.Thumbnail, view.Center, Profile.CurrentProfile.UserID, view.Transform);
+				content.FacebookId = videoWidget.video.FacebookId;
+				((Video)content).Description = videoWidget.video.Description;
+
 
 			} else if (widget is AnnouncementWidget) {
 				
 				var announcementWidget = (AnnouncementWidget)widget;
 				content = new Announcement (announcementWidget.announcement.AttributedText, view.Center, Profile.CurrentProfile.UserID, view.Transform);
-				content.FacebookId = announcementWidget.announcement.FacebookId;
 				content.SocialChannel = announcementWidget.announcement.SocialChannel;
+				content.FacebookId = announcementWidget.announcement.FacebookId;
 
 			} else if (widget is EventWidget) {
 				
@@ -246,6 +250,7 @@ namespace Board.Interface
 				content = new Content ();
 
 			}
+
 
 			content.CreationDate = DateTime.Now;
 

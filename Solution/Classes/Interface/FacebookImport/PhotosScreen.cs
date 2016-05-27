@@ -61,6 +61,7 @@ namespace Board.Interface.FacebookImport
 					obj = obj.OrderByDescending(x => ((FacebookImage)x).Height).ToList();
 
 					var minElement = (FacebookImage)obj [obj.Count - 1];
+
 					FacebookImage maxElement;
 					if (obj.Count > 2) {
 						maxElement = obj [2] as FacebookImage;
@@ -103,6 +104,7 @@ namespace Board.Interface.FacebookImport
 				BTProgressHUD.Dismiss ();
 			}
 		}
+
 			
 		private void LoadBanner()
 		{

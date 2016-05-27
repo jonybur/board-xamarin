@@ -82,7 +82,7 @@ namespace Board.Interface.CreateScreens
 				poll.Answers = new List<string>();
 				poll.Answers.Add(answerField1.Text);
 				poll.Answers.Add(answerField2.Text);
-				poll.Question = textview.AttributedText;
+				poll.Question = textview.Text;
 				poll.SocialChannel = ShareButtons.GetActiveSocialChannels ();
 				poll.CreationDate = DateTime.Now;
 

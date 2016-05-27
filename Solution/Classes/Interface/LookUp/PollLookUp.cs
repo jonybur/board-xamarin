@@ -54,12 +54,12 @@ namespace Board.Interface.LookUp
 		{
 			UILabel label = new UILabel ();
 			label.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
-			label.AttributedText = poll.Question;
+			label.Text = poll.Question;
 			label.TextColor = UIBoardInterface.board.MainColor;
 			label.Lines = 0;
 			label.Font = AppDelegate.SystemFontOfSize18;
 
-			NSString lorum = new NSString(poll.Question.Value);
+			NSString lorum = new NSString(poll.Question);
 			UIStringAttributes stringAttributes = new UIStringAttributes ();
 			stringAttributes.Font = AppDelegate.SystemFontOfSize18;
 			CGRect labrect = lorum.GetBoundingRect(new CGSize(250,450), NSStringDrawingOptions.UsesLineFragmentOrigin, stringAttributes, null);

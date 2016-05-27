@@ -46,7 +46,7 @@ namespace Board.Screens.Controls
 				UIMagazineBannerPageController.PageControl.CurrentPage = indexOfCurrentViewController;
 
 				var containerScreen = AppDelegate.NavigationController.TopViewController as ContainerScreen;
-				var mainMenuScreen = containerScreen.CurrentScreen as MainMenuScreen;
+				var mainMenuScreen = containerScreen.CurrentScreenViewController as MainMenuScreen;
 
 				mainMenuScreen.PlaceNewScreen (UIMagazineServices.Pages[indexOfCurrentViewController].ContentDisplay);
 			}	

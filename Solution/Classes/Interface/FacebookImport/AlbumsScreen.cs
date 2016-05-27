@@ -135,7 +135,6 @@ namespace Board.Interface.FacebookImport
 				}
 
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					MemoryUtility.ReleaseUIViewWithChildren(View);
 					AppDelegate.PopViewControllerLikeDismissView();
 				}
 			});

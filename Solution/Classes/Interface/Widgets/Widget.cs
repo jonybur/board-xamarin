@@ -74,18 +74,13 @@ namespace Board.Interface.Widgets
 			}
 
 			Layer.ShadowOffset = new CGSize (0, 0);
-			Layer.CornerRadius = 10;
+			Layer.CornerRadius = 10f;
 			Layer.ShadowRadius = 10f;
 			Layer.ShadowOpacity = 0f;
 			Layer.ShadowColor = UIColor.Black.CGColor;
 		}
 
 		public void SetTransforms(float xOffset = 0){
-
-			Transform = CGAffineTransform.MakeRotation(0);
-			MountingView.Transform = CGAffineTransform.MakeRotation(0);
-
-			Frame = new CGRect (0, 0, MountingView.Frame.Width, MountingView.Frame.Height);
 			Center = new CGPoint (content.Center.X + xOffset, content.Center.Y);
 			Transform = content.Transform;
 		}

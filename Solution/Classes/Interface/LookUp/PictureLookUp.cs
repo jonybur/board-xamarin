@@ -25,8 +25,7 @@ namespace Board.Interface.LookUp
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			ScrollView.UserInteractionEnabled = true;
 
-			UIImageView lookUpImage;
-			lookUpImage = CreateImageFrame (picture.Image);
+			var lookUpImage = CreateImageFrame (picture.Image);
 			ScrollView.AddSubview (lookUpImage);
 			ScrollView.MaximumZoomScale = 4f;
 			ScrollView.MinimumZoomScale = 1f;
@@ -53,7 +52,29 @@ namespace Board.Interface.LookUp
 
 			longpress.MinimumPressDuration = .3f;
 
-			View.AddSubviews (ScrollView, BackButton, LikeButton, FacebookButton, TrashButton);
+			var descriptionBox = CreateDescriptionBox (picture.Description);
+			descriptionBox.Center = new CGPoint (AppDelegate.ScreenWidth / 2, LikeButton.Frame.Top - descriptionBox.Frame.Height / 2 - 5);
+
+			View.AddSubviews (ScrollView, descriptionBox, BackButton, LikeButton, FacebookButton, TrashButton);
+		}
+
+		private UITextView CreateDescriptionBox(string description){
+			var textview = new UITextView ();
+
+			textview.Editable = false;
+			textview.Selectable = false;
+			textview.ScrollEnabled = true;
+			textview.DataDetectorTypes = UIDataDetectorType.Link;
+			textview.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
+			textview.Text = description;
+			textview.Font = UIFont.SystemFontOfSize (14);
+			textview.TextColor = UIColor.White;
+			var size = textview.SizeThatFits (new CGSize (AppDelegate.ScreenWidth - 10, 60));
+			textview.Frame = new CGRect (5, 0, size.Width, size.Height);
+
+			textview.ContentOffset = new CGPoint (0, 0);
+
+			return textview;
 		}
 
 		private async void SavePhoto(UIAlertAction action)

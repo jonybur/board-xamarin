@@ -20,8 +20,8 @@ namespace Board.Interface.Buttons
 			eventHandlers.Add ((sender, e) => {
 				if (!blockButton){
 					var containerScreen = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 2] as ContainerScreen;
-					if (containerScreen!= null) {
-						containerScreen.LoadMainMenu();
+					if (containerScreen != null) {
+						containerScreen.LoadLastScreen();
 					}
 					AppDelegate.PopViewControllerWithCallback(AppDelegate.ExitBoardInterface);
 					blockButton = true;

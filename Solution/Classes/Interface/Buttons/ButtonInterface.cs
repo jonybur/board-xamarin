@@ -40,7 +40,7 @@ namespace Board.Interface.Buttons
 				}
 
 				string jsonString = JsonUtilty.GenerateUpdateJson (content);
-
+				System.Console.WriteLine(jsonString);
 				bool wasUploaded = CloudController.UpdateBoard (UIBoardInterface.board.Id, jsonString);
 				if (!wasUploaded){
 					return;

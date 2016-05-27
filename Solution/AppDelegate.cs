@@ -203,6 +203,27 @@ namespace Board
 			NavigationController.PushViewController (screen, false);
 		}
 
+		public static void PopViewControllerLikeDismissViewWithCallback(Action callback)
+		{
+			CATransaction.Begin ();
+
+			CATransaction.CompletionBlock = callback;
+
+			CATransition transition = new CATransition ();
+
+			transition.Duration = .3f;
+			transition.TimingFunction = CAMediaTimingFunction.FromName (CAMediaTimingFunction.Linear);
+			transition.Type = CAAnimation.TransitionReveal;
+			transition.Subtype = CAAnimation.TransitionFromBottom;
+			NavigationController.View.Layer.RemoveAllAnimations ();
+			NavigationController.View.Layer.AddAnimation (transition, null);
+
+			NavigationController.PopViewController (false);
+
+			CATransaction.Begin ();
+		}
+
+
 		public static void PopViewControllerLikeDismissView()
 		{
 			CATransition transition = new CATransition ();

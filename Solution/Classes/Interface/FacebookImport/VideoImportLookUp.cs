@@ -35,7 +35,29 @@ namespace Board.Interface.FacebookImport
 
 			CreateNextButton (UIColor.White);
 
-			View.AddSubviews (ScrollView, BackButton, NextButton);
+			var descriptionBox = CreateDescriptionBox (video.Description);
+			descriptionBox.Center = new CGPoint (AppDelegate.ScreenWidth / 2, LikeButton.Frame.Top - descriptionBox.Frame.Height / 2 - 5);
+
+			View.AddSubviews (ScrollView, descriptionBox, BackButton, NextButton);
+		}
+
+		private UITextView CreateDescriptionBox(string description){
+			var textview = new UITextView ();
+
+			textview.Editable = false;
+			textview.Selectable = false;
+			textview.ScrollEnabled = true;
+			textview.DataDetectorTypes = UIDataDetectorType.Link;
+			textview.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
+			textview.Text = description;
+			textview.Font = UIFont.SystemFontOfSize (14);
+			textview.TextColor = UIColor.White;
+			var size = textview.SizeThatFits (new CGSize (AppDelegate.ScreenWidth - 10, 60));
+			textview.Frame = new CGRect (5, 0, size.Width, size.Height);
+
+			textview.ContentOffset = new CGPoint (0, 0);
+
+			return textview;
 		}
 
 		private void CreateNextButton(UIColor buttonColor)

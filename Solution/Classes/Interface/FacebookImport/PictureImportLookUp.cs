@@ -55,9 +55,31 @@ namespace Board.Interface.FacebookImport
 			longpress.MinimumPressDuration = .3f;
 
 			CreateNextButton (UIColor.White);
-			View.AddSubviews (ScrollView, BackButton, FacebookButton, NextButton);
+
+			var descriptionBox = CreateDescriptionBox (picture.Description);
+			descriptionBox.Center = new CGPoint (AppDelegate.ScreenWidth / 2, LikeButton.Frame.Top - descriptionBox.Frame.Height / 2 - 5);
+
+			View.AddSubviews (ScrollView, descriptionBox, BackButton, FacebookButton, NextButton);
 		}
 
+		private UITextView CreateDescriptionBox(string description){
+			var textview = new UITextView ();
+
+			textview.Editable = false;
+			textview.Selectable = false;
+			textview.ScrollEnabled = true;
+			textview.DataDetectorTypes = UIDataDetectorType.Link;
+			textview.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
+			textview.Text = description;
+			textview.Font = UIFont.SystemFontOfSize (14);
+			textview.TextColor = UIColor.White;
+			var size = textview.SizeThatFits (new CGSize (AppDelegate.ScreenWidth - 10, 60));
+			textview.Frame = new CGRect (5, 0, size.Width, size.Height);
+
+			textview.ContentOffset = new CGPoint (0, 0);
+
+			return textview;
+		}
 
 		private void CreateNextButton(UIColor buttonColor)
 		{

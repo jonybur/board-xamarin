@@ -33,12 +33,9 @@ namespace Board.Interface.LookUp
 				TrashButton.Frame.Bottom,
 				AppDelegate.ScreenWidth - 20,
 				AppDelegate.ScreenHeight - TrashButton.Frame.Bottom - LikeButton.Frame.Height));
-
-			if (announcement.AttributedText != null) {
-				textView.AttributedText = announcement.AttributedText;
-			} else {
-				textView.Text = announcement.Text;
-			}
+			
+			textView.Text = announcement.Text;
+			textView.Font = UIFont.SystemFontOfSize (14);
 			textView.Editable = false;
 			textView.ScrollEnabled = true;
 			textView.Selectable = true;

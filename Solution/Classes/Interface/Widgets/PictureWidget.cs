@@ -2,6 +2,8 @@
 using CoreGraphics;
 using UIKit;
 using System.Threading.Tasks;
+using Foundation;
+using Haneke;
 
 namespace Board.Interface.Widgets
 {
@@ -10,7 +12,7 @@ namespace Board.Interface.Widgets
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
 
-		UIImageView PictureFrame;
+		UIImageView PictureImageView;
 
 
 		public Picture picture
@@ -20,66 +22,48 @@ namespace Board.Interface.Widgets
 
 		public PictureWidget()
 		{
-
-		}
-
-		public async Task Initialize(){
-			if (picture.Image == null || picture.Thumbnail == null) {
-				await picture.GetImageFromUrl (picture.ImageUrl);
-			}
-
-			UnsuscribeFromUsabilityEvents ();
-
-			var size = picture.Thumbnail.Size;
-
-			MountingView.RemoveFromSuperview ();
-			PictureFrame.RemoveFromSuperview ();
-
-			// mounting
-
-			CreateMounting (size);
-			Frame = MountingView.Frame;
-			AddSubview (MountingView);
-
-			// picture
-
-			PictureFrame = new UIImageView ();
-			PictureFrame.Frame = new CGRect (MountingView.Frame.X + SideMargin, TopMargin, size.Width, size.Height);
-			PictureFrame.Image = picture.Thumbnail;
-			PictureFrame.Layer.AllowsEdgeAntialiasing = true;
-			AddSubview (PictureFrame);
-
-			EyeOpen = false;
-
-			AppDelegate.BoardInterface.BoardScroll.SelectiveRendering ();
-
-			SuscribeToUsabilityEvents ();
 		}
 
 		public PictureWidget(Picture pic)
 		{
 			content = pic;
 
-			var size = new CGSize(200,200);
+			PictureImageView = new UIImageView ();
+			PictureImageView.Frame = new CGRect (0, 0, Widget.Autosize, Widget.Autosize);
+			PictureImageView.LayoutIfNeeded ();
 
-			// mounting
+			CreateMounting (PictureImageView.Frame.Size);
+			AddSubviews (MountingView, PictureImageView);
 
-			CreateMounting (size);
-			Frame = MountingView.Frame;
-			AddSubview (MountingView);
+			PictureImageView.ContentMode = UIViewContentMode.ScaleAspectFill;
 
-			// picture
+			PictureImageView.SetImage (new NSUrl (picture.ImageUrl), UIImage.FromFile ("./demo/magazine/westpalmbeach.png"), ImageFromHaneke, ErrorFromHaneke);
 
-			PictureFrame = new UIImageView ();
-			PictureFrame.Frame = new CGRect (MountingView.Frame.X + SideMargin, TopMargin, size.Width, size.Height);
-			PictureFrame.Layer.AllowsEdgeAntialiasing = true;
-			PictureFrame.Layer.CornerRadius = 10;
-
-			AddSubview (PictureFrame);
+			PictureImageView.Layer.AllowsEdgeAntialiasing = true;
 
 			EyeOpen = false;
 
 			CreateGestures ();
+		}
+
+		public void ImageFromHaneke(UIImage obj){
+
+			PictureImageView.RemoveFromSuperview ();
+			MountingView.RemoveFromSuperview ();
+
+			picture.SetImageFromUIImage (obj);
+
+			PictureImageView.Frame = new CGRect (SideMargin, TopMargin, picture.Thumbnail.Size.Width, picture.Thumbnail.Size.Height);
+			PictureImageView.Image = picture.Thumbnail;
+			CreateMounting (PictureImageView.Frame.Size);
+
+			Frame = MountingView.Frame;
+
+			AddSubviews (MountingView, PictureImageView);
+		}
+
+		public void ErrorFromHaneke(NSError obj){
+			System.Console.WriteLine ("stop");
 		}
 
 		public void SetFrame(CGRect frame)

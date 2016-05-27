@@ -33,11 +33,11 @@ namespace Board.Screens
 		{
 			BTProgressHUD.Show ();
 
+			Banner.SuscribeToEvents ();
+
 			boardList = await CloudController.GetUserBoards ();
 
 			InitializeInterface ();
-
-			Banner.SuscribeToEvents ();
 
 			BTProgressHUD.Dismiss ();
 		}

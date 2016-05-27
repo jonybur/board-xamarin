@@ -58,9 +58,34 @@ namespace Board.Interface
 
 				ListActionButton.Add(CreateCallButton("test"));
 
-				for (int i = 0; i < ListActionButton.Count; i++) {
-					float xposition = (infoboxWidth / (ListActionButton.Count + 1)) * (i + 1);
-					ListActionButton[i].Center = new CGPoint(xposition, yposition + ListActionButton[i].Frame.Height / 2);
+				float xposition = infoboxWidth / 8;
+
+				switch (ListActionButton.Count){
+					case 1:
+						
+					ListActionButton[0].Center = new CGPoint(xposition * 4, yposition + ListActionButton[0].Frame.Height / 2);
+					break;
+
+					case 2:
+
+					ListActionButton[0].Center = new CGPoint(xposition * 2, yposition + ListActionButton[0].Frame.Height / 2);
+					ListActionButton[1].Center = new CGPoint(xposition * 6, yposition + ListActionButton[1].Frame.Height / 2);
+					break;
+
+					case 3:
+
+					ListActionButton[0].Center = new CGPoint(xposition * 1, yposition + ListActionButton[0].Frame.Height / 2);
+					ListActionButton[1].Center = new CGPoint(xposition * 4, yposition + ListActionButton[1].Frame.Height / 2);
+					ListActionButton[2].Center = new CGPoint(xposition * 7, yposition + ListActionButton[2].Frame.Height / 2);
+					break;
+
+					case 4:
+
+					ListActionButton[0].Center = new CGPoint(xposition * 1, yposition + ListActionButton[0].Frame.Height / 2);
+					ListActionButton[1].Center = new CGPoint(xposition * 3, yposition + ListActionButton[1].Frame.Height / 2);
+					ListActionButton[3].Center = new CGPoint(xposition * 5, yposition + ListActionButton[2].Frame.Height / 2);
+					ListActionButton[4].Center = new CGPoint(xposition * 7, yposition + ListActionButton[3].Frame.Height / 2);
+					break;
 				}
 			}
 

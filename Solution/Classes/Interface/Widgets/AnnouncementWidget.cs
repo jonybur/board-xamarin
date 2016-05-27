@@ -53,11 +53,8 @@ namespace Board.Interface.Widgets
 			textview.ScrollEnabled = true;
 			textview.DataDetectorTypes = UIDataDetectorType.Link;
 			textview.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
-			if (announcement.AttributedText != null) {
-				textview.AttributedText = announcement.AttributedText;
-			} else {
-				textview.Text = announcement.Text;
-			}
+			textview.Text = announcement.Text;
+			textview.Font = UIFont.SystemFontOfSize (14);
 			textview.TextColor = Widget.HighlightColor;
 			textview.SizeToFit ();
 

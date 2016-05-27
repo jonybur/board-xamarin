@@ -57,18 +57,14 @@ namespace Board.Interface.Widgets
 		{
 			UILabel label = new UILabel ();
 			label.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
-			if (poll.Question != null) {
-				label.AttributedText = poll.Question;
-			} else {
-				label.Text = poll.QuestionText;
-			}
+			label.Text = poll.Question;
 			label.TextColor = Widget.HighlightColor;
 			label.Lines = 0;
 			label.Font = AppDelegate.SystemFontOfSize18;
 
 			UIStringAttributes stringAttributes = new UIStringAttributes ();
 			stringAttributes.Font = AppDelegate.SystemFontOfSize18;
-			var stringForBoundingRect = new NSString(poll.QuestionText);
+			var stringForBoundingRect = new NSString(poll.Question);
 			var labrect = stringForBoundingRect.GetBoundingRect(new CGSize(250,450), NSStringDrawingOptions.UsesLineFragmentOrigin, stringAttributes, null);
 
 			label.Frame = new CGRect (SideMargin + 5, TopMargin + 5, 250, labrect.Height);
@@ -85,7 +81,7 @@ namespace Board.Interface.Widgets
 			textview.ScrollEnabled = false;
 			textview.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 			textview.DataDetectorTypes = UIDataDetectorType.Link;
-			textview.AttributedText = poll.Question;
+			textview.Text = poll.Question;
 			textview.TextColor = Widget.HighlightColor;
 			textview.Font = AppDelegate.SystemFontOfSize18;
 			textview.SizeToFit ();

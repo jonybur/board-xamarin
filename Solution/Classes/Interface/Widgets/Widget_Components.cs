@@ -67,7 +67,7 @@ namespace Board.Interface.Widgets
 
 		protected void CreateEye()
 		{
-			EyeView = new UIImageView(new CGRect (MountingView.Frame.Width - IconSize - SideMargin -5, MountingView.Frame.Height - IconSize - 5, IconSize, IconSize));
+			EyeView = new UIImageView(new CGRect (MountingView.Frame.Width - IconSize - SideMargin - 5, MountingView.Frame.Height - IconSize - 5, IconSize, IconSize));
 			EyeView.Image = ClosedEyeImageView.Image;
 			EyeView.TintColor = WidgetGrey;
 		}

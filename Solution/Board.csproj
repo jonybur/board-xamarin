@@ -118,9 +118,6 @@
       <HintPath>..\Components\btprogresshud-1.20\lib\ios-unified\BTProgressHUD.dll</HintPath>
     </Reference>
     <Reference Include="MonoTouch.Dialog-1" />
-    <Reference Include="Haneke">
-      <HintPath>..\Components\haneke-1.0.1\lib\ios-unified\Haneke.dll</HintPath>
-    </Reference>
     <Reference Include="MGImageUtilitiesBinding">
       <HintPath>..\Bindings\MGImageUtilitiesBinding.dll</HintPath>
     </Reference>
@@ -157,6 +154,9 @@
     <Reference Include="Google.Maps">
       <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.11.1.2\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
     </Reference>
+    <Reference Include="Haneke">
+      <HintPath>..\Components\haneke-1.0.1\lib\ios-unified\Haneke.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\fonts\congress-font-medium.ttf" />
@@ -184,9 +184,6 @@
     <BundleResource Include="Resources\Icon-60%402x.png" />
     <BundleResource Include="Resources\Icon.png" />
     <BundleResource Include="Resources\Icon%402x.png" />
-    <BundleResource Include="Resources\boardinterface\backgrounds\intern.png" />
-    <BundleResource Include="Resources\boardinterface\backgrounds\logobackground.png" />
-    <BundleResource Include="Resources\boardinterface\backgrounds\outer.png" />
     <BundleResource Include="Resources\boardinterface\widget\closedeye.png" />
     <BundleResource Include="Resources\boardinterface\widget\like.png" />
     <BundleResource Include="Resources\boardinterface\widget\openeye.png" />
@@ -226,7 +223,6 @@
     <BundleResource Include="Resources\camera\flash_off.png" />
     <BundleResource Include="Resources\camera\flash_on.png" />
     <BundleResource Include="Resources\camera\focus.png" />
-    <BundleResource Include="Resources\boardinterface\backgrounds\diamonds.png" />
     <BundleResource Include="Resources\screens\main\magazine\pin.png" />
     <BundleResource Include="Resources\screens\main\map\markercontainer_black.png" />
     <BundleResource Include="Resources\menubanner\cross_left.png" />
@@ -438,7 +434,6 @@
     <Folder Include="Classes\Picker\" />
     <Folder Include="Resources\boardinterface\" />
     <Folder Include="Resources\boardinterface\lookup\" />
-    <Folder Include="Resources\boardinterface\backgrounds\" />
     <Folder Include="Resources\demo\" />
     <Folder Include="Resources\boardinterface\strokebuttons\" />
     <Folder Include="Resources\boardinterface\widget\" />
@@ -495,16 +490,16 @@
       <Version>3.0.1</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
-    <XamarinComponentReference Include="haneke">
-      <Version>1.0.1</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
     <XamarinComponentReference Include="GPUImage">
       <Version>0.1.7.0</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
     <XamarinComponentReference Include="googleiosmaps">
       <Version>1.11.1.2</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="haneke">
+      <Version>1.0.1</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

@@ -32,7 +32,7 @@ namespace Board.Interface
 
 		public UIBoardInterface (Board.Schema.Board _board){
 			board = _board;
-			board.FBPage = new Board.Facebook.FacebookPage ("muulecheria", null, null);
+			board.FBPage = new Board.Facebook.FacebookPage ("973824289314042", null, null);
 			firstLoad = true;
 		}
 
@@ -55,7 +55,7 @@ namespace Board.Interface
 
 			InitializeLists ();
 
-			UserCanEditBoard = false;//CloudController.UserCanEditBoard (board.Id);
+			UserCanEditBoard = CloudController.UserCanEditBoard (board.Id);
 
 			// gets content, puts it in dictionarycontent
 			DictionaryContent = CloudController.GetBoardContent (board.Id);
@@ -78,7 +78,7 @@ namespace Board.Interface
 		private void InitializeInterface()
 		{
 			// This was main color
-			View.BackgroundColor = board.MainColor;
+			View.BackgroundColor = UIColor.FromRGB(170, 183, 192);//board.MainColor;
 
 			BoardScroll = new UIBoardScroll ();
 			BoardScroll.Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
@@ -196,8 +196,6 @@ namespace Board.Interface
 				widget = new VideoWidget (content as Video);
 			} else if (content is Picture) {
 				widget = new PictureWidget (content as Picture);
-				((PictureWidget)widget).Initialize ();
-
 			} else if (content is BoardEvent) {
 				widget = new EventWidget (content as BoardEvent);
 				((EventWidget)widget).Initialize ();
