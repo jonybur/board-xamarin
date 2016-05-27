@@ -14,7 +14,6 @@ namespace Board.Interface.Widgets
 
 		UIImageView PictureImageView;
 
-
 		public Picture picture
 		{
 			get { return (Picture)content; }
@@ -29,20 +28,20 @@ namespace Board.Interface.Widgets
 			content = pic;
 
 			PictureImageView = new UIImageView ();
-			PictureImageView.Frame = new CGRect (0, 0, Widget.Autosize, Widget.Autosize);
-			PictureImageView.LayoutIfNeeded ();
 
-			CreateMounting (PictureImageView.Frame.Size);
-			AddSubviews (MountingView, PictureImageView);
+			if (pic.Image == null) {
+				PictureImageView.Frame = new CGRect (0, 0, Widget.Autosize, Widget.Autosize);
+				CreateMounting (PictureImageView.Frame.Size);
+				AddSubviews (MountingView, PictureImageView);
 
-			PictureImageView.ContentMode = UIViewContentMode.ScaleAspectFill;
-
-			PictureImageView.SetImage (new NSUrl (picture.ImageUrl), UIImage.FromFile ("./demo/magazine/westpalmbeach.png"), ImageFromHaneke, ErrorFromHaneke);
+				PictureImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
+				PictureImageView.SetImage (new NSUrl (picture.ImageUrl), UIImage.FromFile ("./demo/magazine/westpalmbeach.png"), ImageFromHaneke, ErrorFromHaneke);
+			} else {
+				SetWidget ();
+			}
 
 			PictureImageView.Layer.AllowsEdgeAntialiasing = true;
-
 			EyeOpen = false;
-
 			CreateGestures ();
 		}
 
@@ -53,6 +52,10 @@ namespace Board.Interface.Widgets
 
 			picture.SetImageFromUIImage (obj);
 
+			SetWidget ();
+		}
+
+		private void SetWidget(){
 			PictureImageView.Frame = new CGRect (SideMargin, TopMargin, picture.Thumbnail.Size.Width, picture.Thumbnail.Size.Height);
 			PictureImageView.Image = picture.Thumbnail;
 			CreateMounting (PictureImageView.Frame.Size);

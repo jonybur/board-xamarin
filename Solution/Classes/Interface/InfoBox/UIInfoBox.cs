@@ -7,7 +7,7 @@ using Board.Utilities;
 using CoreGraphics;
 using CoreLocation;
 using Google.Maps;
-using MGImageUtilitiesBinding;
+using Haneke;
 using UIKit;
 
 namespace Board.Interface
@@ -176,6 +176,15 @@ namespace Board.Interface
 
 			public async void LoadCoverImage(){
 				var localBoard = UIBoardInterface.board;
+				var scaledImageView = new UIImageView ();
+				scaledImageView.Frame = BackgroundImage.Frame;
+				scaledImageView.ContentMode = UIViewContentMode.ScaleAspectFill;
+				scaledImageView.SetImage (new Foundation.NSUrl (localBoard.CoverImageUrl));
+				BackgroundImage.AddSubview (scaledImageView);
+			}
+
+			/*public async void LoadCoverImage(){
+				var localBoard = UIBoardInterface.board;
 
 				if (localBoard.CoverImage == null){
 					localBoard.CoverImage = await CommonUtils.DownloadUIImageFromURL(localBoard.CoverImageUrl);
@@ -193,7 +202,7 @@ namespace Board.Interface
 						BackgroundImage.AddSubview (scaledImageView);
 					}
 				}
-			}
+			}*/
 		}
 
 		private sealed class MapContainer : UIViewController{
