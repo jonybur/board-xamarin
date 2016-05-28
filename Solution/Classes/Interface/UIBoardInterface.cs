@@ -32,7 +32,7 @@ namespace Board.Interface
 
 		public UIBoardInterface (Board.Schema.Board _board){
 			board = _board;
-			board.FBPage = new Board.Facebook.FacebookPage ("973824289314042", null, null);
+			board.FBPage = new Board.Facebook.FacebookPage ("camelotwestpalm", null, null);
 			firstLoad = true;
 		}
 
@@ -43,9 +43,6 @@ namespace Board.Interface
 
 		public override void ViewDidLoad ()
 		{
-			//var json = JsonUtilty.GenerateDeleteJson ("videos", "36ace705-c3f3-4762-a9c4-71fa7d3c9dc4");
-			//CloudController.UpdateBoard (board.Id, json);
-
 			// if it reaches this section, user has been logged in and authorized
 			base.ViewDidLoad ();
 

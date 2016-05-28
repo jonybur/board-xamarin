@@ -7,9 +7,11 @@ namespace Board.Screens.Controls
 	{
 		public UIOneLineMenuButton(){}
 
+		public const float Height = 80;
+
 		public UIOneLineMenuButton(float yPosition)
 		{
-			Frame = new CGRect (0, yPosition, AppDelegate.ScreenWidth, 80);
+			Frame = new CGRect (0, yPosition, AppDelegate.ScreenWidth, Height);
 			UserInteractionEnabled = true;
 
 			UIFont nameFont = AppDelegate.SystemFontOfSize18;

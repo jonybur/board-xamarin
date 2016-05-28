@@ -30,22 +30,6 @@ namespace Board.Infrastructure
 			}
 		}
 
-		[Preserve(AllMembers = true)]
-		[Table("ProfilePictures")]
-		private class ProfilePictureL {
-			[PrimaryKey, Column("pictureurl")]
-			public string PictureURL{ get; set; }
-
-			public string Id{ get; set; }
-
-			public ProfilePictureL(string pictureurl){
-				PictureURL = pictureurl;
-				Id = CommonUtils.GenerateGuid();
-			}
-
-			public ProfilePictureL(){}
-		}
-
 		private static string dbPath;
 		private static string docsPathLibrary;
 		private static string docsPathCaches;
@@ -67,7 +51,6 @@ namespace Board.Infrastructure
 
 			database = new SQLiteConnection (dbPath);
 			database.CreateTable<BoardL> ();
-			database.CreateTable<ProfilePictureL> ();
 		}
 
 		/*public static NSUrl StoreVideoInCache(NSData data, string id){
@@ -83,61 +66,18 @@ namespace Board.Infrastructure
 			var boardL = database.Query<BoardL> ("SELECT * FROM Boards WHERE id = ?", id);
 
 			if (boardL.Count > 0) {
-			
 				// gets image and location from storage
-				string imgPath = Path.Combine (docsPathLibrary, id + ".jpg"); 
-				UIImage image = UIImage.FromBundle (imgPath);
-
 				var board = new Board.Schema.Board (id);
-				board.Image = image;
 				board.GeolocatorObject = JsonHandler.DeserializeObject (boardL [0].GeolocatorJson);
-
 				return board;
-			} else {
-				return null;
 			}
-		}
 
-		public static UIImage GetProfilePicture(string pictureURL){
-			var ppL = database.Query<ProfilePictureL> ("SELECT * FROM ProfilePictures WHERE pictureurl = ?", pictureURL);
-
-			if (ppL.Count > 0) {
-				string imgPath = Path.Combine (docsPathLibrary, ppL[0].Id + ".jpg"); 
-				var image = UIImage.FromBundle (imgPath);
-				return image;
-			} else {
-				return null;
-			}
-		}
-
-		public static void StoreProfilePicture(User user){
-			var ppL = new ProfilePictureL (user.ProfilePictureURL);
-
-			if (StoreImage(user.ProfilePictureUIImage, ppL.Id)) {
-				database.Insert (ppL);
-			} else {
-				Console.WriteLine ("ERROR : picture hasnt been saved");
-			}
+			return null;
 		}
 
 		public static void StoreBoard(Board.Schema.Board board, string geolocationJson){
 			var boardL = new BoardL (board.Id, geolocationJson);
-				
-			if (StoreImage(board.Image, board.Id)) {
-				database.Insert (boardL);
-			} else {
-				Console.WriteLine ("ERROR: picture hasnt been saved");
-			}
-		}
-
-		public static bool StoreImage(UIImage image, string id){
-			string imagePath = GetImagePath (id);
-			NSData imgData = image.AsJPEG ();
-			NSError err = null;
-
-			bool result = imgData.Save (imagePath, false, out err);
-
-			return result;
+			database.Insert (boardL);
 		}
 
 		public static string GetImagePath(string id){

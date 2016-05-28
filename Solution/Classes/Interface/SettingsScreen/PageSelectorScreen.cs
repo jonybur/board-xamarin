@@ -112,7 +112,7 @@ namespace Board.Interface
 		private UIOneLineMenuButton CreateUnsyncButton(float yPosition)
 		{
 			UIOneLineMenuButton unsyncButton = new UIOneLineMenuButton (yPosition);
-			unsyncButton.SetLabel("Unsync");
+			unsyncButton.SetLabel("Disconnect");
 			unsyncButton.SetUnpressedColors ();
 
 			unsyncButton.TapEvent += (sender, e) => {

@@ -1,7 +1,8 @@
-﻿using CoreGraphics;
+﻿using Board.Interface;
+using CoreGraphics;
+using Foundation;
+using Haneke;
 using UIKit;
-using MGImageUtilitiesBinding;
-using Board.Interface;
 
 namespace Board.Screens.Controls
 {
@@ -9,35 +10,34 @@ namespace Board.Screens.Controls
 	{
 		public const int Height = 175;
 
-		public UIBoardBannerPage(UIImage boardImage, float width)
+		public UIBoardBannerPage(float width)
 		{
 			Frame = new CGRect (0, 0, width, Height);
 			BackgroundColor = UIColor.White;
 
 			ClipsToBounds = true;
 
-			var flagView = GenerateFlag (boardImage);
+			var flagView = GenerateFlag ();
 
 			BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 
 			AddSubview (flagView);
 		}
 
-		private UIImageView GenerateFlag(UIImage boardImage){
+		private UIImageView GenerateFlag(){
 			var flagView = new UIImageView ();
 			flagView.Frame = new CGRect (0, 0, 100, 100);
-
-			var flagBackground = new UIImageView ();
-			flagBackground.Frame = flagView.Frame;
-			flagBackground.BackgroundColor = UIColor.White;
-			flagBackground.Center = Center;
+			flagView.BackgroundColor = UIColor.White;
+			flagView.Center = Center;
 
 			var flagLogo = new UIImageView ();
-			flagLogo.Image = boardImage.ImageScaledToFitSize (new CGSize(flagView.Frame.Width - 10, flagView.Frame.Height - 10));
-			flagLogo.Frame = new CGRect (0, 0, flagLogo.Image.Size.Width, flagLogo.Image.Size.Height);
-			flagLogo.Center = flagBackground.Center;
+			flagLogo.Frame = new CGRect (0, 0, 90, 90);
+			flagLogo.BackgroundColor = UIColor.White;
+			flagLogo.ContentMode = UIViewContentMode.ScaleAspectFit;
+			flagLogo.SetImage (new NSUrl(UIBoardInterface.board.LogoUrl));
+			flagLogo.Center = new CGPoint (flagView.Frame.Size.Width / 2, flagView.Frame.Size.Height / 2);
 
-			flagView.AddSubviews (flagBackground, flagLogo);
+			flagView.AddSubview (flagLogo);
 
 			return flagView;
 		}

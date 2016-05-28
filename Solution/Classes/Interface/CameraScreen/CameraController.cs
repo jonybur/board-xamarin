@@ -52,7 +52,7 @@ namespace Board.Interface.Camera
 			CreateFlipButton (UIColor.White);
 			CreateFlashButton (UIColor.White);
 
-			View.AddSubviews (cameraPreview, videoPreview.View, photoPreview, BackButton, TrashButton, FlipButton, NextButton, ShutterButton, FlashButton);
+			View.AddSubviews (cameraPreview, videoPreview.View, photoPreview, BackButton, TrashButton, FlipButton, NextButton, ShutterButton);//, FlashButton);
 
 			FocusImage = new UIImageView (new CGRect(0, 0, 50, 50));
 			using (UIImage img = UIImage.FromFile("./camera/focus.png")) {
@@ -144,7 +144,7 @@ namespace Board.Interface.Camera
 		}
 
 		public void ImportImage(UIImage image) {
-			photoPreview.Image = CommonUtils.ScaleAndRotateImage(image, UIImageOrientation.Up);
+			photoPreview.Image = image;
 
 			FlipButton.Alpha = 0f;
 			ShutterButton.Alpha = 0f;

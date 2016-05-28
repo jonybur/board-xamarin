@@ -33,8 +33,8 @@ namespace Board.Screens
 			LoadChangelogAlert ();
 		}
 
-		public override async void ViewDidAppear(bool animated){
-			await CloudController.GetUserProfile ();
+		public override void ViewDidAppear(bool animated){
+			CloudController.GetUserProfile ();
 		}
 
 		public void LoadChangelogAlert()

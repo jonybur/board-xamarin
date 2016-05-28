@@ -3,6 +3,7 @@ using Board.Utilities;
 using CoreAnimation;
 using CoreGraphics;
 using Facebook.CoreKit;
+using Haneke;
 using System;
 using Foundation;
 
@@ -131,11 +132,10 @@ namespace Board.Screens.Controls
 
 			profileView = new UIImageView (new CGRect (0, 0, imagesize, imagesize));
 			profileView.Center = new CGPoint (sidemenu.Frame.Width / 2, yposition + imagesize / 2);
-			profileView.Image = AppDelegate.BoardUser.ProfilePictureUIImage;
+			profileView.Image = AppDelegate.BoardUser.ProfilePicture.Image;
 			profileView.Layer.CornerRadius = profileView.Frame.Width / 2;
 			profileView.Layer.MasksToBounds = true;
 			View.AddSubviews (sidemenu, profileView);
-
 
 			// TODO: usar user en lugar de profile
 			UILabel name = new UILabel (new CGRect(10, profileView.Frame.Bottom + nameYPosition, sidemenu.Frame.Width - 20, 20));

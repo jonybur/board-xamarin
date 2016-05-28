@@ -173,7 +173,7 @@ namespace Board.Utilities
 			return guid.ToString ();
 		}
 
-		public static UIImage ScaleAndRotateImage(UIImage imageIn, UIImageOrientation orIn) {
+		public static UIImage RotateImage(UIImage imageIn, UIImageOrientation orIn) {
 			int kMaxResolution = 2048;
 
 			CGImage imgRef = imageIn.CGImage;

@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
-using BigTed;
 using System.Threading.Tasks;
+using BigTed;
 using Board.Facebook;
 using Board.Screens.Controls;
 using Board.Utilities;
 using CoreGraphics;
+using Foundation;
+using Haneke;
 using UIKit;
 
 namespace Board.Interface.FacebookImport
@@ -39,47 +41,56 @@ namespace Board.Interface.FacebookImport
 			Banner.SuscribeToEvents ();
 		}
 
-		private async void Completion(List<FacebookElement> elementList) {
+		private void Completion(List<FacebookElement> elementList) {
 			FacebookVideos = new List<FacebookVideo> ();
 
 			VideoCount = elementList.Count;
 
 			foreach (var element in elementList) {
-				//FacebookUtils.MakeGraphRequest (element.Id, "?fields=id,source,thumbnails", LoadVideoURL);
-
-				await LoadVideoURL(element as FacebookVideo);
-			}
-
-			GallerySV.Fill (false, (float)Banner.Frame.Bottom - 20);
-			CanGoBack = true;
-			BTProgressHUD.Dismiss ();
-
-			if (ConnectionError) {
-				UIAlertController alert = UIAlertController.Create("Couldn't access videos", "Please ensure you have a connection to the Internet.", UIAlertControllerStyle.Alert);
-				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
-				NavigationController.PresentViewController (alert, true, null);
-
-				ConnectionError = false;
+				LoadVideoURL(element as FacebookVideo);
 			}
 		}
 
-		private async Task LoadVideoURL(FacebookVideo fbVideo){
-						
-			var thumbImage = await CommonUtils.DownloadUIImageFromURL(fbVideo.ThumbnailUris[0]);
+		int DownloadsCount = 0;
 
+		private void LoadVideoURL(FacebookVideo fbVideo){
+
+			var thumbImageView = new UIImageView ();
+			thumbImageView.Frame = new CGRect (0, 0, UIGalleryScrollView.ButtonSize, UIGalleryScrollView.ButtonSize);
+			thumbImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
+			thumbImageView.SetImage (new NSUrl(fbVideo.ThumbnailUris[0]), UIImage.FromFile("./demo/magazine/westpalmbeach.png"), 
+				image => SetImages(image, fbVideo), delegate { });
+		}
+
+		private void SetImages(UIImage thumbImage, FacebookVideo fbVideo){
 			if (thumbImage == null) {
 				ConnectionError = true;
 				return;
 			}
 
-			GallerySV.SetImage (thumbImage, new System.EventHandler(async delegate {
-				var video = new Board.Schema.Video();
+			GallerySV.SetImage (thumbImage, new System.EventHandler ((sender, e) => {
+				var video = new Board.Schema.Video ();
 				video.AmazonUrl = fbVideo.Source;
 				video.FacebookId = fbVideo.Id;
 				video.Description = fbVideo.Description;
-				var importLookUp = new VideoImportLookUp(video);
-				AppDelegate.PushViewLikePresentView(importLookUp);
+				var importLookUp = new VideoImportLookUp (video);
+				AppDelegate.PushViewLikePresentView (importLookUp);
 			}));
+			DownloadsCount++;
+
+			if (DownloadsCount == VideoCount){
+				GallerySV.Fill (false, (float)Banner.Frame.Bottom - 20);
+				CanGoBack = true;
+				BTProgressHUD.Dismiss ();
+
+				if (ConnectionError) {
+					UIAlertController alert = UIAlertController.Create("Couldn't access videos", "Please ensure you have a connection to the Internet.", UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+					NavigationController.PresentViewController (alert, true, null);
+
+					ConnectionError = false;
+				}
+			}
 		}
 
 		private void LoadBanner()

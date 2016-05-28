@@ -69,19 +69,20 @@ namespace Board.Interface.FacebookImport
 		private void LoadAlbums(List<FacebookElement> elementList)
 		{
 			int i = 0;
-			float buttonheight = 0;
+			float buttonheight = UIOneLineMenuButton.Height;
 
 			var videosButton = VideoButton ();
 			videosButton.SuscribeToEvent ();
 			Buttons.Add (videosButton);
 			ScrollView.AddSubview (videosButton);
+			yPosition += buttonheight + 1;
+
 			foreach (FacebookElement album in elementList) {
 				var albumButton = AlbumButton (yPosition, (FacebookAlbum)album);
 				ScrollView.AddSubview (albumButton);
 				Buttons.Add (albumButton);
 				albumButton.SuscribeToEvent ();
 				i++;
-				buttonheight = (float)albumButton.Frame.Height;
 				yPosition += buttonheight + 1;
 			}
 					

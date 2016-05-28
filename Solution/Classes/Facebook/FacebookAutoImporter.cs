@@ -5,6 +5,7 @@ using Board.JsonResponses;
 using Board.Schema;
 using Board.Utilities;
 using UIKit;
+using Haneke;
 
 namespace Board.Facebook
 {
@@ -12,7 +13,7 @@ namespace Board.Facebook
 	{
 		public static void ImportPage (string pageId)
 		{
-			BigTed.BTProgressHUD.Show ("Importing Board...");
+			BTProgressHUD.Show ("Importing Board...");
 			FacebookUtils.MakeGraphRequest (pageId, "?fields=name,location,about,cover,picture.type(large)", Completion);
 		}
 
@@ -25,7 +26,7 @@ namespace Board.Facebook
 			var board = new Board.Schema.Board ();
 			board.Name = importedBoard.Name;
 			board.About = importedBoard.About;
-			board.Image = await CommonUtils.DownloadUIImageFromURL (importedBoard.PictureUrl);
+			board.Logo = await CommonUtils.DownloadUIImageFromURL (importedBoard.PictureUrl);
 			board.CoverImage = await CommonUtils.DownloadUIImageFromURL (importedBoard.CoverUrl);
 			board.GeolocatorObject = new GoogleGeolocatorObject ();
 			board.MainColor = UIColor.Black;

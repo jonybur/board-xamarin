@@ -7,6 +7,7 @@ using Board.JsonResponses;
 using Board.Schema;
 using Board.Utilities;
 using CoreLocation;
+using Haneke;
 using Facebook.CoreKit;
 using Foundation;
 using Newtonsoft.Json;
@@ -16,20 +17,12 @@ namespace Board.Infrastructure
 {
 	public static class CloudController
 	{
-		public static async Task<bool> GetUserProfile(){
+		public static bool GetUserProfile(){
 			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/user?authToken="+AppDelegate.EncodedBoardToken);
 
 			AppDelegate.BoardUser = JsonConvert.DeserializeObject<User>(result);
 
-			var profileImage = StorageController.GetProfilePicture (AppDelegate.BoardUser.ProfilePictureURL);
-
-			if (profileImage != null){
-				AppDelegate.BoardUser.ProfilePictureUIImage = profileImage;
-			} else {
-				// stores image
-				AppDelegate.BoardUser.ProfilePictureUIImage = await CommonUtils.DownloadUIImageFromURL (AppDelegate.BoardUser.ProfilePictureURL);
-				StorageController.StoreProfilePicture(AppDelegate.BoardUser);
-			}
+			AppDelegate.BoardUser.SetProfilePictureFromURL (AppDelegate.BoardUser.ProfilePictureURL);
 
 			return true;
 		}
@@ -219,7 +212,7 @@ namespace Board.Infrastructure
 		}
 
 		public static bool CreateBoard(Board.Schema.Board board){
-			string logoURL = UploadToAmazon (board.Image);
+			string logoURL = UploadToAmazon (board.Logo);
 			string coverURL = UploadToAmazon (board.CoverImage);
 
 			if (logoURL == null) {
@@ -239,11 +232,9 @@ namespace Board.Infrastructure
 			string result = JsonPOSTRequest ("http://" + AppDelegate.APIAddress + "/api/board?authToken=" + AppDelegate.EncodedBoardToken, json);
 
 			if (result == "200" || result == string.Empty) {
-				StorageController.StoreImage (board.Image, board.Id);
 				return true;
-			} else {
-				return false;
 			}
+			return false;
 		}
 
 		public static async Task<List<Board.Schema.Board>> GetNearbyBoards(CLLocationCoordinate2D location, int meterRadius){
@@ -252,7 +243,7 @@ namespace Board.Infrastructure
 
 			BoardResponse response = BoardResponse.Deserialize (result);
 
-			var boards = await GenerateBoardListFromBoardResponse (response);
+			var boards = GenerateBoardListFromBoardResponse (response);
 
 			return boards;
 		}
@@ -262,7 +253,7 @@ namespace Board.Infrastructure
 
 			BoardResponse response = BoardResponse.Deserialize (result);
 
-			var boards = await GenerateBoardListFromBoardResponse (response);
+			var boards = GenerateBoardListFromBoardResponse (response);
 
 			return boards;
 		}
@@ -273,18 +264,17 @@ namespace Board.Infrastructure
 
 			BoardResponse response = BoardResponse.Deserialize (result);
 
-			var boards = await GenerateBoardListFromBoardResponse (response);
+			var boards = GenerateBoardListFromBoardResponse (response);
 
 			return boards;
 		}
 
-		private static async Task<List<Board.Schema.Board>> GenerateBoardListFromBoardResponse(BoardResponse response){
+		private static List<Board.Schema.Board> GenerateBoardListFromBoardResponse(BoardResponse response){
 			var boards = new List<Board.Schema.Board> ();
 
 			if (response != null) {
 				foreach (BoardResponse.Datum r in response.data) {
 
-					UIImage boardImage;
 					GoogleGeolocatorObject geolocatorObject;
 
 					Board.Schema.Board board = StorageController.BoardIsStored(r.uuid);
@@ -292,22 +282,11 @@ namespace Board.Infrastructure
 					if (board == null) {
 						board = new Board.Schema.Board ();
 
-						// gets image and location from cloud
-						if (r.logoURL != null) {
-							boardImage = await CommonUtils.DownloadUIImageFromURL (r.logoURL);
-						} else {
-							// TODO: manage no image (should never happen)
-							boardImage = new UIImage();
-						}
-
 						string jsonobj = JsonHandler.GET ("https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
 							r.latitude + "," + r.longitude + "&key=" + AppDelegate.GoogleMapsAPIKey);
 						geolocatorObject = JsonHandler.DeserializeObject (jsonobj);
 
-						// saves it to storage
-						board.Image = boardImage;
 						board.GeolocatorObject = geolocatorObject;
-
 						board.Id = r.uuid;
 
 						StorageController.StoreBoard (board, jsonobj);
@@ -316,6 +295,7 @@ namespace Board.Infrastructure
 					// finishes compiling board
 					board.Name = r.name;
 					board.About = r.about;
+					board.LogoUrl = r.logoURL;
 					board.CoverImageUrl = r.coverURL;
 					board.MainColor = CommonUtils.HexToUIColor (r.mainColorCode);
 					board.SecondaryColor = CommonUtils.HexToUIColor (r.secondaryColorCode);

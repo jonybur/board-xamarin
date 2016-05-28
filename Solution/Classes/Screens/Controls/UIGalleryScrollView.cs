@@ -24,7 +24,7 @@ namespace Board.Screens.Controls
 			}
 		}
 
-		float ButtonSize;
+		public static float ButtonSize;
 
 		public void SetImages (List<UIImage> listImages){
 			var button = new UIPictureButton(new CGRect (0, 0, ButtonSize, ButtonSize));

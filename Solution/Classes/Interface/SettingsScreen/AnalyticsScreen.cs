@@ -1,7 +1,6 @@
 ﻿using PNChartBinding;
 using Foundation;
 using CoreGraphics;
-
 using UIKit;
 using Board.Screens.Controls;
 using System;

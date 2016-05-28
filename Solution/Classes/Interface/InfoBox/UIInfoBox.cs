@@ -28,7 +28,7 @@ namespace Board.Interface
 			BackgroundColor = UIColor.White;
 			ClipsToBounds = true;
 
-			Banner = new TopBanner (board.Image, (float)Frame.Width);
+			Banner = new TopBanner (board.Logo, (float)Frame.Width);
 
 			NameLabel = new UINameLabel (Banner.Bottom + 20, (float)Frame.Width);
 
@@ -167,14 +167,14 @@ namespace Board.Interface
 				BackgroundImage = new UIImageView (new CGRect(0, 0, width, UIMagazineBannerPage.Height));
 
 				BackgroundImage.ClipsToBounds = true;
-				BannerPage = new UIBoardBannerPage (boardImage, width);
+				BannerPage = new UIBoardBannerPage (width);
 
 				AddSubviews(BackgroundImage, BannerPage);
 
 				LoadCoverImage();
 			}
 
-			public async void LoadCoverImage(){
+			public void LoadCoverImage(){
 				var localBoard = UIBoardInterface.board;
 				var scaledImageView = new UIImageView ();
 				scaledImageView.Frame = BackgroundImage.Frame;
@@ -182,27 +182,6 @@ namespace Board.Interface
 				scaledImageView.SetImage (new Foundation.NSUrl (localBoard.CoverImageUrl));
 				BackgroundImage.AddSubview (scaledImageView);
 			}
-
-			/*public async void LoadCoverImage(){
-				var localBoard = UIBoardInterface.board;
-
-				if (localBoard.CoverImage == null){
-					localBoard.CoverImage = await CommonUtils.DownloadUIImageFromURL(localBoard.CoverImageUrl);
-
-					if (localBoard.CoverImage != null) {
-						var scaledImage = localBoard.CoverImage.ImageScaledToFitSize (new CGSize(BackgroundImage.Frame.Width, BackgroundImage.Frame.Width));
-
-						var scaledImageView = new UIImageView (scaledImage);
-						// hacer que la imagen esté en un subview de backgroundimage
-						if (scaledImageView.Frame.Height < BackgroundImage.Frame.Height){
-							scaledImageView.Frame = new CGRect(0,0, (BackgroundImage.Frame.Height * BackgroundImage.Frame.Width) / scaledImageView.Frame.Height, BackgroundImage.Frame.Height);
-							scaledImageView.Center = BackgroundImage.Center;
-						}
-
-						BackgroundImage.AddSubview (scaledImageView);
-					}
-				}
-			}*/
 		}
 
 		private sealed class MapContainer : UIViewController{

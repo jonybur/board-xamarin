@@ -5,9 +5,11 @@ namespace Board.Screens.Controls
 {
 	public class UITwoLinesMenuButton : UIMenuButton
 	{
+		public const float Height = 80;
+
 		public UITwoLinesMenuButton(float yPosition)
 		{
-			Frame = new CGRect (0, yPosition, AppDelegate.ScreenWidth, 80);
+			Frame = new CGRect (0, yPosition, AppDelegate.ScreenWidth, Height);
 			UserInteractionEnabled = true;
 
 			UIFont nameFont = AppDelegate.SystemFontOfSize18;

@@ -4,6 +4,7 @@ using MGImageUtilitiesBinding;
 using Foundation;
 using CoreLocation;
 using CoreGraphics;
+using Haneke;
 
 namespace Board.Screens.Controls
 {
@@ -42,7 +43,13 @@ namespace Board.Screens.Controls
 			AppearAnimation = MarkerAnimation.Pop;
 			Position = board.GeolocatorObject.Coordinate;
 			Map = map;
-			Icon = CreateMarkerImage (board.Image);
+
+			var imageView = new UIImageView ();
+			imageView.Frame = new CGRect (0, 0, 50, 50);
+			imageView.ContentMode = UIViewContentMode.ScaleAspectFit;
+			imageView.SetImage (new NSUrl(board.LogoUrl), new UIImage ("./demo/magazine/westpalmbeach.png"),
+				image => Icon = CreateMarkerImage(image), delegate(NSError obj) { });
+
 			Draggable = false;
 			Title = board.Name;
 			Snippet = board.GeolocatorObject.Address;

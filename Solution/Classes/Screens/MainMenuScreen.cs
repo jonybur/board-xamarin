@@ -181,7 +181,7 @@ namespace Board.Screens
 		private void GenerateMarkers()
 		{
 			foreach (Board.Schema.Board board in BoardList) {
-				UIMapMarker marker = new UIMapMarker (board, map, UIMapMarker.SizeMode.Normal);
+				var marker = new UIMapMarker (board, map, UIMapMarker.SizeMode.Normal);
 				ListMapMarkers.Add (marker);
 			}
 		}

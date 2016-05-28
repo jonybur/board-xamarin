@@ -5,8 +5,12 @@ using Board.Facebook;
 using Board.Schema;
 using Board.Screens.Controls;
 using Board.Utilities;
+using Haneke;
+using System.Threading.Tasks;
 using CoreGraphics;
 using UIKit;
+using Foundation;
+using System;
 
 namespace Board.Interface.FacebookImport
 {
@@ -50,52 +54,63 @@ namespace Board.Interface.FacebookImport
 			DownloadedImages = 0;
 
 			foreach (var element in elementList) {
-
 				var fbId = element.Id;
 				var fbDescription = ((FacebookPhoto)element).Description;
 
-
 				FacebookUtils.MakeGraphRequest (element.Id, "?fields=images", async delegate(List<FacebookElement> obj) {
-					if (obj.Count == 0){ CanGoBack = true; return; }
+					if (obj.Count == 0) {
+						CanGoBack = true;
+						return;
+					}
 
-					obj = obj.OrderByDescending(x => ((FacebookImage)x).Height).ToList();
+					obj = obj.OrderByDescending (x => ((FacebookImage)x).Height).ToList ();
 
 					var minElement = (FacebookImage)obj [obj.Count - 1];
 
 					FacebookImage maxElement;
 					if (obj.Count > 2) {
 						maxElement = obj [2] as FacebookImage;
-					} else if (obj.Count > 1){
+					} else if (obj.Count > 1) {
 						maxElement = obj [1] as FacebookImage;
 					} else {
 						maxElement = obj [0] as FacebookImage;
 					}
 
-					FacebookImages.Add (minElement);
-					var minImage = await CommonUtils.DownloadUIImageFromURL(minElement.Source);
+					var minImageView = new UIImageView();
+					minImageView.Frame = new CGRect(0,0,UIGalleryScrollView.ButtonSize, UIGalleryScrollView.ButtonSize);
+					minImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
 
-					GallerySV.SetImage (minImage, new System.EventHandler(async delegate {
-						if (CanEnterImport){
-							CanEnterImport = false;
-							var picture = new Picture();
+					minImageView.SetImage(new NSUrl(minElement.Source), UIImage.FromFile("./demo/magazine/westpalmbeach.png"), delegate(UIImage image) {
+						minImageView.Image = image;
+						FacebookImages.Add (minElement);
 
-							var maxImage = await CommonUtils.DownloadUIImageFromURL(maxElement.Source);
+						GallerySV.SetImage (minImageView.Image, new EventHandler (delegate {
+							if (CanEnterImport) {
+								CanEnterImport = false;
+								var picture = new Picture ();
 
-							picture.FacebookId = fbId;
-							picture.Description = fbDescription;
-							picture.SetImageFromUIImage(maxImage);
+								var maxImageView = new UIImageView();
+								maxImageView.Frame = new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenWidth);
+								maxImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
+								maxImageView.SetImage(new NSUrl(maxElement.Source), UIImage.FromFile("./demo/magazine/westpalmbeach.png"), delegate(UIImage maxImage) {
+									picture.SetImageFromUIImage (maxImage);
+									picture.FacebookId = fbId;
+									picture.Description = fbDescription;
+									var importLookUp = new PictureImportLookUp (picture);
+									AppDelegate.PushViewLikePresentView (importLookUp);
 
-							var importLookUp = new PictureImportLookUp(picture);
-							AppDelegate.PushViewLikePresentView(importLookUp);
+								}, delegate(NSError error) { });
+							}
+						}));
+
+						DownloadedImages++;
+
+						if (DownloadedImages == PictureCount) {
+							GallerySV.Fill (false, (float)Banner.Frame.Bottom - 20);
+							CanGoBack = true;
+							BTProgressHUD.Dismiss ();
 						}
-					}));
-					DownloadedImages++;
-
-					if (DownloadedImages == PictureCount) {
-						GallerySV.Fill (false, (float)Banner.Frame.Bottom - 20);
-						CanGoBack = true;
-						BTProgressHUD.Dismiss ();
-					}
+					},  delegate(NSError error) {});
 				});
 			}
 
@@ -104,7 +119,6 @@ namespace Board.Interface.FacebookImport
 				BTProgressHUD.Dismiss ();
 			}
 		}
-
 			
 		private void LoadBanner()
 		{

@@ -2,6 +2,7 @@
 using MGImageUtilitiesBinding;
 using Board.Interface;
 using CoreGraphics;
+using Haneke;
 using System;
 using Foundation;
 using Board.Utilities;
@@ -129,13 +130,15 @@ namespace Board.Screens.Controls
 			Frame = new CGRect (0, 0, autosize, autosize);
 			Center = new CGPoint (imgx, imgy);
 
-			CGSize iconsize = new CGSize (autosize * .7f, autosize * .7f);
-
-			UIImage img = board.Image.ImageScaledToFitSize (iconsize);
 			UIImage circle = CreateThumbImage(Frame.Size);
-
 			SetBackgroundImage (circle, UIControlState.Normal);
-			SetImage(img, UIControlState.Normal);
+
+			var imageView = new UIImageView ();
+			imageView.Frame = new CGRect(0, 0, autosize * .7f, autosize * .7f);
+			imageView.ContentMode = UIViewContentMode.ScaleAspectFit;
+			imageView.SetImage (new NSUrl(board.LogoUrl));
+			imageView.Center = new CGPoint (Frame.Size.Width / 2, Frame.Size.Height / 2);
+			AddSubview (imageView);
 
 			TouchEvent = (sender, e) => {
 				if (AppDelegate.BoardInterface == null)
@@ -146,6 +149,7 @@ namespace Board.Screens.Controls
 			};
 
 			UserInteractionEnabled = true;
+			ClipsToBounds = true;
 		}
 
 		private UIImage CreateThumbImage(CGSize size)

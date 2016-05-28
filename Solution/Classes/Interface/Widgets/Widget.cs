@@ -4,6 +4,7 @@ using Board.Infrastructure;
 using Board.Interface.Buttons;
 using Board.Interface.LookUp;
 using Board.Schema;
+using Haneke;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
@@ -105,10 +106,9 @@ namespace Board.Interface.Widgets
 			header.Frame = new CGRect (0, 0, Frame.Width - SideMargin * 2 - 10, TopMargin);
 
 			var headerLogo = new UIImageView ();
-			var size = new CGSize(TopMargin, TopMargin);
-			headerLogo.Image = UIBoardInterface.board.Image.ImageScaledToFitSize (size);
-			headerLogo.Frame = new CGRect (0, 0, headerLogo.Image.Size.Width, headerLogo.Image.Size.Height);
+			headerLogo.Frame = new CGRect (0, 0, TopMargin - 5, TopMargin - 5);
 			headerLogo.Center = new CGPoint (headerLogo.Center.X, header.Center.Y);
+			headerLogo.SetImage (new NSUrl(UIBoardInterface.board.LogoUrl));
 
 			header.AddSubviews (headerLogo);
 
@@ -118,14 +118,13 @@ namespace Board.Interface.Widgets
 			return header;
 		}
 
-
 		public UIView CreateFullHeader(){
 			var header = new UIView ();
 			header.Frame = new CGRect (0, 0, Frame.Width - SideMargin * 2 - 10, TopMargin);
 
 			var headerLogo = new UIImageView ();
 			var size = new CGSize(TopMargin, TopMargin);
-			headerLogo.Image = UIBoardInterface.board.Image.ImageScaledToFitSize (size);
+			headerLogo.Image = UIBoardInterface.board.Logo.ImageScaledToFitSize (size);
 			headerLogo.Frame = new CGRect (0, 0, headerLogo.Image.Size.Width, headerLogo.Image.Size.Height);
 			headerLogo.Center = new CGPoint (headerLogo.Center.X, header.Center.Y);
 

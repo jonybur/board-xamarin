@@ -2,6 +2,9 @@
 using Foundation;
 using PBJVisionBinding;
 using UIKit;
+using CoreGraphics;
+using MGImageUtilitiesBinding;
+using Board.Utilities;
 
 namespace Board.Interface.Camera
 {
@@ -23,6 +26,14 @@ namespace Board.Interface.Camera
 			vision.StopPreview ();
 
 			var cameraController = (CameraController)AppDelegate.NavigationController.TopViewController;
+
+			// rotate
+			image = CommonUtils.RotateImage(image, UIImageOrientation.Up);
+			// scale
+			image = image.ImageScaledToFitSize(new CGSize(AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			// compress
+			var data = image.AsJPEG (0.5f);
+			image = new UIImage (data);
 
 			cameraController.ImportImage (image);
 		}

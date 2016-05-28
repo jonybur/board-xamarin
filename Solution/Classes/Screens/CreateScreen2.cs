@@ -119,7 +119,7 @@ namespace Board.Screens
 			boardThumb.AddGestureRecognizer (tap);
 			boardThumb.UserInteractionEnabled = true;
 
-			board.Image = UIImage.FromFile ("./screens/create/2/icon.png");
+			board.Logo = UIImage.FromFile ("./screens/create/2/icon.png");
 
 			scrollView.AddSubview (boardThumb);
 
