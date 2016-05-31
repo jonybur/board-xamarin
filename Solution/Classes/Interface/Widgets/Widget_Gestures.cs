@@ -188,6 +188,10 @@ namespace Board.Interface.Widgets
 			// to edit the widget location
 			var longPress = new UILongPressGestureRecognizer (tg => {
 
+				if (!UIBoardInterface.UserCanEditBoard){
+					return;
+				}
+
 				UnsuscribeFromUsabilityEvents();
 				SuscribeToEditingEvents();
 

@@ -47,7 +47,7 @@ namespace Board.Screens.Controls
 			var imageView = new UIImageView ();
 			imageView.Frame = new CGRect (0, 0, 50, 50);
 			imageView.ContentMode = UIViewContentMode.ScaleAspectFit;
-			imageView.SetImage (new NSUrl(board.LogoUrl), new UIImage ("./demo/magazine/westpalmbeach.png"),
+			imageView.SetImage (new NSUrl(board.LogoUrl), new UIImage ("./demo/magazine/nantucket.png"),
 				image => Icon = CreateMarkerImage(image), delegate(NSError obj) { });
 
 			Draggable = false;

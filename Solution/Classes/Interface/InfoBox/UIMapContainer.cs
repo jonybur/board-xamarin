@@ -18,7 +18,7 @@ namespace Board.Interface
 		UITapGestureRecognizer uberTap, directionsTap, MapTap;
 		UIMapMarker mapMarker;
 
-		public UIMapContainer(CGRect frame){
+		public UIMapContainer(CGRect frame, float yposition){
 			CreateMap ((float)frame.Width);
 
 			MapTap = new UITapGestureRecognizer(obj => {
@@ -27,7 +27,7 @@ namespace Board.Interface
 			});
 
 			Map.AddGestureRecognizer (MapTap);
-			Map.Center = new CGPoint (frame.Width / 2, frame.Height - Map.Frame.Height / 2 - 10 - UIBoardScroll.ButtonBarHeight * 2);
+			Map.Center = new CGPoint (frame.Width / 2, yposition + Map.Frame.Height / 2);
 			Map.ClipsToBounds = true;
 
 			CreateDirectionsButton();

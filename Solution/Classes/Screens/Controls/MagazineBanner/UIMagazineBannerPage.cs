@@ -50,7 +50,7 @@ namespace Board.Screens.Controls
 			var placeName = new UILabel ();
 			placeName.Frame = new CGRect (5, 0, flagView.Frame.Width-10, 20);
 			placeName.Font = AppDelegate.Narwhal18;
-			placeName.Text = "WEST PALM BEACH";
+			placeName.Text = "NANTUCKET";
 			placeName.TextColor = UIColor.White;
 			placeName.AdjustsFontSizeToFitWidth = true;
 			placeName.Center = new CGPoint(flagBackground.Center.X, flagBackground.Center.Y + 20);

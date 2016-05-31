@@ -58,7 +58,7 @@ namespace Board.Interface.FacebookImport
 			var thumbImageView = new UIImageView ();
 			thumbImageView.Frame = new CGRect (0, 0, UIGalleryScrollView.ButtonSize, UIGalleryScrollView.ButtonSize);
 			thumbImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
-			thumbImageView.SetImage (new NSUrl(fbVideo.ThumbnailUris[0]), UIImage.FromFile("./demo/magazine/westpalmbeach.png"), 
+			thumbImageView.SetImage (new NSUrl(fbVideo.ThumbnailUris[0]), UIImage.FromFile("./demo/magazine/nantucket.png"), 
 				image => SetImages(image, fbVideo), delegate { });
 		}
 

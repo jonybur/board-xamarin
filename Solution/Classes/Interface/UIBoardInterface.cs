@@ -51,7 +51,7 @@ namespace Board.Interface
 
 			InitializeLists ();
 
-			UserCanEditBoard = CloudController.UserCanEditBoard (board.Id);
+			UserCanEditBoard = false;//CloudController.UserCanEditBoard (board.Id);
 
 			// gets content, puts it in dictionarycontent
 			DictionaryContent = CloudController.GetBoardContent (board.Id);
@@ -147,7 +147,7 @@ namespace Board.Interface
 			ButtonInterface.Initialize ();
 
 			var buttonBackground = new UIImageView (new CGRect (0, AppDelegate.ScreenHeight - 45, AppDelegate.ScreenWidth, ButtonInterface.ButtonBarHeight));
-			buttonBackground.BackgroundColor = UIColor.White;
+			buttonBackground.BackgroundColor = UIColor.FromRGBA(255, 255, 255, 220);
 			View.AddSubview (buttonBackground);
 
 			if (UserCanEditBoard) {

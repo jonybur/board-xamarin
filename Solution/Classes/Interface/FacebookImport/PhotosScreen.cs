@@ -80,7 +80,7 @@ namespace Board.Interface.FacebookImport
 					minImageView.Frame = new CGRect(0,0,UIGalleryScrollView.ButtonSize, UIGalleryScrollView.ButtonSize);
 					minImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
 
-					minImageView.SetImage(new NSUrl(minElement.Source), UIImage.FromFile("./demo/magazine/westpalmbeach.png"), delegate(UIImage image) {
+					minImageView.SetImage(new NSUrl(minElement.Source), UIImage.FromFile("./demo/magazine/nantucket.png"), delegate(UIImage image) {
 						minImageView.Image = image;
 						FacebookImages.Add (minElement);
 
@@ -92,7 +92,7 @@ namespace Board.Interface.FacebookImport
 								var maxImageView = new UIImageView();
 								maxImageView.Frame = new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenWidth);
 								maxImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
-								maxImageView.SetImage(new NSUrl(maxElement.Source), UIImage.FromFile("./demo/magazine/westpalmbeach.png"), delegate(UIImage maxImage) {
+								maxImageView.SetImage(new NSUrl(maxElement.Source), UIImage.FromFile("./demo/magazine/nantucket.png"), delegate(UIImage maxImage) {
 									picture.SetImageFromUIImage (maxImage);
 									picture.FacebookId = fbId;
 									picture.Description = fbDescription;

@@ -69,7 +69,7 @@ namespace Board.Screens.Controls
 			BackgroundColor = UIColor.FromRGBA(0,0,0,0);
 
 			var backgroundImage = new UIImageView (new CGRect(0,0,Frame.Width, Frame.Height));
-			using (UIImage img = UIImage.FromFile ("./demo/magazine/westpalmbeach.png")) {
+			using (UIImage img = UIImage.FromFile ("./demo/magazine/nantucket.png")) {
 				UIImage scaledImage = img.ImageScaledToFitSize (Frame.Size);
 				backgroundImage.Image = scaledImage;
 
