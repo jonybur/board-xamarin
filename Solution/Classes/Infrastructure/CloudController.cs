@@ -7,7 +7,6 @@ using Board.JsonResponses;
 using Board.Schema;
 using Board.Utilities;
 using CoreLocation;
-using Haneke;
 using Facebook.CoreKit;
 using Foundation;
 using Newtonsoft.Json;
@@ -15,6 +14,8 @@ using UIKit;
 
 namespace Board.Infrastructure
 {
+	// https://api.instagram.com/v1/locations/search?lat=-34.5885886&lng=-58.426003&access_token=2292871863.37fcdb1.cdc6ab03abfa4a8db4a2da022ec5d3c2
+
 	public static class CloudController
 	{
 		public static bool GetUserProfile(){
@@ -237,7 +238,7 @@ namespace Board.Infrastructure
 			return false;
 		}
 
-		public static async Task<List<Board.Schema.Board>> GetNearbyBoards(CLLocationCoordinate2D location, int meterRadius){
+		public static List<Board.Schema.Board> GetNearbyBoards(CLLocationCoordinate2D location, int meterRadius){
 			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/boards/nearby?" +
 				"authToken=" + AppDelegate.EncodedBoardToken+ "&latitude=" + location.Latitude + "&longitude=" + location.Longitude + "&radiusInMeters="+meterRadius);
 
@@ -248,7 +249,7 @@ namespace Board.Infrastructure
 			return boards;
 		}
 
-		public static async Task<List<Board.Schema.Board>> GetAllBoards(){
+		public static List<Board.Schema.Board> GetAllBoards(){
 			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/boards?authToken=" + AppDelegate.EncodedBoardToken);
 
 			BoardResponse response = BoardResponse.Deserialize (result);
@@ -258,7 +259,7 @@ namespace Board.Infrastructure
 			return boards;
 		}
 
-		public static async Task<List<Board.Schema.Board>> GetUserBoards(){
+		public static List<Board.Schema.Board> GetUserBoards(){
 			
 			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/user/boards?authToken=" + AppDelegate.EncodedBoardToken);
 
@@ -307,6 +308,18 @@ namespace Board.Infrastructure
 			}
 
 			return boards;
+		}
+
+		public static InstagramMediaResponse GetInstagramMedia(string locationId){
+			string result = JsonGETRequest("https://api.instagram.com/v1/locations/"+locationId+"/media/recent?access_token="+AppDelegate.InstagramServerToken);
+
+			var instagramResponse = JsonConvert.DeserializeObject<InstagramMediaResponse> (result);
+
+			if (instagramResponse != null) {
+				Console.WriteLine ("stop");
+			}
+
+			return null;
 		}
 
 		public static UberProductResponse GetUberProducts(CLLocationCoordinate2D location){

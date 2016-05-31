@@ -107,13 +107,7 @@
     <Reference Include="SQLite-net">
       <HintPath>..\packages\sqlite-net-pcl.1.1.1\lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLite-net.dll</HintPath>
     </Reference>
-    <Reference Include="AdvancedColorPicker">
-      <HintPath>..\Components\advancedcolorpicker-2.0\lib\ios-unified\AdvancedColorPicker.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Facebook">
-      <HintPath>..\packages\Xamarin.Facebook.iOS.4.10.0.0\lib\Xamarin.iOS10\Facebook.dll</HintPath>
-    </Reference>
     <Reference Include="BTProgressHUD">
       <HintPath>..\Components\btprogresshud-1.20\lib\ios-unified\BTProgressHUD.dll</HintPath>
     </Reference>
@@ -157,6 +151,10 @@
     <Reference Include="Google.Maps">
       <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.13.1.0\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
     </Reference>
+    <Reference Include="Facebook">
+      <HintPath>..\packages\Xamarin.Facebook.iOS.4.10.0.0\lib\Xamarin.iOS10\Facebook.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK-1.0" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\fonts\congress-font-medium.ttf" />
@@ -404,6 +402,8 @@
     <Compile Include="Classes\Interface\Buttons\BIButton.cs" />
     <Compile Include="Classes\Interface\Widgets\Widget_Gestures.cs" />
     <Compile Include="Classes\Interface\Buttons\ImportButton.cs" />
+    <Compile Include="Classes\JsonResponses\InstagramMediaResponse.cs" />
+    <Compile Include="Classes\Interface\SettingsScreen\ColorPickerScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -470,16 +470,8 @@
     <Folder Include="Resources\boardinterface\strokebuttons\white\" />
   </ItemGroup>
   <ItemGroup>
-    <XamarinComponentReference Include="facebookios">
-      <Version>4.8.0</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
     <XamarinComponentReference Include="sqlite-net">
       <Version>1.0.11</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
-    <XamarinComponentReference Include="advancedcolorpicker">
-      <Version>2.0</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
     <XamarinComponentReference Include="btprogresshud">
@@ -500,6 +492,10 @@
     </XamarinComponentReference>
     <XamarinComponentReference Include="googleiosmaps">
       <Version>1.13.1.0</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="facebookios">
+      <Version>4.10.0.0</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

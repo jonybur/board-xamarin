@@ -124,6 +124,11 @@ namespace Board.Interface.Widgets
 
 		public void OpenEye()
 		{
+			// widget hasnt been drawn yet
+			if (EyeView == null) {
+				return;
+			}
+			
 			EyeView.Image = OpenEyeImageView.Image;
 			EyeView.TintColor = AppDelegate.BoardOrange;
 			EyeOpen = true;

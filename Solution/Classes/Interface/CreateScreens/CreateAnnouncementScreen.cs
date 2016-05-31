@@ -78,6 +78,7 @@ namespace Board.Interface.CreateScreens
 				{
 					Announcement ann = (Announcement)content;
 
+					ann.Text = textview.Text;
 					ann.AttributedText = textview.AttributedText;
 					ann.SocialChannel = ShareButtons.GetActiveSocialChannels ();
 					ann.CreationDate = DateTime.Now;

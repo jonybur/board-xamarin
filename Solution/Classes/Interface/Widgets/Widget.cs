@@ -42,7 +42,7 @@ namespace Board.Interface.Widgets
 
 		public int TopMargin = 5;
 		public int SideMargin = 5;
-		public static int Autosize;
+		public static int Autosize = 230;
 
 		private UIColor WidgetGrey;
 
@@ -53,15 +53,7 @@ namespace Board.Interface.Widgets
 		{
 			HighlightColor = AppDelegate.BoardBlack;
 			WidgetGrey = UIColor.FromRGB (100, 100, 100);
-
-			if (AppDelegate.PhoneVersion == "6") {
-				Autosize = 230;
-			} else if (AppDelegate.PhoneVersion == "6plus") {
-				Autosize = 220;
-			} else {
-				Autosize = 230;
-			}
-
+		
 			if (ClosedEyeImageView == null) {
 				using (UIImage image = UIImage.FromFile ("./boardinterface/widget/closedeye.png")) {
 					ClosedEyeImageView = new UIImageView (image.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate));

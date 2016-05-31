@@ -30,9 +30,10 @@ namespace Board.Interface.Camera
 			// rotate
 			image = CommonUtils.RotateImage(image, UIImageOrientation.Up);
 			// scale
-			image = image.ImageScaledToFitSize(new CGSize(AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			image = image.ImageScaledToFitSize(new CGSize(AppDelegate.ScreenWidth * .75f, AppDelegate.ScreenHeight * .75));
+
 			// compress
-			var data = image.AsJPEG (0.5f);
+			var data = image.AsJPEG (.5f);
 			image = new UIImage (data);
 
 			cameraController.ImportImage (image);

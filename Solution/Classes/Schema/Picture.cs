@@ -38,17 +38,11 @@ namespace Board.Schema
 
 		public void SetImageFromUIImage(UIImage image){
 			_image = image;
-			SetThumbnail ();
+			SetThumbnailFromUIImage (image);
 		}
 
-		public async Task GetImageFromUrl(string imageUrl){
-			ImageUrl = imageUrl;
-			_image = await CommonUtils.DownloadUIImageFromURL (ImageUrl);
-			SetThumbnail ();
-		}
-
-		private void SetThumbnail(){
-			_thumbnail = Image.ImageScaledToFitSize(new CGSize (Widget.Autosize, Widget.Autosize));
+		public void SetThumbnailFromUIImage(UIImage image){
+			_thumbnail = image.ImageScaledToFitSize(new CGSize (Widget.Autosize, Widget.Autosize));
 		}
 
 		public string Description;

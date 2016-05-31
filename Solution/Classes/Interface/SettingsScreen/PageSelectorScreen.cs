@@ -144,8 +144,9 @@ namespace Board.Interface
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					UnsuscribeToEvents ();
-					NavigationController.PopViewController(true);
-					MemoryUtility.ReleaseUIViewWithChildren (View);
+					AppDelegate.PopViewControllerWithCallback(delegate{
+						MemoryUtility.ReleaseUIViewWithChildren (View);
+					});
 				}
 			});
 

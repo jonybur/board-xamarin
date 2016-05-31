@@ -1,14 +1,11 @@
 ﻿using System;
-using AdvancedColorPicker;
-using Board.Interface;
 using Board.Picker;
+using Board.Screens.Controls;
 using Board.Utilities;
 using CoreGraphics;
 using Foundation;
-using Board.Screens.Controls;
-using UIKit;
 using MGImageUtilitiesBinding;
-using BigTed;
+using UIKit;
 
 namespace Board.Screens
 {
@@ -272,37 +269,6 @@ namespace Board.Screens
 			}
 			uiv.Center = center;
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer (async (tg) => {
-
-				UIColor color = await ColorPickerViewController.PresentAsync (
-					NavigationController, 
-					"Pick a Color",
-					View.BackgroundColor);
-
-				uiv.RemoveFromSuperview();
-
-				uiv = CreateColorSquare (size, 
-					center,
-					color.CGColor, numberOfView);
-
-				scrollView.AddSubview(uiv);
-
-
-				switch(numberOfView)
-				{
-				case 1:
-					board.MainColor = color;
-					hexView1.Text = CommonUtils.UIColorToHex(color);
-					break;
-				case 2:
-					board.SecondaryColor = color;
-					hexView2.Text = CommonUtils.UIColorToHex(color);
-					break;
-				}
-
-			});
-
-			uiv.AddGestureRecognizer (tap);
 			uiv.UserInteractionEnabled = true;
 
 			return uiv;

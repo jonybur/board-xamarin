@@ -1,7 +1,6 @@
 ﻿using Board.Schema;
 using CoreGraphics;
 using UIKit;
-using System.Threading.Tasks;
 using Foundation;
 using Haneke;
 
@@ -26,14 +25,10 @@ namespace Board.Interface.Widgets
 		public PictureWidget(Picture pic)
 		{
 			content = pic;
-
 			PictureImageView = new UIImageView ();
 
 			if (pic.Image == null) {
 				PictureImageView.Frame = new CGRect (0, 0, Widget.Autosize, Widget.Autosize);
-				CreateMounting (PictureImageView.Frame.Size);
-				AddSubviews (MountingView, PictureImageView);
-
 				PictureImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
 				PictureImageView.SetImage (new NSUrl (picture.ImageUrl), UIImage.FromFile ("./demo/magazine/westpalmbeach.png"), ImageFromHaneke, ErrorFromHaneke);
 			} else {
@@ -46,12 +41,10 @@ namespace Board.Interface.Widgets
 		}
 
 		public void ImageFromHaneke(UIImage obj){
-
-			PictureImageView.RemoveFromSuperview ();
-			MountingView.RemoveFromSuperview ();
+			Center = new CGPoint ();
+			Transform = CGAffineTransform.MakeIdentity ();
 
 			picture.SetImageFromUIImage (obj);
-
 			SetWidget ();
 		}
 
@@ -63,15 +56,12 @@ namespace Board.Interface.Widgets
 			Frame = MountingView.Frame;
 
 			AddSubviews (MountingView, PictureImageView);
+
+			AppDelegate.BoardInterface.BoardScroll.SelectiveRendering ();
 		}
 
 		public void ErrorFromHaneke(NSError obj){
-			System.Console.WriteLine ("stop");
-		}
-
-		public void SetFrame(CGRect frame)
-		{
-			Frame = frame;
+			System.Console.WriteLine ("ERROR: " + obj.LocalizedDescription);
 		}
 
 	}

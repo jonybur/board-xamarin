@@ -52,11 +52,12 @@ namespace Board
 		public static string PhoneVersion;
 
 		public const string APIAddress = "45.55.232.144";
-		//public const string APIAddress = "192.168.0.101:5000";
 		public const string FacebookAppId = "793699580736093";
 		public const string FacebookDisplayName = "Board Alpha - Deve­l­o­p­ment";
 		public const string GoogleMapsAPIKey = "AIzaSyAUO-UX9QKVWK421yjXqoo02N5TYrG_hY8";
 		public const string UberServerToken = "4y1kRu3Kt-LWdTeXcktgphAN7qZlltsTRTbvwIQ_";
+		public const string InstagramServerToken = "2292871863.37fcdb1.cdc6ab03abfa4a8db4a2da022ec5d3c2";
+
 		const string MapsApiKey = "AIzaSyAyjPtEvhmhHHa5_aPiZPiPN3GUtIXxO6I";
 
 		public static string BoardToken;
@@ -133,22 +134,9 @@ namespace Board
 			NavigationController = new UINavigationController();
 
 			window.RootViewController = screen;
-
 			NavigationController.PushViewController (screen, false);
-
 			window.AddSubview (NavigationController.View);
-
 			window.MakeKeyAndVisible ();
-
-			/*
-			new System.Threading.Thread (() => 
-				{
-					while (true) {
-						System.Threading.Thread.Sleep (1000);
-						GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
-					}
-				}).Start ();
-			*/
 
 			return true;
 		}
@@ -173,7 +161,7 @@ namespace Board
 
 			CATransaction.CompletionBlock = callback;
 
-			NavigationController.PopViewController (true);
+			AppDelegate.NavigationController.PopViewController (true);
 
 			CATransaction.Begin ();
 		}
@@ -184,7 +172,7 @@ namespace Board
 
 			CATransaction.CompletionBlock = callback;
 
-			NavigationController.PopToViewController(viewController, true);
+			AppDelegate.NavigationController.PopToViewController(viewController, true);
 
 			CATransaction.Begin ();
 		}

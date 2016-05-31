@@ -27,7 +27,7 @@ namespace Board.Interface.Widgets
 		{
 			content = poll;
 
-			UILabel insideText = CreateQuestion ();
+			var insideText = CreateQuestion ();
 			lstAnswers = new List<AnswerButton> ();
 
 			float yposition = (float)insideText.Frame.Bottom + 5;
@@ -35,27 +35,27 @@ namespace Board.Interface.Widgets
 			AnswerButton.Initialize ();
 
 			foreach (string ans in poll.Answers) {
-				AnswerButton button = new AnswerButton(ans, yposition, (float)insideText.Frame.Width);
+				var button = new AnswerButton(ans, yposition, (float)insideText.Frame.Width);
 				yposition += (float)button.Frame.Height;
 				lstAnswers.Add (button);
 			}
 
 			// mounting
 			CreateMounting (new CGSize(insideText.Frame.Width, yposition));
-
+			Frame = MountingView.Frame;
 			AddSubviews (MountingView, insideText);
-			foreach (UIButton but in lstAnswers) {
-				AddSubview (but);
+
+			foreach (var but in lstAnswers) {
+				AddSubview (but); 
 			}
 
 			EyeOpen = false;
-
 			CreateGestures ();
 		}
 
 		private UILabel CreateQuestion()
 		{
-			UILabel label = new UILabel ();
+			var label = new UILabel ();
 			label.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 			label.Text = poll.Question;
 			label.TextColor = Widget.HighlightColor;
@@ -98,12 +98,6 @@ namespace Board.Interface.Widgets
 
 			return textview;
 		}
-
-		public void SetFrame(CGRect frame)
-		{
-			Frame = frame;
-		}
-
 
 		public class AnswerButton : UIButton{
 

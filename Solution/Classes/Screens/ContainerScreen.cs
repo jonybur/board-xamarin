@@ -3,16 +3,13 @@ using Board.Screens.Controls;
 using Board.Utilities;
 using Foundation;
 using UIKit;
-using Haneke;
 
 namespace Board.Screens
 {
 	public class ContainerScreen : UIViewController
 	{
-		UISideMenu sideMenu;
 		public UIViewController CurrentScreenViewController;
-
-		UIImageView TheImageView;
+		UISideMenu sideMenu;
 
 		public static Screens CurrentScreen;
 
@@ -31,6 +28,7 @@ namespace Board.Screens
 			LoadMainMenu ();
 
 			LoadChangelogAlert ();
+
 		}
 
 		public override void ViewDidAppear(bool animated){

@@ -29,13 +29,13 @@ namespace Board.Screens
 			LoadBanner ();
 		}
 
-		public override async void ViewDidAppear(bool animated)
+		public override void ViewDidAppear(bool animated)
 		{
 			BTProgressHUD.Show ();
 
 			Banner.SuscribeToEvents ();
 
-			boardList = await CloudController.GetUserBoards ();
+			boardList = CloudController.GetUserBoards ();
 
 			InitializeInterface ();
 

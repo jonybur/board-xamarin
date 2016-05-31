@@ -13,13 +13,12 @@ namespace Board.Interface
 	public class UIBoardScroll : UIScrollView
 	{
 		public UIScrollView ScrollView;
-		private UIImageView TopBanner;
 		readonly List<Widget> DrawnWidgets;
 		EventHandler DragStartsEvent, ScrolledEvent, DecelerationStartsEvent, DecelerationEndsEvent;
 		EventHandler<WillEndDraggingEventArgs> WillEndDragEvent;
 		EventHandler<DraggingEventArgs> DragEndsEvent;
 		UIInfoBox infoBox;
-		private float TempContentOffset, virtualLeftBound;
+		private float virtualLeftBound;
 		public int LastLeftScreen, LastRightScreen;
 		public bool IsHighlighting;
 		private bool IsDragging, ShouldOpenEyes;
@@ -157,8 +156,6 @@ namespace Board.Interface
 
 			ScrollViewWidthSize -= awidth;
 			ScrollViewWidthSize += AppDelegate.ScreenWidth;
-			//ScrollViewTotalWidthSize = ScrollViewWidthSize * 54;
-
 
 			// x obj a la izq - a = nueva pos de obj a la izq
 			// ancho del board = 2600 - a 
@@ -180,10 +177,9 @@ namespace Board.Interface
 			ScrollView.ShowsVerticalScrollIndicator = false;
 			ShowsHorizontalScrollIndicator = false;
 			ShowsVerticalScrollIndicator = false;
-
 			ScrollView.Bounces = false;
-
 			bool isSnapping = false;
+
 			CGPoint target = new CGPoint();
 
 			ScrolledEvent = (sender, e) => {
@@ -259,7 +255,6 @@ namespace Board.Interface
 		}
 
 		// TODO: always render widgets that are being edited.
-		// TODO: fix stutter on scroll limit
 		public void SelectiveRendering(){
 			
 			// clusterfuck
@@ -281,12 +276,7 @@ namespace Board.Interface
                      (item.content.Center.X - item.Frame.Width / 2 < (virtualLeftBound + AppDelegate.ScreenWidth * 1.5f))) ||
 					((item.content.Center.X + item.Frame.Width / 2) < (virtualRightBound + AppDelegate.ScreenWidth * 1.5f) &&
 					 (item.content.Center.X + item.Frame.Width / 2 > (virtualRightBound - AppDelegate.ScreenWidth * 1.5f))));
-
-				//rightScreenNumber = (int)Math.Floor((physicalRightBound + AppDelegate.ScreenWidth) / ScrollViewWidthSize);
-				//virtualRightBound = physicalRightBound + AppDelegate.ScreenWidth - ScrollViewWidthSize * rightScreenNumber;
-				//leftScreenNumber = (int)Math.Floor ((physicalLeftBound - AppDelegate.ScreenWidth) / ScrollViewWidthSize);
-				//virtualLeftBound =  physicalLeftBound - AppDelegate.ScreenWidth - ScrollViewWidthSize * leftScreenNumber;
-
+				
 				// takes wids that are close
 				DrawWidgets(WidgetsToDraw, virtualLeftBound, virtualRightBound, leftScreenNumber, rightScreenNumber);
 
@@ -334,8 +324,6 @@ namespace Board.Interface
 		public void DrawWidgets(List<Widget> widgetsToDraw, float virtualLeftBound, float virtualRightBound, float leftScreenNumber, float rightScreenNumber) {
 			
 			List<Widget> WidgetsToRemove = DrawnWidgets.FindAll (item => !widgetsToDraw.Contains (item));
-
-			//Console.WriteLine (widgetsToDraw.Count);
 
 			foreach (var wid in WidgetsToRemove) {
 				wid.RemoveFromSuperview ();

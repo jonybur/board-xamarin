@@ -17,7 +17,6 @@ namespace Board.Interface
 		public static UIView View{
 			get { return view; }
 		}
-		private static float Rotation;
 
 		public enum Type { Picture = 1, Video, Announcement, Event, Poll, Map };
 		public static int TypeOfPreview;
@@ -187,8 +186,7 @@ namespace Board.Interface
 		}
 
 		public static async System.Threading.Tasks.Task<Content> GetContent(){
-			var boardScroll = AppDelegate.BoardInterface.BoardScroll;
-
+			
 			view.Center = AppDelegate.BoardInterface.BoardScroll.ConvertPointToBoardScrollPoint (view.Center);
 
 			Content content;

@@ -60,7 +60,6 @@ namespace Board.Screens
 			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
 			map_button.TouchUpInside += MapButtonEvent;	
 			mapInfoTapped = false;
-
 			Banner.SuscribeToEvents ();
 		}
 
@@ -86,7 +85,7 @@ namespace Board.Screens
 			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 		}
 
-		public override async void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
+		public override void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
 		{
 			if (!firstLocationUpdate) {
 
@@ -98,7 +97,7 @@ namespace Board.Screens
 				AppDelegate.UserLocation = location.Coordinate;
 				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
 
-				await LoadContent ();
+				LoadContent ();
 				ContentDisplay.SuscribeToEvents ();
 
 				BTProgressHUD.Dismiss ();
@@ -110,12 +109,12 @@ namespace Board.Screens
 			}
 		}
 
-		private async System.Threading.Tasks.Task LoadContent()
+		private void LoadContent()
 		{
 			ScrollView.BackgroundColor = UIColor.White;
 
 			//BoardList = await CloudController.GetAllBoards();
-			BoardList = await CloudController.GetNearbyBoards (AppDelegate.UserLocation, 10000);
+			BoardList = CloudController.GetNearbyBoards (AppDelegate.UserLocation, 10000);
 
 			Magazine = new UIMagazine (BoardList);
 
@@ -151,8 +150,6 @@ namespace Board.Screens
 
 		private void LoadMap()
 		{
-			firstLocationUpdate = false;
-
 			var camera = CameraPosition.FromCamera (40, -100, -2);
 			map = MapView.FromCamera (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight), camera);
 			map.Alpha = 0f;

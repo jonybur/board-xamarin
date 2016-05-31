@@ -26,7 +26,7 @@ namespace Board.Interface.Widgets
 
 			content = ann;
 
-			UITextView insideText = CreateText ();
+			var insideText = CreateText ();
 
 			// mounting
 			CreateMounting (insideText.Frame.Size);
