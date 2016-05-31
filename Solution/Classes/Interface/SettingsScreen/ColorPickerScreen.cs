@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using BigTed;
-using Board.Screens.Controls;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
+using Board.Screens.Controls;
 using Board.Utilities;
 using CoreGraphics;
 using UIKit;
-using System;
 
 namespace Board.Interface
 {
@@ -62,11 +61,6 @@ namespace Board.Interface
 			return sortedColors;
 		}
 
-		public override void ViewDidDisappear (bool animated)
-		{
-			BTProgressHUD.Dismiss ();
-		}
-
 		private void CreateColorButtons (params UIColor[] colors){
 			float yposition = (float)Banner.Frame.Bottom - 20 + 1;
 			var listButtons = new List<UIButton> ();
@@ -84,7 +78,7 @@ namespace Board.Interface
 			button.Frame = new CGRect (0, yposition, AppDelegate.ScreenWidth, 80);
 			button.BackgroundColor = color;
 			button.TouchUpInside += (sender, e) => {
-				button.Alpha = .75f;
+				button.Alpha = .5f;
 				var thread = new Thread(new ThreadStart(PopOut));
 				thread.Start();
 			};
@@ -95,9 +89,8 @@ namespace Board.Interface
 		{
 			Thread.Sleep (300);
 			InvokeOnMainThread(delegate {
-				AppDelegate.PopViewControllerWithCallback(delegate {
-					MemoryUtility.ReleaseUIViewWithChildren (View);
-				});
+				AppDelegate.NavigationController.PopViewController(true);
+				MemoryUtility.ReleaseUIViewWithChildren(View);
 			});
 		}
 
@@ -107,9 +100,9 @@ namespace Board.Interface
 
 			var tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					AppDelegate.PopViewControllerLikeDismissView();
 					Banner.UnsuscribeToEvents ();
-					MemoryUtility.ReleaseUIViewWithChildren (View);
+					AppDelegate.NavigationController.PopViewController(true);
+					MemoryUtility.ReleaseUIViewWithChildren(View);
 				}
 			});
 

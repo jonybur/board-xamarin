@@ -8,6 +8,8 @@ namespace Board.Screens.Controls
 {
 	public class UIGalleryScrollView : UIScrollView {
 		private List<UIPictureButton> Pictures;
+		public static float ButtonSize;
+		float CornerRadius;
 
 		private class UIPictureButton : UIButton{
 			public EventHandler TouchUpInsideEvent;
@@ -24,17 +26,13 @@ namespace Board.Screens.Controls
 			}
 		}
 
-		public static float ButtonSize;
-
-		public void SetImages (List<UIImage> listImages){
-			var button = new UIPictureButton(new CGRect (0, 0, ButtonSize, ButtonSize));
-
-			foreach (var img in listImages){
-				UIImage fixedImg = img.ImageCroppedToFitSize(button.Frame.Size);
-				button.SetImage (fixedImg, UIControlState.Normal);
-				Pictures.Add(button);
-			}
-
+		public UIGalleryScrollView(float width, float height = 200, float imageCornerRadius = 0) {
+			Frame = new CGRect (0, 0, width, height);
+			Pictures = new List<UIPictureButton>();
+			ScrollEnabled = true;
+			UserInteractionEnabled = true;
+			ButtonSize = (width / 4 - 2);
+			CornerRadius = imageCornerRadius;
 		}
 
 		public void SetImage (UIImage image, EventHandler touchUpInsideEvent){
@@ -42,44 +40,14 @@ namespace Board.Screens.Controls
 				return;
 			}
 
-			var button = new UIPictureButton(new CGRect (0, 0, ButtonSize, ButtonSize));
-			var fixedImg = image.ImageCroppedToFitSize(button.Frame.Size);
-			button.SetImage (fixedImg, UIControlState.Normal);
-			Pictures.Add(button);
+			var pictureButton = new UIPictureButton(new CGRect (0, 0, ButtonSize, ButtonSize));
+			var fixedImg = image.ImageCroppedToFitSize(pictureButton.Frame.Size);
+			pictureButton.SetImage (fixedImg, UIControlState.Normal);
+			pictureButton.Layer.CornerRadius = CornerRadius;
+			pictureButton.TouchUpInsideEvent = touchUpInsideEvent;
+			pictureButton.TouchUpInside += touchUpInsideEvent;
 
-			button.TouchUpInsideEvent = touchUpInsideEvent;
-			button.TouchUpInside += touchUpInsideEvent;
-		}
-
-		public void SetDemoImages(){
-			int j = 0;
-
-			for (int i = 0; i < 15; i++) {
-
-				var button = new UIPictureButton(new CGRect (0, 0, ButtonSize, ButtonSize));
-				button.BackgroundColor = UIColor.Black;
-
-				using (UIImage img = UIImage.FromFile("./demo/pictures/"+j+".jpg")) {
-					UIImage fixedImg = img.ImageCroppedToFitSize(button.Frame.Size);
-					button.SetImage (fixedImg, UIControlState.Normal);
-				}
-				Pictures.Add(button);
-
-				j++;
-
-				if (7 <= j)
-				{
-					j = 0;
-				}
-			}
-		}
-
-		public UIGalleryScrollView(float width, float height = 200) {
-			Frame = new CGRect (0, 0, width, height);
-			Pictures = new List<UIPictureButton>();
-			ScrollEnabled = true;
-			UserInteractionEnabled = true;
-			ButtonSize = (width / 4 - 2);
+			Pictures.Add(pictureButton);
 		}
 
 		public void Fill(bool presentFromBottom, float yPosition){

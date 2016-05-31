@@ -17,7 +17,6 @@ namespace Board.Interface
 	public partial class UIBoardInterface : UIViewController
 	{
 		public const int BannerHeight = 66;
-		public const int ButtonBarHeight = 45;
 
 		public static bool UserCanEditBoard;
 		public static Board.Schema.Board board;
@@ -147,7 +146,7 @@ namespace Board.Interface
 		{
 			ButtonInterface.Initialize ();
 
-			var buttonBackground = new UIImageView (new CGRect (0, AppDelegate.ScreenHeight - 45, AppDelegate.ScreenWidth, ButtonBarHeight));
+			var buttonBackground = new UIImageView (new CGRect (0, AppDelegate.ScreenHeight - 45, AppDelegate.ScreenWidth, ButtonInterface.ButtonBarHeight));
 			buttonBackground.BackgroundColor = UIColor.White;
 			View.AddSubview (buttonBackground);
 

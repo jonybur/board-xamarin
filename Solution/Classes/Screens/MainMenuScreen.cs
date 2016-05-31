@@ -9,7 +9,6 @@ using Facebook.CoreKit;
 using Foundation;
 using Google.Maps;
 using UIKit;
-using BigTed;
 
 namespace Board.Screens
 {
@@ -27,8 +26,8 @@ namespace Board.Screens
 		List<Board.Schema.Board> BoardList;
 
 		bool mapInfoTapped;
-		bool firstLocationUpdate;
 		bool generatedMarkers;
+		bool hasLoaded;
 
 		public override void DidReceiveMemoryWarning ()
 		{
@@ -56,7 +55,14 @@ namespace Board.Screens
 
 		public override void ViewDidAppear(bool animated)
 		{
-			// suscribe to observers, gesture recgonizers, events
+			if (AppDelegate.UserLocation.Latitude != 0 &&
+				AppDelegate.UserLocation.Longitude != 0 &&
+				!hasLoaded) {
+				LoadContent();
+				ContentDisplay.SuscribeToEvents ();
+				hasLoaded = true;
+			}
+			// suscribe to observers, gesture recgonizers, events 
 			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
 			map_button.TouchUpInside += MapButtonEvent;	
 			mapInfoTapped = false;
@@ -87,25 +93,19 @@ namespace Board.Screens
 
 		public override void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
 		{
-			if (!firstLocationUpdate) {
+			var location = change.ObjectForKey (NSValue.ChangeNewKey) as CoreLocation.CLLocation;
+			AppDelegate.UserLocation = location.Coordinate;
+			map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
 
-				BTProgressHUD.Show ();
-
-				firstLocationUpdate = true; 
-
-				var location = change.ObjectForKey (NSValue.ChangeNewKey) as CoreLocation.CLLocation;
-				AppDelegate.UserLocation = location.Coordinate;
-				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
-
+			if (!hasLoaded) {
 				LoadContent ();
 				ContentDisplay.SuscribeToEvents ();
+				hasLoaded = true;
+			}
 
-				BTProgressHUD.Dismiss ();
-
-				if (!generatedMarkers) {
-					GenerateMarkers ();
-					generatedMarkers = true;
-				}
+			if (!generatedMarkers) {
+				GenerateMarkers ();
+				generatedMarkers = true;
 			}
 		}
 

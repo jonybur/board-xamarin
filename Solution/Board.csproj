@@ -175,10 +175,6 @@
     <BundleResource Include="Resources\screens\invite\icon.png" />
     <BundleResource Include="Resources\screens\login\logo.png" />
     <BundleResource Include="Resources\screens\support\icon.png" />
-    <BundleResource Include="Resources\Default-568h%402x.png" />
-    <BundleResource Include="Resources\Default-667h%402x.png" />
-    <BundleResource Include="Resources\Default.png" />
-    <BundleResource Include="Resources\Default%402x.png" />
     <BundleResource Include="Resources\Icon-60%402x.png" />
     <BundleResource Include="Resources\Icon.png" />
     <BundleResource Include="Resources\Icon%402x.png" />
@@ -266,6 +262,12 @@
     <BundleResource Include="Resources\boardinterface\infobox\call.png" />
     <BundleResource Include="Resources\boardinterface\infobox\like.png" />
     <BundleResource Include="Resources\boardinterface\infobox\message.png" />
+    <BundleResource Include="Resources\Default-568h%402x.png" />
+    <BundleResource Include="Resources\Default-667h%402x.png" />
+    <BundleResource Include="Resources\Default.png" />
+    <BundleResource Include="Resources\Default%402x.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\viewmore.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\viewmore2.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -404,6 +406,12 @@
     <Compile Include="Classes\Interface\Buttons\ImportButton.cs" />
     <Compile Include="Classes\JsonResponses\InstagramMediaResponse.cs" />
     <Compile Include="Classes\Interface\SettingsScreen\ColorPickerScreen.cs" />
+    <Compile Include="Classes\Interface\InfoBox\UIMapContainer.cs" />
+    <Compile Include="Classes\Interface\InfoBox\UIActionButtons.cs" />
+    <Compile Include="Classes\Interface\InfoBox\UITopBanner.cs" />
+    <Compile Include="Classes\Interface\InfoBox\UIAboutBox.cs" />
+    <Compile Include="Classes\Interface\InfoBox\UINameLabel.cs" />
+    <Compile Include="Classes\Interface\InfoBox\UIInstagramGallery.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Board.Screens.Controls;
 using BigTed;
-using Board.Utilities;
 using Board.Infrastructure;
+using Board.Screens.Controls;
+using Board.Utilities;
 using CoreGraphics;
 using UIKit;
 
@@ -123,11 +122,6 @@ namespace Board.Screens
 					});
 
 					NavigationController.PresentViewController(alert, true, null);
-
-					/*
-					CreateScreen1 createScreen1 = new CreateScreen1();
-					AppDelegate.NavigationController.PushViewController(createScreen1, false);
-					*/
 				}
 			});
 
@@ -135,6 +129,5 @@ namespace Board.Screens
 
 			View.AddSubview (Banner);
 		}
-
 	}
 }

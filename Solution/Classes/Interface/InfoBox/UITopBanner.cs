@@ -1,0 +1,46 @@
+﻿using System;
+using System.Collections.Generic;
+using Board.Infrastructure;
+using Board.Interface.LookUp;
+using Board.Screens.Controls;
+using Board.Utilities;
+using CoreGraphics;
+using CoreLocation;
+using Google.Maps;
+using Haneke;
+using UIKit;
+
+namespace Board.Interface
+{
+	public class UITopBanner : UIView {
+		UIImageView BackgroundImage;
+		UIBoardBannerPage BannerPage;
+
+		public float Bottom{
+			get { 
+				return (float)BackgroundImage.Frame.Bottom;
+			}
+		}
+
+		public UITopBanner(UIImage boardImage, float width){
+			BackgroundImage = new UIImageView (new CGRect(0, 0, width, UIMagazineBannerPage.Height));
+
+			BackgroundImage.ClipsToBounds = true;
+			BannerPage = new UIBoardBannerPage (width);
+
+			AddSubviews(BackgroundImage, BannerPage);
+
+			LoadCoverImage();
+		}
+
+		public void LoadCoverImage(){
+			var localBoard = UIBoardInterface.board;
+			var scaledImageView = new UIImageView ();
+			scaledImageView.Frame = BackgroundImage.Frame;
+			scaledImageView.ContentMode = UIViewContentMode.ScaleAspectFill;
+			scaledImageView.SetImage (new Foundation.NSUrl (localBoard.CoverImageUrl));
+			BackgroundImage.AddSubview (scaledImageView);
+		}
+	}
+}
+

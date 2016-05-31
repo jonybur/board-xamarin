@@ -8,6 +8,7 @@ namespace Board.Interface.Buttons
 {
 	public static class ButtonInterface
 	{
+		public const int ButtonBarHeight = 45;
 		// buttons are square-shaped and must be the same height all-around
 		// its height is hardcoded
 		public enum ButtonLayout : byte { NavigationBar = 1, ConfirmationBar, MoveWidgetBar, Disable };

@@ -22,6 +22,7 @@ namespace Board.Facebook
 			PageId = pageId;
 			BTProgressHUD.Show ("Importing Board...");
 			FacebookUtils.MakeGraphRequest (pageId, "?fields=name,location,about,cover,picture.type(large)", GenerateBoard);
+			BTProgressHUD.Dismiss ();
 		}
 
 		public static void ImportPageContent(string pageId){
@@ -59,8 +60,6 @@ namespace Board.Facebook
 
 			CloudController.CreateBoard (board);
 		}
-
-
 
 		static void GetAnnouncements(List<FacebookElement> FacebookElements){
 			// parses all posts
