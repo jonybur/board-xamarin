@@ -14,7 +14,7 @@ namespace Board.Interface.LookUp
 
 		UIImageView InternalImageView;
 
-		public PictureLookUp(Picture picture)
+		public PictureLookUp(Picture picture, bool likeButton = true)
 		{
 			content = picture;
 
@@ -55,7 +55,10 @@ namespace Board.Interface.LookUp
 			var descriptionBox = CreateDescriptionBox (picture.Description);
 			descriptionBox.Center = new CGPoint (AppDelegate.ScreenWidth / 2, LikeButton.Frame.Top - descriptionBox.Frame.Height / 2 - 5);
 
-			View.AddSubviews (ScrollView, descriptionBox, BackButton, LikeButton, FacebookButton, TrashButton);
+			View.AddSubviews (ScrollView, descriptionBox, BackButton, FacebookButton, TrashButton);
+			if (likeButton) {
+				View.AddSubview (LikeButton);
+			}
 		}
 
 		private UITextView CreateDescriptionBox(string description){

@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using UIKit;
+using Board.Interface.LookUp;
 using CoreGraphics;
 using MGImageUtilitiesBinding;
+using Board.Infrastructure;
 
 namespace Board.Interface
 {
@@ -41,6 +43,11 @@ namespace Board.Interface
 			pictureButton.ClipsToBounds = true;
 			pictureButton.TouchUpInside += (sender, e) => {
 				// opens instagram
+				if (AppsController.CanOpenInstagram()){
+					AppsController.OpenInstagram("788029");
+				}
+
+				//location?id=LOCATION_ID
 			};
 
 			InstagramPhotos.Add(pictureButton);
@@ -59,14 +66,14 @@ namespace Board.Interface
 			pictureButton.ClipsToBounds = true;
 			pictureButton.TouchUpInside += (sender, e) => {
 				var picture = new Board.Schema.Picture(image, "", new CGPoint(), "", CGAffineTransform.MakeIdentity());
-				var pictureLookUp = new Board.Interface.LookUp.PictureLookUp(picture);
+				var pictureLookUp = new PictureLookUp(picture, false);
 				AppDelegate.PushViewLikePresentView(pictureLookUp);
 			};
 
 			InstagramPhotos.Add(pictureButton);
 		}
 
-		private void Fill(){
+		private void Fill (){
 			int x = 3; float y = 1;
 			float lastBottom = 0;
 			foreach (var button in InstagramPhotos) {

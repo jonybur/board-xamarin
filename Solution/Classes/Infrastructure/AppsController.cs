@@ -6,26 +6,30 @@ namespace Board.Infrastructure
 {
 	public static class AppsController
 	{
+		public static bool CanOpenInstagram(){
+			return CanOpenGeneric ("instagram://");
+		}
+
 		public static bool CanOpenUber(){
-			NSUrl url = new NSUrl("uber://");
-			return UIApplication.SharedApplication.CanOpenUrl (url);
+			return CanOpenGeneric ("uber://");
 		}
 
 		public static bool CanOpenWaze(){
-			NSUrl url = new NSUrl("waze://");
-			return UIApplication.SharedApplication.CanOpenUrl (url);
+			return CanOpenGeneric ("waze://");
 		}
 
 		public static bool CanOpenGoogleMaps(){
-			NSUrl url = new NSUrl("comgooglemaps://");
-			return UIApplication.SharedApplication.CanOpenUrl (url);
+			return CanOpenGeneric ("comgooglemaps://");
 		}
 
 		public static bool CanOpenFacebookMessenger(){
-			NSUrl url = new NSUrl ("fb-messenger://");
-			return UIApplication.SharedApplication.CanOpenUrl (url);
+			return CanOpenGeneric ("fb-messenger://");
 		}
 
+		private static bool CanOpenGeneric(string link){
+			NSUrl url = new NSUrl (link);
+			return UIApplication.SharedApplication.CanOpenUrl (url);
+		}
 
 		public static void OpenFacebookMessenger(string recieverId){
 			NSUrl url = new NSUrl("fb-messenger://user-thread/"+recieverId);
@@ -59,6 +63,11 @@ namespace Board.Infrastructure
 				url = new NSUrl("https://facebook.com/" + facebookId);
 			}
 			UIApplication.SharedApplication.OpenUrl(url);
+		}
+
+		public static void OpenInstagram(string locationId){
+			NSUrl url = new NSUrl("instagram://location?id="+locationId);
+			UIApplication.SharedApplication.OpenUrl (url);
 		}
 
 		public static void OpenGoogleMaps(CLLocationCoordinate2D destination){
