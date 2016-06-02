@@ -49,7 +49,7 @@ namespace Board.Interface.Widgets
 				AddSubview (but); 
 			}
 
-			EyeOpen = false;
+			
 			CreateGestures ();
 		}
 

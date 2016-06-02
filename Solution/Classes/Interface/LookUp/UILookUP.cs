@@ -57,7 +57,7 @@ namespace Board.Interface.LookUp
 				FacebookButton.Alpha = 0f;
 			}
 
-			if (Profile.CurrentProfile.UserID != UIBoardInterface.board.CreatorId) {
+			if (!UIBoardInterface.UserCanEditBoard) {
 				TrashButton.Alpha = 0f;
 				EditButton.Alpha = 0f;
 			}

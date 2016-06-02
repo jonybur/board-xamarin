@@ -9,12 +9,13 @@ using Board.Schema;
 using Board.Utilities;
 using CoreGraphics;
 using UIKit;
+using System.Linq;
 
 namespace Board.Interface
 {
 	// user interface - connects to the board controller
 	// also called BoardView
-	public partial class UIBoardInterface : UIViewController
+	public class UIBoardInterface : UIViewController
 	{
 		public const int BannerHeight = 66;
 
@@ -51,7 +52,7 @@ namespace Board.Interface
 
 			InitializeLists ();
 
-			UserCanEditBoard = false;//CloudController.UserCanEditBoard (board.Id);
+			UserCanEditBoard = CloudController.UserCanEditBoard (board.Id);
 
 			// gets content, puts it in dictionarycontent
 			DictionaryContent = CloudController.GetBoardContent (board.Id);
@@ -173,8 +174,8 @@ namespace Board.Interface
 				}
 			}
 
-			//DictionaryWidgets = DictionaryWidgets.OrderBy(o=>o.View.Frame.X).ToList();
-			ButtonInterface.navigationButton.RefreshNavigationButtonText (DictionaryWidgets.Count);
+			ButtonInterface.navigationButton.RefreshNavigationButtonText (DictionaryWidgets.Values.
+				ToList ().Count (widget => !widget.EyeOpen));
 
 			BTProgressHUD.Dismiss ();
 		}

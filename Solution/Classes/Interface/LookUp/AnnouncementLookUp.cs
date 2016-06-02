@@ -35,7 +35,7 @@ namespace Board.Interface.LookUp
 				AppDelegate.ScreenHeight - TrashButton.Frame.Bottom - LikeButton.Frame.Height));
 			
 			textView.Text = announcement.Text;
-			textView.Font = UIFont.SystemFontOfSize (14);
+			textView.Font = UIFont.SystemFontOfSize (16);
 			textView.Editable = false;
 			textView.ScrollEnabled = true;
 			textView.Selectable = true;

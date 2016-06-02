@@ -245,7 +245,6 @@
     <BundleResource Include="Resources\screens\sidemenus\5\main.png" />
     <BundleResource Include="Resources\screens\sidemenus\5\settings.png" />
     <BundleResource Include="Resources\screens\sidemenus\5\support.png" />
-    <BundleResource Include="Resources\demo\magazine\1.png" />
     <BundleResource Include="Resources\demo\magazine\westpalmbeach.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\openeye.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\closedeye.png" />
@@ -270,6 +269,7 @@
     <BundleResource Include="Resources\boardinterface\infobox\viewmore2.png" />
     <BundleResource Include="Resources\demo\magazine\nantucket_bak.png" />
     <BundleResource Include="Resources\demo\magazine\nantucket.png" />
+    <BundleResource Include="Resources\demo\timeline\example.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -478,6 +478,7 @@
     <Folder Include="Resources\demo\magazine\" />
     <Folder Include="Resources\boardinterface\nubuttons\" />
     <Folder Include="Resources\boardinterface\strokebuttons\white\" />
+    <Folder Include="Resources\demo\timeline\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="sqlite-net">

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Threading.Tasks;
 using Board.JsonResponses;
+using System.Globalization;
 using Board.Schema;
 using Board.Utilities;
 using CoreLocation;
@@ -36,6 +36,15 @@ namespace Board.Infrastructure
 			} else {
 				return false;
 			} 
+		}
+
+		public static void GetMagazine(CLLocationCoordinate2D location){
+
+			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/magazines/nearest?latitude="+
+				location.Latitude.ToString(CultureInfo.InvariantCulture)+"&longitude="+location.Longitude.ToString(CultureInfo.InvariantCulture)+
+				"&authToken="+AppDelegate.EncodedBoardToken);
+
+			Console.WriteLine (result);
 		}
 
 		public static Dictionary<string, Content> GetBoardContent(string boardId){
@@ -239,10 +248,15 @@ namespace Board.Infrastructure
 		}
 
 		public static List<Board.Schema.Board> GetNearbyBoards(CLLocationCoordinate2D location, int meterRadius){
-			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/boards/nearby?" +
-				"authToken=" + AppDelegate.EncodedBoardToken+ "&latitude=" + location.Latitude + "&longitude=" + location.Longitude + "&radiusInMeters="+meterRadius);
+			
+			string request = "http://" + AppDelegate.APIAddress + "/api/boards/nearby?" +
+			                 "authToken=" + AppDelegate.EncodedBoardToken + "&latitude=" + 
+				location.Latitude.ToString(CultureInfo.InvariantCulture) + "&longitude=" +
+				location.Longitude.ToString(CultureInfo.InvariantCulture) + "&radiusInMeters=" + meterRadius;
 
-			BoardResponse response = BoardResponse.Deserialize (result);
+			string result = JsonGETRequest (request);
+
+			var response = BoardResponse.Deserialize (result);
 
 			var boards = GenerateBoardListFromBoardResponse (response);
 
@@ -323,7 +337,9 @@ namespace Board.Infrastructure
 		}
 
 		public static UberProductResponse GetUberProducts(CLLocationCoordinate2D location){
-			string result = JsonGETRequest("https://api.uber.com/v1/products?latitude="+location.Latitude+"&longitude="+location.Longitude+"&server_token="+AppDelegate.UberServerToken);
+
+			string result = JsonGETRequest("https://api.uber.com/v1/products?latitude="+location.Latitude.ToString(CultureInfo.InvariantCulture)
+				+"&longitude="+location.Longitude.ToString(CultureInfo.InvariantCulture)+"&server_token="+AppDelegate.UberServerToken);
 
 			var productResponse = JsonConvert.DeserializeObject<UberProductResponse> (result);
 

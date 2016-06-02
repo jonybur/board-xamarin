@@ -44,7 +44,7 @@ namespace Board.Interface.Widgets
 
 			AddSubview (MountingView);
 
-			EyeOpen = false;
+			
 
 			CreateGestures ();
 		}
@@ -66,7 +66,7 @@ namespace Board.Interface.Widgets
 			PictureBox.Layer.AllowsEdgeAntialiasing = true;
 			MountingView.AddSubview (PictureBox);
 
-			EyeOpen = false;
+			
 
 			AppDelegate.BoardInterface.BoardScroll.SelectiveRendering ();
 

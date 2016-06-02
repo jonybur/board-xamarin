@@ -30,13 +30,6 @@ namespace Board.Interface.Buttons
 			Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
 			Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - ButtonSize / 2);
 
-			// deprecated, not used
-			var doubletap = new UITapGestureRecognizer (tg => {
-				tg.NumberOfTapsRequired = 2;
-
-				//AppDelegate.boardInterface.BoardScroll.SetContentOffset(new CGPoint(BoardInterface.ScrollViewWidthSize / 2 - AppDelegate.ScreenWidth / 2, 0), true);
-			});
-
 			var tapGesture= new UITapGestureRecognizer (tg => {
 				tg.NumberOfTapsRequired = 1;
 
@@ -64,7 +57,6 @@ namespace Board.Interface.Buttons
 				}
 
 				var boardScroll = AppDelegate.BoardInterface.BoardScroll;
-				var scrollOffset = boardScroll.VirtualLeftBound + AppDelegate.ScreenWidth / 2;
 				var widgetPosition = widget.content.Center.X - AppDelegate.ScreenWidth / 2;
 
 				int rightScreenNumber, leftScreenNumber, rightCurrentScreenNumber, leftCurrentScreenNumber;

@@ -50,7 +50,7 @@ namespace Board.Screens
 
 				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));	
 
-				AppDelegate.NavigationController.PresentViewController (alert, true, null);
+				//AppDelegate.NavigationController.PresentViewController (alert, true, null);
 			}
 		}
 

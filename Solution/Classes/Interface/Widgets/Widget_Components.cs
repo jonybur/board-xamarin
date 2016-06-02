@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using Board.Infrastructure;
 using Board.Interface.Buttons;
-using Board.Interface.LookUp;
-using Board.Schema;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
-using MGImageUtilitiesBinding;
 using UIKit;
+using Board.Infrastructure;
 
 namespace Board.Interface.Widgets
 {
@@ -24,7 +20,7 @@ namespace Board.Interface.Widgets
 				imageView.Image = image;
 				imageView.Center = new CGPoint (DeleteButton.Frame.Width / 2, DeleteButton.Frame.Height / 2);
 
-				DeleteButton.AddSubview (imageView); 
+				DeleteButton.AddSubview (imageView);
 				//DeleteButton.SetImage(image, UIControlState.Normal);
 			}
 
@@ -67,9 +63,53 @@ namespace Board.Interface.Widgets
 
 		protected void CreateEye()
 		{
-			EyeView = new UIImageView(new CGRect (MountingView.Frame.Width - IconSize - SideMargin - 5, MountingView.Frame.Height - IconSize - 5, IconSize, IconSize));
-			EyeView.Image = ClosedEyeImageView.Image;
-			EyeView.TintColor = WidgetGrey;
+			EyeView = new UIImageView(new CGRect (MountingView.Frame.Width - IconSize - SideMargin - 5,
+										MountingView.Frame.Height - IconSize - 5, IconSize, IconSize));
+
+			if (StorageController.WasContentSeen(content.Id)){
+				EyeView.Image = OpenEyeImageView.Image;
+				EyeView.TintColor = AppDelegate.BoardOrange;
+				EyeOpen = true;
+			}else{
+				EyeView.Image = ClosedEyeImageView.Image;
+				EyeView.TintColor = WidgetGrey;
+				EyeOpen = false;
+			}
+
+		}
+
+		public void OpenEye()
+		{
+			// widget hasnt been drawn yet
+			if (EyeView == null) {
+				return;
+			}
+
+			StorageController.SetContentAsSeen (content.Id);
+
+			EyeView.Image = OpenEyeImageView.Image;
+			EyeView.TintColor = AppDelegate.BoardOrange;
+			EyeOpen = true;
+
+			var scale = new CAKeyFrameAnimation ();
+			scale.KeyPath = "transform";
+
+			var identity = CATransform3D.MakeScale(1f, 1f, 1f);
+			var scaled = CATransform3D.MakeScale (1.3f, 1.3f, 1.3f);
+
+			scale.Values = new NSObject[]{ 
+				NSValue.FromCATransform3D (identity),
+				NSValue.FromCATransform3D (scaled),
+				NSValue.FromCATransform3D (identity)
+			};
+
+			scale.KeyTimes = new NSNumber[]{0, 1/2, 1};
+			scale.Duration = .5f;
+			scale.RemovedOnCompletion = false;
+
+			EyeView.Layer.AddAnimation (scale, "highlight");
+
+			ButtonInterface.navigationButton.SubtractNavigationButtonText();
 		}
 
 		private void CreateLikeComponent()
@@ -121,39 +161,7 @@ namespace Board.Interface.Widgets
 				liked = false;
 			}
 		}
-
-		public void OpenEye()
-		{
-			// widget hasnt been drawn yet
-			if (EyeView == null) {
-				return;
-			}
 			
-			EyeView.Image = OpenEyeImageView.Image;
-			EyeView.TintColor = AppDelegate.BoardOrange;
-			EyeOpen = true;
-
-			CAKeyFrameAnimation scale = new CAKeyFrameAnimation ();
-			scale.KeyPath = "transform";
-
-			var identity = CATransform3D.MakeScale(1f, 1f, 1f);
-			var scaled = CATransform3D.MakeScale (1.3f, 1.3f, 1.3f);
-
-			scale.Values = new NSObject[]{ 
-				NSValue.FromCATransform3D (identity),
-				NSValue.FromCATransform3D (scaled),
-				NSValue.FromCATransform3D (identity)
-			};
-
-			scale.KeyTimes = new NSNumber[]{0, 1/2, 1};
-			scale.Duration = .5f;
-			scale.RemovedOnCompletion = false;
-
-			EyeView.Layer.AddAnimation (scale, "highlight");
-
-			ButtonInterface.navigationButton.SubtractNavigationButtonText();
-		}
-
 		protected UIImageView CreateLike(CGRect frame)
 		{
 			var likeView = new UIImageView(new CGRect(0, 0, IconSize, IconSize));

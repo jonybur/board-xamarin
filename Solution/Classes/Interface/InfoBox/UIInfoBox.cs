@@ -45,7 +45,7 @@ namespace Board.Interface
 
 			var images = new List<UIImage> ();
 			var testImage = UIImage.FromFile ("./demo/magazine/nantucket.png");
-			for (int i = 0; i < 12; i++) {
+			for (int i = 0; i < 8; i++) {
 				images.Add (testImage);
 			}
 

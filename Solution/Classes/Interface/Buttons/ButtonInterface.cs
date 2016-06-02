@@ -113,7 +113,6 @@ namespace Board.Interface.Buttons
 		public static List<UIView> GetUserButtons()
 		{
 			List<UIView> views = new List<UIView>();
-			//views.Add(actionsButtonSet.arrayButtons [0]);
 			views.Add(navigationButton);
 
 			return views;

@@ -25,9 +25,7 @@ namespace Board.Screens
 		UIContentDisplay ContentDisplay;
 		List<Board.Schema.Board> BoardList;
 
-		bool mapInfoTapped;
-		bool generatedMarkers;
-		bool hasLoaded;
+		bool mapInfoTapped, generatedMarkers, hasLoaded, firstLocationUpdate;
 
 		public override void DidReceiveMemoryWarning ()
 		{
@@ -37,6 +35,8 @@ namespace Board.Screens
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
+
+			BigTed.BTProgressHUD.Show ();
 
 			ListMapMarkers = new List<UIMapMarker> ();
 
@@ -61,6 +61,7 @@ namespace Board.Screens
 				LoadContent();
 				ContentDisplay.SuscribeToEvents ();
 				hasLoaded = true;
+				BigTed.BTProgressHUD.Dismiss ();
 			}
 			// suscribe to observers, gesture recgonizers, events 
 			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
@@ -92,20 +93,24 @@ namespace Board.Screens
 		}
 
 		public override void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
-		{
-			var location = change.ObjectForKey (NSValue.ChangeNewKey) as CoreLocation.CLLocation;
-			AppDelegate.UserLocation = location.Coordinate;
-			map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
+		{		
+			if (!firstLocationUpdate) {
+				firstLocationUpdate = true;
+				var location = change.ObjectForKey (NSValue.ChangeNewKey) as CoreLocation.CLLocation;
+				AppDelegate.UserLocation = location.Coordinate;
+				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
 
-			if (!hasLoaded) {
-				LoadContent ();
-				ContentDisplay.SuscribeToEvents ();
-				hasLoaded = true;
-			}
+				if (!hasLoaded) {
+					LoadContent ();
+					ContentDisplay.SuscribeToEvents ();
+					hasLoaded = true;
+					BigTed.BTProgressHUD.Dismiss ();
+				}
 
-			if (!generatedMarkers) {
-				GenerateMarkers ();
-				generatedMarkers = true;
+				if (!generatedMarkers) {
+					GenerateMarkers ();
+					generatedMarkers = true;
+				}
 			}
 		}
 

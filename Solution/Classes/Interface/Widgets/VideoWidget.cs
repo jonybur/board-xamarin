@@ -37,8 +37,6 @@ namespace Board.Interface.Widgets
 
 			Layer.AllowsEdgeAntialiasing = true;
 
-			EyeOpen = false;
-
 			CreateGestures ();
 		}
 

@@ -1,18 +1,29 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using Board.JsonResponses;
 using Board.Schema;
-using Board.Utilities;
 using Foundation;
 using SQLite;
-using UIKit;
 
 namespace Board.Infrastructure
 {
 	[Preserve(AllMembers = true)]
 	public static class StorageController
 	{	
+		[Preserve(AllMembers = true)]
+		[Table("SeenContents")]
+		private class SeenContent {
+			[PrimaryKey, Column("id")]
+			public string Id { get; set; }
+
+			public SeenContent(string id){
+				Id = id;
+			}
+
+			public SeenContent(){}
+		}
+
+		// caches google's geolocator json
 		[Preserve(AllMembers = true)]
 		[Table("Boards")]
 		private class BoardL {
@@ -32,17 +43,12 @@ namespace Board.Infrastructure
 
 		private static string dbPath;
 		private static string docsPathLibrary;
-		private static string docsPathCaches;
 		private static SQLiteConnection database;
 
 		public static void Initialize () {
 			
 			docsPathLibrary = (NSFileManager.DefaultManager.GetUrls (
 				NSSearchPathDirectory.LibraryDirectory, 
-				NSSearchPathDomain.User) [0]).Path;
-
-			docsPathCaches = (NSFileManager.DefaultManager.GetUrls (
-				NSSearchPathDirectory.CachesDirectory, 
 				NSSearchPathDomain.User) [0]).Path;
 			
 			dbPath = Path.Combine (docsPathLibrary, "localdb.db3");
@@ -51,6 +57,7 @@ namespace Board.Infrastructure
 
 			database = new SQLiteConnection (dbPath);
 			database.CreateTable<BoardL> ();
+			database.CreateTable<SeenContent> ();
 		}
 
 		/*public static NSUrl StoreVideoInCache(NSData data, string id){
@@ -61,6 +68,22 @@ namespace Board.Infrastructure
 
 			return NSUrl.FromFilename (path);
 		}*/
+
+		public static bool WasContentSeen(string id){
+			var seenContent = database.Query<SeenContent> ("SELECT * FROM SeenContents WHERE id = ?", id);
+
+			if (seenContent.Count > 0) {
+				// gets image and location from storage
+				return true;
+			}
+
+			return false;
+		}
+
+		public static void SetContentAsSeen(string id){
+			var seenContent = new SeenContent(id);
+			database.Insert(seenContent);
+		}
 
 		public static Board.Schema.Board BoardIsStored(string id){
 			var boardL = database.Query<BoardL> ("SELECT * FROM Boards WHERE id = ?", id);

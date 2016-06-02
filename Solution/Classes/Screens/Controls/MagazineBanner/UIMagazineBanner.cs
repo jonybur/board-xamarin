@@ -1,9 +1,9 @@
-﻿using CoreGraphics;
-using UIKit;
-using MGImageUtilitiesBinding;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Haneke;
+using Board.Infrastructure;
+using CoreGraphics;
+using MGImageUtilitiesBinding;
+using UIKit;
 
 namespace Board.Screens.Controls
 {
@@ -33,8 +33,10 @@ namespace Board.Screens.Controls
 
 		// generates the magazine headers
 		private void GeneratePages(List<Board.Schema.Board> boardList){
-			//string[] demopages = new []{ "EDITOR'S CHOICE", "TRENDING", "ALL" };
-			string[] demopages = new []{ "ALL" };
+
+			CloudController.GetMagazine (AppDelegate.UserLocation);
+
+			string[] demopages = new []{ "TRENDING"/*, "EDITOR'S CHOICE"*/, "ALL" };
 
 			var pages = new UIMagazinePage[demopages.Length];
 
@@ -50,9 +52,9 @@ namespace Board.Screens.Controls
 				pages [i].Banner = controller;
 			}
 
-			pages [0].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Neighborhood, UIMagazineBannerPage.Height, UIActionButton.Height);
-			//pages [0].ContentDisplay = new UICarouselContentDisplay ();
-			//pages [1].ContentDisplay = new UITimelineContentDisplay (boardList, UIMagazineBannerPage.Height, UIActionButton.Height);
+			pages [0].ContentDisplay = new UITimelineContentDisplay (boardList);
+			//pages [1].ContentDisplay = new UICarouselContentDisplay ();
+			pages [1].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Neighborhood, UIMagazineBannerPage.Height, UIActionButton.Height);
 
 			Pages = pages;
 		}

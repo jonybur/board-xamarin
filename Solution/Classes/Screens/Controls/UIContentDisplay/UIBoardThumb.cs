@@ -23,25 +23,15 @@ namespace Board.Screens.Controls
 			BoardThumb.Frame = new CGRect (0, 0, BoardThumb.Frame.Width, BoardThumb.Frame.Height);
 			UserInteractionEnabled = true;
 
-			NameLabel = CreateNameLabel (board.Name, GetDistance(board), size);
+			NameLabel = CreateNameLabel (board.Name, CommonUtils.GetDistanceFromUserToBoard(board), size);
 
 			AddSubviews (BoardThumb, NameLabel);
 		}
 
-		private double GetDistance(Board.Schema.Board board){
-			var location = AppDelegate.UserLocation;
-			double distance = 0;
-
-			if (location.IsValid()) {
-				distance = CommonUtils.DistanceBetweenCoordinates (board.GeolocatorObject.Coordinate, location, 'M');
-				board.Distance = distance;
-			}
-			return distance;
-		}
 
 		public void UpdateDistanceLabel(){
 			NameLabel.RemoveFromSuperview ();
-			NameLabel = CreateNameLabel (BoardThumb.Board.Name, GetDistance(BoardThumb.Board), Size);
+			NameLabel = CreateNameLabel (BoardThumb.Board.Name, CommonUtils.GetDistanceFromUserToBoard(BoardThumb.Board), Size);
 			AddSubview (NameLabel);
 			
 		}
@@ -58,27 +48,15 @@ namespace Board.Screens.Controls
 
 		private UILabel CreateNameLabel(string nameString, double distance, float width)
 		{
-			UILabel label = new UILabel ();
+			var label = new UILabel ();
 
 			label.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
-
-			string farAway;
-			if (distance != 1) {
-				farAway = " miles away";
-			} else {
-				farAway = " mile away";
-			}
-
-			string distanceString = distance.ToString ("F1");
-			if (distanceString.EndsWith(".0")) {
-				distanceString = distanceString.Substring (0, distanceString.Length - 2);
-			}
 
 			if (IsAllUpper(nameString) && nameString.Length > 14) {
 				nameString = nameString.Substring (0, 14) + "...";
 			}
+			var distanceTotalString = CommonUtils.GetFormattedDistance (distance);
 
-			string distanceTotalString = distanceString + farAway;
 			string compositeString = nameString + "\n" + distanceTotalString;
 
 			var nameAttributes = new UIStringAttributes {

@@ -36,7 +36,7 @@ namespace Board.Interface.Widgets
 			}
 
 			PictureImageView.Layer.AllowsEdgeAntialiasing = true;
-			EyeOpen = false;
+			
 			CreateGestures ();
 		}
 

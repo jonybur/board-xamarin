@@ -35,8 +35,6 @@ namespace Board.Interface.Widgets
 
 			AddSubviews (MountingView, insideText, HeaderLogo);
 
-			EyeOpen = false;
-
 			CreateGestures ();
 		}
 

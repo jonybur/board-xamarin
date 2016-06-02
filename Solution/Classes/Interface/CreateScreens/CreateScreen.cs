@@ -68,17 +68,9 @@ namespace Board.Interface.CreateScreens
 		protected void LoadNextButton(bool isEditing)
 		{
 			if (isEditing) {
-				using (UIImage mapImage = UIImage.FromFile ("./boardinterface/screens/share/save/" + AppDelegate.PhoneVersion + ".jpg")) {
-					NextButton = new UIButton (new CGRect (0, AppDelegate.ScreenHeight - (mapImage.Size.Height / 2),
-						mapImage.Size.Width / 2, mapImage.Size.Height / 2));
-					NextButton.SetImage (mapImage, UIControlState.Normal);	
-				}
+				NextButton = new UIActionButton ("SAVE");
 			} else {
-				using (UIImage mapImage = UIImage.FromFile ("./boardinterface/screens/share/next/" + AppDelegate.PhoneVersion + ".jpg")) {
-					NextButton = new UIButton (new CGRect (0, AppDelegate.ScreenHeight - (mapImage.Size.Height / 2),
-						mapImage.Size.Width / 2, mapImage.Size.Height / 2));
-					NextButton.SetImage (mapImage, UIControlState.Normal);	
-				}
+				NextButton = new UIActionButton ("NEXT");
 			}
 
 			NextButton.Alpha = .95f;

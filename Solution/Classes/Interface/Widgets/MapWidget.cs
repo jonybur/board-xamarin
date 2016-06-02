@@ -29,7 +29,7 @@ namespace Board.Interface.Widgets
 			Frame = MountingView.Frame;
 			AddSubviews (MountingView, container.mapView);
 
-			EyeOpen = false;
+			
 
 			CreateGestures ();
 		}

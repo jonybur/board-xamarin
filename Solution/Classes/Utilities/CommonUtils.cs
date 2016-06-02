@@ -12,7 +12,37 @@ namespace Board.Utilities
 {
 	public static class CommonUtils
 	{
-		public static double DistanceBetweenCoordinates(CLLocationCoordinate2D location1, CLLocationCoordinate2D location2, char unit = 'K')
+		public static string GetFormattedDistance(double distance){
+
+			string farAway;
+			if (distance != 1) {
+				farAway = " miles away";
+			} else {
+				farAway = " mile away";
+			}
+
+			string distanceString = distance.ToString ("F1");
+			if (distanceString.EndsWith(".0")) {
+				distanceString = distanceString.Substring (0, distanceString.Length - 2);
+			}
+
+			string distanceTotalString = distanceString + farAway;
+
+			return distanceTotalString;
+		}
+
+		public static double GetDistanceFromUserToBoard(Board.Schema.Board board){
+			var location = AppDelegate.UserLocation;
+			double distance = 0;
+
+			if (location.IsValid()) {
+				distance = DistanceBetweenCoordinates (board.GeolocatorObject.Coordinate, location, 'M');
+				board.Distance = distance;
+			}
+			return distance;
+		}
+
+		private static double DistanceBetweenCoordinates(CLLocationCoordinate2D location1, CLLocationCoordinate2D location2, char unit = 'K')
 		{
 			double rlat1 = Math.PI*location1.Latitude/180;
 			double rlat2 = Math.PI*location2.Latitude/180;

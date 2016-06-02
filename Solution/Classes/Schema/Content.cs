@@ -13,6 +13,9 @@ namespace Board.Schema
 		public string FacebookId;
 
 		[IgnoreDataMember]
+		public bool Seen;
+
+		[IgnoreDataMember]
 		public CGPoint Center;
 
 		public float CenterX {

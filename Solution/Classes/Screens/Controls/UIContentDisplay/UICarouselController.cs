@@ -1,8 +1,9 @@
 ﻿using CoreGraphics;
 using UIKit;
-using MGImageUtilitiesBinding;
-using System.Collections.Generic;
+using Haneke;
 using Board.Interface;
+using System.Collections.Generic;
+using Foundation;
 
 namespace Board.Screens.Controls
 {
@@ -18,7 +19,7 @@ namespace Board.Screens.Controls
 			string[] carouselNames = new string[]{"BEST BARMANS", "CHILL MUSIC", "GOOD VIBES", "BEST BARMANS", "CHILL MUSIC" };
 
 			for (int i = 0; i < 5; i++) {
-				var carousel = new UICarouselController (carouselNames[i]);
+				var carousel = new UICarouselController (Board.Infrastructure.CloudController.GetNearbyBoards(AppDelegate.UserLocation, 1000), carouselNames[i]);
 				carousel.View.Center = new CGPoint (AppDelegate.ScreenWidth / 2,
 					UIMagazineBannerPage.Height + UIMenuBanner.Height + SeparationBetweenCarousels + carousel.View.Frame.Height / 2 + (carousel.View.Frame.Height + SeparationBetweenCarousels) * i);
 				testCarousels.Add (carousel);
@@ -40,14 +41,13 @@ namespace Board.Screens.Controls
 
 		public const int ItemSeparation = 20;
 
-		// TODO: recieve List<Board> boardList
-		public UICarouselController(string titleText){
+		public UICarouselController(List<Board.Schema.Board> boardList, string titleText){
 			TitleLabel = new UILocationLabel (titleText, ItemSeparation);
 			ListThumbs = new List<UIContentThumb> ();
 
 			ScrollView = new UIScrollView (new CGRect (0, TitleLabel.Frame.Bottom + 15, AppDelegate.ScreenWidth, UICarouselLargeItem.Height));
-			for (int i = 0; i < 3; i++) {
-				var carouselLargeItem = new UICarouselLargeItem (new Board.Schema.Board());
+			for (int i = 0; i < boardList.Count; i++) {
+				var carouselLargeItem = new UICarouselLargeItem (boardList[i]);
 				carouselLargeItem.Center = new CGPoint (ItemSeparation + carouselLargeItem.Frame.Width / 2 + (carouselLargeItem.Frame.Width + ItemSeparation) * i,
 														carouselLargeItem.Frame.Height / 2);
 				ListThumbs.Add (carouselLargeItem);
@@ -74,22 +74,35 @@ namespace Board.Screens.Controls
 			Frame = new CGRect (0, 0, Width, Height);
 			BackgroundColor = UIColor.Black;
 			Layer.CornerRadius = 10;
-			using (var img = UIImage.FromFile ("./demo/magazine/1.png")) {
-				var scaledImg = img.ImageScaledToFitSize (Frame.Size);
-				SetImage (scaledImg, UIControlState.Normal);
-			}
+
+			var backgroundImageView = new UIImageView ();
+			backgroundImageView.Frame = Frame;
+			backgroundImageView.ContentMode = UIViewContentMode.ScaleAspectFill;
+			backgroundImageView.SetImage (new NSUrl (board.CoverImageUrl));
+
+			var logoImageView = new UIImageView ();
+			logoImageView.Frame = new CGRect (0, 0, Height / 2, Height / 2);
+			logoImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
+			logoImageView.SetImage (new NSUrl (board.LogoUrl));
+
+			var backgroundLogoImageView = new UIImageView ();
+			backgroundLogoImageView.Frame = new CGRect (0, 0, Height / 2 + 6, Height / 2 + 6);
+			backgroundLogoImageView.BackgroundColor = UIColor.White;
+
+			logoImageView.Center = new CGPoint (Frame.Width / 2, Frame.Height / 2);
+			backgroundLogoImageView.Center = logoImageView.Center;
+
+			AddSubviews (backgroundImageView, backgroundLogoImageView, logoImageView);
+
 			ClipsToBounds = true;
 
 			TouchEvent = (sender, e) => {
-				// TODO: re-enable this
 
-				/*
 				if (AppDelegate.BoardInterface == null)
 				{
 					AppDelegate.BoardInterface = new UIBoardInterface (board);
 					AppDelegate.NavigationController.PushViewController (AppDelegate.BoardInterface, true);
 				}
-				*/
 			};
 		}
 	}
