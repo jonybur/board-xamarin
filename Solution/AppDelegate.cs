@@ -86,6 +86,7 @@ namespace Board
 			Narwhal20 = UIFont.FromName ("narwhal-bold", 20);
 			Narwhal24 = UIFont.FromName ("narwhal-bold", 24);
 			Narwhal30 = UIFont.FromName ("narwhal-bold", 29);
+
 			SystemFontOfSize16 = UIFont.SystemFontOfSize (16);
 			SystemFontOfSize18 = UIFont.SystemFontOfSize (18);
 			SystemFontOfSize20 = UIFont.SystemFontOfSize (20);

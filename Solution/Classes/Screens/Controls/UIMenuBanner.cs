@@ -1,6 +1,8 @@
 ﻿using CoreGraphics;
 using UIKit;
 using System.Collections.Generic;
+using CoreAnimation;
+using Foundation;
 
 namespace Board.Screens.Controls
 {
@@ -82,6 +84,30 @@ namespace Board.Screens.Controls
 			}
 
 			return labels;
+		}
+
+		public void AnimateShow(){
+			var animation =  new CABasicAnimation();
+			animation.KeyPath = "position.y";
+			animation.From = new NSNumber(Frame.Y + Frame.Height / 2);
+			animation.TimingFunction = CAMediaTimingFunction.FromName(CAMediaTimingFunction.EaseInEaseOut);
+			animation.To = new NSNumber(Frame.Height / 2);
+			animation.Duration = .2f;
+			Layer.AddAnimation(animation, "show");
+
+			Frame = new CGRect (0, 0, Frame.Width, Frame.Height);
+		}
+
+		public void AnimateHide(){
+			var animation =  new CABasicAnimation();
+			animation.KeyPath = "position.y";
+			animation.From = new NSNumber(Frame.Y + Frame.Height / 2);
+			animation.TimingFunction = CAMediaTimingFunction.FromName(CAMediaTimingFunction.EaseInEaseOut);
+			animation.To = new NSNumber (- Frame.Height / 2);
+			animation.Duration = .2f;
+			Layer.AddAnimation(animation, "hide");
+
+			Frame = new CGRect (0, -Frame.Height, Frame.Width, Frame.Height);
 		}
 
 		private UIImageView GenerateButton(string filename, bool ontheleft){

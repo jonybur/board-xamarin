@@ -74,13 +74,21 @@ namespace Board.Interface
 		private void InitializeInterface()
 		{
 			// This was main color
-			View.BackgroundColor = UIColor.FromRGB(170, 183, 192);//board.MainColor;
+			board.MainColor = UIColor.FromRGB(170, 183, 192);
+
+			View.BackgroundColor = board.MainColor;
 
 			BoardScroll = new UIBoardScroll ();
 			BoardScroll.Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
 
 			// generate the scrollview and the zoomingscrollview
 			View.AddSubview (BoardScroll);
+
+			var statusBarView = new UIView (new CGRect (0, 0, AppDelegate.ScreenWidth, 20));
+			statusBarView.Alpha = .6f;
+			statusBarView.BackgroundColor = board.MainColor;
+
+			//View.AddSubview (statusBarView);
 
 			// load buttons
 			LoadButtons ();

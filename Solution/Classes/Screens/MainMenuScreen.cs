@@ -9,6 +9,7 @@ using Facebook.CoreKit;
 using Foundation;
 using Google.Maps;
 using UIKit;
+using CoreAnimation;
 
 namespace Board.Screens
 {
@@ -140,6 +141,16 @@ namespace Board.Screens
 
 			float previousOffset = 0;
 
+			var direction = ScrollViewDirection.Up;
+
+			ScrollView.DraggingEnded += (sender, e) => {
+				if (direction == ScrollViewDirection.Up){
+					Banner.AnimateShow();
+				} else if (direction == ScrollViewDirection.Down && ScrollView.ContentOffset.Y > Banner.Frame.Height) {
+					Banner.AnimateHide();
+				}
+			};
+
 			ScrollView.Scrolled += (sender, e) => {
 				
 				if (ScrollView.ContentOffset.Y < 0){
@@ -164,15 +175,17 @@ namespace Board.Screens
 				}
 
 				if (previousOffset < ScrollView.ContentOffset.Y) { 
-					//Console.WriteLine("baja");
+					direction = ScrollViewDirection.Down;
 				}else{
-					//Console.WriteLine("sube");
+					direction = ScrollViewDirection.Up;
 				}
 
 				previousOffset = (float)ScrollView.ContentOffset.Y;
 
 			};
 		}
+
+		enum ScrollViewDirection { Up, Down };
 
 		private void LoadBanner()
 		{
@@ -250,7 +263,14 @@ namespace Board.Screens
 				map_button.Alpha = 1f;
 
 				if (map.Alpha == 0f) { 
-					map.Alpha = 1f; 
+					map.Alpha = 1f;
+
+					// stops scrollview
+					ScrollView.SetContentOffset(ScrollView.ContentOffset, false);
+
+					// animates banner to be shown
+					Banner.AnimateShow();
+
 					map_button.ChangeTitle("LIST");
 				} else {
 					map.Alpha = 0f;

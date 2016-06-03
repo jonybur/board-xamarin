@@ -260,10 +260,6 @@
     <BundleResource Include="Resources\boardinterface\strokebuttons\white\openeye.png" />
     <BundleResource Include="Resources\boardinterface\infobox\call.png" />
     <BundleResource Include="Resources\boardinterface\infobox\message.png" />
-    <BundleResource Include="Resources\Default-568h%402x.png" />
-    <BundleResource Include="Resources\Default-667h%402x.png" />
-    <BundleResource Include="Resources\Default.png" />
-    <BundleResource Include="Resources\Default%402x.png" />
     <BundleResource Include="Resources\boardinterface\infobox\viewmore.png" />
     <BundleResource Include="Resources\boardinterface\infobox\viewmore2.png" />
     <BundleResource Include="Resources\demo\magazine\nantucket_bak.png" />
@@ -271,6 +267,10 @@
     <BundleResource Include="Resources\demo\timeline\example.png" />
     <BundleResource Include="Resources\boardinterface\infobox\emptylike.png" />
     <BundleResource Include="Resources\boardinterface\infobox\fulllike.png" />
+    <BundleResource Include="Resources\Default-568h%402x.png" />
+    <BundleResource Include="Resources\Default-667h%402x.png" />
+    <BundleResource Include="Resources\Default.png" />
+    <BundleResource Include="Resources\Default%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
