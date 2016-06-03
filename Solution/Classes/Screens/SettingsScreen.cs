@@ -2,6 +2,7 @@
 using UIKit;
 using Facebook.LoginKit;
 using Board.Screens.Controls;
+using Board.Infrastructure;
 using Board.Utilities;
 
 namespace Board.Screens
@@ -46,9 +47,9 @@ namespace Board.Screens
 			// Handle actions once the user is logged out
 			logInButton.LoggedOut += (sender, e) => {
 				// Handle your logout
-				UIViewController[] controllers = new UIViewController[1];
+				CloudController.LogOut();
+				var controllers = new UIViewController[1];
 				controllers[0] = new LoginScreen();
-
 				NavigationController.SetViewControllers(controllers, true);
 			};
 

@@ -113,7 +113,7 @@ namespace Board.Interface.LookUp
 					AppDelegate.NavigationController.PresentViewController(alert, true, null);
 				}
 				else {
-					UIAlertController alert = UIAlertController.Create("No Uber app installed", "To use this function please install Uber", UIAlertControllerStyle.Alert);
+					var alert = UIAlertController.Create("No Uber app installed", "To use this function please install Uber", UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
 					AppDelegate.NavigationController.PresentViewController (alert, true, null);
 				}

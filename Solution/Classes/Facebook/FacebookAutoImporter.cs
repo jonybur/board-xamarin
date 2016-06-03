@@ -21,8 +21,7 @@ namespace Board.Facebook
 		{
 			PageId = pageId;
 			BTProgressHUD.Show ("Importing Board...");
-			FacebookUtils.MakeGraphRequest (pageId, "?fields=name,location,about,cover,picture.type(large)", GenerateBoard);
-			BTProgressHUD.Dismiss ();
+			FacebookUtils.MakeGraphRequest (pageId, "?fields=name,location,about,cover,phone,category_list,picture.type(large)", GenerateBoard);
 		}
 
 		public static void ImportPageContent(string pageId){
@@ -34,6 +33,7 @@ namespace Board.Facebook
 
 		private static async void GenerateBoard(List<FacebookElement> FacebookElements){
 			if (FacebookElements.Count < 1) {
+				BTProgressHUD.Dismiss ();
 				return;
 			}
 
@@ -46,6 +46,9 @@ namespace Board.Facebook
 			board.GeolocatorObject = new GoogleGeolocatorObject ();
 			board.MainColor = UIColor.Black;
 			board.SecondaryColor = UIColor.Black;
+			board.Phone = importedBoard.Phone;
+			board.Category = importedBoard.Category;
+			board.FacebookId = importedBoard.Id;
 
 			board.GeolocatorObject.results = new List<Result> ();
 
@@ -59,6 +62,7 @@ namespace Board.Facebook
 			// - creates board -
 
 			CloudController.CreateBoard (board);
+			BTProgressHUD.Dismiss ();
 		}
 
 		static void GetAnnouncements(List<FacebookElement> FacebookElements){

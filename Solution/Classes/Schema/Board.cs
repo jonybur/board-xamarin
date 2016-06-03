@@ -1,9 +1,6 @@
 using Board.Facebook;
 using Board.JsonResponses;
 using Board.Utilities;
-using CoreGraphics;
-using Foundation;
-using Haneke;
 using UIKit;
 
 namespace Board.Schema
@@ -13,10 +10,9 @@ namespace Board.Schema
 		public UIImage Logo, CoverImage;
 		public UIColor MainColor, SecondaryColor;
 		public GoogleGeolocatorObject GeolocatorObject;
-		public FacebookPage FBPage;
 		public double Distance;
 
-		public string Name, CreatorId, Id, About;
+		public string Id, Name, About, Phone, Category, FacebookId, CreatorId;
 		public string LogoUrl, CoverImageUrl;
 
 		public Board()
@@ -28,7 +24,7 @@ namespace Board.Schema
 			Id = id;
 		}
 
-		public Board (string name, UIImage logo, UIColor mainColor, UIColor secondaryColor, GoogleGeolocatorObject geolocatorObject, string creatorId)
+		public Board (string name, UIImage logo, UIColor mainColor, UIColor secondaryColor, GoogleGeolocatorObject geolocatorObject)
 		{
 			Id = CommonUtils.GenerateGuid ();
 			Logo = logo;
@@ -36,7 +32,6 @@ namespace Board.Schema
 			SecondaryColor = secondaryColor;
 			GeolocatorObject = geolocatorObject;
 			Name = name;
-			CreatorId = creatorId;
 		}
 	}
 }

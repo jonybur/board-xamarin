@@ -22,17 +22,18 @@ namespace Board.Screens
 			View.BackgroundColor = UIColor.White;
 
 			AutomaticallyAdjustsScrollViewInsets = false;
-
 			NavigationController.NavigationBarHidden = true;
-		 
+
+			//CloudController.DeleteBoard ("7c776389-7318-4d0a-ab59-2ed0d929b23c");
+
 			LoadMainMenu ();
-
 			LoadChangelogAlert ();
-
 		}
 
 		public override void ViewDidAppear(bool animated){
-			CloudController.GetUserProfile ();
+			if (AppDelegate.BoardUser == null) {
+				CloudController.GetUserProfile ();
+			}
 		}
 
 		public void LoadChangelogAlert()
@@ -71,13 +72,6 @@ namespace Board.Screens
 			AddChildViewController (CurrentScreenViewController);
 			View.AddSubview (CurrentScreenViewController.View);
 			CurrentScreen = Screens.MainMenu;
-
-			/*
-			var imageView = new UIImageView ();
-			imageView.Frame = new CoreGraphics.CGRect (0, 0, 300, 300);
-			imageView.SetImage (new NSUrl ("https://board-alpha-media.s3.amazonaws.com/716598f1-f0f7-4ac0-b33f-3c2871c4c935/98911f16-3c99-4565-8004-2d5815d65f72.jpg"));
-			View.AddSubview(imageView);
-			*/
 		}
 
 		public void LoadBusinessScreen()

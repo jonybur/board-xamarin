@@ -1,11 +1,16 @@
 ﻿using Foundation;
 using CoreLocation;
 using UIKit;
+using System.Globalization;
 
 namespace Board.Infrastructure
 {
 	public static class AppsController
 	{
+		public static bool CanOpenPhone(){
+			return CanOpenGeneric ("telprompt://");
+		}
+
 		public static bool CanOpenInstagram(){
 			return CanOpenGeneric ("instagram://");
 		}
@@ -77,6 +82,11 @@ namespace Board.Infrastructure
 
 		public static void OpenAppleMaps(CLLocationCoordinate2D destination){
 			NSUrl url = new NSUrl ("http://maps.apple.com/?daddr="+destination.Latitude+","+destination.Longitude+"&dirflg=d&t=m");
+			UIApplication.SharedApplication.OpenUrl (url);
+		}
+
+		public static void OpenPhone(string phoneNumber){
+			NSUrl url = new NSUrl ("telprompt://"+phoneNumber.ToString(CultureInfo.InvariantCulture));
 			UIApplication.SharedApplication.OpenUrl (url);
 		}
 	}

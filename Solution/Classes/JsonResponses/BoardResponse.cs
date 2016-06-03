@@ -31,6 +31,9 @@ namespace Board.JsonResponses
 			public string secondaryColorCode { get; set; }
 			public string logoURL { get; set; }
 			public string coverURL { get; set; }
+			public string facebookID { get; set; }
+			public string phoneNumber { get; set; }
+			public string categoryName { get; set; }
 		}
 
 		[Preserve(AllMembers = true)]

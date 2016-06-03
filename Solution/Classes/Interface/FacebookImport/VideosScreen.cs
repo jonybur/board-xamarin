@@ -32,7 +32,7 @@ namespace Board.Interface.FacebookImport
 			View.AddSubview (GallerySV);
 
 			BTProgressHUD.Show ();
-			FacebookUtils.MakeGraphRequest (UIBoardInterface.board.FBPage.Id, "videos?fields=source,description,updated_time,thumbnails", Completion);
+			FacebookUtils.MakeGraphRequest (UIBoardInterface.board.FacebookId, "videos?fields=source,description,updated_time,thumbnails", Completion);
 
 			View.AddSubviews (Banner);
 		}

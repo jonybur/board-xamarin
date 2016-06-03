@@ -12,7 +12,7 @@ using UIKit;
 
 namespace Board.Screens
 {
-	public partial class MainMenuScreen : UIViewController
+	public class MainMenuScreen : UIViewController
 	{
 		public MapView map;
 		UIMenuBanner Banner;
@@ -46,11 +46,17 @@ namespace Board.Screens
 
 			ScrollView = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 
+			ScrollView.ScrollsToTop = true;
+
 			LoadMapButton ();
 			LoadBanner ();
 			LoadMap ();
 
-			View.AddSubviews (ScrollView, map, Banner, map_button);
+			var statusBarView = new UIView (new CGRect (0, 0, AppDelegate.ScreenWidth, 20));
+			statusBarView.Alpha = .95f;
+			statusBarView.BackgroundColor = AppDelegate.BoardOrange;
+
+			View.AddSubviews (ScrollView, map, Banner, map_button, statusBarView);
 		}
 
 		public override void ViewDidAppear(bool animated)
@@ -63,6 +69,7 @@ namespace Board.Screens
 				hasLoaded = true;
 				BigTed.BTProgressHUD.Dismiss ();
 			}
+
 			// suscribe to observers, gesture recgonizers, events 
 			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
 			map_button.TouchUpInside += MapButtonEvent;	
@@ -130,12 +137,39 @@ namespace Board.Screens
 			ScrollView.AddSubview (Magazine.Banner);
 
 			ScrollView.ScrollEnabled = true;
+
+			float previousOffset = 0;
+
 			ScrollView.Scrolled += (sender, e) => {
 				
 				if (ScrollView.ContentOffset.Y < 0){
+					
 					Magazine.Banner.Center = new CGPoint(Magazine.Banner.Center.X,
 						UIMenuBanner.Height + Magazine.Banner.Frame.Height / 2 + ScrollView.ContentOffset.Y);
+
+					Banner.Frame = new CGRect(Banner.Frame.X, 0, Banner.Frame.Width, Banner.Frame.Height);
+
+
+				} else if (ScrollView.ContentOffset.Y < ScrollView.ContentSize.Height - AppDelegate.ScreenHeight) {
+					
+					var diff = previousOffset - ScrollView.ContentOffset.Y;
+
+					if (Banner.Frame.Y + diff > 0){
+						Banner.Frame = new CGRect(Banner.Frame.X, 0, Banner.Frame.Width, Banner.Frame.Height);
+					} else if (Banner.Frame.Y + diff < -Banner.Frame.Height){
+						Banner.Frame = new CGRect(Banner.Frame.X, -Banner.Frame.Height, Banner.Frame.Width, Banner.Frame.Height);
+					} else {
+						Banner.Frame = new CGRect(Banner.Frame.X, Banner.Frame.Y + diff, Banner.Frame.Width, Banner.Frame.Height);
+					}
 				}
+
+				if (previousOffset < ScrollView.ContentOffset.Y) { 
+					//Console.WriteLine("baja");
+				}else{
+					//Console.WriteLine("sube");
+				}
+
+				previousOffset = (float)ScrollView.ContentOffset.Y;
 
 			};
 		}
@@ -158,7 +192,6 @@ namespace Board.Screens
 			var camera = CameraPosition.FromCamera (40, -100, -2);
 			map = MapView.FromCamera (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight), camera);
 			map.Alpha = 0f;
-			//	MapView.FromCamera (new CGRect (), camera);
 
 			var edgeInsets = new UIEdgeInsets (UIMenuBanner.Height, 0, UIActionButton.Height, 0);
 

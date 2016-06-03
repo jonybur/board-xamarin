@@ -7,7 +7,7 @@ namespace Board.Screens.Controls
 	// action button is always on bottom of screen
 	public class UIActionButton : UIButton
 	{
-		public const int Height = 60;
+		public const int Height = 50;
 		public EventHandler TouchDownEvent;
 		UILabel CustomTitleLabel;
 

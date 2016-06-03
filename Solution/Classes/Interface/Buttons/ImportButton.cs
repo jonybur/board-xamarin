@@ -18,7 +18,7 @@ namespace Board.Interface.Buttons
 			bool blockButton = false;
 
 			eventHandlers.Add ((sender, e) => {
-				if (UIBoardInterface.board.FBPage != null) {
+				if (UIBoardInterface.board.FacebookId != null) {
 					var importScreen = new AlbumsScreen();
 					AppDelegate.PushViewLikePresentView (importScreen);
 				} else { 

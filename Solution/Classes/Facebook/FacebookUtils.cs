@@ -107,8 +107,9 @@ namespace Board.Facebook
 						var fbcover = new FacebookCover (objects [i, 0], objects [i, 1]);
 						ElementList.Add (fbcover);
 					}
-				} else if (Element.StartsWith ("?fields=name,location,about,cover,picture", StringComparison.Ordinal)) {
-					string[,] objects = NSObjectToElement (obj, "id", "name", "location.latitude", "location.longitude", "about", "cover.source", "picture.data.url");
+				} else if (Element.StartsWith ("?fields=name,location,about,cover,phone,category_list,picture", StringComparison.Ordinal)) {
+					string[,] objects = NSObjectToElement (obj, "id", "name", "location.latitude", "location.longitude", "about", "cover.source",
+						"picture.data.url", "phone", "category_list.name");
 
 					for (int i = 0; i < objects.GetLength (0); i++) {
 
@@ -120,7 +121,7 @@ namespace Board.Facebook
 						}
 
 						var fbimportedpage = new FacebookImportedPage (objects [i, 0], objects [i, 1], location,
-							objects [i, 4], objects [i, 5], objects [i, 6]);
+							objects [i, 4], objects [i, 5], objects [i, 6], objects [i, 7], objects [i, 8]);
 
 						ElementList.Add (fbimportedpage);
 					}

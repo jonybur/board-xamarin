@@ -1,33 +1,61 @@
-﻿using CoreGraphics;
-using UIKit;
-using Haneke;
+﻿using System.Collections.Generic;
+using Board.Infrastructure;
 using Board.Interface;
-using System.Collections.Generic;
+using Board.JsonResponses;
+using CoreGraphics;
 using Foundation;
+using Haneke;
+using UIKit;
 
 namespace Board.Screens.Controls
 {
 	public class UICarouselContentDisplay : UIContentDisplay {
 
-		const float SeparationBetweenCarousels = 20;
+		const float SeparationBetweenCarousels = 30;
 
-		// TODO: recieve 'editors magazine'
-		public UICarouselContentDisplay(){
+		public UICarouselContentDisplay(MagazineResponse magazine){
 			ListThumbs = new List<UIContentThumb> ();
-			List<UICarouselController> testCarousels = new List<UICarouselController> ();
 
-			string[] carouselNames = new string[]{"BEST BARMANS", "CHILL MUSIC", "GOOD VIBES", "BEST BARMANS", "CHILL MUSIC" };
+			var magazineDictionary = new Dictionary<string, List<Board.Schema.Board>> ();
+			var magazineList = new List<Board.Schema.Board> ();
+			string section = string.Empty;
 
-			for (int i = 0; i < 5; i++) {
-				var carousel = new UICarouselController (Board.Infrastructure.CloudController.GetNearbyBoards(AppDelegate.UserLocation, 1000), carouselNames[i]);
+			foreach (var entries in magazine.data.entries) {
+				var board = CloudController.GenerateBoardFromBoardResponse (entries.board);
+
+				if (section == string.Empty) {
+					section = entries.section;
+					magazineList.Add (board);
+					continue;
+				}
+
+				if (section != entries.section) {
+					magazineDictionary.Add (section, magazineList);
+
+					section = entries.section;
+					magazineList = new List<Board.Schema.Board> ();
+				}
+				magazineList.Add (board);
+			}
+			magazineDictionary.Add (section, magazineList);
+
+			var testCarousels = new List<UICarouselController> ();
+
+			int i = 0;
+			foreach (var entry in magazineDictionary){
+				var carousel = new UICarouselController (entry.Value, entry.Key);
+
 				carousel.View.Center = new CGPoint (AppDelegate.ScreenWidth / 2,
-					UIMagazineBannerPage.Height + UIMenuBanner.Height + SeparationBetweenCarousels + carousel.View.Frame.Height / 2 + (carousel.View.Frame.Height + SeparationBetweenCarousels) * i);
+					UIMagazineBannerPage.Height + UIMenuBanner.Height + SeparationBetweenCarousels +
+					carousel.View.Frame.Height / 2 + (carousel.View.Frame.Height + SeparationBetweenCarousels) * i);
 				testCarousels.Add (carousel);
+
 				AddSubview (carousel.View);
 
 				ListThumbs.AddRange (carousel.ListThumbs);
+				i++;
 			}
-			var size = new CGSize (AppDelegate.ScreenWidth, (float)testCarousels[testCarousels.Count - 1].View.Frame.Bottom + UIActionButton.Height + SeparationBetweenCarousels);
+			var size = new CGSize (AppDelegate.ScreenWidth, (float)testCarousels[testCarousels.Count - 1].View.Frame.Bottom + UIActionButton.Height * 2 + SeparationBetweenCarousels);
 			Frame = new CGRect (0, 0, size.Width, size.Height);
 			UserInteractionEnabled = true;
 		}
@@ -46,6 +74,9 @@ namespace Board.Screens.Controls
 			ListThumbs = new List<UIContentThumb> ();
 
 			ScrollView = new UIScrollView (new CGRect (0, TitleLabel.Frame.Bottom + 15, AppDelegate.ScreenWidth, UICarouselLargeItem.Height));
+
+			ScrollView.ScrollsToTop = false;
+
 			for (int i = 0; i < boardList.Count; i++) {
 				var carouselLargeItem = new UICarouselLargeItem (boardList[i]);
 				carouselLargeItem.Center = new CGPoint (ItemSeparation + carouselLargeItem.Frame.Width / 2 + (carouselLargeItem.Frame.Width + ItemSeparation) * i,
@@ -53,7 +84,7 @@ namespace Board.Screens.Controls
 				ListThumbs.Add (carouselLargeItem);
 				ScrollView.AddSubview (carouselLargeItem);
 			}
-			ScrollView.ContentSize = new CGSize (ItemSeparation + 3 * (UICarouselLargeItem.Width + ItemSeparation),
+			ScrollView.ContentSize = new CGSize (ItemSeparation + boardList.Count * (UICarouselLargeItem.Width + ItemSeparation),
 				UICarouselLargeItem.Height);
 			ScrollView.ShowsHorizontalScrollIndicator = false;
 			ScrollView.UserInteractionEnabled = true;

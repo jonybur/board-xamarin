@@ -138,6 +138,9 @@ namespace Board
 			window.AddSubview (NavigationController.View);
 			window.MakeKeyAndVisible ();
 
+			UIApplication.SharedApplication.SetStatusBarStyle (UIStatusBarStyle.LightContent, false);
+
+
 			return true;
 		}
 
@@ -226,7 +229,6 @@ namespace Board
 			NavigationController.PopViewController (false);
 		}
 
-
 		public static void PopToViewControllerLikeDismissView(UIViewController screen)
 		{
 			CATransition transition = new CATransition ();
@@ -239,6 +241,14 @@ namespace Board
 			NavigationController.View.Layer.AddAnimation (transition, null);
 
 			NavigationController.PopToViewController(screen, false);
+		}
+
+		public static void OpenBoard(Board.Schema.Board board){
+			if (BoardInterface == null)
+			{
+				BoardInterface = new UIBoardInterface (board);
+				NavigationController.PushViewController (BoardInterface, true);
+			}
 		}
 	}
 }

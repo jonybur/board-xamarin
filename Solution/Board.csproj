@@ -151,10 +151,10 @@
     <Reference Include="Google.Maps">
       <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.13.1.0\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTK-1.0" />
     <Reference Include="Facebook">
       <HintPath>..\packages\Xamarin.Facebook.iOS.4.10.0.0\lib\Xamarin.iOS10\Facebook.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK-1.0" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\fonts\congress-font-medium.ttf" />
@@ -259,7 +259,6 @@
     <BundleResource Include="Resources\boardinterface\strokebuttons\white\closedeye.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\white\openeye.png" />
     <BundleResource Include="Resources\boardinterface\infobox\call.png" />
-    <BundleResource Include="Resources\boardinterface\infobox\like.png" />
     <BundleResource Include="Resources\boardinterface\infobox\message.png" />
     <BundleResource Include="Resources\Default-568h%402x.png" />
     <BundleResource Include="Resources\Default-667h%402x.png" />
@@ -270,6 +269,8 @@
     <BundleResource Include="Resources\demo\magazine\nantucket_bak.png" />
     <BundleResource Include="Resources\demo\magazine\nantucket.png" />
     <BundleResource Include="Resources\demo\timeline\example.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\emptylike.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\fulllike.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -342,7 +343,6 @@
     <Compile Include="Classes\Facebook\FacebookElement.cs" />
     <Compile Include="Classes\Facebook\FacebookPost.cs" />
     <Compile Include="Classes\Facebook\FacebookPage.cs" />
-    <Compile Include="Classes\Screens\MainMenuScreen_Demo.cs" />
     <Compile Include="Classes\Facebook\FacebookCover.cs" />
     <Compile Include="Classes\Interface\Buttons\FacebookButton.cs" />
     <Compile Include="Classes\Interface\Widgets\MapWidget.cs" />
@@ -414,6 +414,7 @@
     <Compile Include="Classes\Interface\InfoBox\UIAboutBox.cs" />
     <Compile Include="Classes\Interface\InfoBox\UINameLabel.cs" />
     <Compile Include="Classes\Interface\InfoBox\UIInstagramGallery.cs" />
+    <Compile Include="Classes\JsonResponses\MagazineResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

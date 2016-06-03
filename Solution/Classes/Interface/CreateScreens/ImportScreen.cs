@@ -34,7 +34,7 @@ namespace Board.Interface.CreateScreens
 
 			Buttons = new List<UIMenuButton> ();
 
-			FacebookUtils.MakeGraphRequest (UIBoardInterface.board.FBPage.Id, TypeOfImport, Completion);
+			FacebookUtils.MakeGraphRequest (UIBoardInterface.board.FacebookId, TypeOfImport, Completion);
 		}
 
 		public override void ViewDidAppear(bool animated)

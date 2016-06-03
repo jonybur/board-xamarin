@@ -26,7 +26,7 @@ namespace Board.Interface
 			NameLabel = new UITitleLabel (Banner.Bottom + 20, (float)Frame.Width,
 				AppDelegate.Narwhal20, UIBoardInterface.board.Name);
 			CategoryLabel = new UITitleLabel ((float)NameLabel.Frame.Bottom + 3, (float)Frame.Width,
-				AppDelegate.Narwhal14, "NIGHT CLUB · COFFEE SHOP");
+				AppDelegate.Narwhal14, board.Category);
 			OpenLabel = new UITitleLabel ((float)CategoryLabel.Frame.Bottom, (float)Frame.Width,
 				AppDelegate.Narwhal14, "OPEN NOW");
 			OpenLabel.TextColor = UIColor.FromRGB (28, 57, 16);

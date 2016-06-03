@@ -27,9 +27,8 @@ namespace Board.Screens.Controls
 			View.Layer.ShadowRadius = 5f;
 			View.Layer.ShadowColor = UIColor.Black.CGColor;
 			View.Layer.ShadowOpacity = .75f;
-			View.Alpha = .95f;
 
-			CABasicAnimation animation =  new CABasicAnimation();
+			var animation =  new CABasicAnimation();
 			animation.KeyPath = "position.x";
 			animation.From = new NSNumber(0);
 			animation.TimingFunction = CAMediaTimingFunction.FromName(CAMediaTimingFunction.EaseInEaseOut);
@@ -41,6 +40,7 @@ namespace Board.Screens.Controls
 				sidemenu = new UIImageView ();
 				sidemenu.Frame = new CGRect (0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2);
 				sidemenu.Image = bannerImage;
+				sidemenu.Alpha = .95f;
 			}
 
 			float[] buttonLocations = new float[4];
@@ -137,8 +137,7 @@ namespace Board.Screens.Controls
 			profileView.Layer.MasksToBounds = true;
 			View.AddSubviews (sidemenu, profileView);
 
-			// TODO: usar user en lugar de profile
-			UILabel name = new UILabel (new CGRect(10, profileView.Frame.Bottom + nameYPosition, sidemenu.Frame.Width - 20, 20));
+			var name = new UILabel (new CGRect(10, profileView.Frame.Bottom + nameYPosition, sidemenu.Frame.Width - 20, 20));
 			name.Font = namefont;
 			name.Text = AppDelegate.BoardUser.FirstName;
 			name.TextColor = UIColor.White;
@@ -146,7 +145,7 @@ namespace Board.Screens.Controls
 			name.AdjustsFontSizeToFitWidth = true;
 			sidemenu.AddSubview (name);
 
-			UILabel lastname = new UILabel (new CGRect(10, name.Frame.Bottom + 3, sidemenu.Frame.Width - 20, 24));
+			var lastname = new UILabel (new CGRect(10, name.Frame.Bottom + 3, sidemenu.Frame.Width - 20, 24));
 			lastname.Font = lastnamefont;
 			lastname.AdjustsFontSizeToFitWidth = true;
 			lastname.Text = AppDelegate.BoardUser.LastName;

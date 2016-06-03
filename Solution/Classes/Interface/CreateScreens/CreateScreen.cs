@@ -45,7 +45,7 @@ namespace Board.Interface.CreateScreens
 					AppDelegate.PopToViewControllerLikeDismissView(AppDelegate.BoardInterface);
 				} else if (AppDelegate.ScreenWidth * 3 / 4 < tg.LocationInView(this.View).X && toImport != null) {
 					
-					if (UIBoardInterface.board.FBPage != null)
+					if (UIBoardInterface.board.FacebookId != null)
 					{
 						ImportScreen importScreen = new ImportScreen(toImport, onReturn);
 						AppDelegate.NavigationController.PushViewController(importScreen, true);

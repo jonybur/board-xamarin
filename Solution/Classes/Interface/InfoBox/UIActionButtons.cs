@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Board.Infrastructure;
-using Board.Interface.LookUp;
-using Board.Screens.Controls;
-using Board.Utilities;
 using UIKit;
-using CoreGraphics;
-using CoreLocation;
-using Google.Maps;
 using Haneke;
+using Foundation;
+using CoreGraphics;
 
 namespace Board.Interface
 {
@@ -22,11 +18,13 @@ namespace Board.Interface
 
 			ListActionButton.Add(CreateLikeButton());
 
-			if (board.FBPage != null){
-				ListActionButton.Add(CreateMessageButton(board.FBPage.Id));
+			if (board.FacebookId != null){
+				ListActionButton.Add(CreateMessageButton(board.FacebookId));
 			}
 
-			ListActionButton.Add(CreateCallButton("test"));
+			if (board.Phone != null) {
+				ListActionButton.Add (CreateCallButton (board.Phone));
+			}
 
 			float xposition = infoboxWidth / 8;
 
@@ -59,10 +57,32 @@ namespace Board.Interface
 			}
 		}
 
-		private UIActionButton CreateLikeButton(){
-			var likeButton = new UIActionButton ("like", delegate {
+		const string fullHeart = "fulllike", emptyHeart = "emptylike";
 
-			});
+		private UIActionButton CreateLikeButton(){
+			var likeLabel = new UILabel ();
+			likeLabel = new UILabel();
+			likeLabel.Font = UIFont.SystemFontOfSize(20, UIFontWeight.Light);
+			likeLabel.Text = "0";
+
+			var likeButton = new UIActionButton ("emptylike", delegate { });
+			bool isLiked = false;
+
+			likeButton.TouchUpInside += (sender, e) => {
+				if (!isLiked){
+					likeButton.ChangeImage(fullHeart);
+				} else {
+					likeButton.ChangeImage(emptyHeart);
+				}
+				isLiked = !isLiked;
+			};
+
+			var sizeLikeLabel = likeLabel.Text.StringSize (likeLabel.Font);
+			likeLabel.Frame = new CGRect(0, 0, sizeLikeLabel.Width, sizeLikeLabel.Height);
+			likeLabel.Center = new CGPoint (likeButton.Frame.Right + likeLabel.Frame.Width / 2 + 5, likeButton.Center.Y);
+
+			likeButton.AddSubview (likeLabel);
+
 			return likeButton;
 		}
 
@@ -70,6 +90,10 @@ namespace Board.Interface
 			var messageButton = new UIActionButton ("message", delegate {
 				if (AppsController.CanOpenFacebookMessenger ()) {
 					AppsController.OpenFacebookMessenger (facebookId);
+				} else {
+					var alert = UIAlertController.Create("No Facebook Messenger app installed", "To use this function please install Facebook Messenger", UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+					AppDelegate.NavigationController.PresentViewController (alert, true, null);
 				}
 			});
 			return messageButton;
@@ -77,25 +101,32 @@ namespace Board.Interface
 
 		private UIActionButton CreateCallButton(string phoneNumber){
 			var callButton = new UIActionButton ("call", delegate{
-
+				if (AppsController.CanOpenPhone()){
+					phoneNumber = phoneNumber.Replace(" ", string.Empty);
+					AppsController.OpenPhone(phoneNumber);
+				}
 			});
 			return callButton;
 		}
 
 		public class UIActionButton : UIButton{
+			UIImageView imageView;
+
 			public UIActionButton(string buttonName, EventHandler touchUpInside){
 				Frame = new CGRect (0, 0, 50, 50);
-				var imageView = new UIImageView();
-				using (var image = UIImage.FromFile("./boardinterface/infobox/"+buttonName+".png")){
-					imageView.Frame = new CGRect(0, 0, image.Size.Width * .6f, image.Size.Height * .6f);
-					imageView.Image = image;
-					//SetImage(image, UIControlState.Normal);
-				}
+
+				imageView = new UIImageView();
+				imageView.Frame = new CGRect(0, 0, Frame.Size.Width * .5f, Frame.Size.Height * .5f);
+				imageView.SetImage("./boardinterface/infobox/"+buttonName+".png");
 				imageView.Center = new CGPoint(Frame.Width / 2, Frame.Height / 2);
 
 				AddSubview(imageView);
 
 				TouchUpInside += touchUpInside;
+			}
+
+			public void ChangeImage(string newImage){
+				imageView.SetImage("./boardinterface/infobox/"+newImage+".png");
 			}
 		}
 

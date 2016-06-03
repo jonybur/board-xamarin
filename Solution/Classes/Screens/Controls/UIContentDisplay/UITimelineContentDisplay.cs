@@ -13,8 +13,7 @@ namespace Board.Screens.Controls
 		const float SeparationBetweenObjects = 30;
 
 		public UITimelineContentDisplay(List<Board.Schema.Board> listboards) {
-			//var ListImageViews = new List<UIImageView> ();
-
+			
 			float yposition = UIMagazineBannerPage.Height + UIMenuBanner.Height + 30;
 
 			var picture = new Picture ();
@@ -29,8 +28,7 @@ namespace Board.Screens.Controls
 				yposition += (float)timelineWidget.Frame.Height + SeparationBetweenObjects;
 			}
 
-
-			var size = new CGSize (AppDelegate.ScreenWidth, yposition + UIActionButton.Height);
+			var size = new CGSize (AppDelegate.ScreenWidth, yposition + UIActionButton.Height * 2);
 			Frame = new CGRect (0, 0, size.Width, size.Height);
 			UserInteractionEnabled = true;
 		}
@@ -60,17 +58,17 @@ namespace Board.Screens.Controls
 					timelineContent = new UITimelinePicture(pictureContent);
 					timelineContent.Center = new CGPoint(AppDelegate.ScreenWidth / 2,
 															headerView.Frame.Bottom + timelineContent.Frame.Height / 2 + 10);
-
-					if (!string.IsNullOrEmpty(pictureContent.Description)) {
-						GenerateDescriptionView(pictureContent.Description);
-					}
 				}
 
 				GenerateLikeView(content.Id);
 
-				AddSubviews(headerView, timelineContent);
+				likeButton.Center = new CGPoint(likeButton.Center.X, timelineContent.Frame.Bottom + likeButton.Frame.Height / 2);
 
-				Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, timelineContent.Frame.Bottom);
+				GenerateDescriptionView(board.Name, "Launching our delicious tapas locas!");
+
+				AddSubviews(headerView, timelineContent, likeButton, descriptionView);
+
+				Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, descriptionView.Frame.Bottom);
 			}
 
 			private void GenerateHeaderView(Board.Schema.Board board){
@@ -81,6 +79,11 @@ namespace Board.Screens.Controls
 				headerView.Frame = new CGRect (XMargin, 0, AppDelegate.ScreenWidth - XMargin * 2, headerHeight);
 
 				var boardButton = new UIButton ();
+
+				boardButton.TouchUpInside += delegate {
+					AppDelegate.OpenBoard (board);
+				};
+
 				boardButton.Frame = new CGRect (0, 0, headerView.Frame.Width / 2, headerHeight);
 
 				var logoView = new UIImageView ();
@@ -91,8 +94,8 @@ namespace Board.Screens.Controls
 				var nameView = new UILabel ();
 				nameView.Frame = new CGRect (logoView.Frame.Right + 10, 3, boardButton.Frame.Width, 20);
 				nameView.Text = board.Name;
-				nameView.Font = AppDelegate.Narwhal14;
-				nameView.TextColor = UIColor.Black;
+				nameView.Font = AppDelegate.Narwhal16;
+				nameView.TextColor = AppDelegate.BoardOrange;
 				nameView.AdjustsFontSizeToFitWidth = true;
 
 				var distanceView = new UILabel ();
@@ -108,8 +111,8 @@ namespace Board.Screens.Controls
 
 				var timeView = new UILabel();
 				string timeAgo = "5m";
-				timeView.Font = UIFont.SystemFontOfSize (14);
-				timeView.TextColor = UIColor.FromRGBA(0,0,0,220);
+				timeView.Font = UIFont.SystemFontOfSize (14, UIFontWeight.Light);
+				timeView.TextColor = UIColor.FromRGBA(0,0,0,200);
 				timeView.Text = timeAgo;
 				var timeViewSize = timeView.Text.StringSize (timeView.Font);
 				timeView.Frame = new CGRect(0, 0, timeViewSize.Width, timeViewSize.Height);
@@ -118,21 +121,73 @@ namespace Board.Screens.Controls
 				headerView.AddSubviews (boardButton, timeView);
 			}
 
+			const string emptyHeartImageUrl = "./boardinterface/infobox/emptylike.png";
+			const string fullHeartImageUrl = "./boardinterface/infobox/fulllike.png";
+
 			// contentId to fetch likes
 			private void GenerateLikeView(string contentId){
+				int heartSize = 20;
+
 				likeButton = new UIButton ();
-				likeButton.Frame = new CGRect (XMargin, 0, AppDelegate.ScreenWidth / 4, 30);
+				likeButton.Frame = new CGRect (XMargin * 2, 0, AppDelegate.ScreenWidth / 4, 50);
 
 				var heartView = new UIImageView ();
+				heartView.Frame = new CGRect (0, 0, heartSize, heartSize);
+				heartView.SetImage (emptyHeartImageUrl);
+				heartView.Center = new CGPoint (heartView.Frame.Width / 2, likeButton.Frame.Height / 2 - 5);
+
 				var likeLabel = new UILabel ();
+				likeLabel = new UILabel();
+				likeLabel.Font = UIFont.SystemFontOfSize(18, UIFontWeight.Light);
+				likeLabel.Text = "0";
+				var sizeLikeLabel = likeLabel.Text.StringSize (likeLabel.Font);
+				likeLabel.Frame = new CGRect(0, 0, sizeLikeLabel.Width, sizeLikeLabel.Height);
+				likeLabel.Center = new CGPoint (heartView.Frame.Right + likeLabel.Frame.Width / 2 + 10, heartView.Center.Y);
 
 				likeButton.AddSubviews (heartView, likeLabel);
+
+				bool isLiked = false;
+
+				likeButton.TouchUpInside += (sender, e) => {
+					if (!isLiked){
+						heartView.SetImage(fullHeartImageUrl);
+					} else {
+						heartView.SetImage(emptyHeartImageUrl);
+					}
+					isLiked = !isLiked;
+				};
 			}
 
-			private void GenerateDescriptionView(string description){
-				descriptionView = new UITextView ();
-				descriptionView.Frame = new CGRect (XMargin, likeButton.Frame.Bottom, AppDelegate.ScreenWidth - XMargin * 2, 50);
+			private void GenerateDescriptionView(string boardName, string description){
+				var lineView = new UIImageView ();
+				lineView.Frame = new CGRect (0, 0, AppDelegate.ScreenWidth - XMargin * 4, 1);
+				lineView.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 40);
 
+				descriptionView = new UITextView ();
+				descriptionView.Frame = new CGRect (XMargin * 2, likeButton.Frame.Bottom - 10, AppDelegate.ScreenWidth - XMargin * 4, 14);
+				descriptionView.ScrollEnabled = false;
+				descriptionView.Editable = false;
+
+				boardName = boardName.ToUpper ();
+
+				var boardNameAttributes = new UIStringAttributes {
+					Font = UIFont.SystemFontOfSize(14, UIFontWeight.Bold)
+				};
+
+				var descriptionNameAttributes = new UIStringAttributes {
+					Font = UIFont.SystemFontOfSize (14, UIFontWeight.Regular)
+				};
+
+				var attributedString = new NSMutableAttributedString(boardName + " " + description);
+				attributedString.SetAttributes(boardNameAttributes, new NSRange(0, boardName.Length));
+				attributedString.SetAttributes(descriptionNameAttributes, new NSRange(boardName.Length, description.Length));
+
+				descriptionView.AttributedText = attributedString;
+
+				var size = descriptionView.SizeThatFits (descriptionView.Frame.Size);
+				descriptionView.Frame = new CGRect (descriptionView.Frame.X, descriptionView.Frame.Y, descriptionView.Frame.Width, size.Height);
+
+				descriptionView.AddSubview (lineView);
 			}
 
 			sealed class UITimelinePicture : UIImageView{

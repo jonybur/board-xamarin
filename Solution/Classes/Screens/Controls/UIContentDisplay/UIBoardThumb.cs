@@ -1,11 +1,9 @@
-﻿using UIKit;
-using MGImageUtilitiesBinding;
-using Board.Interface;
-using CoreGraphics;
-using Haneke;
-using System;
-using Foundation;
+﻿using System;
 using Board.Utilities;
+using CoreGraphics;
+using Foundation;
+using Haneke;
+using UIKit;
 
 namespace Board.Screens.Controls
 {
@@ -33,7 +31,6 @@ namespace Board.Screens.Controls
 			NameLabel.RemoveFromSuperview ();
 			NameLabel = CreateNameLabel (BoardThumb.Board.Name, CommonUtils.GetDistanceFromUserToBoard(BoardThumb.Board), Size);
 			AddSubview (NameLabel);
-			
 		}
 
 		bool IsAllUpper(string input)
@@ -118,13 +115,7 @@ namespace Board.Screens.Controls
 			imageView.Center = new CGPoint (Frame.Size.Width / 2, Frame.Size.Height / 2);
 			AddSubview (imageView);
 
-			TouchEvent = (sender, e) => {
-				if (AppDelegate.BoardInterface == null)
-				{
-					AppDelegate.BoardInterface = new UIBoardInterface (board);
-					AppDelegate.NavigationController.PushViewController (AppDelegate.BoardInterface, true);
-				}
-			};
+			TouchEvent = (sender, e) => AppDelegate.OpenBoard (board);
 
 			UserInteractionEnabled = true;
 			ClipsToBounds = true;

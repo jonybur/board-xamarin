@@ -1,11 +1,9 @@
 ﻿using System;
-using UIKit;
-using MGImageUtilitiesBinding;
-using System.Linq;
 using System.Collections.Generic;
-using Board.Interface;
-using CoreGraphics;
+using System.Linq;
 using Board.Utilities;
+using CoreGraphics;
+using UIKit;
 
 namespace Board.Screens.Controls
 {
@@ -168,7 +166,7 @@ namespace Board.Screens.Controls
 				i++;
 			}
 
-			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, yposition + ThumbSize / 2 + TopAndBottomSeparation + extraLowMargin + UIBoardThumbComponent.TextSpace);
+			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, yposition + ThumbSize / 2 + TopAndBottomSeparation + extraLowMargin + UIBoardThumbComponent.TextSpace + UIActionButton.Height);
 
 			var superView = Superview as UIScrollView;
 			if (superView != null) {

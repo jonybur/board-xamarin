@@ -32,7 +32,6 @@ namespace Board.Interface
 
 		public UIBoardInterface (Board.Schema.Board _board){
 			board = _board;
-			board.FBPage = new Board.Facebook.FacebookPage ("camelotwestpalm", null, null);
 			firstLoad = true;
 		}
 
@@ -174,8 +173,8 @@ namespace Board.Interface
 				}
 			}
 
-			ButtonInterface.navigationButton.RefreshNavigationButtonText (DictionaryWidgets.Values.
-				ToList ().Count (widget => !widget.EyeOpen));
+			var newContentCount = DictionaryWidgets.Values.ToList ().Count (widget => !widget.EyeOpen);
+			ButtonInterface.navigationButton.RefreshNavigationButtonText (newContentCount);
 
 			BTProgressHUD.Dismiss ();
 		}

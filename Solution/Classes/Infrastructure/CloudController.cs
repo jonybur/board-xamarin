@@ -8,6 +8,7 @@ using Board.Schema;
 using Board.Utilities;
 using CoreLocation;
 using Facebook.CoreKit;
+using System.Linq;
 using Foundation;
 using Newtonsoft.Json;
 using UIKit;
@@ -18,14 +19,13 @@ namespace Board.Infrastructure
 
 	public static class CloudController
 	{
-		public static bool GetUserProfile(){
-			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/user?authToken="+AppDelegate.EncodedBoardToken);
+		public static void GetUserProfile(){
+			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/user?authToken=" + AppDelegate.EncodedBoardToken);
 
-			AppDelegate.BoardUser = JsonConvert.DeserializeObject<User>(result);
+			AppDelegate.BoardUser = JsonConvert.DeserializeObject<User> (result);
 
 			AppDelegate.BoardUser.SetProfilePictureFromURL (AppDelegate.BoardUser.ProfilePictureURL);
 
-			return true;
 		}
 
 		public static bool UpdateBoard(string boardId, string json){
@@ -38,19 +38,27 @@ namespace Board.Infrastructure
 			} 
 		}
 
-		public static void GetMagazine(CLLocationCoordinate2D location){
+		public static MagazineResponse GetMagazine(CLLocationCoordinate2D location){
 
 			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/magazines/nearest?latitude="+
 				location.Latitude.ToString(CultureInfo.InvariantCulture)+"&longitude="+location.Longitude.ToString(CultureInfo.InvariantCulture)+
 				"&authToken="+AppDelegate.EncodedBoardToken);
 
-			Console.WriteLine (result);
+			var magazine = MagazineResponse.Deserialize (result);
+
+			if (MagazineResponse.IsValidMagazine(magazine)){
+				magazine.data.entries = magazine.data.entries.OrderBy (x => x.section).ToList ();
+			}
+
+			return magazine;
 		}
 
 		public static Dictionary<string, Content> GetBoardContent(string boardId){
 			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/snapshot?authToken="+AppDelegate.EncodedBoardToken);
 
-			if (result == "Timeout") {
+			if (result == "Timeout" || result == "InternalServerError") {
+				// crash gracefully
+
 				return new Dictionary<string, Content> ();
 			}
 
@@ -236,6 +244,9 @@ namespace Board.Infrastructure
 				"\"about\": \"" + board.About + "\", " +
 				"\"mainColorCode\": \"" + CommonUtils.UIColorToHex(board.MainColor)  + "\", " +
 				"\"secondaryColorCode\": \"" + CommonUtils.UIColorToHex(board.SecondaryColor) + "\", " +
+				"\"phoneNumber\": \"" + board.Phone + "\", " + 
+				"\"facebookID\": \"" + board.FacebookId + "\", " + 
+				"\"categoryName\": \"" + board.Category + "\", " + 
 				"\"logoURL\": \"" + logoURL + "\", " + 
 				"\"coverURL\": \"" + coverURL + "\" }";
 
@@ -289,39 +300,44 @@ namespace Board.Infrastructure
 
 			if (response != null) {
 				foreach (BoardResponse.Datum r in response.data) {
-
-					GoogleGeolocatorObject geolocatorObject;
-
-					Board.Schema.Board board = StorageController.BoardIsStored(r.uuid);
-
-					if (board == null) {
-						board = new Board.Schema.Board ();
-
-						string jsonobj = JsonHandler.GET ("https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
-							r.latitude + "," + r.longitude + "&key=" + AppDelegate.GoogleMapsAPIKey);
-						geolocatorObject = JsonHandler.DeserializeObject (jsonobj);
-
-						board.GeolocatorObject = geolocatorObject;
-						board.Id = r.uuid;
-
-						StorageController.StoreBoard (board, jsonobj);
-					}
-
-					// finishes compiling board
-					board.Name = r.name;
-					board.About = r.about;
-					board.LogoUrl = r.logoURL;
-					board.CoverImageUrl = r.coverURL;
-					board.MainColor = CommonUtils.HexToUIColor (r.mainColorCode);
-					board.SecondaryColor = CommonUtils.HexToUIColor (r.secondaryColorCode);
-					board.CreatorId = r.userId;
-
-					boards.Add (board);
-
+					boards.Add(GenerateBoardFromBoardResponse (r));
 				}
 			}
 
 			return boards;
+		}
+
+		public static Board.Schema.Board GenerateBoardFromBoardResponse(BoardResponse.Datum datum){
+			GoogleGeolocatorObject geolocatorObject;
+
+			Board.Schema.Board board = StorageController.BoardIsStored(datum.uuid);
+
+			if (board == null) {
+				board = new Board.Schema.Board ();
+
+				string jsonobj = JsonHandler.GET ("https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+					datum.latitude.ToString(CultureInfo.InvariantCulture) + "," + datum.longitude.ToString(CultureInfo.InvariantCulture) + "&key=" + AppDelegate.GoogleMapsAPIKey);
+				geolocatorObject = JsonHandler.DeserializeObject (jsonobj);
+
+				board.GeolocatorObject = geolocatorObject;
+				board.Id = datum.uuid;
+
+				StorageController.StoreBoard (board, jsonobj);
+			}
+
+			// finishes compiling board
+			board.Name = datum.name;
+			board.About = datum.about;
+			board.LogoUrl = datum.logoURL;
+			board.CoverImageUrl = datum.coverURL;
+			board.MainColor = CommonUtils.HexToUIColor (datum.mainColorCode);
+			board.SecondaryColor = CommonUtils.HexToUIColor (datum.secondaryColorCode);
+			board.CreatorId = datum.userId;
+			board.Phone = datum.phoneNumber;
+			board.Category = datum.categoryName;
+			board.FacebookId = datum.facebookID;
+
+			return board;
 		}
 
 		public static InstagramMediaResponse GetInstagramMedia(string locationId){
@@ -356,6 +372,7 @@ namespace Board.Infrastructure
 		public static void LogOut(){
 			AppDelegate.BoardToken = null;
 			AppDelegate.EncodedBoardToken = null;
+			AppDelegate.BoardUser = null;
 		}
 
 		private static string JsonGETRequest(string url, string method = "GET", string contentType = "application/json")

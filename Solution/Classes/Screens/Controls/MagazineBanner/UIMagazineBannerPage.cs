@@ -30,6 +30,7 @@ namespace Board.Screens.Controls
 			flagBackground.Frame = flagView.Frame;
 			flagBackground.BackgroundColor = AppDelegate.BoardOrange;
 			flagBackground.Center = Center;
+			flagBackground.Layer.CornerRadius = 10;
 
 			var pin = new UIImageView();
 			pin.Frame = flagView.Frame;

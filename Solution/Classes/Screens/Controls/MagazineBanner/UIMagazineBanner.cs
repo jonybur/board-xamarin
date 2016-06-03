@@ -3,6 +3,7 @@ using System.Linq;
 using Board.Infrastructure;
 using CoreGraphics;
 using MGImageUtilitiesBinding;
+using Board.JsonResponses;
 using UIKit;
 
 namespace Board.Screens.Controls
@@ -33,17 +34,23 @@ namespace Board.Screens.Controls
 
 		// generates the magazine headers
 		private void GeneratePages(List<Board.Schema.Board> boardList){
+			
+			var magazine = CloudController.GetMagazine (AppDelegate.UserLocation);
+			bool magazineValid = MagazineResponse.IsValidMagazine (magazine);
 
-			CloudController.GetMagazine (AppDelegate.UserLocation);
+			var pagesName = new List<string> ();
+			pagesName.Add("TRENDING");
+			if (magazineValid) {
+				pagesName.Add("EDITOR'S CHOICE");
+			}
+			pagesName.Add("ALL");
 
-			string[] demopages = new []{ "TRENDING"/*, "EDITOR'S CHOICE"*/, "ALL" };
+			var pages = new UIMagazinePage[pagesName.Count];
 
-			var pages = new UIMagazinePage[demopages.Length];
-
-			for (int i = 0; i < demopages.Length; i++) {
+			for (int i = 0; i < pagesName.Count; i++) {
 				pages [i] = new UIMagazinePage ();
 
-				var banner = new UIMagazineBannerPage (demopages[i]);
+				var banner = new UIMagazineBannerPage (pagesName [i]);
 
 				var controller = new UIViewController ();
 				controller.Add (banner);
@@ -53,8 +60,12 @@ namespace Board.Screens.Controls
 			}
 
 			pages [0].ContentDisplay = new UITimelineContentDisplay (boardList);
-			//pages [1].ContentDisplay = new UICarouselContentDisplay ();
-			pages [1].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Neighborhood, UIMagazineBannerPage.Height, UIActionButton.Height);
+			if (magazineValid) {
+				pages [1].ContentDisplay = new UICarouselContentDisplay (magazine);
+				pages [2].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Neighborhood, UIMagazineBannerPage.Height, UIActionButton.Height);
+			} else {
+				pages [1].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Neighborhood, UIMagazineBannerPage.Height, UIActionButton.Height);
+			}
 
 			Pages = pages;
 		}
@@ -72,7 +83,7 @@ namespace Board.Screens.Controls
 
 			var backgroundImage = new UIImageView (new CGRect(0,0,Frame.Width, Frame.Height));
 			using (UIImage img = UIImage.FromFile ("./demo/magazine/nantucket.png")) {
-				UIImage scaledImage = img.ImageScaledToFitSize (Frame.Size);
+				var scaledImage = img.ImageScaledToFitSize (Frame.Size);
 				backgroundImage.Image = scaledImage;
 
 			}
