@@ -2,25 +2,24 @@
 using UIKit;
 using Facebook.LoginKit;
 using Board.Screens.Controls;
+using Foundation;
 using Board.Infrastructure;
 using Board.Utilities;
+using Haneke;
 
 namespace Board.Screens
 {
 	public class SettingsScreen : UIViewController
 	{
 		UIMenuBanner Banner;
-		LoginButton logInButton;
 
-		public SettingsScreen ()
-		{
-		}
 
 		public override void ViewDidLoad ()
 		{
 			LoadBanner ();
 
-			LoadFBButton ();
+			var settingsView = new SettingsView ();
+			View.AddSubviews (settingsView, Banner);
 
 			View.BackgroundColor = UIColor.White;
 		}
@@ -34,26 +33,97 @@ namespace Board.Screens
 		public override void ViewDidDisappear(bool animated)
 		{
 			Banner.UnsuscribeToEvents ();
-			MemoryUtility.ReleaseUIViewWithChildren (View, true);
+			MemoryUtility.ReleaseUIViewWithChildren (View);
 		}
 
-		private void LoadFBButton()
-		{
-			logInButton = new LoginButton (new CGRect (0, 0, AppDelegate.ScreenWidth - 70, 50)) {
-				LoginBehavior = LoginBehavior.Native,
-				Center = new CGPoint(AppDelegate.ScreenWidth/2, AppDelegate.ScreenHeight * (.90f))
-			};
+		class SettingsView : UIScrollView{
+			LoginButton LogOutButton;
 
-			// Handle actions once the user is logged out
-			logInButton.LoggedOut += (sender, e) => {
-				// Handle your logout
-				CloudController.LogOut();
-				var controllers = new UIViewController[1];
-				controllers[0] = new LoginScreen();
-				NavigationController.SetViewControllers(controllers, true);
-			};
+			public SettingsView(){
+				Frame = new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
 
-			View.AddSubview (logInButton);
+				var flagView = new UIImageView();
+				flagView.Frame = new CGRect(0, 0, 150, 100);
+				flagView.Center = new CGPoint(AppDelegate.ScreenWidth / 2, UIMenuBanner.Height * .75f + flagView.Frame.Height);
+				flagView.ContentMode = UIViewContentMode.ScaleAspectFit;
+				flagView.SetImage("./screens/settings/long_flag.png");
+				flagView.Layer.CornerRadius = 10;
+				flagView.ClipsToBounds = true;
+				flagView.Alpha = .95f;
+
+				var boardVersionLabel = new UILabel();
+				boardVersionLabel.Frame = new CGRect(10, flagView.Frame.Bottom + 20, AppDelegate.ScreenWidth - 20, 30);
+				var ver = NSBundle.MainBundle.InfoDictionary["CFBundleShortVersionString"];
+				boardVersionLabel.Text = "BOARD " + ver.ToString();
+				boardVersionLabel.Font = AppDelegate.Narwhal30;
+				boardVersionLabel.TextColor = AppDelegate.BoardOrange;
+				boardVersionLabel.TextAlignment = UITextAlignment.Center;
+
+				var aboutLabel = new UILabel();
+				aboutLabel.Frame = new CGRect(15, boardVersionLabel.Frame.Bottom + 40, AppDelegate.ScreenWidth - 20, 14);
+				aboutLabel.Text = "ABOUT";
+				aboutLabel.Font = AppDelegate.Narwhal14;
+				aboutLabel.TextColor = AppDelegate.BoardOrange;
+
+				var creditsButton = new UIOneLineMenuButton((float)aboutLabel.Frame.Bottom + 5);
+				creditsButton.SetLabel("Credits >");
+				creditsButton.SetTapEvent (delegate {
+					
+				});
+				creditsButton.SuscribeToEvent();
+
+
+				var legalLabel = new UILabel();
+				legalLabel.Frame = new CGRect(15, creditsButton.Frame.Bottom + 50, AppDelegate.ScreenWidth - 20, 14);
+				legalLabel.Text = "LEGAL";
+				legalLabel.Font = AppDelegate.Narwhal14;
+				legalLabel.TextColor = AppDelegate.BoardOrange;
+
+				var privacyButton = new UIOneLineMenuButton((float)legalLabel.Frame.Bottom + 5);
+				privacyButton.SetLabel("Privacy Policy >");
+				privacyButton.SetTapEvent (delegate {
+					AppsController.OpenWebsite("http://getonboard.us/legal/privacy.pdf");
+				});
+				privacyButton.SuscribeToEvent();
+
+				var termsButton = new UIOneLineMenuButton((float)privacyButton.Frame.Bottom + 1);
+				termsButton.SetLabel("Terms of Service >");
+				termsButton.SetTapEvent (delegate {
+					AppsController.OpenWebsite("http://getonboard.us/legal/terms.pdf");
+				});
+				termsButton.SuscribeToEvent();
+
+				var licensesButton = new UIOneLineMenuButton((float)termsButton.Frame.Bottom + 1);
+				licensesButton.SetLabel("Licenses >");
+				licensesButton.SetTapEvent (delegate {
+
+				});
+				licensesButton.SuscribeToEvent();
+
+				LoadFBButton ((float)licensesButton.Frame.Bottom + 50);
+
+				AddSubviews(flagView, boardVersionLabel, aboutLabel, creditsButton, legalLabel, privacyButton, termsButton, licensesButton, LogOutButton);
+
+				ContentSize = new CGSize(AppDelegate.ScreenWidth, LogOutButton.Frame.Bottom + UIActionButton.Height * 2);
+			}
+
+			private void LoadFBButton(float yposition)
+			{
+				float height = 50;
+				LogOutButton = new LoginButton (new CGRect (0, 0, AppDelegate.ScreenWidth - 70, height)) {
+					LoginBehavior = LoginBehavior.Native,
+					Center = new CGPoint(AppDelegate.ScreenWidth/2, yposition + height / 2)
+				};
+				 
+				// Handle actions once the user is logged out
+				LogOutButton.LoggedOut += (sender, e) => {
+					// Handle your logout
+					CloudController.LogOut();
+					var controllers = new UIViewController[1];
+					controllers[0] = new LoginScreen();
+					AppDelegate.NavigationController.SetViewControllers(controllers, true);
+				};
+			}
 		}
 
 		private void LoadBanner()
@@ -67,7 +137,6 @@ namespace Board.Screens
 			});
 
 			Banner.AddTap (tap);
-			View.AddSubview (Banner);
 		}
 	}
 }

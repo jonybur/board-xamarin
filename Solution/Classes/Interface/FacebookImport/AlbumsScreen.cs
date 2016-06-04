@@ -53,7 +53,6 @@ namespace Board.Interface.FacebookImport
 			pressed = false;
 
 			foreach (var but in Buttons) {
-				but.SetUnpressedColors ();
 				but.SuscribeToEvent ();
 			}
 		}
@@ -92,15 +91,13 @@ namespace Board.Interface.FacebookImport
 		private UIOneLineMenuButton VideoButton(){
 			var videosButton = new UIOneLineMenuButton (yPosition);
 			videosButton.SetLabel ("Videos >");
-			videosButton.SetUnpressedColors ();
 
-			videosButton.TapEvent = new System.EventHandler (delegate {
+			videosButton.SetTapEvent (delegate {
 				if (!pressed){
 					var videosScreen = new VideosScreen();
 					AppDelegate.NavigationController.PushViewController(videosScreen, true);
 
 					pressed = true;
-					videosButton.SetPressedColors();
 				}
 			});
 
@@ -111,17 +108,15 @@ namespace Board.Interface.FacebookImport
 		{
 			UIOneLineMenuButton albumButton = new UIOneLineMenuButton (yPosition);
 			albumButton.SetLabel (album.Name + " >");
-			albumButton.SetUnpressedColors ();
 
-			albumButton.TapEvent += (sender, e) => {
+			albumButton.SetTapEvent (delegate {
 				if (!pressed){
 					var photosScreen = new PhotosScreen(album.Id);
 					AppDelegate.NavigationController.PushViewController(photosScreen, true);
 
 					pressed = true;
-					albumButton.SetPressedColors();
 				}
-			};
+			});
 
 			return albumButton;
 		}

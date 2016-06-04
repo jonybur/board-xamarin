@@ -88,7 +88,7 @@ namespace Board.Interface
 			statusBarView.Alpha = .6f;
 			statusBarView.BackgroundColor = board.MainColor;
 
-			//View.AddSubview (statusBarView);
+			View.AddSubview (statusBarView);
 
 			// load buttons
 			LoadButtons ();

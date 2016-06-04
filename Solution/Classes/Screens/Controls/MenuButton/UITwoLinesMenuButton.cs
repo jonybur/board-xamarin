@@ -5,7 +5,7 @@ namespace Board.Screens.Controls
 {
 	public class UITwoLinesMenuButton : UIMenuButton
 	{
-		public const float Height = 80;
+		public const float Height = 50;
 
 		public UITwoLinesMenuButton(float yPosition)
 		{

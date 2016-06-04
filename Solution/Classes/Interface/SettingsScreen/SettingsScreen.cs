@@ -40,9 +40,6 @@ namespace Board.Interface
 				SyncButton.SetLabel(string.Format ("Connected to {0}", UIBoardInterface.board.FacebookId));
 			}
 
-			AnalyticsButton.SetUnpressedColors ();
-			SyncButton.SetUnpressedColors ();
-			ColorPicker.SetUnpressedColors ();
 			Banner.SuscribeToEvents ();
 		}
 
@@ -50,19 +47,15 @@ namespace Board.Interface
 		{
 			DeleteButton = new UIOneLineMenuButton (yPosition);
 			DeleteButton.SetLabel ("Delete Board");
-			DeleteButton.SetUnpressedColors ();
 
-			DeleteButton.TouchUpInside += (sender, e) => {
-				DeleteButton.SetPressedColors();
+			DeleteButton.SetTapEvent (delegate {
 
 				UIAlertController alert = UIAlertController.Create("Warning!", "This will delete the entire Board.\nYou CANNOT undo this action.", UIAlertControllerStyle.Alert);
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, delegate {
-					DeleteButton.SetUnpressedColors();
 				}));
 				alert.AddAction (UIAlertAction.Create ("Delete", UIAlertActionStyle.Destructive, delegate {
 					CloudController.DeleteBoard(UIBoardInterface.board.Id);
 
-					DeleteButton.SetUnpressedColors();
 
 					var containerScreen = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 3] as ContainerScreen;
 					if (containerScreen!= null)
@@ -72,21 +65,18 @@ namespace Board.Interface
 					AppDelegate.PopToViewControllerWithCallback (containerScreen, AppDelegate.ExitBoardInterface);
 				}));
 				AppDelegate.NavigationController.PresentViewController (alert, true, null);
-			};
+			});
 		}
 
 		private void CreateImportButton(float yPosition)
 		{
 			ImportButton = new UIOneLineMenuButton (yPosition);
 			ImportButton.SetLabel ("Import content from Facebook");
-			ImportButton.SetUnpressedColors ();
 
-			ImportButton.TouchUpInside += (sender, e) => {
-				ImportButton.SetPressedColors();
+			ImportButton.SetTapEvent (delegate {
 
 				UIAlertController alert = UIAlertController.Create("Continue?", "This will fill the Board with content from a Facebook page.\nThis process might take a few minutes.", UIAlertControllerStyle.Alert);
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, delegate {
-					ImportButton.SetUnpressedColors();
 				}));
 				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate {
 					if (alert.TextFields.Length == 0){
@@ -99,20 +89,18 @@ namespace Board.Interface
 						return;
 					}
 
-					ImportButton.SetUnpressedColors();
 
 					// gets 5 announcements
 					BTProgressHUD.Show("Importing Announcements...");
 
 					FacebookAutoImporter.ImportPageContent(textField.Text);
 					// - updates board -
-					ImportButton.SetUnpressedColors();
 				}));
 				alert.AddTextField (obj => obj.Placeholder = "Facebook Page ID");
 
 				AppDelegate.NavigationController.PresentViewController (alert, true, null);
 
-			};
+			});
 		}
 
 		private void CreateColorPicker(float yPosition)
@@ -120,12 +108,11 @@ namespace Board.Interface
 			ColorPicker = new UIOneLineMenuButton (yPosition);
 			ColorPicker.SetLabel ("Change Background Color >");
 
-			ColorPicker.TouchUpInside += (sender, e) => {
-				ColorPicker.SetPressedColors();
+			ColorPicker.SetTapEvent (delegate {
 				var colorScreen = new ColorPickerScreen();
 				Banner.UnsuscribeToEvents ();
 				AppDelegate.NavigationController.PushViewController(colorScreen, true);
-			};
+			});
 		}
 
 		private void CreateAnalyticsButton(float yPosition)
@@ -133,12 +120,11 @@ namespace Board.Interface
 			AnalyticsButton = new UIOneLineMenuButton (yPosition);
 			AnalyticsButton.SetLabel ("Get Analytics >");
 
-			AnalyticsButton.TouchUpInside += (sender, e) => {
-				AnalyticsButton.SetPressedColors();
+			AnalyticsButton.SetTapEvent (delegate {
 				var analScreen = new AnalyticsScreen();
 				Banner.UnsuscribeToEvents ();
 				AppDelegate.NavigationController.PushViewController(analScreen, true);
-			};
+			});
 		}
 
 
@@ -146,12 +132,11 @@ namespace Board.Interface
 		{
 			SyncButton = new UIOneLineMenuButton (yPosition);
 
-			SyncButton.TouchUpInside += (sender, e) => {
-				SyncButton.SetPressedColors();
+			SyncButton.SetTapEvent (delegate {
 				PageSelectorScreen pgScreen = new PageSelectorScreen();
 				Banner.UnsuscribeToEvents ();
 				AppDelegate.NavigationController.PushViewController(pgScreen, true);
-			};
+			});
 		}
 
 		private void LoadBanner()

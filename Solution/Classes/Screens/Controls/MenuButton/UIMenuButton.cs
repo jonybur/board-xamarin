@@ -6,8 +6,15 @@ namespace Board.Screens.Controls
 {
 	public class UIMenuButton : UIButton
 	{
-		public EventHandler TapEvent;
+		private EventHandler TapEvent;
 		public List<UILabel> ListLabels;
+
+		public void SetTapEvent(Action tapAction){
+			TapEvent = delegate {
+				tapAction.Invoke();
+				SetUnpressedColors ();
+			};
+		}
 
 		public UIMenuButton()
 		{
@@ -17,6 +24,20 @@ namespace Board.Screens.Controls
 		public void SuscribeToEvent()
 		{
 			TouchUpInside += TapEvent;
+
+
+			TouchDown += (sender, e) => {
+				SetPressedColors();
+			};
+			TouchUpOutside += (sender, e) => {
+				SetUnpressedColors();
+			};
+			TouchCancel += (sender, e) => {
+				SetUnpressedColors();
+			};
+			TouchDragExit += (sender, e) => {
+				SetUnpressedColors();
+			};
 		}
 
 		public void UnsuscribeToEvent()
@@ -24,7 +45,7 @@ namespace Board.Screens.Controls
 			TouchUpInside -= TapEvent;
 		}
 
-		public void SetPressedColors()
+		protected void SetPressedColors()
 		{
 			BackgroundColor = AppDelegate.BoardLightBlue;
 			foreach (UILabel Label in ListLabels) {
@@ -32,7 +53,7 @@ namespace Board.Screens.Controls
 			}
 		}
 
-		public void SetUnpressedColors()
+		protected void SetUnpressedColors()
 		{
 			BackgroundColor = UIColor.FromRGB (250, 250, 250);	
  			foreach (UILabel Label in ListLabels) {

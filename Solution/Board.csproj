@@ -124,9 +124,6 @@
     <Reference Include="Plugin.Share.Abstractions">
       <HintPath>..\packages\Plugin.Share.4.0.0\lib\Xamarin.iOS10\Plugin.Share.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="GPUImage">
-      <HintPath>..\Components\GPUImage-0.1.7.0\lib\ios-unified\GPUImage.dll</HintPath>
-    </Reference>
     <Reference Include="PNChartBinding">
       <HintPath>..\Bindings\PNChartBinding.dll</HintPath>
     </Reference>
@@ -273,6 +270,7 @@
     <BundleResource Include="Resources\screens\main\magazine\flagpin.png" />
     <BundleResource Include="Resources\screens\nocontent\noapp.png" />
     <BundleResource Include="Resources\screens\business\icon.png" />
+    <BundleResource Include="Resources\screens\settings\long_flag.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -419,6 +417,7 @@
     <Compile Include="Classes\JsonResponses\MagazineResponse.cs" />
     <Compile Include="Classes\Screens\Controls\UINoContent.cs" />
     <Compile Include="Classes\Screens\Controls\UIContactView.cs" />
+    <Compile Include="Classes\Screens\LicensesScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -486,6 +485,7 @@
     <Folder Include="Resources\demo\timeline\" />
     <Folder Include="Resources\screens\nocontent\" />
     <Folder Include="Resources\screens\business\" />
+    <Folder Include="Resources\screens\settings\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="sqlite-net">
@@ -498,10 +498,6 @@
     </XamarinComponentReference>
     <XamarinComponentReference Include="SharePlugin">
       <Version>3.0.1</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
-    <XamarinComponentReference Include="GPUImage">
-      <Version>0.1.7.0</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
     <XamarinComponentReference Include="haneke">

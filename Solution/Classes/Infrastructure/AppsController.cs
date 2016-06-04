@@ -89,6 +89,11 @@ namespace Board.Infrastructure
 			NSUrl url = new NSUrl ("telprompt://"+phoneNumber.ToString(CultureInfo.InvariantCulture));
 			UIApplication.SharedApplication.OpenUrl (url);
 		}
+
+		public static void OpenWebsite(string url){
+			NSUrl nsurl = new NSUrl (url);
+			UIApplication.SharedApplication.OpenUrl (nsurl);
+		}
 	}
 }
 

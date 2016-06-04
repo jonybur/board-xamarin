@@ -55,8 +55,8 @@ namespace Board.Screens.Controls
 				return nameString;
 			}
 
-			if (nameString.Length > 16) {
-				nameString = nameString.Substring (0, 16) + "...";
+			if (nameString.Length > 20) {
+				nameString = nameString.Substring (0, 20) + "...";
 				return nameString;
 			}
 

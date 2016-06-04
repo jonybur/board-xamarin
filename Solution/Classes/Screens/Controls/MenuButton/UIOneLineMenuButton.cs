@@ -7,19 +7,22 @@ namespace Board.Screens.Controls
 	{
 		public UIOneLineMenuButton(){}
 
-		public const float Height = 80;
+		public const float Height = 60;
+		public const int FontHeight = 16;
 
 		public UIOneLineMenuButton(float yPosition)
 		{
 			Frame = new CGRect (0, yPosition, AppDelegate.ScreenWidth, Height);
 			UserInteractionEnabled = true;
 
-			UIFont nameFont = AppDelegate.SystemFontOfSize18;
-			UILabel Label = new UILabel (new CGRect (42, 30, AppDelegate.ScreenWidth - 50, 20));
+			var nameFont = UIFont.SystemFontOfSize(FontHeight, UIFontWeight.Light);
+			var Label = new UILabel (new CGRect (20, 0, AppDelegate.ScreenWidth - 50, FontHeight));
+			Label.Center = new CGPoint (Label.Center.X, Frame.Height / 2);
 			Label.Font = nameFont;
 			Label.AdjustsFontSizeToFitWidth = true;
 
 			ListLabels.Add (Label);
+			SetUnpressedColors ();
 
 			AddSubviews (Label);
 		}

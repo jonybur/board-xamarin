@@ -106,20 +106,18 @@ namespace Board.Interface.CreateScreens
 			}
 
 			fbeventButton.SetLabel (content);
-			fbeventButton.SetUnpressedColors ();
 
-			fbeventButton.TapEvent += (sender, e) => {
+			fbeventButton.SetTapEvent (delegate {
 				if (!pressed)
 				{
 					pressed = true;
-					fbeventButton.SetPressedColors();
 
 					Thread thread = new Thread(new ThreadStart(PopOut));
 					thread.Start();
 
 					OnReturn(fbelement);
 				}
-			};
+			});
 
 			return fbeventButton;
 		}

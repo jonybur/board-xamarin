@@ -17,6 +17,7 @@ namespace Board.Screens
 
 		public override void ViewDidLoad ()
 		{
+			BTProgressHUD.Show ();
 			boardList = new List<Board.Schema.Board> ();
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			ScrollView.BackgroundColor = UIColor.White;
@@ -31,9 +32,10 @@ namespace Board.Screens
 			Banner.SuscribeToEvents ();
 
 			BTProgressHUD.Show ();
-			boardList = CloudController.GetUserBoards ();
 
+			boardList = CloudController.GetUserBoards ();
 			InitializeInterface ();
+
 			BTProgressHUD.Dismiss ();
 		}
 

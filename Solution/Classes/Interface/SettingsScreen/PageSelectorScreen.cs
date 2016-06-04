@@ -91,20 +91,18 @@ namespace Board.Interface
 		{
 			UITwoLinesMenuButton pageButton = new UITwoLinesMenuButton (yPosition);
 			pageButton.SetLabels (page.Name, page.Category);
-			pageButton.SetUnpressedColors ();
 
-			pageButton.TapEvent += (sender, e) => {
+			pageButton.SetTapEvent (delegate {
 				if (!pressed)
 				{
 					pressed = true;
-					pageButton.SetPressedColors();
 
 					Thread thread = new Thread(new ThreadStart(PopOut));
 					thread.Start();
 
 					UIBoardInterface.board.FacebookId = page.Id;
 				}
-			};
+			});
 
 			return pageButton;
 		}
@@ -113,20 +111,18 @@ namespace Board.Interface
 		{
 			UIOneLineMenuButton unsyncButton = new UIOneLineMenuButton (yPosition);
 			unsyncButton.SetLabel("Disconnect");
-			unsyncButton.SetUnpressedColors ();
 
-			unsyncButton.TapEvent += (sender, e) => {
+			unsyncButton.SetTapEvent (delegate {
 				if (!pressed)
 				{
 					pressed = true;
-					unsyncButton.SetPressedColors();
 
 					Thread thread = new Thread(new ThreadStart(PopOut));
 					thread.Start();
 
 					UIBoardInterface.board.FacebookId = null;
 				}
-			};
+			});
 
 			return unsyncButton;
 		}
