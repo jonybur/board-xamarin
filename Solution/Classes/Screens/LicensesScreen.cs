@@ -1,6 +1,8 @@
 ﻿using System;
 using UIKit;
 using Board.Screens.Controls;
+using Board.Utilities;
+using CoreGraphics;
 using System.Collections.Generic;
 
 namespace Board.Screens
@@ -8,11 +10,16 @@ namespace Board.Screens
 	public class LicensesScreen : UIViewController
 	{
 		UIMenuBanner Banner;
+		UIScrollView ScrollView;
 		List<License> LicenseList;
 
 		public override void ViewDidLoad ()
 		{
 			LicenseList = new List<License> ();
+			ScrollView = new UIScrollView ();
+			ScrollView.Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
+
+			LoadBanner ();
 
 			PopulateLicenseList (
 				new License ("FBSDKLoginKit", "Copyright (c) 2014-present, Facebook, Inc. All rights reserved.\n\nYou are hereby granted a non-exclusive, worldwide, royalty-free license to use,\ncopy, modify, and distribute this software in source code or binary form for use\nin connection with the web services and APIs provided by Facebook.\n\nAs with any software that integrates with the Facebook platform, your use of\nthis software is subject to the Facebook Developer Principles and Policies\n[http://developers.facebook.com/policy/]. This copyright notice shall be\nincluded in all copies or substantial portions of the software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"), 
@@ -26,22 +33,69 @@ namespace Board.Screens
 				new License ("PBJVision", "The MIT License (MIT)\n\nCopyright (c) 2013-present Patrick Piemonte\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."),
 				new License ("PNChart", "The MIT License (MIT)\n\nCopyright (c) 2013 Kevin\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."),
 				new License ("Freepik Contents", "designed by Freepik"));
+			
 
+			float yposition = UIMenuBanner.Height - 20;
 
+			foreach (var license in LicenseList) {
+				
+				var licenseButton = new UIOneLineMenuButton(yposition + 1);
+				licenseButton.SetLabel(license.ProductName + " >");
+				licenseButton.SetTapEvent (delegate {
+					var licenseScreen = new LicenseScreen(license);
+					AppDelegate.NavigationController.PushViewController(licenseScreen, true);
+				});
+				licenseButton.SuscribeToEvent();
+				yposition += (float)licenseButton.Frame.Height;
+
+				ScrollView.AddSubview (licenseButton);
+
+			}
+
+			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, LicenseList.Count * UIOneLineMenuButton.Height + UIActionButton.Height * 2);
+
+			View.AddSubviews (ScrollView, Banner);
+			View.BackgroundColor = UIColor.White;
+		}
+
+		public override void ViewDidAppear(bool animated){
+			Banner.SuscribeToEvents ();
+		}
+
+		public override void ViewDidDisappear(bool animated)
+		{
+			Banner.UnsuscribeToEvents ();
+		}
+
+		private void LoadBanner()
+		{
+			Banner = new UIMenuBanner ("LICENSES", "arrow_left");
+
+			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
+				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
+					AppDelegate.NavigationController.PopViewController(true);
+					//MemoryUtility.ReleaseUIViewWithChildren (View);
+				}
+			});
+
+			Banner.AddTap (tap);
+			Banner.SuscribeToEvents ();
 		}
 
 		private void PopulateLicenseList(params License[] licenses){
 			LicenseList.AddRange (licenses);
 		}
 
-		class License{
-			string ProductName;
-			string Description;
+	}
 
-			public License(string productName, string description){
-				ProductName = productName;
-				Description = description;
-			}
+
+	public class License{
+		public string ProductName;
+		public string Description;
+
+		public License(string productName, string description){
+			ProductName = productName;
+			Description = description;
 		}
 	}
 }

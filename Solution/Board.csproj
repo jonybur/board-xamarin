@@ -418,6 +418,7 @@
     <Compile Include="Classes\Screens\Controls\UINoContent.cs" />
     <Compile Include="Classes\Screens\Controls\UIContactView.cs" />
     <Compile Include="Classes\Screens\LicensesScreen.cs" />
+    <Compile Include="Classes\Screens\LicenseScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

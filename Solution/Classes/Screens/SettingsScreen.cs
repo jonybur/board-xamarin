@@ -33,7 +33,7 @@ namespace Board.Screens
 		public override void ViewDidDisappear(bool animated)
 		{
 			Banner.UnsuscribeToEvents ();
-			MemoryUtility.ReleaseUIViewWithChildren (View);
+			//MemoryUtility.ReleaseUIViewWithChildren (View);
 		}
 
 		class SettingsView : UIScrollView{
@@ -96,7 +96,8 @@ namespace Board.Screens
 				var licensesButton = new UIOneLineMenuButton((float)termsButton.Frame.Bottom + 1);
 				licensesButton.SetLabel("Licenses >");
 				licensesButton.SetTapEvent (delegate {
-
+					var licensesScreen = new LicensesScreen();
+					AppDelegate.NavigationController.PushViewController(licensesScreen, true);
 				});
 				licensesButton.SuscribeToEvent();
 
