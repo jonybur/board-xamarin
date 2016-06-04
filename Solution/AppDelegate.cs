@@ -49,7 +49,9 @@ namespace Board
 		public static CLLocationCoordinate2D UserLocation;
 		public static UIBoardInterface BoardInterface;
 
-		public static string PhoneVersion;
+
+		public enum PhoneVersions { iPhone4, iPhone5, iPhone6, iPhone6Plus };
+		public static PhoneVersions PhoneVersion;
 
 		public const string APIAddress = "45.55.232.144";
 		public const string FacebookAppId = "793699580736093";
@@ -105,17 +107,17 @@ namespace Board
 			ScreenHeight = (float)UIScreen.MainScreen.Bounds.Height;
 
 			if (ScreenWidth == 375) {
-				PhoneVersion = "6";
+				PhoneVersion = PhoneVersions.iPhone6;
 			} else if (ScreenWidth == 414) {
-				PhoneVersion = "6plus";
+				PhoneVersion = PhoneVersions.iPhone6Plus;
 			} else if (ScreenWidth == 320) {
 				if (ScreenHeight == 480) {
-					PhoneVersion = "4";
+					PhoneVersion = PhoneVersions.iPhone4;
 				} else if (ScreenHeight == 568) {
-					PhoneVersion = "5";
+					PhoneVersion = PhoneVersions.iPhone5;
 				}
 			} else {
-				PhoneVersion = "6";
+				PhoneVersion = PhoneVersions.iPhone6;
 			}
 
 			UIViewController screen;

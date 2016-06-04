@@ -94,7 +94,7 @@ namespace Board.Screens
 
 			float mapSize = 0;
 
-			if (AppDelegate.PhoneVersion == "6") {
+			if (AppDelegate.PhoneVersion == AppDelegate.PhoneVersions.iPhone6) {
 				mapSize = 295;
 			} else {
 				mapSize = 350;

@@ -36,7 +36,23 @@ namespace Board.Screens.Controls
 			animation.Duration = .2f;
 			View.Layer.AddAnimation(animation, "basic");
 
-			using (UIImage bannerImage = UIImage.FromFile ("./screens/sidemenus/"+ AppDelegate.PhoneVersion + "/" + FromScreen + ".png")) {
+			string version = string.Empty;
+			switch (AppDelegate.PhoneVersion) {
+			case AppDelegate.PhoneVersions.iPhone4:
+				version = "4";
+				break;
+			case AppDelegate.PhoneVersions.iPhone5:
+				version = "5";
+				break;
+			case AppDelegate.PhoneVersions.iPhone6:
+				version = "6";
+				break;
+			case AppDelegate.PhoneVersions.iPhone6Plus:
+				version = "6plus";
+				break;
+			}
+
+			using (UIImage bannerImage = UIImage.FromFile ("./screens/sidemenus/"+ version + "/" + FromScreen + ".png")) {
 				sidemenu = new UIImageView ();
 				sidemenu.Frame = new CGRect (0, 0, bannerImage.Size.Width / 2, bannerImage.Size.Height / 2);
 				sidemenu.Image = bannerImage;
@@ -44,22 +60,22 @@ namespace Board.Screens.Controls
 			}
 
 			float[] buttonLocations = new float[4];
-			if (AppDelegate.PhoneVersion == "6") {
+			if (AppDelegate.PhoneVersion == AppDelegate.PhoneVersions.iPhone6) {
 				buttonLocations [0] = 350;
 				buttonLocations [1] = 440;
 				buttonLocations [2] = 525;
 				buttonLocations [3] = 605;
-			} else if (AppDelegate.PhoneVersion == "6plus") {
+			} else if (AppDelegate.PhoneVersion == AppDelegate.PhoneVersions.iPhone6Plus) {
 				buttonLocations [0] = 390;
 				buttonLocations [1] = 470;
 				buttonLocations [2] = 550;
 				buttonLocations [3] = 630;
-			} else if (AppDelegate.PhoneVersion == "4") {
+			} else if (AppDelegate.PhoneVersion == AppDelegate.PhoneVersions.iPhone4) {
 				buttonLocations [0] = 245;
 				buttonLocations [1] = 310;
 				buttonLocations [2] = 370;
 				buttonLocations [3] = 435;
-			} else if (AppDelegate.PhoneVersion == "5") {
+			} else if (AppDelegate.PhoneVersion == AppDelegate.PhoneVersions.iPhone5) {
 				buttonLocations [0] = 285;
 				buttonLocations [1] = 360;
 				buttonLocations [2] = 436;
@@ -108,7 +124,7 @@ namespace Board.Screens.Controls
 			UIFont namefont, lastnamefont;
 			int nameYPosition;
 
-			if (AppDelegate.PhoneVersion == "4") {
+			if (AppDelegate.PhoneVersion == AppDelegate.PhoneVersions.iPhone4) {
 				yposition = 35;
 				imagesize = 110;
 
@@ -116,7 +132,7 @@ namespace Board.Screens.Controls
 				lastnamefont = AppDelegate.Narwhal20;
 				nameYPosition = 10;
 			} else {
-				if (AppDelegate.PhoneVersion == "5") {
+				if (AppDelegate.PhoneVersion == AppDelegate.PhoneVersions.iPhone5) {
 					yposition = 30;
 					imagesize = 135;
 				} else {

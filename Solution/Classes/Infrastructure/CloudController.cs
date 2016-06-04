@@ -22,6 +22,11 @@ namespace Board.Infrastructure
 		public static void GetUserProfile(){
 			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/user?authToken=" + AppDelegate.EncodedBoardToken);
 
+			if (result == "Timeout") {
+				Console.WriteLine ("Timeout on GetUserProfile");
+				return;
+			}
+
 			AppDelegate.BoardUser = JsonConvert.DeserializeObject<User> (result);
 
 			AppDelegate.BoardUser.SetProfilePictureFromURL (AppDelegate.BoardUser.ProfilePictureURL);
@@ -134,7 +139,8 @@ namespace Board.Infrastructure
 				return false;
 			}
 
-			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/edit?authToken="+AppDelegate.EncodedBoardToken);
+			string url = "http://" + AppDelegate.APIAddress + "/api/board/" + boardId + "/edit?authToken=" + AppDelegate.EncodedBoardToken;
+			string result = JsonGETRequest (url);
 
 			if (result == "200" || result == string.Empty) {
 				return true;

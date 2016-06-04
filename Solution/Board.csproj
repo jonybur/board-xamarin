@@ -217,7 +217,6 @@
     <BundleResource Include="Resources\camera\flash_off.png" />
     <BundleResource Include="Resources\camera\flash_on.png" />
     <BundleResource Include="Resources\camera\focus.png" />
-    <BundleResource Include="Resources\screens\main\magazine\pin.png" />
     <BundleResource Include="Resources\screens\main\map\markercontainer_black.png" />
     <BundleResource Include="Resources\menubanner\cross_left.png" />
     <BundleResource Include="Resources\menubanner\import_right.png" />
@@ -271,6 +270,9 @@
     <BundleResource Include="Resources\Default-667h%402x.png" />
     <BundleResource Include="Resources\Default.png" />
     <BundleResource Include="Resources\Default%402x.png" />
+    <BundleResource Include="Resources\screens\main\magazine\flagpin.png" />
+    <BundleResource Include="Resources\screens\nocontent\noapp.png" />
+    <BundleResource Include="Resources\screens\business\icon.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -415,6 +417,8 @@
     <Compile Include="Classes\Interface\InfoBox\UINameLabel.cs" />
     <Compile Include="Classes\Interface\InfoBox\UIInstagramGallery.cs" />
     <Compile Include="Classes\JsonResponses\MagazineResponse.cs" />
+    <Compile Include="Classes\Screens\Controls\UINoContent.cs" />
+    <Compile Include="Classes\Screens\Controls\UIContactView.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -480,6 +484,8 @@
     <Folder Include="Resources\boardinterface\nubuttons\" />
     <Folder Include="Resources\boardinterface\strokebuttons\white\" />
     <Folder Include="Resources\demo\timeline\" />
+    <Folder Include="Resources\screens\nocontent\" />
+    <Folder Include="Resources\screens\business\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="sqlite-net">

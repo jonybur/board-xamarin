@@ -62,9 +62,9 @@ namespace Board.Screens.Controls
 			pages [0].ContentDisplay = new UITimelineContentDisplay (boardList);
 			if (magazineValid) {
 				pages [1].ContentDisplay = new UICarouselContentDisplay (magazine);
-				pages [2].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Neighborhood, UIMagazineBannerPage.Height, UIActionButton.Height);
+				pages [2].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Alphabetic, UIMagazineBannerPage.Height, UIActionButton.Height);
 			} else {
-				pages [1].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Neighborhood, UIMagazineBannerPage.Height, UIActionButton.Height);
+				pages [1].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Alphabetic, UIMagazineBannerPage.Height, UIActionButton.Height);
 			}
 
 			Pages = pages;

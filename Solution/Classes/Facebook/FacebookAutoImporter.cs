@@ -17,6 +17,12 @@ namespace Board.Facebook
 		static CGPoint ItemLocation;
 		static string PageId;
 
+		public static void ImportPages(params string[] pageIds){
+			foreach (var id in pageIds){
+				ImportPage(id);
+			}
+		}
+
 		public static void ImportPage (string pageId)
 		{
 			PageId = pageId;

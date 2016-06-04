@@ -66,7 +66,7 @@ namespace Board.Screens
 				AppDelegate.UserLocation.Longitude != 0 &&
 				!hasLoaded) {
 				LoadContent();
-				ContentDisplay.SuscribeToEvents ();
+				ContentDisplaySuscribeToEvents (ContentDisplay);
 				hasLoaded = true;
 				BigTed.BTProgressHUD.Dismiss ();
 			}
@@ -105,12 +105,13 @@ namespace Board.Screens
 			if (!firstLocationUpdate) {
 				firstLocationUpdate = true;
 				var location = change.ObjectForKey (NSValue.ChangeNewKey) as CoreLocation.CLLocation;
-				AppDelegate.UserLocation = location.Coordinate;
+				//AppDelegate.UserLocation = location.Coordinate;
+				AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(41.2835861,-70.1038089);
 				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
 
 				if (!hasLoaded) {
 					LoadContent ();
-					ContentDisplay.SuscribeToEvents ();
+					ContentDisplaySuscribeToEvents (ContentDisplay);
 					hasLoaded = true;
 					BigTed.BTProgressHUD.Dismiss ();
 				}
@@ -122,20 +123,35 @@ namespace Board.Screens
 			}
 		}
 
+		private void ContentDisplaySuscribeToEvents(UIContentDisplay contentDisplay){
+			if (contentDisplay != null) {
+				contentDisplay.SuscribeToEvents ();
+			}
+		}
+
 		private void LoadContent()
 		{
 			ScrollView.BackgroundColor = UIColor.White;
 
-			//BoardList = await CloudController.GetAllBoards();
 			BoardList = CloudController.GetNearbyBoards (AppDelegate.UserLocation, 10000);
 
-			Magazine = new UIMagazine (BoardList);
+			if (BoardList.Count > 0) {
+				
+				Magazine = new UIMagazine (BoardList);
 
-			ContentDisplay = Magazine.Pages [0].ContentDisplay;
-			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, ContentDisplay.Frame.Bottom);
+				ContentDisplay = Magazine.Pages [0].ContentDisplay;
+				ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, ContentDisplay.Frame.Bottom);
 
-			ScrollView.AddSubview (ContentDisplay);
-			ScrollView.AddSubview (Magazine.Banner);
+				ScrollView.AddSubview (ContentDisplay);
+				ScrollView.AddSubview (Magazine.Banner);
+
+			} else {
+
+				var noContent = new UINoContent (UINoContent.Presets.NotInArea);
+				ScrollView.AddSubview (noContent);
+				map_button.Alpha = 0f;
+
+			}
 
 			ScrollView.ScrollEnabled = true;
 
@@ -252,7 +268,7 @@ namespace Board.Screens
 			ScrollView.AddSubview (ContentDisplay);
 			ScrollView.SendSubviewToBack (ContentDisplay);
 			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, newDisplay.Frame.Height);
-			ContentDisplay.SuscribeToEvents ();
+			ContentDisplaySuscribeToEvents (ContentDisplay);
 		} 
 
 		private void LoadMapButton()

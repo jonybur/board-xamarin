@@ -124,6 +124,11 @@ namespace Board.Screens.Controls
 			AddSubview (filterSelector);
 			yposition += (float)filterSelector.Frame.Height;
 
+			int locationSeparation = 30, minSeparation = 20, separationBetweenThumbs = 10;
+			if (AppDelegate.PhoneVersion == AppDelegate.PhoneVersions.iPhone5 || AppDelegate.PhoneVersion == AppDelegate.PhoneVersions.iPhone4) {
+				locationSeparation = 40; minSeparation = 30; separationBetweenThumbs = 20;
+			}
+
 			foreach (Board.Schema.Board b in boardList) {
 				if (this._boardComparer.Compare(comparer, b) != 0 || i == 0) {
 
@@ -132,14 +137,14 @@ namespace Board.Screens.Controls
 					if (header != string.Empty) {
 						
 						if (sectionNumber > 0) {
-							yposition += ThumbSize / 2 + UIBoardThumbComponent.TextSpace + 10;
+							yposition += ThumbSize / 2 + UIBoardThumbComponent.TextSpace + minSeparation;
 						}
 
 						// draw new location string
 						var locationLabel = new UILocationLabel (header, 
 							                    new CGPoint (UICarouselController.ItemSeparation, yposition), UITextAlignment.Center);
 
-						yposition += (float)locationLabel.Frame.Height + ThumbSize / 2 + 10;
+						yposition += (float)locationLabel.Frame.Height + ThumbSize / 2 + minSeparation;
 						comparer = b;
 						AddSubview (locationLabel);
 
@@ -147,7 +152,7 @@ namespace Board.Screens.Controls
 						sectionNumber++;
 					} else {
 						if (i == 0) {
-							yposition += UILocationLabel.Height + 30;
+							yposition += UILocationLabel.Height + locationSeparation;
 						}
 					}
 				}
@@ -155,7 +160,7 @@ namespace Board.Screens.Controls
 				if (linecounter >= 4) {
 					linecounter = 1;
 					// nueva linea de thumbs
-					yposition += ThumbSize + UIBoardThumbComponent.TextSpace;
+					yposition += ThumbSize + UIBoardThumbComponent.TextSpace + separationBetweenThumbs;
 				}
 
 				var btComponent = new UIBoardThumbComponent (b, new CGPoint ((AppDelegate.ScreenWidth/ 4) * linecounter, yposition), ThumbSize);

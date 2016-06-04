@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using BigTed;
-using Board.Infrastructure;
 using Board.Screens.Controls;
+using Board.Infrastructure;
 using Board.Utilities;
 using CoreGraphics;
 using UIKit;
@@ -17,8 +17,6 @@ namespace Board.Screens
 
 		public override void ViewDidLoad ()
 		{
-			BTProgressHUD.Show ();
-
 			boardList = new List<Board.Schema.Board> ();
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			ScrollView.BackgroundColor = UIColor.White;
@@ -30,14 +28,12 @@ namespace Board.Screens
 
 		public override void ViewDidAppear(bool animated)
 		{
-			BTProgressHUD.Show ();
-
 			Banner.SuscribeToEvents ();
 
+			BTProgressHUD.Show ();
 			boardList = CloudController.GetUserBoards ();
 
 			InitializeInterface ();
-
 			BTProgressHUD.Dismiss ();
 		}
 
@@ -59,7 +55,7 @@ namespace Board.Screens
 			}
 
 			if (boardList.Count == 0) {
-				//LoadNoContent ();
+				LoadNoContent ();
 			} else {
 				LoadContent ();
 			}
@@ -77,33 +73,26 @@ namespace Board.Screens
 
 		private void LoadNoContent()
 		{
-			// TODO: add empty image
-			// si el usuario no tiene boards creados...
-			ScrollView = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			var contactView = new UIContactView (UIContactView.ScreenContact.BusinessScreen);
+			View.AddSubview (contactView);
 
-			var imgv = new UIImageView (ScrollView.Frame);
-
-			ScrollView.AddSubview (imgv);
-			ScrollView.ScrollEnabled = true;
-			ScrollView.UserInteractionEnabled = true;
-		
-			View.AddSubview (ScrollView);
-			View.SendSubviewToBack (ScrollView);
 		}
 
 		private void LoadBanner()
 		{
-			Banner = new UIMenuBanner ("BUSINESS", "menu_left", "plus_right");
+			Banner = new UIMenuBanner ("BUSINESS", "menu_left");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					AppDelegate.containerScreen.BringSideMenuUp("business");
 				}
+				/*
 				else if (AppDelegate.ScreenWidth / 4 * 3 < tg.LocationInView(this.View).X){
 
 					UIAlertController alert = UIAlertController.Create("Facebook Page Importer", null, UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 					alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate {
+
 						if (alert.TextFields.Length == 0){
 							return;
 						}
@@ -118,11 +107,12 @@ namespace Board.Screens
 					}));
 
 					alert.AddTextField(delegate(UITextField obj) {
+
 						obj.Placeholder = "Facebook Page ID";
 					});
 
 					NavigationController.PresentViewController(alert, true, null);
-				}
+				}*/
 			});
 
 			Banner.AddTap (tap);

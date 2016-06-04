@@ -131,7 +131,7 @@ namespace Board.Screens
 			
 			pushRight = 0f;
 
-			if (AppDelegate.PhoneVersion == "6plus") {
+			if (AppDelegate.PhoneVersion == AppDelegate.PhoneVersions.iPhone6Plus) {
 				pushRight = 23;
 			}
 

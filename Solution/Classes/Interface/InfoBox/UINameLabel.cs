@@ -11,6 +11,7 @@ namespace Board.Interface
 			TextColor = UIColor.Black;
 			Text = text;
 			TextAlignment = UITextAlignment.Center;
+			AdjustsFontSizeToFitWidth = true;
 		}
 	}
 }

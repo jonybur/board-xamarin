@@ -43,15 +43,35 @@ namespace Board.Screens.Controls
 			return true;
 		}
 
+		private string NameLimiter(string nameString){
+
+			if (IsAllUpper(nameString) && nameString.Length > 14) {
+				nameString = nameString.Substring (0, 14) + "...";
+				return nameString;
+			}
+
+			if (nameString.Length > 13 && (AppDelegate.PhoneVersion == AppDelegate.PhoneVersions.iPhone5 || AppDelegate.PhoneVersion == AppDelegate.PhoneVersions.iPhone4)) {
+				nameString = nameString.Substring (0, 13) + "...";
+				return nameString;
+			}
+
+			if (nameString.Length > 16) {
+				nameString = nameString.Substring (0, 16) + "...";
+				return nameString;
+			}
+
+			return nameString;
+
+		}
+
 		private UILabel CreateNameLabel(string nameString, double distance, float width)
 		{
 			var label = new UILabel ();
 
 			label.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 
-			if (IsAllUpper(nameString) && nameString.Length > 14) {
-				nameString = nameString.Substring (0, 14) + "...";
-			}
+			nameString = NameLimiter (nameString);
+
 			var distanceTotalString = CommonUtils.GetFormattedDistance (distance);
 
 			string compositeString = nameString + "\n" + distanceTotalString;

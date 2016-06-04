@@ -1,4 +1,7 @@
 ﻿using CoreGraphics;
+using CoreAnimation;
+using Foundation;
+using Haneke;
 using UIKit;
 
 namespace Board.Screens.Controls
@@ -21,31 +24,38 @@ namespace Board.Screens.Controls
 			AddSubview (flagView);
 		}
 
+		const int FlagHeight = 110;
+		const int FlagWidth = 200;
+
 		private UIImageView GenerateFlag(string subtitleText){
 			var flagView = new UIImageView ();
-			flagView.Frame = new CGRect (0, 0, 200, 110);
-
-			var flagBackground = new UIImageView ();
-			flagBackground.Alpha = .95f;
-			flagBackground.Frame = flagView.Frame;
-			flagBackground.BackgroundColor = AppDelegate.BoardOrange;
-			flagBackground.Center = Center;
-			flagBackground.Layer.CornerRadius = 10;
+			flagView.Frame = new CGRect (0, 0, FlagWidth, FlagHeight);
+			flagView.Center = Center;
+			flagView.Alpha = .95f;
+			flagView.BackgroundColor = AppDelegate.BoardOrange;
+			flagView.Layer.CornerRadius = 10;
+			flagView.ClipsToBounds = true;
 
 			var pin = new UIImageView();
 			pin.Frame = flagView.Frame;
-			pin.Center = flagBackground.Center;
-			using (var img = UIImage.FromFile ("./screens/main/magazine/pin.png")) {
-				pin.Image = img;
-			}
+			pin.SetImage ("./screens/main/magazine/flagpin.png");
+			pin.Center = new CGPoint (flagView.Frame.Width / 2, flagView.Frame.Height / 2);
+
+			var animation =  new CABasicAnimation();
+			animation.KeyPath = "position.y";
+			animation.From = new NSNumber(-100);
+			animation.TimingFunction = CAMediaTimingFunction.FromName(CAMediaTimingFunction.EaseOut);
+			animation.To = new NSNumber(pin.Center.Y);
+			animation.Duration = 1f;
+			pin.Layer.AddAnimation(animation, "dropPin");
 
 			var rightNow = new UILabel ();
-			rightNow.Frame = new CGRect (5, 0, flagView.Frame.Width-10, 20);
+			rightNow.Frame = new CGRect (0, 0, flagView.Frame.Width-10, 20);
 			rightNow.Font = AppDelegate.Narwhal14;
 			rightNow.Text = "RIGHT NOW AT";
 			rightNow.TextColor = UIColor.White;
 			rightNow.AdjustsFontSizeToFitWidth = true;
-			rightNow.Center = new CGPoint(flagBackground.Center.X, flagBackground.Center.Y+2);
+			rightNow.Center = new CGPoint(flagView.Frame.Width / 2, flagView.Frame.Height / 2 + 2);
 			rightNow.TextAlignment = UITextAlignment.Center;
 
 			var placeName = new UILabel ();
@@ -54,8 +64,14 @@ namespace Board.Screens.Controls
 			placeName.Text = "NANTUCKET";
 			placeName.TextColor = UIColor.White;
 			placeName.AdjustsFontSizeToFitWidth = true;
-			placeName.Center = new CGPoint(flagBackground.Center.X, flagBackground.Center.Y + 20);
+			placeName.Center = new CGPoint(flagView.Frame.Width / 2, flagView.Frame.Height / 2 + 20);
 			placeName.TextAlignment = UITextAlignment.Center;
+
+			var separationLine = new UIImageView ();
+			separationLine.Frame = new CGRect (0, 0, flagView.Frame.Width - 20, 1);
+			separationLine.BackgroundColor = UIColor.White;
+			separationLine.Alpha = .75f;
+			separationLine.Center = new CGPoint (flagView.Frame.Width / 2, placeName.Frame.Bottom + 1);
 
 			var subtitle = new UILabel ();
 			subtitle.Frame = new CGRect (5, 0, flagView.Frame.Width-10, 20);
@@ -63,10 +79,10 @@ namespace Board.Screens.Controls
 			subtitle.Text = subtitleText;
 			subtitle.TextColor = UIColor.White;
 			subtitle.AdjustsFontSizeToFitWidth = true;
-			subtitle.Center = new CGPoint(flagBackground.Center.X, placeName.Center.Y + 25);
+			subtitle.Center = new CGPoint(flagView.Frame.Width / 2, placeName.Center.Y + 25);
 			subtitle.TextAlignment = UITextAlignment.Center;
 
-			flagView.AddSubviews (flagBackground, pin, rightNow, placeName, subtitle);
+			flagView.AddSubviews (pin, rightNow, placeName, separationLine, subtitle);
 
 			return flagView;
 		}

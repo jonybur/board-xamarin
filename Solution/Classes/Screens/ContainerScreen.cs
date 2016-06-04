@@ -24,10 +24,9 @@ namespace Board.Screens
 			AutomaticallyAdjustsScrollViewInsets = false;
 			NavigationController.NavigationBarHidden = true;
 
-			//CloudController.DeleteBoard ("7c776389-7318-4d0a-ab59-2ed0d929b23c");
-
 			LoadMainMenu ();
-			LoadChangelogAlert ();
+
+			//LoadChangelogAlert ();
 		}
 
 		public override void ViewDidAppear(bool animated){
@@ -51,7 +50,7 @@ namespace Board.Screens
 
 				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));	
 
-				//AppDelegate.NavigationController.PresentViewController (alert, true, null);
+				AppDelegate.NavigationController.PresentViewController (alert, true, null);
 			}
 		}
 
