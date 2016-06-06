@@ -8,6 +8,8 @@ using Board.Schema;
 using Board.Utilities;
 using CoreLocation;
 using Facebook.CoreKit;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Linq;
 using Foundation;
 using Newtonsoft.Json;
@@ -43,6 +45,41 @@ namespace Board.Infrastructure
 			} 
 		}
 
+		public static List<Content> GetTimeline(CLLocationCoordinate2D location){
+			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/boards/timeline?latitude="+
+				location.Latitude.ToString(CultureInfo.InvariantCulture)+"&longitude="+location.Longitude.ToString(CultureInfo.InvariantCulture)+
+				"&authToken="+AppDelegate.EncodedBoardToken);
+			
+			var jobject = JObject.Parse(result);
+
+			var datum = jobject ["data"];
+
+			var timeline = new List<Content> ();
+
+			foreach (var jsonContent in datum) {
+				switch (jsonContent ["Type"].ToString()) {
+				case "pictures":
+					timeline.Add (jsonContent.ToObject<Picture>());
+					break;
+				case "announcements":
+					timeline.Add (jsonContent.ToObject<Announcement>());
+					break;
+				case "videos":
+					timeline.Add (jsonContent.ToObject<Video>());
+					break;
+				case "polls":
+					timeline.Add (jsonContent.ToObject<Poll>());
+					break;
+				case "events":
+					timeline.Add (jsonContent.ToObject<BoardEvent>());
+					break;
+				}
+
+			}
+
+			return timeline;
+		}
+
 		public static MagazineResponse GetMagazine(CLLocationCoordinate2D location){
 
 			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/magazines/nearest?latitude="+
@@ -57,6 +94,8 @@ namespace Board.Infrastructure
 
 			return magazine;
 		}
+
+
 
 		public static Dictionary<string, Content> GetBoardContent(string boardId){
 			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/snapshot?authToken="+AppDelegate.EncodedBoardToken);
@@ -264,6 +303,28 @@ namespace Board.Infrastructure
 			return false;
 		}
 
+		public static bool EditBoard(Board.Schema.Board board){
+
+			string json = "{\"latitude\": \"" + board.GeolocatorObject.Coordinate.Latitude  + "\", " +
+				"\"longitude\": \"" + board.GeolocatorObject.Coordinate.Longitude  + "\", " +
+				"\"name\": \"" + board.Name + "\", " +
+				"\"about\": \"" + board.About + "\", " +
+				"\"mainColorCode\": \"" + CommonUtils.UIColorToHex(board.MainColor)  + "\", " +
+				"\"secondaryColorCode\": \"" + CommonUtils.UIColorToHex(board.SecondaryColor) + "\", " +
+				"\"phoneNumber\": \"" + board.Phone + "\", " + 
+				"\"facebookID\": \"" + board.FacebookId + "\", " + 
+				"\"categoryName\": \"" + board.Category + "\", " + 
+				"\"logoURL\": \"" + board.LogoUrl + "\", " + 
+				"\"coverURL\": \"" + board.CoverImageUrl + "\" }";
+
+			string result = JsonPUTRequest ("http://" + AppDelegate.APIAddress + "/api/board/"+ board.Id +"?authToken=" + AppDelegate.EncodedBoardToken, json);
+
+			if (result == "200" || result == string.Empty) {
+				return true;
+			}
+			return false;
+		}
+
 		public static List<Board.Schema.Board> GetNearbyBoards(CLLocationCoordinate2D location, int meterRadius){
 			
 			string request = "http://" + AppDelegate.APIAddress + "/api/boards/nearby?" +
@@ -403,6 +464,38 @@ namespace Board.Infrastructure
 				}
 
 				return e.Status.ToString();
+			}
+		}
+
+		private static string JsonPUTRequest(string url, string json)
+		{
+			var httpWebRequest = (HttpWebRequest)WebRequest.Create (url);
+			httpWebRequest.ContentType = "application/json";
+			httpWebRequest.Method = "PUT";
+			httpWebRequest.Timeout = 8000;
+
+			try{
+				using (var streamWriter = new StreamWriter (httpWebRequest.GetRequestStream ())) {
+					streamWriter.Write (json);
+					streamWriter.Flush ();
+					streamWriter.Close ();
+				}
+
+				var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse ();
+				string result = string.Empty;
+				using (var streamReader = new StreamReader (httpResponse.GetResponseStream ())) {
+					result = streamReader.ReadToEnd ();
+				}
+				return result;
+			} catch (WebException e) {
+
+				if (e.Status == WebExceptionStatus.ProtocolError) 
+				{
+					return ((HttpWebResponse)e.Response).StatusCode.ToString();
+				}
+
+				return e.Status.ToString();
+
 			}
 		}
 

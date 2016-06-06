@@ -1,8 +1,7 @@
 using System;
 using System.Runtime.Serialization;
-using System.Threading.Tasks;
 using Board.Interface.Widgets;
-using Board.Utilities;
+using Board.Interface;
 using CoreGraphics;
 using Board.Facebook;
 using MGImageUtilitiesBinding;
@@ -34,7 +33,9 @@ namespace Board.Schema
 
 		public string ImageUrl;
 
-		public const string Type = "pictures";
+		public string Type {
+			get { return "pictures"; }
+		}
 
 		public void SetImageFromUIImage(UIImage image){
 			_image = image;
@@ -48,10 +49,12 @@ namespace Board.Schema
 		public string Description;
 
 		public Picture() {
+			CreationDate = DateTime.Now;
 		}
 
 		public Picture(UIImage image, string imageUrl, CGPoint center, string creatorid, CGAffineTransform transform)
 		{
+			CreationDate = DateTime.Now;
 			ImageUrl = imageUrl;
 			SetImageFromUIImage (image);
 			Transform = transform;
@@ -64,6 +67,12 @@ namespace Board.Schema
 			FacebookId = facebookPhoto.Id;
 			Center = center;
 			Transform = transform;
+
+			var boardCoordinate = UIBoardInterface.board.GeolocatorObject.Coordinate;
+			latitude = boardCoordinate.Latitude;
+			longitude = boardCoordinate.Longitude;
+
+			boardId = UIBoardInterface.board.Id;
 		}
 	}
 }

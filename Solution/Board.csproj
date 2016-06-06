@@ -282,7 +282,6 @@
     <Compile Include="AppDelegate.cs" />
     <Compile Include="Classes\Infrastructure\StorageController.cs" />
     <Compile Include="Classes\Schema\Board.cs" />
-    <Compile Include="Classes\Schema\Content.cs" />
     <Compile Include="Classes\Screens\LoginScreen.cs" />
     <Compile Include="Classes\Screens\MainMenuScreen.cs" />
     <Compile Include="Classes\Screens\CreateScreen1.cs" />
@@ -295,9 +294,6 @@
     <Compile Include="Classes\JsonResponses\BoardResponse.cs" />
     <Compile Include="Classes\JsonResponses\GoogleGeolocatorObject.cs" />
     <Compile Include="Classes\JsonResponses\TokenResponse.cs" />
-    <Compile Include="Classes\Schema\Announcement.cs" />
-    <Compile Include="Classes\Schema\Picture.cs" />
-    <Compile Include="Classes\Schema\Video.cs" />
     <Compile Include="Classes\Interface\Buttons\ButtonInterface.cs" />
     <Compile Include="Classes\Interface\Buttons\ActionsButtonSet.cs" />
     <Compile Include="Classes\Interface\Buttons\ButtonSet.cs" />
@@ -318,7 +314,6 @@
     <Compile Include="Classes\Utilities\CommonUtils.cs" />
     <Compile Include="Classes\Picker\ImagePicker.cs" />
     <Compile Include="Classes\Interface\Widgets\EventWidget.cs" />
-    <Compile Include="Classes\Schema\BoardEvent.cs" />
     <Compile Include="Classes\Interface\Buttons\SettingsButton.cs" />
     <Compile Include="Classes\Interface\Widgets\Widget.cs" />
     <Compile Include="Classes\Interface\LookUp\PictureLookUp.cs" />
@@ -335,7 +330,6 @@
     <Compile Include="Classes\Interface\CreateScreens\CreatePollScreen.cs" />
     <Compile Include="Classes\Interface\LookUp\PollLookUp.cs" />
     <Compile Include="Classes\Interface\Widgets\PollWidget.cs" />
-    <Compile Include="Classes\Schema\Poll.cs" />
     <Compile Include="Classes\Interface\SettingsScreen\SettingsScreen.cs" />
     <Compile Include="Classes\Interface\CreateScreens\ImportScreen.cs" />
     <Compile Include="Classes\Facebook\FacebookEvent.cs" />
@@ -394,7 +388,6 @@
     <Compile Include="Classes\Screens\Controls\UIBoardBannerPage.cs" />
     <Compile Include="Classes\Interface\UISticker.cs" />
     <Compile Include="Classes\Infrastructure\AppsController.cs" />
-    <Compile Include="Classes\Schema\Sticker.cs" />
     <Compile Include="Classes\Screens\Controls\UIRepeatVideo.cs" />
     <Compile Include="Classes\Interface\CameraScreen\VideoPreview.cs" />
     <Compile Include="Classes\Interface\FacebookImport\VideosScreen.cs" />
@@ -419,6 +412,14 @@
     <Compile Include="Classes\Screens\Controls\UIContactView.cs" />
     <Compile Include="Classes\Screens\LicensesScreen.cs" />
     <Compile Include="Classes\Screens\LicenseScreen.cs" />
+    <Compile Include="Classes\Screens\CreditsScreen.cs" />
+    <Compile Include="Classes\Schema\Contents\Announcement.cs" />
+    <Compile Include="Classes\Schema\Contents\BoardEvent.cs" />
+    <Compile Include="Classes\Schema\Contents\Content.cs" />
+    <Compile Include="Classes\Schema\Contents\Picture.cs" />
+    <Compile Include="Classes\Schema\Contents\Poll.cs" />
+    <Compile Include="Classes\Schema\Contents\Video.cs" />
+    <Compile Include="Classes\Schema\Contents\Sticker.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -487,6 +488,7 @@
     <Folder Include="Resources\screens\nocontent\" />
     <Folder Include="Resources\screens\business\" />
     <Folder Include="Resources\screens\settings\" />
+    <Folder Include="Classes\Schema\Contents\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="sqlite-net">

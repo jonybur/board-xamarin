@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using BigTed;
-using Board.Screens.Controls;
 using Board.Infrastructure;
+using Board.Screens.Controls;
 using Board.Utilities;
 using CoreGraphics;
 using UIKit;
@@ -95,6 +95,10 @@ namespace Board.Screens
 					alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 					alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate {
 
+						Board.Facebook.FacebookAutoImporter.ImportPages("tazzbars", "Sullivans.irish.bar",
+							"FelixFelicisCoffee", "SocialParaiso", "cronicobar", "thames.galeria", "lodejesus",
+							"templebarargentina", "SugarBuenosAires");
+
 						if (alert.TextFields.Length == 0){
 							return;
 						}
@@ -121,5 +125,29 @@ namespace Board.Screens
 
 			View.AddSubview (Banner);
 		}
+
+		/*
+		BUENOS AIRES BOARDS:
+		"973824289314042", "muulecheria", "urbanstationba", "chupitosbar", "barsoria",
+		"TheRoxyArg", "latrastiendaclubBSAS", "tazzbars",
+		"budabar.bsas", "lafabricadeltaco", "SheldonPub", "Sullivans.irish.bar",
+		"BurgerJointPalermo", "FelixFelicisCoffee", 
+		"SocialParaiso", "cronicobar", "thames.galeria", "lodejesus",
+		"templebarargentina", "SugarBuenosAires"
+		*/
+
+		/*
+		NANTUCKET BOARDS: 
+		"crunantucket", "ThePearlNantucket", "straightwharfrestaurant", "TheBoardingHouseNantucket",
+		"TheBoxNantucket", "ackbackyardbbq", "Lola41Nantucket", "lolaburger", "thenautilusnantucket",
+		"milliesrestaurant", "183044393276", "107261144123", "fogislandcafe", "ProprietorsBarTable",
+		"1061400640541340", "TheClubCarNantucket", "177475355647426", "galleybeachnantucket", "CiscoBrewers",
+		"108013392550036", "slip14nantucket", "ACKTrap", "108593769177258", "118917288160401", "theroseandcrownma",
+		"TOPPERS.Wauwinet", "WhiteElephantHotel", "TheNantucket", "NantucketIslandSurfSchool", "ackstubbys", 
+		"AmericanSeasons", "blackeyedsusans.nantucket", "264846700041", "73131111727", "OranMorBistro", 
+		"272985902713182", "LanguedocBistro", "CompanyOfTheCauldron", "AtlasNantucket", "handlebarcafe",
+		"NativMade", "PiPizzeriaNantucket", "ventunoresto", "lemonpressnantucket"*/
+
+
 	}
 }

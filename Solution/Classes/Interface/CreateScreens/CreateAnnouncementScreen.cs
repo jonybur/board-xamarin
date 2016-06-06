@@ -52,8 +52,9 @@ namespace Board.Interface.CreateScreens
 		private void LoadFromFacebookEvent(FacebookElement FBElement)
 		{
 			ShareButtons.ActivateFacebook ();
-			FacebookPost FBPost = (FacebookPost)FBElement;
+			var FBPost = (FacebookPost)FBElement;
 			content.FacebookId = FBPost.Id;
+			content.CreationDate = DateTime.Parse(FBPost.CreatedTime);
 			textview.SetText (FBPost.Message);
 		}
 			
@@ -76,12 +77,11 @@ namespace Board.Interface.CreateScreens
 
 				if (!isEditing)
 				{
-					Announcement ann = (Announcement)content;
+					var ann = (Announcement)content;
 
 					ann.Text = textview.Text;
 					ann.AttributedText = textview.AttributedText;
 					ann.SocialChannel = ShareButtons.GetActiveSocialChannels ();
-					ann.CreationDate = DateTime.Now;
 
 					// TODO: only if this is a new announcement, else update the announcement
 

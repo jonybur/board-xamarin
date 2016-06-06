@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Board.Infrastructure;
+using Board.JsonResponses;
 using CoreGraphics;
 using MGImageUtilitiesBinding;
-using Board.JsonResponses;
 using UIKit;
 
 namespace Board.Screens.Controls
@@ -38,12 +39,19 @@ namespace Board.Screens.Controls
 			var magazine = CloudController.GetMagazine (AppDelegate.UserLocation);
 			bool magazineValid = MagazineResponse.IsValidMagazine (magazine);
 
+			var timeline = CloudController.GetTimeline (AppDelegate.UserLocation);
+
 			var pagesName = new List<string> ();
-			pagesName.Add("TRENDING");
-			if (magazineValid) {
-				pagesName.Add("EDITOR'S CHOICE");
+
+			if (timeline.Count > 0) {
+				pagesName.Add ("TRENDING");
 			}
-			pagesName.Add("ALL");
+
+			if (magazineValid) {
+				pagesName.Add("FEATURED");
+			}
+
+			pagesName.Add("DIRECTORY");
 
 			var pages = new UIMagazinePage[pagesName.Count];
 
@@ -59,7 +67,9 @@ namespace Board.Screens.Controls
 				pages [i].Banner = controller;
 			}
 
-			pages [0].ContentDisplay = new UITimelineContentDisplay (boardList);
+
+			// TODO: EXISTIR SIN TENER TRENDING ( COUNT = 0 )
+			pages [0].ContentDisplay = new UITimelineContentDisplay (boardList, timeline);
 			if (magazineValid) {
 				pages [1].ContentDisplay = new UICarouselContentDisplay (magazine);
 				pages [2].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Alphabetic, UIMagazineBannerPage.Height, UIActionButton.Height);

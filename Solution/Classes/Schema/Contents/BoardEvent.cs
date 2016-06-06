@@ -3,8 +3,8 @@ using UIKit;
 using CoreGraphics;
 using System.Threading.Tasks;
 using Board.Utilities;
-using System.Collections.Generic;
-using BigTed;
+using System.Globalization;
+using Board.Interface;
 using MGImageUtilitiesBinding;
 using Board.Interface.Widgets;
 using Board.Facebook;
@@ -39,12 +39,32 @@ namespace Board.Schema
 		[IgnoreDataMember]
 		public bool CoverLoaded;
 
+		[IgnoreDataMember]
+		public DateTime StartDate;
+
+		[IgnoreDataMember]
+		public DateTime EndDate;
+
 		public string Name;
 		public string Description;
-		public DateTime StartDate;
-		public DateTime EndDate;
+
+		public string StartDateValue{
+			get { return StartDate.ToString (CultureInfo.InvariantCulture); }
+			set { StartDate = DateTime.Parse (value);  }
+		}
+
+		public string EndDateValue{
+			get { return EndDate.ToString (CultureInfo.InvariantCulture); }
+			set { EndDate = DateTime.Parse (value);  }
+		}
+
 		public string ImageUrl;
-		public const string Type = "events";
+
+		public string Type {
+			get { return "events"; }
+		}
+
+
 
 		public void SetImageFromUIImage(UIImage image){
 			_image = image;
@@ -63,10 +83,12 @@ namespace Board.Schema
 
 	
 		public BoardEvent() {
+			CreationDate = DateTime.Now;
 		}
 
 		public BoardEvent(string name, UIImage image, string imageUrl, DateTime startdate, DateTime enddate, CGAffineTransform transform, CGPoint center, string creatorid)
 		{
+			CreationDate = DateTime.Now;
 			StartDate = startdate;
 			EndDate = enddate;
 			Name = name;
@@ -94,6 +116,12 @@ namespace Board.Schema
 			Center = center;
 			Transform = transform;
 			FacebookId = facebookEvent.Id;
+
+			var boardCoordinate = UIBoardInterface.board.GeolocatorObject.Coordinate;
+			latitude = boardCoordinate.Latitude;
+			longitude = boardCoordinate.Longitude;
+
+			boardId = UIBoardInterface.board.Id;
 
 			CoverLoaded = false;
 		}

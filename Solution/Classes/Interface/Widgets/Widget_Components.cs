@@ -2,6 +2,7 @@
 using Board.Interface.Buttons;
 using CoreAnimation;
 using CoreGraphics;
+using Board.Utilities;
 using Foundation;
 using UIKit;
 using Board.Infrastructure;
@@ -42,21 +43,7 @@ namespace Board.Interface.Widgets
 			TimeStamp = new UILabel (new CGRect (0, 0, MountingView.Frame.Width, 40));
 			TimeStamp.Font = UIFont.SystemFontOfSize (14);
 			TimeStamp.Center = new CGPoint (MountingView.Frame.Width / 2, LikeComponent.Center.Y);
-
-			TimeSpan timeDifference = DateTime.Now.Subtract (content.CreationDate);
-
-			if (timeDifference.TotalSeconds < 60) {
-				TimeStamp.Text = timeDifference.Seconds + "s";
-			} else if (timeDifference.TotalMinutes < 60) {
-				TimeStamp.Text = timeDifference.Minutes + "m";
-			} else if (timeDifference.TotalHours < 24) {
-				TimeStamp.Text = timeDifference.Hours + "h";
-			} else if (timeDifference.TotalDays < 7) {
-				TimeStamp.Text = timeDifference.Days + "d";
-			} else {
-				TimeStamp.Text = (timeDifference.Days/7) + "w";
-			}
-
+			TimeStamp.Text = CommonUtils.GetFormattedTimeDifference (content.CreationDate);
 			TimeStamp.TextAlignment = UITextAlignment.Center;
 			TimeStamp.TextColor = UIColor.FromRGB (140, 140, 140);
 		}

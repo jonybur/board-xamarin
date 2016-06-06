@@ -79,6 +79,7 @@ namespace Board
 		{
 			BoardLightBlue = UIColor.FromRGB (45, 121, 180);
 			BoardOrange = UIColor.FromRGB (244, 108, 85);
+
 			BoardBlack = UIColor.FromRGB (40, 40, 40);
 			BoardBlue = UIColor.FromRGB (38, 106, 154);
 			Narwhal12 = UIFont.FromName ("narwhal-bold", 12);

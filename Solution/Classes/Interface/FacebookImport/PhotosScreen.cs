@@ -56,8 +56,9 @@ namespace Board.Interface.FacebookImport
 			foreach (var element in elementList) {
 				var fbId = element.Id;
 				var fbDescription = ((FacebookPhoto)element).Description;
+				var fbCreationDate = DateTime.Parse(((FacebookPhoto)element).CreatedTime);
 
-				FacebookUtils.MakeGraphRequest (element.Id, "?fields=images", async delegate(List<FacebookElement> obj) {
+				FacebookUtils.MakeGraphRequest (element.Id, "?fields=images", delegate(List<FacebookElement> obj) {
 					if (obj.Count == 0) {
 						CanGoBack = true;
 						return;
@@ -96,6 +97,7 @@ namespace Board.Interface.FacebookImport
 									picture.SetImageFromUIImage (maxImage);
 									picture.FacebookId = fbId;
 									picture.Description = fbDescription;
+									picture.CreationDate = fbCreationDate;
 									var importLookUp = new PictureImportLookUp (picture);
 									AppDelegate.PushViewLikePresentView (importLookUp);
 
@@ -124,7 +126,7 @@ namespace Board.Interface.FacebookImport
 		{
 			Banner = new UIMenuBanner ("PHOTOS", "arrow_left");
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
+			var tap = new UITapGestureRecognizer (tg => {
 				if (!CanGoBack){
 					return;
 				}

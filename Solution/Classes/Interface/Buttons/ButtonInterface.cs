@@ -3,6 +3,7 @@ using Board.Interface.Widgets;
 using Board.Infrastructure;
 using Board.Schema;
 using UIKit;
+using BigTed;
 
 namespace Board.Interface.Buttons
 {
@@ -23,6 +24,7 @@ namespace Board.Interface.Buttons
 			actionsButtonSet = new ActionsButtonSet ();
 			confirmationButtonSet = new ConfirmationButtonSet (async delegate {
 				Content content;
+				BTProgressHUD.Show("Uploading...");
 
 				if (Preview.IsAlive){
 					// remove interaction capabilities from the preview
@@ -44,8 +46,12 @@ namespace Board.Interface.Buttons
 				System.Console.WriteLine(jsonString);
 				bool wasUploaded = CloudController.UpdateBoard (UIBoardInterface.board.Id, jsonString);
 				if (!wasUploaded){
+
+					BTProgressHUD.Dismiss();
 					return;
 				}
+
+				BTProgressHUD.Dismiss();
 
 				UIBoardInterface.DictionaryContent.Add (content.Id, content);
 

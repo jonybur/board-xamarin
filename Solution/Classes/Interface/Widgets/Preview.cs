@@ -26,8 +26,6 @@ namespace Board.Interface
 
 		public static void Initialize(Content content)
 		{
-			content.CreationDate = DateTime.Now;
-
 			if (content is Announcement) {
 
 				widget = new AnnouncementWidget ((Announcement)content);
@@ -199,6 +197,7 @@ namespace Board.Interface
 				
 				content = new Picture (pictureWidget.picture.Image, imageURL, view.Center, Profile.CurrentProfile.UserID, view.Transform);
 				content.FacebookId = pictureWidget.picture.FacebookId;
+				content.CreationDate = pictureWidget.picture.CreationDate;
 				((Picture)content).Description = pictureWidget.picture.Description;
 
 			} else if (widget is VideoWidget) {
@@ -216,6 +215,7 @@ namespace Board.Interface
 
 				content = new Video (amazonUrl, videoWidget.video.Thumbnail, view.Center, Profile.CurrentProfile.UserID, view.Transform);
 				content.FacebookId = videoWidget.video.FacebookId;
+				content.CreationDate = videoWidget.video.CreationDate;
 				((Video)content).Description = videoWidget.video.Description;
 
 
@@ -225,6 +225,7 @@ namespace Board.Interface
 				content = new Announcement (announcementWidget.announcement.AttributedText, view.Center, Profile.CurrentProfile.UserID, view.Transform);
 				content.SocialChannel = announcementWidget.announcement.SocialChannel;
 				content.FacebookId = announcementWidget.announcement.FacebookId;
+				content.CreationDate = announcementWidget.announcement.CreationDate;
 
 			} else if (widget is EventWidget) {
 				
@@ -233,11 +234,13 @@ namespace Board.Interface
 				content = new BoardEvent (eventWidget.boardEvent.Name, eventWidget.boardEvent.Image, imageURL, eventWidget.boardEvent.StartDate, eventWidget.boardEvent.EndDate, view.Transform, view.Center, Profile.CurrentProfile.UserID);
 				((BoardEvent)content).Description = eventWidget.boardEvent.Description;
 				content.FacebookId = eventWidget.boardEvent.FacebookId;
+				content.CreationDate = eventWidget.content.CreationDate;
 
 			} else if (widget is PollWidget) {
 				
 				var pollWidget = (PollWidget)widget;
 				content = new Poll (pollWidget.poll.Question, view.Transform, view.Center, Profile.CurrentProfile.UserID, pollWidget.poll.Answers.ToArray());
+				content.CreationDate = pollWidget.poll.CreationDate;
 				
 			} else if (widget is MapWidget) {
 				
@@ -249,8 +252,10 @@ namespace Board.Interface
 
 			}
 
-
-			content.CreationDate = DateTime.Now;
+			var boardCoordinate = UIBoardInterface.board.GeolocatorObject.Coordinate;
+			content.latitude = boardCoordinate.Latitude;
+			content.longitude = boardCoordinate.Longitude; 
+			content.boardId = UIBoardInterface.board.Id;
 
 			return content;
 		}

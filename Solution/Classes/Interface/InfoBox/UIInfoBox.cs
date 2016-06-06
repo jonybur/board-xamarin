@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using CoreGraphics;
 using UIKit;
+using Facebook.CoreKit;
+using System;
+using Board.Facebook;
 
 namespace Board.Interface
 {
@@ -16,6 +19,56 @@ namespace Board.Interface
 		UIInstagramGallery InstagramGallery;
 		UIImageView Line1, Line2;
 
+		public void CheckIfOpen(List<FacebookElement> obj){
+			if (obj == null) {
+				OpenLabel.Text = "-";
+				return;
+			}
+
+			if (obj.Count > 0) {
+				
+				var fbhour = (FacebookHours)obj[0];
+				if (fbhour.Hours == null) {
+					OpenLabel.Text = "-";
+					return;
+				}
+
+				var dayOfWeek = DateTime.Today.DayOfWeek.ToString ().Substring (0, 3).ToLower ();
+
+				var indexStart = fbhour.Hours.IndexOf (dayOfWeek + "_1_open", StringComparison.Ordinal);
+				var indexEnd = fbhour.Hours.IndexOf (dayOfWeek + "_1_close", StringComparison.Ordinal);
+
+				if (indexStart == -1 || indexEnd == -1) {
+					OpenLabel.Text = "NOW CLOSED";
+					return;
+				}
+				indexStart += 15;
+				indexEnd += 16;
+
+				var startStringDate = fbhour.Hours.Substring (indexStart, 5);
+				var endStringDate = fbhour.Hours.Substring (indexEnd, 5);
+
+				var	startDate = DateTime.Parse (startStringDate);
+				var	endDate = DateTime.Parse (endStringDate);
+
+				var startTotalMinutes = startDate.TimeOfDay.TotalMinutes;
+				var endTotalMinutes = endDate.TimeOfDay.TotalMinutes;
+				var currentTotalMinutes = DateTime.Now.TimeOfDay.TotalMinutes;
+
+				if (endTotalMinutes < startTotalMinutes) {
+					endTotalMinutes += 1440;
+				}
+
+				if (startTotalMinutes <= currentTotalMinutes && currentTotalMinutes <= endTotalMinutes) {
+					OpenLabel.Text = "NOW OPEN";
+					OpenLabel.TextColor = UIColor.FromRGB (28, 57, 16);
+				} else {
+					OpenLabel.Text = "NOW CLOSED";
+					OpenLabel.TextColor = UIColor.FromRGB (28, 57, 16);
+				}
+			}
+		}
+
 		public UIInfoBox(Board.Schema.Board board){
 			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth - XMargin * 2, AppDelegate.ScreenHeight);
 			Center = new CGPoint (XMargin + Frame.Width / 2, AppDelegate.ScreenHeight / 2);
@@ -27,36 +80,40 @@ namespace Board.Interface
 				AppDelegate.Narwhal20, UIBoardInterface.board.Name);
 			CategoryLabel = new UITitleLabel ((float)NameLabel.Frame.Bottom + 3, (float)Frame.Width,
 				AppDelegate.Narwhal14, board.Category);
-			OpenLabel = new UITitleLabel ((float)CategoryLabel.Frame.Bottom, (float)Frame.Width,
-				AppDelegate.Narwhal14, "OPEN NOW");
-			OpenLabel.TextColor = UIColor.FromRGB (28, 57, 16);
 
-			Line2 = new UIImageView (new CGRect (0, OpenLabel.Frame.Bottom + 5, Frame.Width, 1));
-			Line2.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 90);
+			OpenLabel = new UITitleLabel ((float)CategoryLabel.Frame.Bottom, (float)Frame.Width, AppDelegate.Narwhal14, string.Empty);
+			OpenLabel.Text = "CHECKING...";
+
+			FacebookUtils.MakeGraphRequest (board.FacebookId, "?fields=hours", CheckIfOpen);
 
 			ActionButtons = new UIActionButtons (board, (float)OpenLabel.Frame.Bottom + 10, (float)Frame.Width);
 			AboutBox = new UIAboutBox (board.About, (float)OpenLabel.Frame.Bottom + 75, (float)Frame.Width);
 			Container = new UIMapContainer (Frame, (float)AboutBox.Frame.Bottom + 30);
+
+			/*
 			Line1 = new UIImageView (new CGRect (0, Container.Map.Frame.Bottom + 20, Frame.Width, 1));
 			Line1.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 90);
 
 			InstagramLabel = new UITitleLabel ((float)Line1.Frame.Bottom + 20, (float)Frame.Width,
 												AppDelegate.Narwhal16, "LATEST CUSTOMER PHOTOS");
-
+			
 			var images = new List<UIImage> ();
+
 			var testImage = UIImage.FromFile ("./demo/magazine/nantucket.png");
 			for (int i = 0; i < 8; i++) {
 				images.Add (testImage);
 			}
 
 			InstagramGallery = new UIInstagramGallery ((float)Frame.Width, (float)InstagramLabel.Frame.Bottom + 15, images);
-			AddSubviews (Banner, CategoryLabel, OpenLabel, Container.Map, InstagramLabel, Line1, NameLabel, NameLabel, AboutBox, InstagramGallery);
+			*/
+
+			AddSubviews (Banner, CategoryLabel, Container.Map, NameLabel, NameLabel, AboutBox, OpenLabel);//, Line1, InstagramGallery, InstagramLabel);
 
 			foreach (var button in ActionButtons.ListActionButton) {
 				AddSubview (button);
 			}
 
-			ContentSize = new CGSize (Frame.Width, InstagramGallery.Frame.Bottom + Board.Interface.Buttons.ButtonInterface.ButtonBarHeight * 3);
+			ContentSize = new CGSize (Frame.Width, Container.Map.Frame.Bottom + Board.Interface.Buttons.ButtonInterface.ButtonBarHeight * 3);
 
 			Scrolled += (sender, e) => {
 				if (ContentOffset.Y < 0){

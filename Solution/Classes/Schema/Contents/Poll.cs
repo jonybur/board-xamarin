@@ -13,13 +13,17 @@ namespace Board.Schema
 
 		public List<string> Answers;
 
-		public const string Type = "polls";
+		public string Type {
+			get { return "polls"; }
+		}
 
 		public Poll(){
+			CreationDate = DateTime.Now;
 		}
 
 		public Poll(string question, CGAffineTransform transform, CGPoint center, string creatorid, params string[] answers)
 		{
+			CreationDate = DateTime.Now;
 			Question = question;
 			Transform = transform;
 			Center = center;
@@ -29,6 +33,7 @@ namespace Board.Schema
 
 		public Poll(string question, CGAffineTransform transform, CGPoint center, string creatorid, DateTime creationdate, List<string> answers)
 		{
+			CreationDate = DateTime.Now;
 			Question = question;
 			Transform = transform;
 			Center = center;

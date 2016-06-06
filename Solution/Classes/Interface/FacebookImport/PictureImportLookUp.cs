@@ -26,8 +26,7 @@ namespace Board.Interface.FacebookImport
 			ScrollView = new UIScrollView (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			ScrollView.UserInteractionEnabled = true;
 
-			UIImageView lookUpImage;
-			lookUpImage = CreateImageFrame (picture.Image);
+			var lookUpImage = CreateImageFrame (picture.Image);
 			ScrollView.AddSubview (lookUpImage);
 			ScrollView.MaximumZoomScale = 4f;
 			ScrollView.MinimumZoomScale = 1f;
@@ -44,7 +43,7 @@ namespace Board.Interface.FacebookImport
 			doubletap.NumberOfTapsRequired = 2;
 
 			longpress = new UILongPressGestureRecognizer (tg => {
-				UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
+				var alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
 
 				alert.AddAction (UIAlertAction.Create ("Save Photo", UIAlertActionStyle.Default, SavePhoto));
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));	
@@ -86,7 +85,7 @@ namespace Board.Interface.FacebookImport
 			using (UIImage img = UIImage.FromFile ("./camera/nextbutton.png")) {
 				NextButton = new UIImageView(new CGRect(0,0,img.Size.Width * 2,img.Size.Height * 2));
 
-				UIImageView subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
+				var subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
 				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 				subView.Center = new CGPoint (NextButton.Frame.Width / 2, NextButton.Frame.Height / 2);
 				subView.TintColor = buttonColor;
@@ -105,7 +104,7 @@ namespace Board.Interface.FacebookImport
 
 		private async void SavePhoto(UIAlertAction action)
 		{
-			ALAssetsLibrary lib = new ALAssetsLibrary ();
+			var lib = new ALAssetsLibrary ();
 			await lib.WriteImageToSavedPhotosAlbumAsync(((Picture)content).Image.CGImage, ALAssetOrientation.Up);
 			lib.Dispose();
 		}

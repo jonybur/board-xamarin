@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using BigTed;
 using Board.Facebook;
 using Board.Screens.Controls;
-using Board.Utilities;
 using CoreGraphics;
+using System;
 using Foundation;
 using Haneke;
 using UIKit;
@@ -17,7 +16,6 @@ namespace Board.Interface.FacebookImport
 		bool CanGoBack;
 		int VideoCount;
 		UIGalleryScrollView GallerySV;
-		List<FacebookVideo> FacebookVideos;
 		bool ConnectionError;
 
 		public override void ViewDidLoad () {
@@ -42,9 +40,7 @@ namespace Board.Interface.FacebookImport
 		}
 
 		private void Completion(List<FacebookElement> elementList) {
-			FacebookVideos = new List<FacebookVideo> ();
-
-			VideoCount = elementList.Count;
+			VideoCount = elementList.Count - 1;
 
 			foreach (var element in elementList) {
 				LoadVideoURL(element as FacebookVideo);
@@ -68,14 +64,16 @@ namespace Board.Interface.FacebookImport
 				return;
 			}
 
-			GallerySV.SetImage (thumbImage, new System.EventHandler ((sender, e) => {
+			GallerySV.SetImage (thumbImage, new EventHandler ((sender, e) => {
 				var video = new Board.Schema.Video ();
 				video.AmazonUrl = fbVideo.Source;
 				video.FacebookId = fbVideo.Id;
+				video.CreationDate = DateTime.Parse(fbVideo.UpdatedTime);
 				video.Description = fbVideo.Description;
 				var importLookUp = new VideoImportLookUp (video);
 				AppDelegate.PushViewLikePresentView (importLookUp);
 			}));
+
 			DownloadsCount++;
 
 			if (DownloadsCount == VideoCount){

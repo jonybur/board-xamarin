@@ -1,6 +1,7 @@
 ﻿using System;
 using UIKit;
 using CoreGraphics;
+using Plugin.Share;
 using MessageUI;
 using Haneke;
 
@@ -43,7 +44,8 @@ namespace Board.Screens
 			case ScreenContact.BusinessScreen:
 				logoURL = "./screens/business/icon.png";
 				titleString = "CREATE A BOARD";
-				descriptionString = "Want to create a Board for your business?\nJust send us an email and\na representative will assist you\nas soon as possible";
+				//Have a business on Nantucket? 
+				descriptionString = "Have a business on Nantucket?\nGet you business on Board\nJust send us an email and\na representative will assist you\nas soon as possible";
 				actionString = "EMAIL STAFF";
 				break;
 			}
@@ -82,25 +84,28 @@ namespace Board.Screens
 			ActionButton.BackgroundColor = AppDelegate.BoardBlue;
 			ActionButton.SetTitle (actionString, UIControlState.Normal);
 
-			ActionButton.TouchUpInside += (sender, e) => {
+			ActionButton.TouchUpInside += async (sender, e) => {
 
-				if (MFMailComposeViewController.CanSendMail) {
-					MFMailComposeViewController mailController = new MFMailComposeViewController ();
+				if (screenContact == ScreenContact.InviteScreen){
+					
+					await ShareImplementation.Init ();
+					var shareImplementation = new ShareImplementation ();
+					await shareImplementation.Share ("Check out Board... it shows you what's going on nearby!\nwww.getonboard.us", null);
 
-					if (screenContact == ScreenContact.SupportScreen || screenContact == ScreenContact.BusinessScreen){
+				}else{
+
+					if (MFMailComposeViewController.CanSendMail) {
+						MFMailComposeViewController mailController = new MFMailComposeViewController ();
+
 						mailController.SetToRecipients(new [] {"support@getonboard.us"} );
-					} else {
-						mailController.SetSubject ("Get on Board!");
+						mailController.SetMessageBody ("", false);
+						mailController.Finished += (s, args) => args.Controller.DismissViewController (true, HideWindow);
+						window = new UIWindow(new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+						window.RootViewController = new UIViewController();
+						window.MakeKeyAndVisible();
+						window.RootViewController.PresentViewController(mailController, true, null);
 					}
-
-					mailController.SetMessageBody ("", false);
-					mailController.Finished += (s, args) => args.Controller.DismissViewController (true, HideWindow);
-					window = new UIWindow(new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
-					window.RootViewController = new UIViewController();
-					window.MakeKeyAndVisible();
-					window.RootViewController.PresentViewController(mailController, true, null);
 				}
-
 			};
 
 			AddSubviews (LogoView, TitleLabel, DescriptionView, ActionButton);

@@ -81,6 +81,14 @@ namespace Board.Screens
 			CurrentScreen = Screens.Business;
 		}
 
+		public void LoadSettingsScreen()
+		{
+			CurrentScreenViewController = new SettingsScreen ();
+			AddChildViewController (CurrentScreenViewController);
+			View.AddSubview (CurrentScreenViewController.View);
+			CurrentScreen = Screens.Settings;
+		}
+
 		public override void ViewDidDisappear(bool animated)
 		{
 			CurrentScreenViewController.ViewDidDisappear (animated);

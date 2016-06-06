@@ -6,6 +6,7 @@ using System.Threading;
 using Board.Screens.Controls;
 using Board.Utilities;
 using CoreGraphics;
+using Board.Infrastructure;
 using UIKit;
 
 namespace Board.Interface
@@ -73,11 +74,23 @@ namespace Board.Interface
 			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, yposition);
 		}
 
+		bool tapped = false;
+
 		private UIButton CreateColorButton(UIColor color, float yposition){
 			var button = new UIButton ();
 			button.Frame = new CGRect (0, yposition, AppDelegate.ScreenWidth, 80);
 			button.BackgroundColor = color;
+
 			button.TouchUpInside += (sender, e) => {
+				if (tapped){
+					return;
+				}
+
+				var boardWithColor = UIBoardInterface.board;
+				boardWithColor.MainColor = color;
+				CloudController.EditBoard(boardWithColor);
+
+				tapped = true;
 				button.Alpha = .5f;
 				var thread = new Thread(new ThreadStart(PopOut));
 				thread.Start();

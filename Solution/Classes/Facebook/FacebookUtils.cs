@@ -41,7 +41,7 @@ namespace Board.Facebook
 			Element = element;
 
 			var graph = new GraphRequest (id + "/" + element, null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
-			graph.Start (async delegate(GraphRequestConnection connection, NSObject obj, NSError error) {
+			graph.Start (delegate (GraphRequestConnection connection, NSObject obj, NSError error) {
 
 				var ElementList = new List<FacebookElement> ();
 
@@ -107,6 +107,23 @@ namespace Board.Facebook
 						var fbcover = new FacebookCover (objects [i, 0], objects [i, 1]);
 						ElementList.Add (fbcover);
 					}
+
+				} else if (Element == "?fields=cover,updated_time") {
+					string[,] objects = NSObjectToElement (obj, "cover.id", "cover.source", "updated_time");
+
+					for (int i = 0; i < objects.GetLength (0); i++) {
+						var fbcover = new FacebookCoverUpdatedTime (objects [i, 0], objects [i, 1], objects[i, 2]);
+						ElementList.Add (fbcover);
+					}
+
+				} else if (Element == "?fields=hours") {
+					string[,] objects = NSObjectToElement (obj, "id", "hours");
+
+					for (int i = 0; i < objects.GetLength (0); i++) {
+						var fbhours = new FacebookHours (objects [i, 0], objects [i, 1]);
+						ElementList.Add (fbhours);
+					}
+
 				} else if (Element.StartsWith ("?fields=name,location,about,cover,phone,category_list,picture", StringComparison.Ordinal)) {
 					string[,] objects = NSObjectToElement (obj, "id", "name", "location.latitude", "location.longitude", "about", "cover.source",
 						"picture.data.url", "phone", "category_list.name");

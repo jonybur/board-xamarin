@@ -66,6 +66,7 @@ namespace Board.Interface
 				}));
 				AppDelegate.NavigationController.PresentViewController (alert, true, null);
 			});
+			DeleteButton.SuscribeToEvent ();
 		}
 
 		private void CreateImportButton(float yPosition)
@@ -79,28 +80,18 @@ namespace Board.Interface
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, delegate {
 				}));
 				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate {
-					if (alert.TextFields.Length == 0){
-						return;
-					}
-
-					var textField = alert.TextFields[0];
-
-					if (string.IsNullOrEmpty (textField.Text)) { 
-						return;
-					}
-
 
 					// gets 5 announcements
 					BTProgressHUD.Show("Importing Announcements...");
 
-					FacebookAutoImporter.ImportPageContent(textField.Text);
+					FacebookAutoImporter.ImportPageContent(UIBoardInterface.board.FacebookId);
 					// - updates board -
 				}));
-				alert.AddTextField (obj => obj.Placeholder = "Facebook Page ID");
 
 				AppDelegate.NavigationController.PresentViewController (alert, true, null);
 
 			});
+			ImportButton.SuscribeToEvent ();
 		}
 
 		private void CreateColorPicker(float yPosition)
@@ -113,6 +104,7 @@ namespace Board.Interface
 				Banner.UnsuscribeToEvents ();
 				AppDelegate.NavigationController.PushViewController(colorScreen, true);
 			});
+			ColorPicker.SuscribeToEvent ();
 		}
 
 		private void CreateAnalyticsButton(float yPosition)
@@ -125,6 +117,7 @@ namespace Board.Interface
 				Banner.UnsuscribeToEvents ();
 				AppDelegate.NavigationController.PushViewController(analScreen, true);
 			});
+			AnalyticsButton.SuscribeToEvent ();
 		}
 
 
@@ -137,6 +130,7 @@ namespace Board.Interface
 				Banner.UnsuscribeToEvents ();
 				AppDelegate.NavigationController.PushViewController(pgScreen, true);
 			});
+			SyncButton.SuscribeToEvent ();
 		}
 
 		private void LoadBanner()

@@ -112,7 +112,7 @@ namespace Board.Interface.CreateScreens
 				{
 					pressed = true;
 
-					Thread thread = new Thread(new ThreadStart(PopOut));
+					var thread = new Thread(new ThreadStart(PopOut));
 					thread.Start();
 
 					OnReturn(fbelement);

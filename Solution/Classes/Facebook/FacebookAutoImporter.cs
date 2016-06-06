@@ -4,6 +4,7 @@ using BigTed;
 using Board.Infrastructure;
 using Board.Interface;
 using Board.JsonResponses;
+using System;
 using Board.Schema;
 using Board.Utilities;
 using CoreGraphics;
@@ -102,12 +103,13 @@ namespace Board.Facebook
 				var boardEvent = new BoardEvent (fbEvent, ItemLocation, CGAffineTransform.MakeIdentity());
 				boardEvents.Add (boardEvent);
 
-				FacebookUtils.MakeGraphRequest (fbEvent.Id, "?fields=cover", delegate(List<FacebookElement> elementList) {
+				FacebookUtils.MakeGraphRequest (fbEvent.Id, "?fields=cover,updated_time", delegate(List<FacebookElement> elementList) {
 					if (elementList.Count > 0) {
-						var cover = elementList [0] as FacebookCover;
+						var cover = elementList [0] as FacebookCoverUpdatedTime;
 						if (cover != null) {
 							boardEvents[coversToLoad].ImageUrl = cover.Source;
 						}
+						boardEvents[coversToLoad].CreationDate = DateTime.Parse(cover.UpdatedTime);
 					}
 
 					coversToLoad++;

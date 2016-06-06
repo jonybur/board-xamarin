@@ -2,6 +2,7 @@
 using System.Runtime.Serialization;
 using Board.Facebook;
 using CoreGraphics;
+using Board.Interface;
 using Foundation;
 using UIKit;
 
@@ -23,11 +24,14 @@ namespace Board.Schema
 		[IgnoreDataMember]
 		public UIImage Thumbnail;
 
-		public const string Type = "videos";
+		public string Type {
+			get { return "videos"; }
+		}
 
 		public string Description;
 
-		public Video() { 
+		public Video() {
+			CreationDate = DateTime.Now;
 		}
 
 		public NSUrl GetNSUrlForDisplay(){
@@ -40,6 +44,7 @@ namespace Board.Schema
 
 		public Video(string amazonurl, UIImage thumbnail, CGPoint center, string creatorid, CGAffineTransform transform)
 		{
+			CreationDate = DateTime.Now;
 			AmazonUrl = amazonurl;
 			Thumbnail = thumbnail;
 			Transform = transform;
@@ -48,10 +53,17 @@ namespace Board.Schema
 		}
 
 		public Video(FacebookVideo fbVideo, CGPoint center, CGAffineTransform transform){
+			CreationDate = DateTime.Now;
 			Description = fbVideo.Description;
 			CreationDate = DateTime.Parse(fbVideo.UpdatedTime);
 			Center = center;
 			Transform = transform;
+
+			var boardCoordinate = UIBoardInterface.board.GeolocatorObject.Coordinate;
+			latitude = boardCoordinate.Latitude;
+			longitude = boardCoordinate.Longitude;
+
+			boardId = UIBoardInterface.board.Id;
 		}
 	}
 }

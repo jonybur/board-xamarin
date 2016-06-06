@@ -31,7 +31,6 @@ namespace Board.Infrastructure
 			return returnDictionary;
 		}
 
-		// figure this out
 		private static void FillTypeHeader<T>(List<Content> listContent, ref Dictionary<string, object> typeHeader, string contentType) where T:Content{
 			var contentDictionary = GenerateIdDictionary<T> (listContent);
 			if (contentDictionary.Count > 0) {
@@ -43,13 +42,13 @@ namespace Board.Infrastructure
 			
 			var typeHeader = new Dictionary<string, object> ();
 
-			FillTypeHeader<Announcement> (listContent, ref typeHeader, Announcement.Type);
-			FillTypeHeader<BoardEvent> (listContent, ref typeHeader, BoardEvent.Type);
-			FillTypeHeader<Poll> (listContent, ref typeHeader, Poll.Type);
-			FillTypeHeader<Picture> (listContent, ref typeHeader, Picture.Type);
-			FillTypeHeader<Video> (listContent, ref typeHeader, Video.Type);
+			FillTypeHeader<Announcement> (listContent, ref typeHeader, "announcements");
+			FillTypeHeader<BoardEvent> (listContent, ref typeHeader, "events");
+			FillTypeHeader<Poll> (listContent, ref typeHeader, "polls");
+			FillTypeHeader<Picture> (listContent, ref typeHeader, "pictures");
+			FillTypeHeader<Video> (listContent, ref typeHeader, "videos");
 
-			return AddTypeHeaderToFinalJson (typeHeader);;
+			return AddTypeHeaderToFinalJson (typeHeader);
 		}
 
 		// recibe un content, arma json de update
@@ -75,17 +74,17 @@ namespace Board.Infrastructure
 		private static string GetContentType(Content content){
 			string contentType;
 			if (content is Announcement) {
-				contentType = Announcement.Type;
+				contentType = "announcements";
 			} else if (content is BoardEvent) {
-				contentType = BoardEvent.Type;
+				contentType = "events";
 			} else if (content is Poll) {
-				contentType = Poll.Type;
+				contentType = "polls";
 			} else if (content is Picture) {
-				contentType = Picture.Type;
+				contentType = "pictures";
 			} else if (content is Video) {
-				contentType = Video.Type;
+				contentType = "videos";
 			} else if (content is Sticker) {
-				contentType = Sticker.Type;
+				contentType = "stickers";
 			} else {
 				contentType = string.Empty;
 			}
@@ -110,6 +109,7 @@ namespace Board.Infrastructure
 			return new Dictionary<string, Content> ();
 		}
 
+		/*
 		public static string GenerateDeleteJson(string contentType, string contentId)
 		{
 			var InternalJson = new string[1];
@@ -123,22 +123,28 @@ namespace Board.Infrastructure
 
 			return JsonConvert.SerializeObject (FinalJson);
 		}
-
+		*/
 		public static string GenerateDeleteJson(params Content[] contents)
 		{
-			var InternalJson = new string[1];
-
 			string contentType = GetContentType (contents [0]);
 
-			InternalJson[0] = contentType+"."+contents[0].Id;
+			var UpdatesJson = new Dictionary<string, object> ();
 
 			var FinalJson = new Dictionary<string, object> ();
 
-			FinalJson.Add ("deletes", InternalJson);
+			var InternalJson = new Dictionary<string, object> ();
 
-			FinalJson.Add ("timestamp", CommonUtils.GetUnixTimeStamp ());
+			InternalJson.Add(contents[0].Id, null);
 
-			return JsonConvert.SerializeObject (FinalJson);
+			FinalJson.Add (contentType, InternalJson);
+
+			UpdatesJson.Add ("updates", FinalJson);
+
+			UpdatesJson.Add ("timestamp", CommonUtils.GetUnixTimeStamp ());
+
+			var json = JsonConvert.SerializeObject (UpdatesJson);
+
+			return json;
 		}
 
 	}

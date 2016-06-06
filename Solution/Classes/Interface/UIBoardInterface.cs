@@ -74,8 +74,6 @@ namespace Board.Interface
 		private void InitializeInterface()
 		{
 			// This was main color
-			board.MainColor = UIColor.FromRGB(170, 183, 192);
-
 			View.BackgroundColor = board.MainColor;
 
 			BoardScroll = new UIBoardScroll ();

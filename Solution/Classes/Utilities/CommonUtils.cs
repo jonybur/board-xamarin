@@ -12,6 +12,26 @@ namespace Board.Utilities
 {
 	public static class CommonUtils
 	{
+		public static string GetFormattedTimeDifference(DateTime creationTime){
+			string result = string.Empty;
+
+			var timeDifference = DateTime.Now.Subtract (creationTime);
+
+			if (timeDifference.TotalSeconds < 60) {
+				result = timeDifference.Seconds + "s";
+			} else if (timeDifference.TotalMinutes < 60) {
+				result = timeDifference.Minutes + "m";
+			} else if (timeDifference.TotalHours < 24) {
+				result = timeDifference.Hours + "h";
+			} else if (timeDifference.TotalDays < 7) {
+				result = timeDifference.Days + "d";
+			} else {
+				result = (timeDifference.Days/7) + "w";
+			}
+
+			return result;
+		}
+
 		public static string GetFormattedDistance(double distance){
 
 			string farAway;
@@ -70,6 +90,10 @@ namespace Board.Utilities
 
 		public static Int32 GetUnixTimeStamp(){
 			return (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+		}
+
+		public static Int32 GetUnixTimeStamp(DateTime time){
+			return (Int32)(time.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 		}
 
 		public static async Task<UIImage> DownloadUIImageFromURL(string webAddress)

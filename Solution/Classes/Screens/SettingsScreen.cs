@@ -13,7 +13,6 @@ namespace Board.Screens
 	{
 		UIMenuBanner Banner;
 
-
 		public override void ViewDidLoad ()
 		{
 			LoadBanner ();
@@ -23,7 +22,6 @@ namespace Board.Screens
 
 			View.BackgroundColor = UIColor.White;
 		}
-
 
 		public override void ViewDidAppear(bool animated)
 		{
@@ -68,7 +66,8 @@ namespace Board.Screens
 				var creditsButton = new UIOneLineMenuButton((float)aboutLabel.Frame.Bottom + 5);
 				creditsButton.SetLabel("Credits >");
 				creditsButton.SetTapEvent (delegate {
-					
+					var creditsScreen = new CreditsScreen();
+					AppDelegate.NavigationController.PushViewController(creditsScreen, true);
 				});
 				creditsButton.SuscribeToEvent();
 

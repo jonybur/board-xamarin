@@ -52,7 +52,7 @@ namespace Board.Screens.Controls
 			var rightNow = new UILabel ();
 			rightNow.Frame = new CGRect (0, 0, flagView.Frame.Width-10, 20);
 			rightNow.Font = AppDelegate.Narwhal14;
-			rightNow.Text = "RIGHT NOW AT";
+			rightNow.Text = "HAPPENING NOW";
 			rightNow.TextColor = UIColor.White;
 			rightNow.AdjustsFontSizeToFitWidth = true;
 			rightNow.Center = new CGPoint(flagView.Frame.Width / 2, flagView.Frame.Height / 2 + 2);

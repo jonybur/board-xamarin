@@ -5,6 +5,7 @@ using Board.Schema;
 using Board.Utilities;
 using Foundation;
 using Haneke;
+using System.Linq;
 
 namespace Board.Screens.Controls
 {	
@@ -12,15 +13,18 @@ namespace Board.Screens.Controls
 
 		const float SeparationBetweenObjects = 30;
 
-		public UITimelineContentDisplay(List<Board.Schema.Board> listboards) {
+		public UITimelineContentDisplay(List<Board.Schema.Board> boardList, List<Content> timelineContent) {
 			
 			float yposition = UIMagazineBannerPage.Height + UIMenuBanner.Height + 30;
 
-			var picture = new Picture ();
-			picture.ImageUrl = "https://board-alpha-media.s3.amazonaws.com/716598f1-f0f7-4ac0-b33f-3c2871c4c935/7317f06a-407a-4cdd-b1ac-8eef53624437.jpg";
+			foreach (var content in timelineContent){
+				var board = boardList.FirstOrDefault (x => x.Id == content.boardId);
 
-			for (int i = 0; i < 5; i++) {
-				var timelineWidget = new UITimelineWidget (listboards [0], picture);
+				if (board == null) {
+					continue;
+				}
+
+				var timelineWidget = new UITimelineWidget (board, content);
 				timelineWidget.Center = new CGPoint (AppDelegate.ScreenWidth / 2, yposition + timelineWidget.Frame.Height / 2);
 				
 				AddSubview (timelineWidget);
@@ -49,7 +53,7 @@ namespace Board.Screens.Controls
 			const int XMargin = 10;
 
 			public UITimelineWidget(Board.Schema.Board board, Content content){
-				GenerateHeaderView(board);
+				GenerateHeaderView(board, content);
 
 				if (content is Picture){
 					
@@ -71,7 +75,7 @@ namespace Board.Screens.Controls
 				Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, descriptionView.Frame.Bottom);
 			}
 
-			private void GenerateHeaderView(Board.Schema.Board board){
+			private void GenerateHeaderView(Board.Schema.Board board, Content content){
 
 				int headerHeight = 40;
 
@@ -84,7 +88,7 @@ namespace Board.Screens.Controls
 					AppDelegate.OpenBoard (board);
 				};
 
-				boardButton.Frame = new CGRect (0, 0, headerView.Frame.Width / 2, headerHeight);
+				boardButton.Frame = new CGRect (0, 0, headerView.Frame.Width * .7f, headerHeight);
 
 				var logoView = new UIImageView ();
 				logoView.Frame = new CGRect (0, 0, headerHeight, headerHeight);
@@ -110,7 +114,7 @@ namespace Board.Screens.Controls
 				boardButton.AddSubviews (logoView, nameView, distanceView);
 
 				var timeView = new UILabel();
-				string timeAgo = "5m";
+				string timeAgo = CommonUtils.GetFormattedTimeDifference (content.CreationDate);
 				timeView.Font = UIFont.SystemFontOfSize (14, UIFontWeight.Light);
 				timeView.TextColor = UIColor.FromRGBA(0,0,0,200);
 				timeView.Text = timeAgo;

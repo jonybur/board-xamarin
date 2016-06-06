@@ -104,9 +104,13 @@ namespace Board.Screens
 		{		
 			if (!firstLocationUpdate) {
 				firstLocationUpdate = true;
-				var location = change.ObjectForKey (NSValue.ChangeNewKey) as CoreLocation.CLLocation;
+				var location = change.ObjectForKey (NSObject.ChangeNewKey) as CoreLocation.CLLocation;
+
 				//AppDelegate.UserLocation = location.Coordinate;
-				AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(41.2835861,-70.1038089);
+				// BUENOS AIRES
+				AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(-34.584424, -58.435909);
+				// NANTUCKET
+				//AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(41.2835861,-70.1038089);
 				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
 
 				if (!hasLoaded) {

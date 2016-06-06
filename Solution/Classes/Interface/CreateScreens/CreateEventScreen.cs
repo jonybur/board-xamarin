@@ -317,6 +317,7 @@ namespace Board.Interface.CreateScreens
 			FacebookEvent FBEvent = (FacebookEvent)FBElement;
 			content.FacebookId = FBEvent.Id;
 
+
 			((BoardEvent)content).Name = FBEvent.Name;
 			NameLabel.Text = FBEvent.Name;
 
@@ -333,16 +334,18 @@ namespace Board.Interface.CreateScreens
 			}
 
 			BTProgressHUD.Show ();
-			FacebookUtils.MakeGraphRequest (FBEvent.Id, "?fields=cover", LoadCover);
+			FacebookUtils.MakeGraphRequest (FBEvent.Id, "?fields=cover,updated_time", LoadCover);
 		}
 
 		private async void LoadCover(List<FacebookElement> elementList)
 		{
 			if (elementList.Count > 0) {
-				FacebookCover cover = elementList [0] as FacebookCover;
+				var cover = elementList [0] as FacebookCoverUpdatedTime;
 				if (cover != null) {
 					try{
-						UIImage facebookImage = await CommonUtils.DownloadUIImageFromURL (cover.Source);
+						var facebookImage = await CommonUtils.DownloadUIImageFromURL (cover.Source);
+						content.CreationDate = DateTime.Parse(cover.UpdatedTime);
+
 						SetImage (facebookImage);
 					} catch (Exception ex) {
 						Console.WriteLine ("ERROR: " + ex.Message);
@@ -351,6 +354,8 @@ namespace Board.Interface.CreateScreens
 
 				}
 			}
+			BTProgressHUD.Dismiss ();
+
 		}
 
 		private void CreateGestures(bool isEditing)
@@ -374,7 +379,6 @@ namespace Board.Interface.CreateScreens
 
 					boardEvent.Description = DescriptionView.Text;
 					boardEvent.SetImageFromUIImage(PictureBox.Image);
-					boardEvent.CreationDate = DateTime.Now;
 
 					Preview.Initialize(boardEvent);
 				

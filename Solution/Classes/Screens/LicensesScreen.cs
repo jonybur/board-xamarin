@@ -62,8 +62,7 @@ namespace Board.Screens
 			Banner.SuscribeToEvents ();
 		}
 
-		public override void ViewDidDisappear(bool animated)
-		{
+		public override void ViewWillDisappear (bool animated) {
 			Banner.UnsuscribeToEvents ();
 		}
 
@@ -71,10 +70,24 @@ namespace Board.Screens
 		{
 			Banner = new UIMenuBanner ("LICENSES", "arrow_left");
 
-			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
+			bool taps = false;
+
+			var tap = new UITapGestureRecognizer (tg => {
+				if (taps){
+					return;
+				}
+
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					AppDelegate.NavigationController.PopViewController(true);
-					//MemoryUtility.ReleaseUIViewWithChildren (View);
+					taps = true;
+
+					var containerScreen = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 2] as ContainerScreen;
+					if (containerScreen!= null)
+					{
+						containerScreen.LoadSettingsScreen();
+					}
+					AppDelegate.PopViewControllerWithCallback (delegate{
+						MemoryUtility.ReleaseUIViewWithChildren (View);
+					});
 				}
 			});
 
