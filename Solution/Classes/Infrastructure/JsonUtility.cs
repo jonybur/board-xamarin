@@ -109,21 +109,6 @@ namespace Board.Infrastructure
 			return new Dictionary<string, Content> ();
 		}
 
-		/*
-		public static string GenerateDeleteJson(string contentType, string contentId)
-		{
-			var InternalJson = new string[1];
-			InternalJson[0] = contentType+"."+contentId;
-
-			var FinalJson = new Dictionary<string, object> ();
-
-			FinalJson.Add ("deletes", InternalJson);
-
-			FinalJson.Add ("timestamp", CommonUtils.GetUnixTimeStamp ());
-
-			return JsonConvert.SerializeObject (FinalJson);
-		}
-		*/
 		public static string GenerateDeleteJson(params Content[] contents)
 		{
 			string contentType = GetContentType (contents [0]);
@@ -139,6 +124,19 @@ namespace Board.Infrastructure
 			FinalJson.Add (contentType, InternalJson);
 
 			UpdatesJson.Add ("updates", FinalJson);
+
+			UpdatesJson.Add ("timestamp", CommonUtils.GetUnixTimeStamp ());
+
+			var json = JsonConvert.SerializeObject (UpdatesJson);
+
+			return json;
+		}
+
+		public static string GenerateDeleteAllJson()
+		{
+			var UpdatesJson = new Dictionary<string, object> ();
+
+			UpdatesJson.Add ("updates", null);
 
 			UpdatesJson.Add ("timestamp", CommonUtils.GetUnixTimeStamp ());
 

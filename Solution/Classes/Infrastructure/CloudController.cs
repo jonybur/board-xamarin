@@ -12,7 +12,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using Foundation;
-using Newtonsoft.Json;
 using UIKit;
 
 namespace Board.Infrastructure
@@ -24,15 +23,101 @@ namespace Board.Infrastructure
 		public static void GetUserProfile(){
 			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/user?authToken=" + AppDelegate.EncodedBoardToken);
 
-			if (result == "Timeout") {
-				Console.WriteLine ("Timeout on GetUserProfile");
+			if (result == "Timeout" || result == "InternalServerError") {
 				return;
 			}
 
 			AppDelegate.BoardUser = JsonConvert.DeserializeObject<User> (result);
 
 			AppDelegate.BoardUser.SetProfilePictureFromURL (AppDelegate.BoardUser.ProfilePictureURL);
+		}
 
+		public static bool UserLikesPublication(string publicationId){
+			string request = "http://" + AppDelegate.APIAddress + "/api/user/likes?publicationId=" + publicationId +
+			                 "&authToken=" + AppDelegate.EncodedBoardToken;
+			string result = JsonGETRequest (request);
+
+			var jobject = JObject.Parse (result);
+
+			var isLiked = jobject [publicationId];
+
+			if (isLiked.Type == JTokenType.Boolean) {
+				return Boolean.Parse (isLiked.ToString ());
+			}
+
+			return false;
+
+		}
+
+		public static bool SendLike(string idToLike){
+			string result = JsonPUTRequest ("http://"+AppDelegate.APIAddress+"/api/publications/"+idToLike+"/like?authToken="+AppDelegate.EncodedBoardToken+
+				"&time="+CommonUtils.GetUnixTimeStamp());
+
+			if (result == "200" || result == string.Empty) {
+				return true;
+			}
+			return false;
+
+		}
+
+		public static bool SendDislike(string idToDislike){
+			string result = JsonPUTRequest ("http://"+AppDelegate.APIAddress+"/api/publications/"+idToDislike+"/dislike?authToken="+AppDelegate.EncodedBoardToken+
+				"&time="+CommonUtils.GetUnixTimeStamp());
+
+			if (result == "200" || result == string.Empty) {
+				return true;
+			}
+			return false;
+		}
+
+		public static int GetLike(string id){
+			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/publications/likes?publicationId=" + id + "&authToken="+AppDelegate.EncodedBoardToken);
+
+			if (result == "Timeout" || result == "InternalServerError") {
+				return -1;
+			}
+
+			var jobject = JObject.Parse (result);
+
+			var likes = jobject [id];
+
+			if (likes.Type == JTokenType.Integer) {
+				int likeNumber = Int32.Parse (likes.ToString ());
+
+				return likeNumber;
+			}
+
+			return -1;
+		}
+
+		public static Dictionary<string, int> GetLikes(params string[] ids){
+			string publicationsToRequest = string.Empty;
+
+			foreach (var id in ids) {
+				publicationsToRequest += "publicationId=" + id + "&";
+			}
+
+			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/publications/likes?"+publicationsToRequest+"authToken="+AppDelegate.EncodedBoardToken);
+
+			if (result == "Timeout" || result == "InternalServerError") {
+				return new Dictionary<string, int> ();
+			}
+
+			var jobject = JObject.Parse (result);
+
+			// TODO: see if this can get simplified using just json.deserialize or such
+			var dictionaryLikes = new Dictionary<string, int> ();
+			foreach (var id in ids) {
+				var likes = jobject [id];
+
+				if (likes.Type == JTokenType.Integer) {
+					int likeNumber = Int32.Parse (likes.ToString ());
+
+					dictionaryLikes.Add (id, likeNumber);
+				}
+			}
+
+			return dictionaryLikes;
 		}
 
 		public static bool UpdateBoard(string boardId, string json){
@@ -40,16 +125,20 @@ namespace Board.Infrastructure
 
 			if (result == "200" || result == string.Empty) {
 				return true;
-			} else {
-				return false;
-			} 
+			}
+			return false;
 		}
 
 		public static List<Content> GetTimeline(CLLocationCoordinate2D location){
-			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/boards/timeline?latitude="+
-				location.Latitude.ToString(CultureInfo.InvariantCulture)+"&longitude="+location.Longitude.ToString(CultureInfo.InvariantCulture)+
-				"&authToken="+AppDelegate.EncodedBoardToken);
-			
+			string request = "http://" + AppDelegate.APIAddress + "/api/boards/timeline?latitude=" +
+			             location.Latitude.ToString (CultureInfo.InvariantCulture) + "&longitude=" + location.Longitude.ToString (CultureInfo.InvariantCulture) +
+			             "&authToken=" + AppDelegate.EncodedBoardToken;
+			string result = JsonGETRequest (request);
+
+			if (result == "Timeout" || result == "InternalServerError") {
+				return new List<Content> ();
+			}
+
 			var jobject = JObject.Parse(result);
 
 			var datum = jobject ["data"];
@@ -74,7 +163,6 @@ namespace Board.Infrastructure
 					timeline.Add (jsonContent.ToObject<BoardEvent>());
 					break;
 				}
-
 			}
 
 			return timeline;
@@ -86,6 +174,10 @@ namespace Board.Infrastructure
 				location.Latitude.ToString(CultureInfo.InvariantCulture)+"&longitude="+location.Longitude.ToString(CultureInfo.InvariantCulture)+
 				"&authToken="+AppDelegate.EncodedBoardToken);
 
+			if (result == "Timeout" || result == "InternalServerError") {
+				return new MagazineResponse ();
+			}
+
 			var magazine = MagazineResponse.Deserialize (result);
 
 			if (MagazineResponse.IsValidMagazine(magazine)){
@@ -95,14 +187,10 @@ namespace Board.Infrastructure
 			return magazine;
 		}
 
-
-
 		public static Dictionary<string, Content> GetBoardContent(string boardId){
 			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/snapshot?authToken="+AppDelegate.EncodedBoardToken);
 
 			if (result == "Timeout" || result == "InternalServerError") {
-				// crash gracefully
-
 				return new Dictionary<string, Content> ();
 			}
 
@@ -275,10 +363,17 @@ namespace Board.Infrastructure
 		}
 
 		public static bool CreateBoard(Board.Schema.Board board){
-			string logoURL = UploadToAmazon (board.Logo);
-			string coverURL = UploadToAmazon (board.CoverImage);
+			string logoURL = string.Empty, coverURL = string.Empty;
 
-			if (logoURL == null) {
+			if (board.Logo != null) {
+				logoURL = UploadToAmazon (board.Logo);
+			}
+			if (board.CoverImage != null) {
+				coverURL = UploadToAmazon (board.CoverImage);
+			}
+
+			// HAS TO HAVE A LOGO
+			if (string.IsNullOrEmpty(logoURL)) {
 				return false;
 			}
 			
@@ -286,7 +381,7 @@ namespace Board.Infrastructure
 				"\"latitude\": \"" + board.GeolocatorObject.Coordinate.Latitude  + "\", " +
 				"\"longitude\": \"" + board.GeolocatorObject.Coordinate.Longitude  + "\", " +
 				"\"name\": \"" + board.Name + "\", " +
-				"\"about\": \"" + board.About + "\", " +
+				"\"about\": " + JsonConvert.ToString(board.About) + ", " +
 				"\"mainColorCode\": \"" + CommonUtils.UIColorToHex(board.MainColor)  + "\", " +
 				"\"secondaryColorCode\": \"" + CommonUtils.UIColorToHex(board.SecondaryColor) + "\", " +
 				"\"phoneNumber\": \"" + board.Phone + "\", " + 
@@ -308,7 +403,7 @@ namespace Board.Infrastructure
 			string json = "{\"latitude\": \"" + board.GeolocatorObject.Coordinate.Latitude  + "\", " +
 				"\"longitude\": \"" + board.GeolocatorObject.Coordinate.Longitude  + "\", " +
 				"\"name\": \"" + board.Name + "\", " +
-				"\"about\": \"" + board.About + "\", " +
+				"\"about\": " + JsonConvert.ToString(board.About) + ", " +
 				"\"mainColorCode\": \"" + CommonUtils.UIColorToHex(board.MainColor)  + "\", " +
 				"\"secondaryColorCode\": \"" + CommonUtils.UIColorToHex(board.SecondaryColor) + "\", " +
 				"\"phoneNumber\": \"" + board.Phone + "\", " + 
@@ -464,6 +559,32 @@ namespace Board.Infrastructure
 				}
 
 				return e.Status.ToString();
+			}
+		}
+
+		private static string JsonPUTRequest(string url)
+		{
+			var httpWebRequest = (HttpWebRequest)WebRequest.Create (url);
+			httpWebRequest.ContentType = "application/json";
+			httpWebRequest.Method = "PUT";
+			httpWebRequest.Timeout = 8000;
+
+			try{
+				var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse ();
+				string result = string.Empty;
+				using (var streamReader = new StreamReader (httpResponse.GetResponseStream ())) {
+					result = streamReader.ReadToEnd ();
+				}
+				return result;
+			} catch (WebException e) {
+
+				if (e.Status == WebExceptionStatus.ProtocolError) 
+				{
+					return ((HttpWebResponse)e.Response).StatusCode.ToString();
+				}
+
+				return e.Status.ToString();
+
 			}
 		}
 

@@ -80,12 +80,7 @@ namespace Board.Interface
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, delegate {
 				}));
 				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate {
-
-					// gets 5 announcements
-					BTProgressHUD.Show("Importing Announcements...");
-
 					FacebookAutoImporter.ImportPageContent(UIBoardInterface.board.FacebookId);
-					// - updates board -
 				}));
 
 				AppDelegate.NavigationController.PresentViewController (alert, true, null);

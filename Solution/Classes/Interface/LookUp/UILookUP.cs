@@ -2,11 +2,8 @@
 using Board.Infrastructure;
 using Board.Utilities;
 using CoreGraphics;
-using Foundation;
 using UIKit;
-using CoreLocation;
 using Board.Interface.Widgets;
-using Facebook.CoreKit;
 using System;
 using Board.Interface.CreateScreens;
 using Board.Schema;
@@ -203,7 +200,7 @@ namespace Board.Interface.LookUp
 		{
 			UIImageView subView;
 			UILabel lblLikes;
-			int likes = 0;
+			int likes = CloudController.GetLike (content.Id);
 
 			using (UIImage img = UIImage.FromFile ("./boardinterface/lookup/like.png")) {
 				UIFont font = UIFont.SystemFontOfSize (14);
@@ -212,17 +209,24 @@ namespace Board.Interface.LookUp
 
 				subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
 				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-				subView.TintColor = buttonColor;
 				subView.Center = new CGPoint (img.Size.Width / 2, BackButton.Frame.Height / 2);
 
 				lblLikes = new UILabel (new CGRect (0, 0, likes.ToString().StringSize(font).Width + 10, 14));
 				lblLikes.Font = font;
 				lblLikes.Text = likes.ToString();
-				lblLikes.TextColor = buttonColor;
 				lblLikes.Center = new CGPoint (subView.Center.X + lblLikes.Frame.Width / 2 + 15, subView.Center.Y);
 
 				LikeButton.AddSubviews(subView, lblLikes);
 				LikeButton.Center = new CGPoint (LikeButton.Frame.Width / 2 + 10, AppDelegate.ScreenHeight - 25);
+			}
+
+			bool isLiked = CloudController.UserLikesPublication (UIBoardInterface.board.Id);
+			if (isLiked) {
+				subView.TintColor = AppDelegate.BoardOrange;
+				lblLikes.TextColor = AppDelegate.BoardOrange;
+			} else {
+				subView.TintColor = buttonColor;
+				lblLikes.TextColor = buttonColor;
 			}
 
 			LikeButton.UserInteractionEnabled = true;
@@ -232,6 +236,7 @@ namespace Board.Interface.LookUp
 			likeTap = new UITapGestureRecognizer (tg => {
 				if (!liked)
 				{
+					CloudController.SendLike(content.Id);
 					likes++;
 					lblLikes.Text = likes.ToString();
 					subView.TintColor = AppDelegate.BoardOrange;
@@ -240,6 +245,7 @@ namespace Board.Interface.LookUp
 				}
 				else 
 				{
+					CloudController.SendDislike(content.Id);
 					likes--;
 					lblLikes.Text = likes.ToString();
 					subView.TintColor = buttonColor;

@@ -3,6 +3,7 @@ using CoreLocation;
 using Facebook.CoreKit;
 using Facebook.LoginKit;
 using Foundation;
+using System.Net;
 using UIKit;
 using System.Collections.Generic;
 
@@ -10,7 +11,6 @@ namespace Board.Facebook
 {
 	public static class FacebookUtils
 	{
-		private static string Element;
 
 		// TODO: modify to accept permission params
 		public static async System.Threading.Tasks.Task GetReadPermission(UIViewController uiv, string permission)
@@ -38,9 +38,8 @@ namespace Board.Facebook
 
 		public static void MakeGraphRequest(string id, string element, Action<List<FacebookElement>> callback)
 		{
-			Element = element;
-
-			var graph = new GraphRequest (id + "/" + element, null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
+			string query = id + "/" + element;
+			var graph = new GraphRequest (query, null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
 			graph.Start (delegate (GraphRequestConnection connection, NSObject obj, NSError error) {
 
 				var ElementList = new List<FacebookElement> ();
@@ -49,21 +48,14 @@ namespace Board.Facebook
 					callback (ElementList);
 				}
 
-				if (Element.StartsWith("events", StringComparison.Ordinal)) {
+				if (element.StartsWith("events", StringComparison.Ordinal)) {
 					string[,] objects = NSObjectToElement (obj, "data.id", "data.name", "data.description", "data.start_time", "data.end_time");
 
 					for (int i = 0; i < objects.GetLength (0); i++) {
 						var fbevent = new FacebookEvent (objects [i, 0], objects [i, 1], objects [i, 2], objects [i, 3], objects [i, 4]);
 						ElementList.Add (fbevent);
 					}
-				} else if (Element.StartsWith("posts", StringComparison.Ordinal)) {
-					string[,] objects = NSObjectToElement (obj, "data.id", "data.message", "data.story", "data.created_time");
-
-					for (int i = 0; i < objects.GetLength (0); i++) {
-						var fbpost = new FacebookPost (objects [i, 0], objects [i, 1], objects [i, 2], objects [i, 3]);
-						ElementList.Add (fbpost);
-					}
-				} else if (Element.StartsWith("videos?fields=source,description,updated_time,thumbnails", StringComparison.Ordinal)) {
+				} else if (element.StartsWith("videos?fields=source,description,updated_time,thumbnails", StringComparison.Ordinal)) {
 
 					string[,] objects = NSObjectToElement (obj, "data.description", "data.updated_time", "data.id", "data.source", "data.thumbnails.data.uri");
 
@@ -72,35 +64,35 @@ namespace Board.Facebook
 						ElementList.Add (fbvideo);
 					}
 
-				} else if (Element.StartsWith("photos", StringComparison.Ordinal)) {
+				} else if (element.StartsWith("photos", StringComparison.Ordinal)) {
 					string[,] objects = NSObjectToElement (obj, "data.id", "data.name", "data.created_time", "data.name");
 
 					for (int i = 0; i < objects.GetLength (0); i++) {
 						var fbphoto = new FacebookPhoto (objects [i, 0], objects [i, 1], objects [i, 2], objects[i, 3]);
 						ElementList.Add (fbphoto);
 					}
-				} else if (Element == "accounts") {
+				} else if (element == "accounts") {
 					string[,] objects = NSObjectToElement (obj, "data.id", "data.name", "data.category");
 
 					for (int i = 0; i < objects.GetLength (0); i++) {
 						var fbpage = new FacebookPage (objects [i, 0], objects [i, 1], objects [i, 2]);
 						ElementList.Add (fbpage);
 					}
-				} else if (Element.StartsWith("albums", StringComparison.Ordinal)) {
+				} else if (element.StartsWith("albums", StringComparison.Ordinal)) {
 					string[,] objects = NSObjectToElement (obj, "data.id", "data.name", "data.created_time");
 
 					for (int i = 0; i < objects.GetLength (0); i++) {
 						var fbalbum = new FacebookAlbum (objects [i, 0], objects [i, 1], objects [i, 2]);
 						ElementList.Add (fbalbum);
 					}
-				} else if (Element == "?fields=images") {
+				} else if (element == "?fields=images") {
 					string[,] objects = NSObjectToElement (obj, "id", "images.height", "images.source", "images.width");
 
 					for (int i = 0; i < objects.GetLength (0); i++) {
 						var fbimage = new FacebookImage (objects [i, 0], objects [i, 1], objects [i, 2], objects[i, 3]);
 						ElementList.Add (fbimage);
 					}
-				} else if (Element == "?fields=cover") {
+				} else if (element == "?fields=cover") {
 					string[,] objects = NSObjectToElement (obj, "cover.id", "cover.source");
 
 					for (int i = 0; i < objects.GetLength (0); i++) {
@@ -108,7 +100,7 @@ namespace Board.Facebook
 						ElementList.Add (fbcover);
 					}
 
-				} else if (Element == "?fields=cover,updated_time") {
+				} else if (element == "?fields=cover,updated_time") {
 					string[,] objects = NSObjectToElement (obj, "cover.id", "cover.source", "updated_time");
 
 					for (int i = 0; i < objects.GetLength (0); i++) {
@@ -116,7 +108,7 @@ namespace Board.Facebook
 						ElementList.Add (fbcover);
 					}
 
-				} else if (Element == "?fields=hours") {
+				} else if (element == "?fields=hours") {
 					string[,] objects = NSObjectToElement (obj, "id", "hours");
 
 					for (int i = 0; i < objects.GetLength (0); i++) {
@@ -124,7 +116,7 @@ namespace Board.Facebook
 						ElementList.Add (fbhours);
 					}
 
-				} else if (Element.StartsWith ("?fields=name,location,about,cover,phone,category_list,picture", StringComparison.Ordinal)) {
+				} else if (element.StartsWith ("?fields=name,location,about,cover,phone,category_list,picture", StringComparison.Ordinal)) {
 					string[,] objects = NSObjectToElement (obj, "id", "name", "location.latitude", "location.longitude", "about", "cover.source",
 						"picture.data.url", "phone", "category_list.name");
 
@@ -142,14 +134,21 @@ namespace Board.Facebook
 
 						ElementList.Add (fbimportedpage);
 					}
-				} else if (Element.StartsWith("?fields=posts", StringComparison.Ordinal)) {
-					string[,] objects = NSObjectToElement (obj, "posts.data.id", "posts.data.message", "posts.data.story", "posts.data.created_time");
+				} else if (element.StartsWith("?fields=posts", StringComparison.Ordinal)) {
+					string[,] objects = NSObjectToElement (obj, "posts.data.id", "posts.data.message", "posts.data.story", "posts.data.created_time", "posts.data.full_picture");
 
 					for (int i = 0; i < objects.GetLength (0); i++) {
-						var fbposts = new FacebookPost (objects [i, 0], objects [i, 1], objects [i, 2], objects [i, 3]);
+						var fbposts = new FacebookPost (objects [i, 0], objects [i, 1], objects [i, 2], objects [i, 3], objects [i, 4]);
 						ElementList.Add (fbposts);
 					}
-				} else if (Element.StartsWith("?fields=events", StringComparison.Ordinal)) {
+				} else if (element.StartsWith("?fields=full_picture", StringComparison.Ordinal)) {
+					string[,] objects = NSObjectToElement (obj, "id", "full_picture");
+
+					for (int i = 0; i < objects.GetLength (0); i++) {
+						var fbposts = new FacebookFullPicture (objects [i, 0], objects [i, 1]);
+						ElementList.Add (fbposts);
+					}
+				}else if (element.StartsWith("?fields=events", StringComparison.Ordinal)) {
 					string[,] objects = NSObjectToElement (obj, "events.data.id", "events.data.name", "events.data.description",
 						"events.data.start_time", "events.data.end_time");
 

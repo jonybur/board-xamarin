@@ -19,56 +19,6 @@ namespace Board.Interface
 		UIInstagramGallery InstagramGallery;
 		UIImageView Line1, Line2;
 
-		public void CheckIfOpen(List<FacebookElement> obj){
-			if (obj == null) {
-				OpenLabel.Text = "-";
-				return;
-			}
-
-			if (obj.Count > 0) {
-				
-				var fbhour = (FacebookHours)obj[0];
-				if (fbhour.Hours == null) {
-					OpenLabel.Text = "-";
-					return;
-				}
-
-				var dayOfWeek = DateTime.Today.DayOfWeek.ToString ().Substring (0, 3).ToLower ();
-
-				var indexStart = fbhour.Hours.IndexOf (dayOfWeek + "_1_open", StringComparison.Ordinal);
-				var indexEnd = fbhour.Hours.IndexOf (dayOfWeek + "_1_close", StringComparison.Ordinal);
-
-				if (indexStart == -1 || indexEnd == -1) {
-					OpenLabel.Text = "NOW CLOSED";
-					return;
-				}
-				indexStart += 15;
-				indexEnd += 16;
-
-				var startStringDate = fbhour.Hours.Substring (indexStart, 5);
-				var endStringDate = fbhour.Hours.Substring (indexEnd, 5);
-
-				var	startDate = DateTime.Parse (startStringDate);
-				var	endDate = DateTime.Parse (endStringDate);
-
-				var startTotalMinutes = startDate.TimeOfDay.TotalMinutes;
-				var endTotalMinutes = endDate.TimeOfDay.TotalMinutes;
-				var currentTotalMinutes = DateTime.Now.TimeOfDay.TotalMinutes;
-
-				if (endTotalMinutes < startTotalMinutes) {
-					endTotalMinutes += 1440;
-				}
-
-				if (startTotalMinutes <= currentTotalMinutes && currentTotalMinutes <= endTotalMinutes) {
-					OpenLabel.Text = "NOW OPEN";
-					OpenLabel.TextColor = UIColor.FromRGB (28, 57, 16);
-				} else {
-					OpenLabel.Text = "NOW CLOSED";
-					OpenLabel.TextColor = UIColor.FromRGB (28, 57, 16);
-				}
-			}
-		}
-
 		public UIInfoBox(Board.Schema.Board board){
 			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth - XMargin * 2, AppDelegate.ScreenHeight);
 			Center = new CGPoint (XMargin + Frame.Width / 2, AppDelegate.ScreenHeight / 2);
@@ -120,6 +70,57 @@ namespace Board.Interface
 					Banner.Center = new CGPoint(Banner.Center.X, Banner.Frame.Height / 2 + ContentOffset.Y);
 				}
 			};
+		}
+
+		public void CheckIfOpen(List<FacebookElement> obj){
+			if (obj == null) {
+				OpenLabel.Text = "-";
+				return;
+			}
+
+			if (obj.Count > 0) {
+
+				var fbhour = (FacebookHours)obj[0];
+				if (fbhour.Hours == null) {
+					OpenLabel.Text = "-";
+					return;
+				}
+
+				var dayOfWeek = DateTime.Today.DayOfWeek.ToString ().Substring (0, 3).ToLower ();
+
+				var indexStart = fbhour.Hours.IndexOf (dayOfWeek + "_1_open", StringComparison.Ordinal);
+				var indexEnd = fbhour.Hours.IndexOf (dayOfWeek + "_1_close", StringComparison.Ordinal);
+
+				if (indexStart == -1 || indexEnd == -1) {
+					OpenLabel.Text = "NOW CLOSED";
+					OpenLabel.TextColor = UIColor.FromRGB (82, 6, 11);
+					return;
+				}
+				indexStart += 15;
+				indexEnd += 16;
+
+				var startStringDate = fbhour.Hours.Substring (indexStart, 5);
+				var endStringDate = fbhour.Hours.Substring (indexEnd, 5);
+
+				var	startDate = DateTime.Parse (startStringDate);
+				var	endDate = DateTime.Parse (endStringDate);
+
+				var startTotalMinutes = startDate.TimeOfDay.TotalMinutes;
+				var endTotalMinutes = endDate.TimeOfDay.TotalMinutes;
+				var currentTotalMinutes = DateTime.Now.TimeOfDay.TotalMinutes;
+
+				if (endTotalMinutes < startTotalMinutes) {
+					endTotalMinutes += 1440;
+				}
+
+				if (startTotalMinutes <= currentTotalMinutes && currentTotalMinutes <= endTotalMinutes) {
+					OpenLabel.Text = "NOW OPEN";
+					OpenLabel.TextColor = UIColor.FromRGB (28, 57, 16);
+				} else {
+					OpenLabel.Text = "NOW CLOSED";
+					OpenLabel.TextColor = UIColor.FromRGB (82, 6, 11);
+				}
+			}
 		}
 	}
 }

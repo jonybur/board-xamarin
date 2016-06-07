@@ -38,7 +38,7 @@ namespace Board.Interface.CreateScreens
 
 			LoadContent ();
 
-			LoadBanner ("posts", LoadFromFacebookEvent, "ANNOUNCEMENT", "cross_left", "import_right");
+			LoadBanner ("?fields=posts{full_picture,id,message,created_time}", LoadFromFacebookEvent, "ANNOUNCEMENT", "cross_left", "import_right");
 			LoadNextButton (isEditing);
 			LoadTextView ();
 

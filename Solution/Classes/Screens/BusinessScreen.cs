@@ -88,16 +88,11 @@ namespace Board.Screens
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					AppDelegate.containerScreen.BringSideMenuUp("business");
 				}
-				/*
-				else if (AppDelegate.ScreenWidth / 4 * 3 < tg.LocationInView(this.View).X){
+				/*else if (AppDelegate.ScreenWidth / 4 * 3 < tg.LocationInView(this.View).X){
 
 					UIAlertController alert = UIAlertController.Create("Facebook Page Importer", null, UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 					alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate {
-
-						Board.Facebook.FacebookAutoImporter.ImportPages("tazzbars", "Sullivans.irish.bar",
-							"FelixFelicisCoffee", "SocialParaiso", "cronicobar", "thames.galeria", "lodejesus",
-							"templebarargentina", "SugarBuenosAires");
 
 						if (alert.TextFields.Length == 0){
 							return;

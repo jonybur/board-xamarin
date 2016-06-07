@@ -68,14 +68,16 @@ namespace Board.Screens.Controls
 			}
 
 
-			// TODO: EXISTIR SIN TENER TRENDING ( COUNT = 0 )
-			pages [0].ContentDisplay = new UITimelineContentDisplay (boardList, timeline);
-			if (magazineValid) {
-				pages [1].ContentDisplay = new UICarouselContentDisplay (magazine);
-				pages [2].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Alphabetic, UIMagazineBannerPage.Height, UIActionButton.Height);
-			} else {
-				pages [1].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Alphabetic, UIMagazineBannerPage.Height, UIActionButton.Height);
+			int screenNumber = 0;
+			if (timeline.Count > 0){
+				pages [screenNumber].ContentDisplay = new UITimelineContentDisplay (boardList, timeline);
+				screenNumber++;
 			}
+			if (magazineValid) {
+				pages [screenNumber].ContentDisplay = new UICarouselContentDisplay (magazine);
+				screenNumber++;
+			}
+			pages [screenNumber].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Alphabetic, UIMagazineBannerPage.Height, UIActionButton.Height);
 
 			Pages = pages;
 		}

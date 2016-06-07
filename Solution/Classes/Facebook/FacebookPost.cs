@@ -4,17 +4,19 @@
 	{
 		public string Message;
 		public string Story;
+		public string PictureURL;
 		public string CreatedTime;
 
 		public FacebookPost(){
 		}
 
-		public FacebookPost(string id, string message, string story, string createdtime)
+		public FacebookPost(string id, string message, string story, string createdtime, string pictureURL)
 		{
 			Message = message;
 			Story = story;
 			CreatedTime = createdtime;
 			Id = id;
+			PictureURL = pictureURL;
 		}
 	}
 

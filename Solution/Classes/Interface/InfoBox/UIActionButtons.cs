@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Board.Infrastructure;
-using UIKit;
-using Haneke;
-using Foundation;
 using CoreGraphics;
+using Haneke;
+using UIKit;
 
 namespace Board.Interface
 {
@@ -63,22 +62,30 @@ namespace Board.Interface
 			var likeLabel = new UILabel ();
 			likeLabel = new UILabel();
 			likeLabel.Font = UIFont.SystemFontOfSize(20, UIFontWeight.Light);
-			likeLabel.Text = "0";
 
-			var likeButton = new UIActionButton ("emptylike", delegate { });
-			bool isLiked = false;
+			int likes = CloudController.GetLike (UIBoardInterface.board.Id);
+			likeLabel.Text = likes.ToString();
+
+			bool isLiked = CloudController.UserLikesPublication (UIBoardInterface.board.Id);
+			var firstImage = isLiked ? fullHeart : emptyHeart;
+			var likeButton = new UIActionButton (firstImage, delegate { });
 
 			likeButton.TouchUpInside += (sender, e) => {
 				if (!isLiked){
+					CloudController.SendLike(UIBoardInterface.board.Id);
+					likes ++;
 					likeButton.ChangeImage(fullHeart);
 				} else {
+					CloudController.SendDislike(UIBoardInterface.board.Id);
+					likes --;
 					likeButton.ChangeImage(emptyHeart);
 				}
+				likeLabel.Text = likes.ToString();
 				isLiked = !isLiked;
 			};
 
 			var sizeLikeLabel = likeLabel.Text.StringSize (likeLabel.Font);
-			likeLabel.Frame = new CGRect(0, 0, sizeLikeLabel.Width, sizeLikeLabel.Height);
+			likeLabel.Frame = new CGRect(0, 0, sizeLikeLabel.Width + 20, sizeLikeLabel.Height);
 			likeLabel.Center = new CGPoint (likeButton.Frame.Right + likeLabel.Frame.Width / 2 + 5, likeButton.Center.Y);
 
 			likeButton.AddSubview (likeLabel);

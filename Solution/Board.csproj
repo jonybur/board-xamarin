@@ -420,6 +420,7 @@
     <Compile Include="Classes\Schema\Contents\Poll.cs" />
     <Compile Include="Classes\Schema\Contents\Video.cs" />
     <Compile Include="Classes\Schema\Contents\Sticker.cs" />
+    <Compile Include="Classes\Screens\Controls\UIContentDisplay\UITimelineWidget.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

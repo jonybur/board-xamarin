@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using CoreGraphics;
 using System.Threading.Tasks;
@@ -10,6 +9,13 @@ using UIKit;
 
 namespace Board.Utilities
 {
+	public class TypeSwitch
+	{
+		Dictionary<Type, Action<object>> matches = new Dictionary<Type, Action<object>>();
+		public TypeSwitch Case<T>(Action<T> action) { matches.Add(typeof(T), (x) => action((T)x)); return this; } 
+		public void Switch(object x) { matches[x.GetType()](x); }
+	}
+
 	public static class CommonUtils
 	{
 		public static string GetFormattedTimeDifference(DateTime creationTime){
@@ -104,12 +110,13 @@ namespace Board.Utilities
 
 			var webClient = new WebClient ();
 			var uri = new Uri (webAddress);
-			byte[] bytes = null;
 
+			var bytes = await webClient.DownloadDataTaskAsync(uri);
+			var image = CommonUtils.GetImagefromByteArray(bytes);
+			return image;
 			try
 			{
-				bytes = await webClient.DownloadDataTaskAsync(uri);
-				return CommonUtils.GetImagefromByteArray(bytes);
+				
 			}catch (Exception ex){
 				Console.WriteLine (ex.Message);
 				return null;

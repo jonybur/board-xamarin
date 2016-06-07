@@ -108,9 +108,9 @@ namespace Board.Screens
 
 				//AppDelegate.UserLocation = location.Coordinate;
 				// BUENOS AIRES
-				AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(-34.584424, -58.435909);
+				//AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(-34.584424, -58.435909);
 				// NANTUCKET
-				//AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(41.2835861,-70.1038089);
+				AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(41.2835861,-70.1038089);
 				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
 
 				if (!hasLoaded) {

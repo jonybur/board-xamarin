@@ -62,11 +62,27 @@ namespace Board.Schema
 			CreatorId = creatorid;
 		}
 
+		public Picture(FacebookPost facebookPost, string imageUrl, CGPoint center, CGAffineTransform transform){
+			CreationDate = DateTime.Parse(facebookPost.CreatedTime);
+			FacebookId = facebookPost.Id;
+			Center = center;
+			Transform = transform;
+			ImageUrl = imageUrl;
+			Description = facebookPost.Message;
+
+			var boardCoordinate = UIBoardInterface.board.GeolocatorObject.Coordinate;
+			latitude = boardCoordinate.Latitude;
+			longitude = boardCoordinate.Longitude;
+
+			boardId = UIBoardInterface.board.Id;
+		}
+
 		public Picture(FacebookPhoto facebookPhoto, CGPoint center, CGAffineTransform transform){
 			CreationDate = DateTime.Parse(facebookPhoto.CreatedTime);
 			FacebookId = facebookPhoto.Id;
 			Center = center;
 			Transform = transform;
+			Description = facebookPhoto.Description;
 
 			var boardCoordinate = UIBoardInterface.board.GeolocatorObject.Coordinate;
 			latitude = boardCoordinate.Latitude;

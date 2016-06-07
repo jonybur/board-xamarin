@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Board.Infrastructure;
+﻿using Board.Infrastructure;
 using Board.Interface.Buttons;
-using Board.Interface.LookUp;
 using Board.Schema;
 using Haneke;
 using CoreAnimation;

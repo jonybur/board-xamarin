@@ -22,7 +22,6 @@ namespace Board.Interface.Widgets
 				imageView.Center = new CGPoint (DeleteButton.Frame.Width / 2, DeleteButton.Frame.Height / 2);
 
 				DeleteButton.AddSubview (imageView);
-				//DeleteButton.SetImage(image, UIControlState.Normal);
 			}
 
 			DeleteButton.TouchUpInside += (sender, e) => {
@@ -103,9 +102,19 @@ namespace Board.Interface.Widgets
 		{
 			LikeComponent = new UIImageView (new CGRect (SideMargin,
 				MountingView.Frame.Height - 40, 80, 40));
+			
+			liked = CloudController.UserLikesPublication (content.Id);
 
 			likeView = CreateLike (LikeComponent.Frame);
 			likeLabel = CreateLikeLabel (likeView.Center);
+
+			if (liked) {
+				likeView.TintColor = AppDelegate.BoardOrange;
+				likeLabel.TextColor = AppDelegate.BoardOrange;
+			} else {
+				likeView.TintColor = WidgetGrey;
+				likeLabel.TextColor = WidgetGrey;
+			}
 
 			LikeComponent.AddSubviews (likeView, likeLabel);
 		}
@@ -114,8 +123,11 @@ namespace Board.Interface.Widgets
 		{
 			if (!liked)
 			{
+				CloudController.SendLike(content.Id);
+				
 				likes ++;
 				likeLabel.Text = likes.ToString();
+
 				likeView.TintColor = AppDelegate.BoardOrange;
 				likeLabel.TextColor = AppDelegate.BoardOrange;
 
@@ -139,12 +151,15 @@ namespace Board.Interface.Widgets
 				likeView.Layer.AddAnimation (scale, "highlight");
 
 				liked = true;
-			}
-			else {
+			} else {
+				CloudController.SendDislike(content.Id);
+
 				likes --;
 				likeLabel.Text = likes.ToString();
+
 				likeView.TintColor = WidgetGrey;
 				likeLabel.TextColor = WidgetGrey;
+
 				liked = false;
 			}
 		}
@@ -153,12 +168,11 @@ namespace Board.Interface.Widgets
 		{
 			var likeView = new UIImageView(new CGRect(0, 0, IconSize, IconSize));
 
-			using (UIImage img = UIImage.FromFile ("./boardinterface/widget/like.png")) {
+			using (var img = UIImage.FromFile ("./boardinterface/widget/like.png")) {
 				likeView.Image = img;
 				likeView.Image = likeView.Image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 			}
 
-			likeView.TintColor = WidgetGrey;
 			likeView.Center = new CGPoint (IconSize / 2, frame.Height / 2);
 			return likeView;
 		}
@@ -172,9 +186,10 @@ namespace Board.Interface.Widgets
 			CGSize likeLabelSize = likes.ToString().StringSize (likeFont);
 
 			UILabel likeLabel = new UILabel(new CGRect(0, 0, likeLabelSize.Width + 20, likeLabelSize.Height));
-			likeLabel.TextColor = WidgetGrey;
+
 			likeLabel.Font = likeFont;
-			likeLabel.Text = likes.ToString();
+			int cloudlikes = CloudController.GetLike (content.Id);
+			likeLabel.Text = cloudlikes.ToString();
 			likeLabel.Center = new CGPoint (center.X + likeLabel.Frame.Width / 2 + 5, center.Y);
 			likeLabel.TextAlignment = UITextAlignment.Center;
 
