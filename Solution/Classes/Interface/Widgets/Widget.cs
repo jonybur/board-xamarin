@@ -39,7 +39,13 @@ namespace Board.Interface.Widgets
 
 		public int TopMargin = 5;
 		public int SideMargin = 5;
-		public static int Autosize = 230;
+
+		public static float Autosize{
+			get{ 
+				// 230 is optimal for iPhone 6 screen
+				return 230f * UIBoardScroll.AspectPercentage;
+			}
+		}
 
 		private UIColor WidgetGrey;
 

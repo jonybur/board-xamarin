@@ -155,7 +155,7 @@ namespace Board.Screens.Controls
 			likeLabel.Text = likes.ToString();
 
 			var sizeLikeLabel = likeLabel.Text.StringSize (likeLabel.Font);
-			likeLabel.Frame = new CGRect(0, 0, sizeLikeLabel.Width, sizeLikeLabel.Height);
+			likeLabel.Frame = new CGRect(0, 0, sizeLikeLabel.Width * 2, sizeLikeLabel.Height);
 			likeLabel.Center = new CGPoint (heartView.Frame.Right + likeLabel.Frame.Width / 2 + 10, heartView.Center.Y);
 			likeButton.AddSubviews (heartView, likeLabel);
 

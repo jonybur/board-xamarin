@@ -41,6 +41,8 @@ namespace Board.Screens
 
 			ListMapMarkers = new List<UIMapMarker> ();
 
+			AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(41.2835861,-70.1038089);
+
 			if (Profile.CurrentProfile == null) {
 				AppDelegate.NavigationController.PopViewController (true);
 			}

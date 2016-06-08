@@ -26,8 +26,8 @@ namespace Board.Interface
 
 		public static int BannerHeight = 66, ButtonBarHeight = 45;
 
-		public static float ScrollViewWidthSize = 2600;
-		public static float ScrollViewTotalWidthSize {
+		public float ScrollViewWidthSize;
+		public float ScrollViewTotalWidthSize {
 			get { 
 				return ScrollViewWidthSize * 54;
 			}
@@ -58,6 +58,11 @@ namespace Board.Interface
 					}
 				};
 			}
+		}
+
+		public static float AspectPercentage {
+			// 1 (100%) is iPhone 6 screen
+			get { return AppDelegate.ScreenHeight / 667f; }
 		}
 
 		public float VirtualLeftBound{
@@ -104,6 +109,8 @@ namespace Board.Interface
 
 		public UIBoardScroll ()
 		{
+			ScrollViewWidthSize = GetDefaultScrollWidth();
+
 			DrawnWidgets = new List<Widget> ();
 			GenerateScrollViews ();
 
@@ -115,8 +122,12 @@ namespace Board.Interface
 			SuscribeToEvents ();
 		}
 
+		private float GetDefaultScrollWidth(){
+			return 2600f * AspectPercentage;
+		}
+
 		private void CalculateBoardSize(){
-			ScrollViewWidthSize = 2600;
+			ScrollViewWidthSize = GetDefaultScrollWidth();
 
 			var centerOfScreen = (ScrollViewWidthSize + AppDelegate.ScreenWidth) / 2;
 			var orderedContent = UIBoardInterface.DictionaryContent.Values.ToList ().OrderByDescending (x => x.Center.X).ToList();
@@ -162,7 +173,7 @@ namespace Board.Interface
 		}
 
 		public CGPoint ConvertPointToBoardScrollPoint(CGPoint center){
-			return new CGPoint (center.X - LastLeftScreen * UIBoardScroll.ScrollViewWidthSize, center.Y);
+			return new CGPoint (center.X - LastLeftScreen * ScrollViewWidthSize, center.Y);
 		}
 
 		private void GenerateScrollViews()
@@ -259,7 +270,7 @@ namespace Board.Interface
 			
 			// clusterfuck
 			float physicalRightBound = (float)(ScrollView.ContentOffset.X + AppDelegate.ScreenWidth);
-			float physicalLeftBound = (float)(ScrollView.ContentOffset.X);// - AppDelegate.ScreenWidth / 2);
+			float physicalLeftBound = (float)(ScrollView.ContentOffset.X);
 
 			rightScreenNumber = (int)Math.Floor((physicalRightBound) / ScrollViewWidthSize);
 			float virtualRightBound = physicalRightBound - ScrollViewWidthSize * rightScreenNumber;
@@ -272,10 +283,10 @@ namespace Board.Interface
 			if (!(UIBoardInterface.DictionaryWidgets == null || UIBoardInterface.DictionaryWidgets.Count == 0))
 			{
 				List<Widget> WidgetsToDraw = UIBoardInterface.DictionaryWidgets.Values.ToList ().FindAll (item =>
-					((item.content.Center.X - item.Frame.Width / 2) > (virtualLeftBound - AppDelegate.ScreenWidth * 1.5f) &&
-                     (item.content.Center.X - item.Frame.Width / 2 < (virtualLeftBound + AppDelegate.ScreenWidth * 1.5f))) ||
-					((item.content.Center.X + item.Frame.Width / 2) < (virtualRightBound + AppDelegate.ScreenWidth * 1.5f) &&
-					 (item.content.Center.X + item.Frame.Width / 2 > (virtualRightBound - AppDelegate.ScreenWidth * 1.5f))));
+					((item.content.Center.X - item.Frame.Width / 2) > (virtualLeftBound - AppDelegate.ScreenWidth) &&
+                     (item.content.Center.X - item.Frame.Width / 2 < (virtualLeftBound + AppDelegate.ScreenWidth))) ||
+					((item.content.Center.X + item.Frame.Width / 2) < (virtualRightBound + AppDelegate.ScreenWidth) &&
+					 (item.content.Center.X + item.Frame.Width / 2 > (virtualRightBound - AppDelegate.ScreenWidth))));
 				
 				// takes wids that are close
 				DrawWidgets(WidgetsToDraw, virtualLeftBound, virtualRightBound, leftScreenNumber, rightScreenNumber);

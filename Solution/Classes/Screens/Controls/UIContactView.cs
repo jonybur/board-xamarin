@@ -39,7 +39,7 @@ namespace Board.Screens
 				logoURL = "./screens/invite/icon.png";
 				titleString = "SHARE BOARD";
 				descriptionString = "Invite your friends\nand tell them to get on Board!";
-				actionString = "EMAIL INVITE";
+				actionString = "SEND INVITE";
 				break;
 			case ScreenContact.BusinessScreen:
 				logoURL = "./screens/business/icon.png";

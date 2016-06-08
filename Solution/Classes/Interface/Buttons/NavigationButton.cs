@@ -25,7 +25,7 @@ namespace Board.Interface.Buttons
 		{
 			int highlitedContent = 0;
 
-			SetImage ("closedeye");
+			SetImage ("openeye");
 
 			Frame = new CGRect (0, 0, ButtonSize, ButtonSize);
 			Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - ButtonSize / 2);
@@ -65,7 +65,7 @@ namespace Board.Interface.Buttons
 				rightCurrentScreenNumber = boardScroll.CurrentRightScreenNumber;
 				leftCurrentScreenNumber = boardScroll.CurrentLeftScreenNumber;
 
-				var scrollViewOffsetToPan = UIBoardScroll.ScrollViewWidthSize * leftCurrentScreenNumber;
+				var scrollViewOffsetToPan = AppDelegate.BoardInterface.BoardScroll.ScrollViewWidthSize * leftCurrentScreenNumber;
 
 				position = new PointF ((float)(widgetPosition + scrollViewOffsetToPan), 0f);
 
@@ -131,6 +131,7 @@ namespace Board.Interface.Buttons
 
 		public void RefreshNavigationButtonText(int content)
 		{
+			content = 0;
 			// kills the current navText
 			if (numberLabel != null) {
 				numberLabel.RemoveFromSuperview ();

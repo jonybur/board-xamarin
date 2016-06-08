@@ -37,8 +37,12 @@ namespace Board.Schema
 		[IgnoreDataMember]
 		public bool Seen;
 
+		private CGPoint center;
 		[IgnoreDataMember]
-		public CGPoint Center;
+		public CGPoint Center{
+			get{ return new CGPoint(center.X * UIBoardScroll.AspectPercentage, center.Y * UIBoardScroll.AspectPercentage); }
+			set{ center = value; }
+		}
 
 		public float CenterX {
 			get { return (float)Center.X; }
