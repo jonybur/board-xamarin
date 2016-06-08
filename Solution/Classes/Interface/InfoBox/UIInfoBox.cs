@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using CoreGraphics;
 using UIKit;
-using Facebook.CoreKit;
 using System;
 using Board.Facebook;
 
@@ -74,6 +73,11 @@ namespace Board.Interface
 
 		public void CheckIfOpen(List<FacebookElement> obj){
 			if (obj == null) {
+				OpenLabel.Text = "-";
+				return;
+			}
+
+			if (obj.Count == 0) {
 				OpenLabel.Text = "-";
 				return;
 			}

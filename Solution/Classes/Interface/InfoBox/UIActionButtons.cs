@@ -63,10 +63,10 @@ namespace Board.Interface
 			likeLabel = new UILabel();
 			likeLabel.Font = UIFont.SystemFontOfSize(20, UIFontWeight.Light);
 
-			int likes = CloudController.GetLike (UIBoardInterface.board.Id);
+			int likes = UIBoardInterface.DictionaryLikes[UIBoardInterface.board.Id];
 			likeLabel.Text = likes.ToString();
 
-			bool isLiked = CloudController.UserLikesPublication (UIBoardInterface.board.Id);
+			bool isLiked = UIBoardInterface.DictionaryUserLikes[UIBoardInterface.board.Id];
 			var firstImage = isLiked ? fullHeart : emptyHeart;
 			var likeButton = new UIActionButton (firstImage, delegate { });
 

@@ -87,9 +87,9 @@ namespace Board.Schema
 		[IgnoreDataMember]
 		public DateTime CreationDate;
 
-		public string CreationDateValue{
-			get { return CreationDate.ToString (CultureInfo.InvariantCulture); }
-			set { CreationDate = DateTime.Parse (value);  }
+		public int CreationDateTimestamp{
+			get { return CommonUtils.GetUnixTimeStamp(CreationDate); }
+			set { CreationDate = CommonUtils.UnixTimeStampToDateTime(value);  }
 		}
 		
 		[IgnoreDataMember]

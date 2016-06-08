@@ -103,7 +103,7 @@ namespace Board.Interface.Widgets
 			LikeComponent = new UIImageView (new CGRect (SideMargin,
 				MountingView.Frame.Height - 40, 80, 40));
 			
-			liked = CloudController.UserLikesPublication (content.Id);
+			liked = UIBoardInterface.DictionaryUserLikes[content.Id];
 
 			likeView = CreateLike (LikeComponent.Frame);
 			likeLabel = CreateLikeLabel (likeView.Center);
@@ -188,7 +188,7 @@ namespace Board.Interface.Widgets
 			UILabel likeLabel = new UILabel(new CGRect(0, 0, likeLabelSize.Width + 20, likeLabelSize.Height));
 
 			likeLabel.Font = likeFont;
-			int cloudlikes = CloudController.GetLike (content.Id);
+			int cloudlikes = UIBoardInterface.DictionaryLikes[content.Id];
 			likeLabel.Text = cloudlikes.ToString();
 			likeLabel.Center = new CGPoint (center.X + likeLabel.Frame.Width / 2 + 5, center.Y);
 			likeLabel.TextAlignment = UITextAlignment.Center;

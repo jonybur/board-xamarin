@@ -21,7 +21,7 @@ namespace Board.Interface.Widgets
 		{
 			content = vid;
 
-			var size = new CGSize (200, 200);
+			var size = new CGSize (Widget.Autosize, Widget.Autosize);
 
 			// mounting
 
@@ -34,6 +34,9 @@ namespace Board.Interface.Widgets
 			repeaterVideo.VideoGravity = AVFoundation.AVLayerVideoGravity.ResizeAspectFill;
 
 			AddSubview (repeaterVideo.View);
+
+			var descriptionView = CreateDescriptionView (video.Description, repeaterVideo.View.Frame.Size);
+			AddSubview (descriptionView);
 
 			Layer.AllowsEdgeAntialiasing = true;
 

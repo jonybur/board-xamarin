@@ -75,6 +75,28 @@ namespace Board.Interface.Widgets
 			Transform = content.Transform;
 		}
 
+		protected UITextView CreateDescriptionView(string description, CGSize contentSize){
+			var descriptionView = new UITextView ();
+			descriptionView.Frame = new CGRect (0, 0,
+				contentSize.Width, 10);
+			if (description != "<null>" && !string.IsNullOrEmpty (description)) {
+				descriptionView.Text = description;
+			} else {
+				descriptionView.Alpha = 0f;
+			}
+			descriptionView.BackgroundColor = UIColor.FromRGBA (255, 255, 255, 180);
+			descriptionView.Layer.AllowsEdgeAntialiasing = true;
+			descriptionView.Font = UIFont.SystemFontOfSize (12, UIFontWeight.Light);
+			descriptionView.Selectable = false;
+			descriptionView.Editable = false;
+			var size = descriptionView.SizeThatFits (descriptionView.Frame.Size);
+			float newHeight = size.Height > 50 ? 50 : (float)size.Height;
+			descriptionView.Frame = new CGRect (SideMargin, TopMargin + contentSize.Height - newHeight,
+				descriptionView.Frame.Width, newHeight);
+			
+			return descriptionView;
+		}
+
 		protected void CreateMounting(CGSize size)
 		{
 			MountingView = new UIImageView (new CGRect (0, 0, size.Width + SideMargin * 2, size.Height + 40 + TopMargin));

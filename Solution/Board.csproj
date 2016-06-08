@@ -373,16 +373,10 @@
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazineBannerPage.cs" />
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazineBannerPageController.cs" />
     <Compile Include="Classes\Screens\Controls\UIActionButton.cs" />
-    <Compile Include="Classes\Screens\Controls\UIContentDisplay\UIContentDisplay.cs" />
-    <Compile Include="Classes\Screens\Controls\UIContentDisplay\UIContentThumb.cs" />
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazinePage.cs" />
-    <Compile Include="Classes\Screens\Controls\UIContentDisplay\UIBoardThumb.cs" />
     <Compile Include="Classes\JsonResponses\AmazonS3TicketResponse.cs" />
     <Compile Include="Classes\Interface\UIBoardInterface.cs" />
     <Compile Include="Classes\Schema\User.cs" />
-    <Compile Include="Classes\Screens\Controls\UIContentDisplay\UICarouselController.cs" />
-    <Compile Include="Classes\Screens\Controls\UIContentDisplay\UIThumbsContentDisplay.cs" />
-    <Compile Include="Classes\Screens\Controls\UIContentDisplay\UITimelineContentDisplay.cs" />
     <Compile Include="Classes\Screens\Controls\UIMapMarker.cs" />
     <Compile Include="Classes\Interface\InfoBox\UIInfoBox.cs" />
     <Compile Include="Classes\Screens\Controls\UIBoardBannerPage.cs" />
@@ -420,7 +414,13 @@
     <Compile Include="Classes\Schema\Contents\Poll.cs" />
     <Compile Include="Classes\Schema\Contents\Video.cs" />
     <Compile Include="Classes\Schema\Contents\Sticker.cs" />
-    <Compile Include="Classes\Screens\Controls\UIContentDisplay\UITimelineWidget.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIBoardThumb.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UICarouselController.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentDisplay.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentThumb.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIThumbsContentDisplay.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UITimelineContentDisplay.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UITimelineWidget.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -475,7 +475,6 @@
     <Folder Include="Resources\screens\main\magazine\" />
     <Folder Include="Classes\Screens\Controls\MenuButton\" />
     <Folder Include="Classes\Screens\Controls\MagazineBanner\" />
-    <Folder Include="Classes\Screens\Controls\UIContentDisplay\" />
     <Folder Include="Resources\menubanner\" />
     <Folder Include="Resources\screens\sidemenus\" />
     <Folder Include="Resources\screens\sidemenus\4\" />
@@ -490,6 +489,7 @@
     <Folder Include="Resources\screens\business\" />
     <Folder Include="Resources\screens\settings\" />
     <Folder Include="Classes\Schema\Contents\" />
+    <Folder Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="sqlite-net">

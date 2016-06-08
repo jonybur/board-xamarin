@@ -33,6 +33,9 @@ namespace Board.Screens.Controls
 			Banner = new UIMagazineBanner ();
 		}
 
+		public static Dictionary<string, int> ContentLikes;
+		public static Dictionary<string, bool> UserLikes;
+
 		// generates the magazine headers
 		private void GeneratePages(List<Board.Schema.Board> boardList){
 			
@@ -40,6 +43,10 @@ namespace Board.Screens.Controls
 			bool magazineValid = MagazineResponse.IsValidMagazine (magazine);
 
 			var timeline = CloudController.GetTimeline (AppDelegate.UserLocation);
+
+			var publicationIds = timeline.Select (x => x.Id).ToArray ();
+			ContentLikes = CloudController.GetLikes (publicationIds);
+			UserLikes = CloudController.GetUserLikes (publicationIds);
 
 			var pagesName = new List<string> ();
 

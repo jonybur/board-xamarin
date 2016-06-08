@@ -143,7 +143,6 @@ namespace Board.Interface.Widgets
 				}
 				else
 				{
-
 					UILookUp lookUp;
 
 					if (content is Video)

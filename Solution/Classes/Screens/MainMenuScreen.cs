@@ -4,12 +4,12 @@ using Board.Infrastructure;
 using Board.Interface;
 using Board.Screens.Controls;
 using Board.Utilities;
+using System.Linq;
 using CoreGraphics;
 using Facebook.CoreKit;
 using Foundation;
 using Google.Maps;
 using UIKit;
-using CoreAnimation;
 
 namespace Board.Screens
 {

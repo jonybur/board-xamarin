@@ -171,6 +171,10 @@ namespace Board.Facebook
 		// first parameter must be primary key
 		private static string[,] NSObjectToElement(NSObject obj, params string[] fetch)
 		{
+			if (obj == null) {
+				return new string[0,0];
+			}
+
 			NSString idString = new NSString (fetch[0]);
 			NSArray ids = obj.ValueForKeyPath (idString) as NSArray;
 

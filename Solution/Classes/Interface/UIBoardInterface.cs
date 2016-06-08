@@ -24,6 +24,10 @@ namespace Board.Interface
 
 		public UIBoardScroll BoardScroll;
 
+		// includes board likes
+		public static Dictionary<string, bool> DictionaryUserLikes;
+		public static Dictionary<string, int> DictionaryLikes;
+
 		public static Dictionary<string, Content> DictionaryContent;
 		public static Dictionary<string, Widget> DictionaryWidgets;
 		public static Dictionary<string, UISticker> DictionaryStickers;
@@ -58,6 +62,15 @@ namespace Board.Interface
 
 			// gets content, puts it in dictionarycontent
 			DictionaryContent = CloudController.GetBoardContent (board.Id);
+
+			var listContentIds = DictionaryContent.Values.Select (x => x.Id).ToList ();
+			listContentIds.Add (UIBoardInterface.board.Id);
+
+			var contentIds = listContentIds.ToArray ();
+
+			DictionaryLikes = CloudController.GetLikes (contentIds);
+
+			DictionaryUserLikes = CloudController.GetUserLikes (contentIds);
 
 			InitializeInterface ();
 

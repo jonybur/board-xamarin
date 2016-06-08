@@ -94,6 +94,12 @@ namespace Board.Utilities
 			return dist;
 		}
 
+		public static DateTime UnixTimeStampToDateTime(int unixTimeStamp) {
+			var dtDateTime = new DateTime(1970,1,1,0,0,0,0,DateTimeKind.Utc);
+			return dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+		}
+
+
 		public static Int32 GetUnixTimeStamp(){
 			return (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 		}

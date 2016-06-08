@@ -32,7 +32,35 @@ namespace Board.Infrastructure
 			AppDelegate.BoardUser.SetProfilePictureFromURL (AppDelegate.BoardUser.ProfilePictureURL);
 		}
 
-		public static bool UserLikesPublication(string publicationId){
+		public static Dictionary<string, bool> GetUserLikes(params string[] publicationIds){
+			string publicationsToRequest = string.Empty;
+
+			foreach (var id in publicationIds) {
+				publicationsToRequest += "publicationId=" + id + "&";
+			}
+			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/user/likes?"+publicationsToRequest+"authToken="+AppDelegate.EncodedBoardToken);
+
+			if (result == "Timeout" || result == "InternalServerError") {
+				return new Dictionary<string, bool> ();
+			}
+
+			var jobject = JObject.Parse (result);
+
+			var dictionaryLikes = new Dictionary<string, bool> ();
+			foreach (var id in publicationIds) {
+				var likes = jobject [id];
+
+				if (likes.Type == JTokenType.Boolean) {
+					bool boolValue = Boolean.Parse (likes.ToString ());
+
+					dictionaryLikes.Add (id, boolValue);
+				}
+			}
+
+			return dictionaryLikes;
+		}
+
+		public static bool GetUserLike(string publicationId){
 			string request = "http://" + AppDelegate.APIAddress + "/api/user/likes?publicationId=" + publicationId +
 			                 "&authToken=" + AppDelegate.EncodedBoardToken;
 			string result = JsonGETRequest (request);
@@ -46,7 +74,6 @@ namespace Board.Infrastructure
 			}
 
 			return false;
-
 		}
 
 		public static bool SendLike(string idToLike){

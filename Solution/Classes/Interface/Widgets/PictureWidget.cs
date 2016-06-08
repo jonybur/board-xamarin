@@ -28,9 +28,11 @@ namespace Board.Interface.Widgets
 			PictureImageView = new UIImageView ();
 
 			if (pic.Image == null) {
-				PictureImageView.Frame = new CGRect (0, 0, Widget.Autosize, Widget.Autosize);
-				PictureImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
-				PictureImageView.SetImage (new NSUrl (picture.ImageUrl), UIImage.FromFile ("./demo/magazine/nantucket.png"), ImageFromHaneke, ErrorFromHaneke);
+				PictureImageView.Frame = new CGRect (SideMargin, TopMargin, Widget.Autosize, Widget.Autosize);
+				PictureImageView.ContentMode = UIViewContentMode.ScaleAspectFill;
+				PictureImageView.SetImage (new NSUrl (picture.ImageUrl),
+					UIImage.FromFile ("./demo/magazine/nantucket.png"),
+					ImageFromHaneke, ErrorFromHaneke);
 			} else {
 				SetWidget ();
 			}
@@ -45,17 +47,21 @@ namespace Board.Interface.Widgets
 			Transform = CGAffineTransform.MakeIdentity ();
 
 			picture.SetImageFromUIImage (obj);
+
 			SetWidget ();
 		}
 
 		private void SetWidget(){
-			PictureImageView.Frame = new CGRect (SideMargin, TopMargin, picture.Thumbnail.Size.Width, picture.Thumbnail.Size.Height);
 			PictureImageView.Image = picture.Thumbnail;
+			PictureImageView.ClipsToBounds = true;
 			CreateMounting (PictureImageView.Frame.Size);
 
 			Frame = MountingView.Frame;
 
 			AddSubviews (MountingView, PictureImageView);
+
+			var descriptionView = CreateDescriptionView (picture.Description, PictureImageView.Frame.Size);
+			AddSubview (descriptionView);
 
 			AppDelegate.BoardInterface.BoardScroll.SelectiveRendering ();
 		}

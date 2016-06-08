@@ -54,6 +54,8 @@ namespace Board.Interface.Buttons
 				BTProgressHUD.Dismiss();
 
 				UIBoardInterface.DictionaryContent.Add (content.Id, content);
+				UIBoardInterface.DictionaryLikes.Add(content.Id, 0);
+				UIBoardInterface.DictionaryUserLikes.Add(content.Id, false);
 
 				if (Preview.IsAlive){
 					// remove the preview imageview from the superview

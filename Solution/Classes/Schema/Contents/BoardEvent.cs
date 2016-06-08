@@ -48,14 +48,14 @@ namespace Board.Schema
 		public string Name;
 		public string Description;
 
-		public string StartDateValue{
-			get { return StartDate.ToString (CultureInfo.InvariantCulture); }
-			set { StartDate = DateTime.Parse (value);  }
+		public int StartDateTimestamp{
+			get { return CommonUtils.GetUnixTimeStamp(StartDate); }
+			set { StartDate = CommonUtils.UnixTimeStampToDateTime(value);  }
 		}
 
-		public string EndDateValue{
-			get { return EndDate.ToString (CultureInfo.InvariantCulture); }
-			set { EndDate = DateTime.Parse (value);  }
+		public int EndDateTimestamp{
+			get { return CommonUtils.GetUnixTimeStamp(EndDate); }
+			set { EndDate = CommonUtils.UnixTimeStampToDateTime(value);  }
 		}
 
 		public string ImageUrl;
@@ -63,8 +63,6 @@ namespace Board.Schema
 		public string Type {
 			get { return "events"; }
 		}
-
-
 
 		public void SetImageFromUIImage(UIImage image){
 			_image = image;

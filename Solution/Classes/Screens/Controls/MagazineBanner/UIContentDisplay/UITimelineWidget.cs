@@ -1,12 +1,10 @@
 ﻿using UIKit;
-using System.Collections.Generic;
 using CoreGraphics;
 using Board.Schema;
 using Board.Utilities;
 using Board.Infrastructure;
 using Foundation;
 using Haneke;
-using System.Linq;
 
 namespace Board.Screens.Controls
 {
@@ -76,6 +74,7 @@ namespace Board.Screens.Controls
 
 			var doubleTapToLike = SetNewDoubleTapGestureRecognizer();
 			timelineWidget.AddGestureRecognizer(doubleTapToLike);
+			timelineWidget.UserInteractionEnabled = true;
 
 			AddSubviews(headerView, timelineWidget, likeButton);
 
@@ -142,7 +141,7 @@ namespace Board.Screens.Controls
 			heartView = new UIImageView ();
 			heartView.Frame = new CGRect (0, 0, heartSize, heartSize);
 
-			isLiked = CloudController.UserLikesPublication (content.Id);
+			isLiked = UIMagazine.UserLikes[content.Id];
 			var firstImage = isLiked ? fullHeartImageUrl : emptyHeartImageUrl;
 			heartView.SetImage (firstImage);
 
@@ -152,7 +151,7 @@ namespace Board.Screens.Controls
 			likeLabel = new UILabel();
 			likeLabel.Font = UIFont.SystemFontOfSize(18, UIFontWeight.Light);
 
-			likes = CloudController.GetLike (content.Id);
+			likes = UIMagazine.ContentLikes[content.Id];
 			likeLabel.Text = likes.ToString();
 
 			var sizeLikeLabel = likeLabel.Text.StringSize (likeLabel.Font);
