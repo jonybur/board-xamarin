@@ -91,7 +91,6 @@ namespace Board.JsonResponses
 		public List<Result> results { get; set; }
 		public string status { get; set; }
 
-
 		[Preserve(AllMembers = true)]
 		public string Neighborhood{
 			get {
@@ -163,7 +162,8 @@ namespace Board.JsonResponses
 				WebResponse response = request.GetResponse();
 				using (Stream responseStream = response.GetResponseStream()) {
 					StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
-					return reader.ReadToEnd();
+					string returnString =reader.ReadToEnd ();
+					return returnString;
 				}
 			}
 			catch (WebException ex) {

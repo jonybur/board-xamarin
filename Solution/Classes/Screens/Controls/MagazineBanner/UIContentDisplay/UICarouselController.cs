@@ -4,6 +4,7 @@ using Board.Interface;
 using Board.JsonResponses;
 using CoreGraphics;
 using Foundation;
+using Board.Utilities;
 using Haneke;
 using UIKit;
 
@@ -18,6 +19,7 @@ namespace Board.Screens.Controls
 
 			var magazineDictionary = new Dictionary<string, List<Board.Schema.Board>> ();
 			var magazineList = new List<Board.Schema.Board> ();
+
 			string section = string.Empty;
 
 			foreach (var entries in magazine.data.entries) {
@@ -73,7 +75,7 @@ namespace Board.Screens.Controls
 			TitleLabel = new UILocationLabel (titleText, ItemSeparation);
 			ListThumbs = new List<UIContentThumb> ();
 
-			ScrollView = new UIScrollView (new CGRect (0, TitleLabel.Frame.Bottom + 15, AppDelegate.ScreenWidth, UICarouselLargeItem.Height));
+			ScrollView = new UIScrollView (new CGRect (0, TitleLabel.Frame.Bottom + 15, AppDelegate.ScreenWidth, UICarouselLargeItem.Height + 45));
 
 			ScrollView.ScrollsToTop = false;
 
@@ -100,16 +102,18 @@ namespace Board.Screens.Controls
 
 		public const int Width = 200;
 		public const int Height = 100;
+		public const int TextSpace = 60;
 
-		public UICarouselLargeItem (Board.Schema.Board board) {
+		public UICarouselLargeItem (Schema.Board board) {
 			Frame = new CGRect (0, 0, Width, Height);
-			BackgroundColor = UIColor.Black;
-			Layer.CornerRadius = 10;
 
 			var backgroundImageView = new UIImageView ();
 			backgroundImageView.Frame = Frame;
+			backgroundImageView.BackgroundColor = UIColor.FromRGB(250,250,250);
 			backgroundImageView.ContentMode = UIViewContentMode.ScaleAspectFill;
 			backgroundImageView.SetImage (new NSUrl (board.CoverImageUrl));
+			backgroundImageView.ClipsToBounds = true;
+			backgroundImageView.Layer.CornerRadius = 10;
 
 			var logoImageView = new UIImageView ();
 			logoImageView.Frame = new CGRect (0, 0, Height / 2, Height / 2);
@@ -123,9 +127,11 @@ namespace Board.Screens.Controls
 			logoImageView.Center = new CGPoint (Frame.Width / 2, Frame.Height / 2);
 			backgroundLogoImageView.Center = logoImageView.Center;
 
-			AddSubviews (backgroundImageView, backgroundLogoImageView, logoImageView);
+			var nameLabel = new UILabel ();
+			nameLabel = CreateNameLabel (board.Name, CommonUtils.GetDistanceFromUserToBoard (board), Width);
+			nameLabel.Frame = new CGRect (5, Frame.Bottom + 10, nameLabel.Frame.Width - 10, nameLabel.Frame.Height);
 
-			ClipsToBounds = true;
+			AddSubviews (backgroundImageView, backgroundLogoImageView, logoImageView, nameLabel);
 
 			TouchEvent = (sender, e) => {
 
@@ -135,6 +141,46 @@ namespace Board.Screens.Controls
 					AppDelegate.NavigationController.PushViewController (AppDelegate.BoardInterface, true);
 				}
 			};
+		}
+
+		private UILabel CreateNameLabel (string nameString, double distance, float width)
+		{
+			var label = new UILabel ();
+
+			label.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
+
+			var distanceTotalString = CommonUtils.GetFormattedDistance (distance);
+
+			nameString = CommonUtils.FirstLetterOfEveryWordToUpper (nameString);
+			nameString = CommonUtils.LimitStringToWidth (nameString, UIFont.SystemFontOfSize (14), width - 20);
+
+			string compositeString = nameString + "\n" + distanceTotalString;
+
+			var nameAttributes = new UIStringAttributes {
+				Font = UIFont.SystemFontOfSize (14),
+				ForegroundColor = UIColor.Black
+			};
+
+			var distanceAttributes = new UIStringAttributes {
+				Font = UIFont.SystemFontOfSize (14),
+				ForegroundColor = UIColor.FromRGB (100, 100, 100)
+			};
+
+			var attributedString = new NSMutableAttributedString (compositeString);
+			attributedString.SetAttributes (nameAttributes.Dictionary, new NSRange (0, nameString.Length));
+			attributedString.SetAttributes (distanceAttributes, new NSRange (nameString.Length, distanceTotalString.Length + 1));
+
+			label.TextColor = AppDelegate.BoardBlack;
+			label.Lines = 0;
+			label.AttributedText = attributedString;
+			label.AdjustsFontSizeToFitWidth = false;
+			label.Font = UIFont.SystemFontOfSize (14);
+			label.Frame = new CGRect (5, width, width - 10, TextSpace);
+
+			var size = label.SizeThatFits (label.Frame.Size);
+			label.Frame = new CGRect (label.Frame.X, label.Frame.Y, label.Frame.Width, size.Height);
+
+			return label;
 		}
 	}
 }

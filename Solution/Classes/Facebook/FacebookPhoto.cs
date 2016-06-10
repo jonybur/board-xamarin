@@ -7,14 +7,12 @@ namespace Board.Facebook
 	{
 		public string Name;
 		public string CreatedTime;
-		public string Description;
 
-		public FacebookPhoto(string id, string name, string createdtime, string description)
+		public FacebookPhoto(string id, string name, string createdtime)
 		{
-			if (description != "<null>") {
-				Description = description;
+			if (name != "<null>") {
+				Name = name;
 			}
-			Name = name;
 			CreatedTime = createdtime;
 			Id = id;
 		}

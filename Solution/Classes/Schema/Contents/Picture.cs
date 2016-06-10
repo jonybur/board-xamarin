@@ -82,7 +82,7 @@ namespace Board.Schema
 			FacebookId = facebookPhoto.Id;
 			Center = center;
 			Transform = transform;
-			Description = facebookPhoto.Description;
+			Description = facebookPhoto.Name;
 
 			var boardCoordinate = UIBoardInterface.board.GeolocatorObject.Coordinate;
 			latitude = boardCoordinate.Latitude;

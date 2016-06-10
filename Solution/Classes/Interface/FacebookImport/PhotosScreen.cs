@@ -55,7 +55,7 @@ namespace Board.Interface.FacebookImport
 
 			foreach (var element in elementList) {
 				var fbId = element.Id;
-				var fbDescription = ((FacebookPhoto)element).Description;
+				var fbDescription = ((FacebookPhoto)element).Name;
 				var fbCreationDate = DateTime.Parse(((FacebookPhoto)element).CreatedTime);
 
 				FacebookUtils.MakeGraphRequest (element.Id, "?fields=images", delegate(List<FacebookElement> obj) {

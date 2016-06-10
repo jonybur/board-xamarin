@@ -4,7 +4,6 @@ using Board.Infrastructure;
 using Board.Interface;
 using Board.Screens.Controls;
 using Board.Utilities;
-using System.Linq;
 using CoreGraphics;
 using Facebook.CoreKit;
 using Foundation;
@@ -37,7 +36,16 @@ namespace Board.Screens
 		{
 			base.ViewDidLoad ();
 
-			BigTed.BTProgressHUD.Show ();
+			var defaults = NSUserDefaults.StandardUserDefaults;
+			const string key = "FirstTimeUse";
+			if (!defaults.BoolForKey (key)) {
+				// First launch
+				NSUserDefaults.StandardUserDefaults.SetBool (true, key);
+				defaults.Synchronize ();
+				BigTed.BTProgressHUD.Show ("Setting up Board\nfor first time use...");
+			} else { 
+				BigTed.BTProgressHUD.Show ();
+			}
 
 			ListMapMarkers = new List<UIMapMarker> ();
 
@@ -113,6 +121,7 @@ namespace Board.Screens
 				//AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(-34.584424, -58.435909);
 				// NANTUCKET
 				AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(41.2835861,-70.1038089);
+
 				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
 
 				if (!hasLoaded) {

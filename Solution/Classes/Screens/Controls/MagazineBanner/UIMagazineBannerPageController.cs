@@ -43,7 +43,7 @@ namespace Board.Screens.Controls
 				// updates pagecontroller
 				var newViewController = pageViewController.ViewControllers[0];
 				int indexOfCurrentViewController = Array.IndexOf (UIMagazineServices.PageBanners, newViewController);
-				UIMagazineBannerPageController.PageControl.CurrentPage = indexOfCurrentViewController;
+				PageControl.CurrentPage = indexOfCurrentViewController;
 
 				var containerScreen = AppDelegate.NavigationController.TopViewController as ContainerScreen;
 				var mainMenuScreen = containerScreen.CurrentScreenViewController as MainMenuScreen;

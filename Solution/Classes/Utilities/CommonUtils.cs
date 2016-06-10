@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Text.RegularExpressions;
 using CoreGraphics;
+using System.Globalization;
 using System.Threading.Tasks;
 using CoreLocation;
 using Foundation;
@@ -18,6 +20,35 @@ namespace Board.Utilities
 
 	public static class CommonUtils
 	{
+		public static string FirstLetterOfEveryWordToUpper (string s) { 
+			return Regex.Replace (s, @"(^\w)|(\s\w)", m => m.Value.ToUpper ());
+		}
+
+		public static string LimitStringToWidth (string textToLimit, UIFont forFont, float toWidth)
+		{
+			string limitedText = textToLimit;
+
+			int textLength = textToLimit.Length;
+
+			while (limitedText.StringSize (forFont).Width > toWidth) {
+
+				limitedText = textToLimit.Substring (0, textLength) + "...";
+				textLength--;
+
+			}
+
+			return limitedText;
+		}
+
+		public static bool IsStringAllUpper (string input)
+		{
+			for (int i = 0; i < input.Length; i++) {
+				if (Char.IsLetter (input [i]) && !Char.IsUpper (input [i]))
+					return false;
+			}
+			return true;
+		}
+
 		public static string GetFormattedTimeDifference(DateTime creationTime){
 			string result = string.Empty;
 
@@ -47,7 +78,7 @@ namespace Board.Utilities
 				farAway = " mile away";
 			}
 
-			string distanceString = distance.ToString ("F1");
+			string distanceString = distance.ToString ("F1", CultureInfo.InvariantCulture);
 			if (distanceString.EndsWith(".0")) {
 				distanceString = distanceString.Substring (0, distanceString.Length - 2);
 			}
@@ -117,12 +148,11 @@ namespace Board.Utilities
 			var webClient = new WebClient ();
 			var uri = new Uri (webAddress);
 
-			var bytes = await webClient.DownloadDataTaskAsync(uri);
-			var image = CommonUtils.GetImagefromByteArray(bytes);
-			return image;
 			try
 			{
-				
+				var bytes = await webClient.DownloadDataTaskAsync (uri);
+				var image = GetImagefromByteArray (bytes);
+				return image;
 			}catch (Exception ex){
 				Console.WriteLine (ex.Message);
 				return null;

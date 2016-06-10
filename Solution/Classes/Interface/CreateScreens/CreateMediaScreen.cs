@@ -28,7 +28,6 @@ namespace Board.Interface.CreateScreens
 
 		public CreateMediaScreen (){
 			content = new Picture ();
-
 			((Picture)content).SetImageFromUIImage(AppDelegate.CameraPhoto);
 		}
 

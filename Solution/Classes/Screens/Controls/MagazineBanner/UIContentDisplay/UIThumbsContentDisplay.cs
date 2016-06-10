@@ -47,6 +47,23 @@ namespace Board.Screens.Controls
 			}
 		}
 
+		private class CategoryComparer : IBoardComparer
+		{
+			public string Description {
+				get { return "CATEGORY"; }
+			}
+
+			public int Compare (Board.Schema.Board x, Board.Schema.Board y)
+			{
+				return String.Compare (x.Category, y.Category);
+			}
+
+			public string GetComparisonPropertyDescription (Board.Schema.Board target)
+			{
+				return target.Category;
+			}
+		}
+
 		private class DistanceComparer : IBoardComparer
 		{
 			public string Description { 
@@ -64,7 +81,7 @@ namespace Board.Screens.Controls
 		}
 
 		public readonly float ThumbSize;
-		public enum OrderMode { Neighborhood = 0, Alphabetic, Distance }
+		public enum OrderMode { Category = 0, Neighborhood, Alphabetic, Distance }
 		public const int TopAndBottomSeparation = 20;
 
 		public List<UIBoardThumbComponent> ListThumbComponents;
@@ -83,11 +100,13 @@ namespace Board.Screens.Controls
 			ThumbSize = AppDelegate.ScreenWidth / 3.5f;
 
 			this._boardComparersByMode = new Dictionary<OrderMode, IBoardComparer> ();
+			this._boardComparersByMode.Add (OrderMode.Category, new CategoryComparer ());
 			this._boardComparersByMode.Add (OrderMode.Alphabetic, new AlphabeticComparer ());
 			this._boardComparersByMode.Add (OrderMode.Neighborhood, new NeighbourhoodComparer ());
 			this._boardComparersByMode.Add (OrderMode.Distance, new DistanceComparer ());
 
 			Modes = new List<OrderMode> ();
+			Modes.Add (OrderMode.Category);
 			Modes.Add (OrderMode.Neighborhood);
 			Modes.Add (OrderMode.Alphabetic);
 			Modes.Add (OrderMode.Distance);

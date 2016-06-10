@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using BigTed;
 using Board.Infrastructure;
 using Board.Interface;
 using Board.JsonResponses;
 using System;
 using Board.Schema;
+using System.Threading;
 using Board.Utilities;
 using CoreGraphics;
 using UIKit;
@@ -16,9 +17,11 @@ namespace Board.Facebook
 	{
 		static List<Content> ContentToImport;
 		static CGPoint ItemLocation;
+		static string PageId;
+		const float startX = 500;
 
 		public static void ImportPages(params string[] pageIds){
-			foreach (var id in pageIds){
+			foreach (var id in pageIds) {
 				ImportPage(id);
 			}
 		}
@@ -26,53 +29,50 @@ namespace Board.Facebook
 		public static void ImportPage (string pageId)
 		{
 			BTProgressHUD.Show ("Importing Board...");
-			FacebookUtils.MakeGraphRequest (pageId, "?fields=name,location,about,cover,phone,category_list,picture.type(large)", async delegate (List<FacebookElement> FacebookElements) {
-				if (FacebookElements.Count < 1) {
-					BTProgressHUD.Dismiss ();
-					return;
-				}
-
-				var importedBoard = (FacebookImportedPage)FacebookElements [0];
-				var board = new Board.Schema.Board ();
-				board.Name = importedBoard.Name;
-				board.About = importedBoard.About;
-
-				board.Logo = await CommonUtils.DownloadUIImageFromURL (importedBoard.PictureUrl);
-
-				Console.WriteLine(importedBoard.PictureUrl);
-				Console.WriteLine(board.Logo == null);
-
-				board.CoverImage = await CommonUtils.DownloadUIImageFromURL (importedBoard.CoverUrl);
-
-				Console.WriteLine(importedBoard.CoverUrl);
-				Console.WriteLine(board.CoverImage == null);
-
-				board.GeolocatorObject = new GoogleGeolocatorObject ();
-				board.MainColor = UIColor.Black;
-				board.SecondaryColor = UIColor.Black;
-				board.Phone = importedBoard.Phone;
-				board.Category = importedBoard.Category;
-				board.FacebookId = importedBoard.Id;
-
-				board.GeolocatorObject.results = new List<Result> ();
-
-				var result = new Result ();
-				result.geometry = new Geometry ();
-				result.geometry.location = new Location ();
-				result.geometry.location.lat = importedBoard.Location.Latitude;
-				result.geometry.location.lng = importedBoard.Location.Longitude;
-				board.GeolocatorObject.results.Add (result);
-
-				// - creates board -
-
-				CloudController.CreateBoard (board);
-				BTProgressHUD.Dismiss ();
-			});
+			FacebookUtils.MakeGraphRequest (pageId, "?fields=name,location,about,cover,phone,category_list,picture.type(large)", GenerateBoard);
 		}
 
-		const float startX = 500;
+		private static async void GenerateBoard (List<FacebookElement> FacebookElements) { 
+			if (FacebookElements.Count < 1) {
+				BTProgressHUD.Dismiss ();
+				return;
+			}
 
-		static string PageId;
+			BTProgressHUD.Show ("Importing Board...");
+
+			var importedBoard = (FacebookImportedPage)FacebookElements [0];
+			var board = new Board.Schema.Board ();
+			board.Name = importedBoard.Name;
+			board.About = importedBoard.About;
+
+			Console.WriteLine ("Recieved " + board.Name);
+
+			board.Logo = await CommonUtils.DownloadUIImageFromURL (importedBoard.PictureUrl);
+			board.CoverImage = await CommonUtils.DownloadUIImageFromURL (importedBoard.CoverUrl);
+			board.GeolocatorObject = new GoogleGeolocatorObject ();
+			board.MainColor = UIColor.Black;
+			board.SecondaryColor = UIColor.Black;
+			board.Phone = importedBoard.Phone;
+			board.Category = importedBoard.Category;
+			board.FacebookId = importedBoard.Id;
+
+			board.GeolocatorObject.results = new List<Result> ();
+
+			var result = new Result ();
+			result.geometry = new Geometry ();
+			result.geometry.location = new Location ();
+			result.geometry.location.lat = importedBoard.Location.Latitude;
+			result.geometry.location.lng = importedBoard.Location.Longitude;
+			board.GeolocatorObject.results.Add (result);
+
+			// - creates board -
+
+			Console.WriteLine ("Sending " + board.Name + "...");
+
+			CloudController.CreateBoard (board);
+
+			BTProgressHUD.Dismiss ();
+		}
 
 		public static void ImportPageContent(string pageId){
 			PageId = pageId;
@@ -226,8 +226,6 @@ namespace Board.Facebook
 			CloudController.UpdateBoard (UIBoardInterface.board.Id, json);
 			BTProgressHUD.Dismiss();
 		}
-
-
 	}
 }
 

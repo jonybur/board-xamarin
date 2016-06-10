@@ -200,7 +200,11 @@ namespace Board.Interface.LookUp
 		{
 			UIImageView subView;
 			UILabel lblLikes;
-			int likes = UIBoardInterface.DictionaryLikes[content.Id];
+
+			int likes = 0;
+			if (UIBoardInterface.DictionaryLikes.ContainsKey (content.Id)) {
+				likes = UIBoardInterface.DictionaryLikes [content.Id];
+			}
 
 			using (UIImage img = UIImage.FromFile ("./boardinterface/lookup/like.png")) {
 				UIFont font = UIFont.SystemFontOfSize (14);
@@ -220,7 +224,11 @@ namespace Board.Interface.LookUp
 				LikeButton.Center = new CGPoint (LikeButton.Frame.Width / 2 + 10, AppDelegate.ScreenHeight - 25);
 			}
 
-			bool isLiked = UIBoardInterface.DictionaryUserLikes[UIBoardInterface.board.Id];
+			bool isLiked = false;
+			if (UIBoardInterface.DictionaryUserLikes.ContainsKey (content.Id)) {
+				isLiked = UIBoardInterface.DictionaryUserLikes [content.Id];
+			}
+
 			if (isLiked) {
 				subView.TintColor = AppDelegate.BoardOrange;
 				lblLikes.TextColor = AppDelegate.BoardOrange;

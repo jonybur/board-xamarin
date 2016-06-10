@@ -1,4 +1,5 @@
-﻿using Board.Schema;
+﻿using System;
+using Board.Schema;
 using CoreGraphics;
 using UIKit;
 using Foundation;
@@ -27,9 +28,10 @@ namespace Board.Interface.Widgets
 			content = pic;
 			PictureImageView = new UIImageView ();
 
+			PictureImageView.Frame = new CGRect (SideMargin, TopMargin, Widget.Autosize, Widget.Autosize);
+			PictureImageView.ContentMode = UIViewContentMode.ScaleAspectFill;
+
 			if (pic.Image == null) {
-				PictureImageView.Frame = new CGRect (SideMargin, TopMargin, Widget.Autosize, Widget.Autosize);
-				PictureImageView.ContentMode = UIViewContentMode.ScaleAspectFill;
 				PictureImageView.SetImage (new NSUrl (picture.ImageUrl),
 					UIImage.FromFile ("./demo/magazine/nantucket.png"),
 					ImageFromHaneke, ErrorFromHaneke);
@@ -52,8 +54,10 @@ namespace Board.Interface.Widgets
 		}
 
 		private void SetWidget(){
+			
 			PictureImageView.Image = picture.Thumbnail;
 			PictureImageView.ClipsToBounds = true;
+
 			CreateMounting (PictureImageView.Frame.Size);
 
 			Frame = MountingView.Frame;
@@ -72,4 +76,3 @@ namespace Board.Interface.Widgets
 
 	}
 }
-

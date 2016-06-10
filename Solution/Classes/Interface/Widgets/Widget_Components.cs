@@ -1,5 +1,4 @@
-﻿using System;
-using Board.Interface.Buttons;
+﻿using Board.Interface.Buttons;
 using CoreAnimation;
 using CoreGraphics;
 using Board.Utilities;
@@ -103,7 +102,9 @@ namespace Board.Interface.Widgets
 			LikeComponent = new UIImageView (new CGRect (SideMargin,
 				MountingView.Frame.Height - 40, 80, 40));
 			
-			liked = UIBoardInterface.DictionaryUserLikes[content.Id];
+			if (UIBoardInterface.DictionaryUserLikes.ContainsKey (content.Id)) {
+				liked = UIBoardInterface.DictionaryUserLikes [content.Id];
+			}
 
 			likeView = CreateLike (LikeComponent.Frame);
 			likeLabel = CreateLikeLabel (likeView.Center);
@@ -188,8 +189,10 @@ namespace Board.Interface.Widgets
 			UILabel likeLabel = new UILabel(new CGRect(0, 0, likeLabelSize.Width + 20, likeLabelSize.Height));
 
 			likeLabel.Font = likeFont;
-			int cloudlikes = UIBoardInterface.DictionaryLikes[content.Id];
-			likeLabel.Text = cloudlikes.ToString();
+			if (UIBoardInterface.DictionaryLikes.ContainsKey (content.Id)) {
+				likes = UIBoardInterface.DictionaryLikes [content.Id];
+			}
+			likeLabel.Text = likes.ToString();
 			likeLabel.Center = new CGPoint (center.X + likeLabel.Frame.Width / 2 + 5, center.Y);
 			likeLabel.TextAlignment = UITextAlignment.Center;
 

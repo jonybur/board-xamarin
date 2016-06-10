@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Board.Interface;
 using Board.Interface.Widgets;
 using Board.Screens;
 using CoreGraphics;
 using UIKit;
-using Board.Schema;
 
 namespace Board.Interface
 {

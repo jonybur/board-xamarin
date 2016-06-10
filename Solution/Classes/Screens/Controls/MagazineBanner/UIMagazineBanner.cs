@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Board.Infrastructure;
 using Board.JsonResponses;
@@ -40,9 +39,10 @@ namespace Board.Screens.Controls
 		private void GeneratePages(List<Board.Schema.Board> boardList){
 			
 			var magazine = CloudController.GetMagazine (AppDelegate.UserLocation);
-			bool magazineValid = MagazineResponse.IsValidMagazine (magazine);
+			bool theresMagazine = MagazineResponse.IsValidMagazine (magazine);
 
 			var timeline = CloudController.GetTimeline (AppDelegate.UserLocation);
+			bool theresTimeline = timeline.Count > 0;
 
 			var publicationIds = timeline.Select (x => x.Id).ToArray ();
 			ContentLikes = CloudController.GetLikes (publicationIds);
@@ -50,12 +50,12 @@ namespace Board.Screens.Controls
 
 			var pagesName = new List<string> ();
 
-			if (timeline.Count > 0) {
-				pagesName.Add ("TRENDING");
+			if (theresMagazine) {
+				pagesName.Add("FEATURED");
 			}
 
-			if (magazineValid) {
-				pagesName.Add("FEATURED");
+			if (theresTimeline) {
+				pagesName.Add ("TRENDING");
 			}
 
 			pagesName.Add("DIRECTORY");
@@ -76,15 +76,18 @@ namespace Board.Screens.Controls
 
 
 			int screenNumber = 0;
-			if (timeline.Count > 0){
-				pages [screenNumber].ContentDisplay = new UITimelineContentDisplay (boardList, timeline);
-				screenNumber++;
-			}
-			if (magazineValid) {
+
+			if (theresMagazine) {
 				pages [screenNumber].ContentDisplay = new UICarouselContentDisplay (magazine);
 				screenNumber++;
 			}
-			pages [screenNumber].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Alphabetic, UIMagazineBannerPage.Height, UIActionButton.Height);
+
+			if (theresTimeline) {
+				pages [screenNumber].ContentDisplay = new UITimelineContentDisplay (boardList, timeline);
+				screenNumber++;
+			}
+
+			pages [screenNumber].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Category, UIMagazineBannerPage.Height, UIActionButton.Height);
 
 			Pages = pages;
 		}

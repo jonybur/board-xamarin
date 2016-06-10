@@ -380,13 +380,15 @@ namespace Board.Infrastructure
 			return url;
 		}
 
-		public static bool CreateBoard(Board.Schema.Board board){
+		public static bool CreateBoard(Schema.Board board){
 			string logoURL = string.Empty, coverURL = string.Empty;
 
 			if (board.Logo != null) {
+				Console.WriteLine ("Uploading logo to AWS");
 				logoURL = UploadToAmazon (board.Logo);
 			}
 			if (board.CoverImage != null) {
+				Console.WriteLine ("Uploading cover image to AWS");
 				coverURL = UploadToAmazon (board.CoverImage);
 			}
 
@@ -408,7 +410,9 @@ namespace Board.Infrastructure
 				"\"logoURL\": \"" + logoURL + "\", " + 
 				"\"coverURL\": \"" + coverURL + "\" }";
 
+			Console.WriteLine ("Sending " + board.Name + " to server...");
 			string result = JsonPOSTRequest ("http://" + AppDelegate.APIAddress + "/api/board?authToken=" + AppDelegate.EncodedBoardToken, json);
+			Console.WriteLine ("Sent!");
 
 			if (result == "200" || result == string.Empty) {
 				return true;
@@ -439,17 +443,21 @@ namespace Board.Infrastructure
 		}
 
 		public static List<Board.Schema.Board> GetNearbyBoards(CLLocationCoordinate2D location, int meterRadius){
-			
 			string request = "http://" + AppDelegate.APIAddress + "/api/boards/nearby?" +
 			                 "authToken=" + AppDelegate.EncodedBoardToken + "&latitude=" + 
 				location.Latitude.ToString(CultureInfo.InvariantCulture) + "&longitude=" +
 				location.Longitude.ToString(CultureInfo.InvariantCulture) + "&radiusInMeters=" + meterRadius;
-
+			
+			Console.WriteLine ("Getting nearby Boards... ");
 			string result = JsonGETRequest (request);
 
+			Console.WriteLine ("Deserializing Boards...");
 			var response = BoardResponse.Deserialize (result);
 
+			Console.WriteLine ("Generating Board List...");
 			var boards = GenerateBoardListFromBoardResponse (response);
+
+			Console.WriteLine ("Done! - got " + boards.Count + " Boards");
 
 			return boards;
 		}
@@ -490,19 +498,27 @@ namespace Board.Infrastructure
 		public static Board.Schema.Board GenerateBoardFromBoardResponse(BoardResponse.Datum datum){
 			GoogleGeolocatorObject geolocatorObject;
 
-			Board.Schema.Board board = StorageController.BoardIsStored(datum.uuid);
+			Schema.Board board = StorageController.BoardIsStored(datum.uuid);
+
 
 			if (board == null) {
-				board = new Board.Schema.Board ();
+				Console.WriteLine (datum.name + " is not stored");
 
-				string jsonobj = JsonHandler.GET ("https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
-					datum.latitude.ToString(CultureInfo.InvariantCulture) + "," + datum.longitude.ToString(CultureInfo.InvariantCulture) + "&key=" + AppDelegate.GoogleMapsAPIKey);
+				board = new Schema.Board ();
+
+				Console.WriteLine ("Getting location information from Google");
+				string jsonobj = JsonGETRequest ("https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+					datum.latitude.ToString (CultureInfo.InvariantCulture) + "," + datum.longitude.ToString (CultureInfo.InvariantCulture) + "&key=" + AppDelegate.GoogleMapsAPIKey);
+
+				Console.WriteLine ("Deserializing Google geolocation");
 				geolocatorObject = JsonHandler.DeserializeObject (jsonobj);
 
 				board.GeolocatorObject = geolocatorObject;
 				board.Id = datum.uuid;
 
 				StorageController.StoreBoard (board, jsonobj);
+			} else {
+				Console.WriteLine (datum.name + " was stored");
 			}
 
 			// finishes compiling board
@@ -555,28 +571,38 @@ namespace Board.Infrastructure
 			AppDelegate.BoardUser = null;
 		}
 
-		private static string JsonGETRequest(string url, string method = "GET", string contentType = "application/json")
+		private static string JsonGETRequest (string url, string method = "GET", string contentType = "application/json")
 		{
 			var httpWebRequest = (HttpWebRequest)WebRequest.Create (url);
 			httpWebRequest.ContentType = contentType;
 			httpWebRequest.Method = method;
 			httpWebRequest.Timeout = 8000;
 
-			try{
+			try {
+				Console.WriteLine ("Getting webrequest response...");
 				var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse ();
+
 				string result = string.Empty;
-				using (var streamReader = new StreamReader (httpResponse.GetResponseStream ())) {
-					result = streamReader.ReadToEnd ();
+
+				var stream = httpResponse.GetResponseStream ();
+
+				using (BufferedStream buffer = new BufferedStream (stream)) {
+					using (StreamReader reader = new StreamReader (buffer)) {
+						Console.WriteLine ("Reading response...");
+						result = reader.ReadToEnd ();		
+					}
 				}
+
+				Console.WriteLine ("Read response!");
 				return result;
+
 			} catch (WebException e) {
 
-				if (e.Status == WebExceptionStatus.ProtocolError) 
-				{
-					return ((HttpWebResponse)e.Response).StatusCode.ToString();
+				if (e.Status == WebExceptionStatus.ProtocolError) {
+					return ((HttpWebResponse)e.Response).StatusCode.ToString ();
 				}
 
-				return e.Status.ToString();
+				return e.Status.ToString ();
 			}
 		}
 
@@ -733,11 +759,14 @@ namespace Board.Infrastructure
 					streamWriter.Close ();
 				}
 
+				Console.WriteLine ("Getting response...");
 				var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse ();
 				string result = string.Empty;
+
 				using (var streamReader = new StreamReader (httpResponse.GetResponseStream ())) {
 					result = streamReader.ReadToEnd ();
 				}
+
 				return result;
 			} catch (WebException e) {
 

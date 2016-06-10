@@ -1,6 +1,4 @@
-﻿using System;
-using CoreGraphics;
-using UIKit;
+﻿using UIKit;
 
 namespace Board.Screens.Controls
 {

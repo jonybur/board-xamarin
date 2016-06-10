@@ -88,12 +88,18 @@ namespace Board.Screens
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					AppDelegate.containerScreen.BringSideMenuUp("business");
 				}
-				/*else if (AppDelegate.ScreenWidth / 4 * 3 < tg.LocationInView(this.View).X){
+				else if (AppDelegate.ScreenWidth / 4 * 3 < tg.LocationInView(this.View).X){
+
+					/*
+					Board.Facebook.FacebookAutoImporter.ImportPages ("FlyBladeNow", "hylinehouse", "178575612198721", "hyline.greylady", "NantucketBikeShop", "EasyRidersBicycles",
+															"157791807592525", "ventunoresto", "PiPizzeriaNantucket", "169666099847084", "153259373989",
+															"sunkenshipnantucket", "nantucketsalt", "gazebo.nantucket", "47998764919");
+					*/
 
 					UIAlertController alert = UIAlertController.Create("Facebook Page Importer", null, UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 					alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate {
-
+						
 						if (alert.TextFields.Length == 0){
 							return;
 						}
@@ -105,6 +111,7 @@ namespace Board.Screens
 						}
 
 						Board.Facebook.FacebookAutoImporter.ImportPage(textField.Text);
+
 					}));
 
 					alert.AddTextField(delegate(UITextField obj) {
@@ -113,7 +120,8 @@ namespace Board.Screens
 					});
 
 					NavigationController.PresentViewController(alert, true, null);
-				}*/
+
+				}
 			});
 
 			Banner.AddTap (tap);
@@ -141,7 +149,13 @@ namespace Board.Screens
 		"TOPPERS.Wauwinet", "WhiteElephantHotel", "TheNantucket", "NantucketIslandSurfSchool", "ackstubbys", 
 		"AmericanSeasons", "blackeyedsusans.nantucket", "264846700041", "73131111727", "OranMorBistro", 
 		"272985902713182", "LanguedocBistro", "CompanyOfTheCauldron", "AtlasNantucket", "handlebarcafe",
-		"NativMade", "PiPizzeriaNantucket", "ventunoresto", "lemonpressnantucket"*/
+		"NativMade", "PiPizzeriaNantucket", "ventunoresto", "lemonpressnantucket",
+
+		"FlyBladeNow", "hylinehouse", "178575612198721", "hyline.greylady", "NantucketBikeShop", "EasyRidersBicycles", 
+		"157791807592525", "ventunoresto", "169666099847084", "153259373989", "sunkenshipnantucket", "nantucketsalt",
+		"gazebo.nantucket", "47998764919", "NantucketHistoricalAssociation"
+
+		*/
 
 
 	}

@@ -40,7 +40,25 @@ namespace Board.Schema
 		private CGPoint center;
 		[IgnoreDataMember]
 		public CGPoint Center{
-			get{ return new CGPoint(center.X * UIBoardScroll.AspectPercentage, center.Y * UIBoardScroll.AspectPercentage); }
+			get{
+				float percentageCorrection = 0f;
+				switch (AppDelegate.PhoneVersion) {
+				case AppDelegate.PhoneVersions.iPhone4:
+					percentageCorrection = .13f;
+					break;
+				case AppDelegate.PhoneVersions.iPhone5:
+					percentageCorrection = .07f;
+					break;
+				case AppDelegate.PhoneVersions.iPhone6:
+					percentageCorrection = 0f;
+					break;
+				case AppDelegate.PhoneVersions.iPhone6Plus:
+					percentageCorrection = -.055f;
+					break;
+				}
+				var adaptedCenter = new CGPoint (center.X * (UIBoardScroll.AspectPercentage + percentageCorrection), center.Y * UIBoardScroll.AspectPercentage);
+				return adaptedCenter;
+			}
 			set{ center = value; }
 		}
 

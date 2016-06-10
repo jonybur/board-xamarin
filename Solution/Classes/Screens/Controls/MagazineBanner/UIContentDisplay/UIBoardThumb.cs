@@ -27,25 +27,16 @@ namespace Board.Screens.Controls
 		}
 
 
-		public void UpdateDistanceLabel(){
-			NameLabel.RemoveFromSuperview ();
-			NameLabel = CreateNameLabel (BoardThumb.Board.Name, CommonUtils.GetDistanceFromUserToBoard(BoardThumb.Board), Size);
-			AddSubview (NameLabel);
-		}
-
-		bool IsAllUpper(string input)
+		public void UpdateDistanceLabel ()
 		{
-			for (int i = 0; i < input.Length; i++)
-			{
-				if (Char.IsLetter(input[i]) && !Char.IsUpper(input[i]))
-					return false;
-			}
-			return true;
+			NameLabel.RemoveFromSuperview ();
+			NameLabel = CreateNameLabel (BoardThumb.Board.Name, CommonUtils.GetDistanceFromUserToBoard (BoardThumb.Board), Size);
+			AddSubview (NameLabel);
 		}
 
 		private string NameLimiter(string nameString){
 
-			if (IsAllUpper(nameString) && nameString.Length > 14) {
+			if (CommonUtils.IsStringAllUpper(nameString) && nameString.Length > 14) {
 				nameString = nameString.Substring (0, 14) + "...";
 				return nameString;
 			}
@@ -70,6 +61,7 @@ namespace Board.Screens.Controls
 
 			label.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 
+			nameString = CommonUtils.FirstLetterOfEveryWordToUpper (nameString);
 			nameString = NameLimiter (nameString);
 
 			var distanceTotalString = CommonUtils.GetFormattedDistance (distance);

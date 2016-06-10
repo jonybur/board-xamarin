@@ -65,10 +65,10 @@ namespace Board.Facebook
 					}
 
 				} else if (element.StartsWith("photos", StringComparison.Ordinal)) {
-					string[,] objects = NSObjectToElement (obj, "data.id", "data.name", "data.created_time", "data.name");
+					string[,] objects = NSObjectToElement (obj, "data.id", "data.name", "data.created_time");
 
 					for (int i = 0; i < objects.GetLength (0); i++) {
-						var fbphoto = new FacebookPhoto (objects [i, 0], objects [i, 1], objects [i, 2], objects[i, 3]);
+						var fbphoto = new FacebookPhoto (objects [i, 0], objects [i, 1], objects [i, 2]);
 						ElementList.Add (fbphoto);
 					}
 				} else if (element == "accounts") {
@@ -214,7 +214,9 @@ namespace Board.Facebook
 				for (int j = 0; j < attributes.Length; j++) {
 					if (attributes [j].Count > 0) {
 						var att = attributes [j].GetItem<NSObject> ((nuint)i);
-						result [i, j + 1] = att.ToString ();
+						if (att != null) {
+							result [i, j + 1] = att.ToString ();
+						}
 					}
 				}
 

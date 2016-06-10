@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using System.IO;
 using Board.JsonResponses;
-using Board.Schema;
 using Foundation;
 using SQLite;
 

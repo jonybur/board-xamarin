@@ -41,9 +41,26 @@ namespace Board.Interface.Widgets
 		public int SideMargin = 5;
 
 		public static float Autosize{
-			get{ 
-				// 230 is optimal for iPhone 6 screen
-				return 230f * UIBoardScroll.AspectPercentage;
+			get{
+
+				float percentageCorrection = 0f;
+
+				switch (AppDelegate.PhoneVersion) {
+				case AppDelegate.PhoneVersions.iPhone4:
+					percentageCorrection = -.7f;
+					break;
+				case AppDelegate.PhoneVersions.iPhone5:
+					//percentageCorrection = .07f;
+					break;
+				case AppDelegate.PhoneVersions.iPhone6:
+					//percentageCorrection = 0f;
+					break;
+				case AppDelegate.PhoneVersions.iPhone6Plus:
+					//percentageCorrection = -.055f;
+					break;
+				}
+
+				return 230f * (UIBoardScroll.AspectPercentage + percentageCorrection);
 			}
 		}
 
