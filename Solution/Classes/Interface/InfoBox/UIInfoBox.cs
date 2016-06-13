@@ -37,7 +37,13 @@ namespace Board.Interface
 
 			ActionButtons = new UIActionButtons (board, (float)OpenLabel.Frame.Bottom + 10, (float)Frame.Width);
 			AboutBox = new UIAboutBox (board.About, (float)OpenLabel.Frame.Bottom + 75, (float)Frame.Width);
-			Container = new UIMapContainer (Frame, (float)AboutBox.Frame.Bottom + 30);
+
+			float lastBottom = (float)AboutBox.Frame.Bottom;
+
+			if (board.GeolocatorObject.Coordinate.Latitude != 0 && board.GeolocatorObject.Coordinate.Longitude != 0) {
+				Container = new UIMapContainer (Frame, (float)AboutBox.Frame.Bottom + 30);
+				lastBottom = (float)Container.Map.Frame.Bottom;
+			}
 
 			/*
 			Line1 = new UIImageView (new CGRect (0, Container.Map.Frame.Bottom + 20, Frame.Width, 1));
@@ -56,13 +62,17 @@ namespace Board.Interface
 			InstagramGallery = new UIInstagramGallery ((float)Frame.Width, (float)InstagramLabel.Frame.Bottom + 15, images);
 			*/
 
-			AddSubviews (Banner, CategoryLabel, Container.Map, NameLabel, NameLabel, AboutBox, OpenLabel);//, Line1, InstagramGallery, InstagramLabel);
+			AddSubviews (Banner, CategoryLabel, NameLabel, NameLabel, AboutBox, OpenLabel);//, Line1, InstagramGallery, InstagramLabel);
+
+			if (Container != null) {
+				AddSubview(Container.Map);
+			}
 
 			foreach (var button in ActionButtons.ListActionButton) {
 				AddSubview (button);
 			}
 
-			ContentSize = new CGSize (Frame.Width, Container.Map.Frame.Bottom + Board.Interface.Buttons.ButtonInterface.ButtonBarHeight * 3);
+			ContentSize = new CGSize (Frame.Width, lastBottom + Board.Interface.Buttons.ButtonInterface.ButtonBarHeight * 3);
 
 			Scrolled += (sender, e) => {
 				if (ContentOffset.Y < 0){

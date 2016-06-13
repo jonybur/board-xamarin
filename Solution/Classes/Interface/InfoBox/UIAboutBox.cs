@@ -9,9 +9,13 @@ namespace Board.Interface
 			Text = about;
 			Font = UIFont.SystemFontOfSize (14);
 			BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
+
 			Editable = false;
-			Selectable = false;
+			//Selectable = false;
 			ScrollEnabled = false;
+
+			DataDetectorTypes = UIDataDetectorType.Link;
+
 			var size = SizeThatFits (Frame.Size);
 			Frame = new CGRect (Frame.X, Frame.Y, Frame.Width, size.Height);
 		}

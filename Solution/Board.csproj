@@ -152,6 +152,9 @@
     <Reference Include="Facebook">
       <HintPath>..\packages\Xamarin.Facebook.iOS.4.10.0.0\lib\Xamarin.iOS10\Facebook.dll</HintPath>
     </Reference>
+    <Reference Include="ModernHttpClient">
+      <HintPath>..\Components\modernhttpclient-2.4.2\lib\ios-unified\ModernHttpClient.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\fonts\congress-font-medium.ttf" />
@@ -271,6 +274,7 @@
     <BundleResource Include="Resources\screens\nocontent\noapp.png" />
     <BundleResource Include="Resources\screens\business\icon.png" />
     <BundleResource Include="Resources\screens\settings\long_flag.png" />
+    <BundleResource Include="Resources\screens\credits\long_flag.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -490,6 +494,7 @@
     <Folder Include="Resources\screens\settings\" />
     <Folder Include="Classes\Schema\Contents\" />
     <Folder Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\" />
+    <Folder Include="Resources\screens\credits\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="sqlite-net">
@@ -514,6 +519,10 @@
     </XamarinComponentReference>
     <XamarinComponentReference Include="facebookios">
       <Version>4.10.0.0</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="modernhttpclient">
+      <Version>2.4.2</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

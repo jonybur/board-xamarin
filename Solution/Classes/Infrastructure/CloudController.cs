@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
 using Board.JsonResponses;
-using System.Globalization;
 using Board.Schema;
 using Board.Utilities;
 using CoreLocation;
 using Facebook.CoreKit;
+using Foundation;
+using ModernHttpClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Linq;
-using Foundation;
 using UIKit;
+using System.Net.Http;
 
 namespace Board.Infrastructure
 {
@@ -23,7 +25,7 @@ namespace Board.Infrastructure
 	public static class CloudController
 	{
 		public static void GetUserProfile(){
-			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/user?authToken=" + AppDelegate.EncodedBoardToken);
+			string result = JsonGETRequest ("https://" + AppDelegate.APIAddress + "/api/user?authToken=" + AppDelegate.EncodedBoardToken);
 
 			if (result == "Timeout" || result == "InternalServerError") {
 				return;
@@ -40,7 +42,7 @@ namespace Board.Infrastructure
 			foreach (var id in publicationIds) {
 				publicationsToRequest += "publicationId=" + id + "&";
 			}
-			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/user/likes?"+publicationsToRequest+"authToken="+AppDelegate.EncodedBoardToken);
+			string result = JsonGETRequest ("https://"+AppDelegate.APIAddress+"/api/user/likes?"+publicationsToRequest+"authToken="+AppDelegate.EncodedBoardToken);
 
 			if (result == "Timeout" || result == "InternalServerError") {
 				return new Dictionary<string, bool> ();
@@ -63,7 +65,7 @@ namespace Board.Infrastructure
 		}
 
 		public static bool GetUserLike(string publicationId){
-			string request = "http://" + AppDelegate.APIAddress + "/api/user/likes?publicationId=" + publicationId +
+			string request = "https://" + AppDelegate.APIAddress + "/api/user/likes?publicationId=" + publicationId +
 			                 "&authToken=" + AppDelegate.EncodedBoardToken;
 			string result = JsonGETRequest (request);
 
@@ -79,17 +81,17 @@ namespace Board.Infrastructure
 		}
 
 		public static void SendLike(string idToLike){
-			JsonAsyncPUTRequest ("http://"+AppDelegate.APIAddress+"/api/publications/"+idToLike+"/like?authToken="+AppDelegate.EncodedBoardToken+
+			JsonAsyncPUTRequest ("https://"+AppDelegate.APIAddress+"/api/publications/"+idToLike+"/like?authToken="+AppDelegate.EncodedBoardToken+
 				"&time="+CommonUtils.GetUnixTimeStamp());
 		}
 
 		public static void SendDislike(string idToDislike){
-			JsonAsyncPUTRequest ("http://"+AppDelegate.APIAddress+"/api/publications/"+idToDislike+"/dislike?authToken="+AppDelegate.EncodedBoardToken+
+			JsonAsyncPUTRequest ("https://"+AppDelegate.APIAddress+"/api/publications/"+idToDislike+"/dislike?authToken="+AppDelegate.EncodedBoardToken+
 				"&time="+CommonUtils.GetUnixTimeStamp());
 		}
 
 		public static int GetLike(string id){
-			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/publications/likes?publicationId=" + id + "&authToken="+AppDelegate.EncodedBoardToken);
+			string result = JsonGETRequest ("https://"+AppDelegate.APIAddress+"/api/publications/likes?publicationId=" + id + "&authToken="+AppDelegate.EncodedBoardToken);
 
 			if (result == "Timeout" || result == "InternalServerError") {
 				return -1;
@@ -115,7 +117,7 @@ namespace Board.Infrastructure
 				publicationsToRequest += "publicationId=" + id + "&";
 			}
 
-			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/publications/likes?"+publicationsToRequest+"authToken="+AppDelegate.EncodedBoardToken);
+			string result = JsonGETRequest ("https://"+AppDelegate.APIAddress+"/api/publications/likes?"+publicationsToRequest+"authToken="+AppDelegate.EncodedBoardToken);
 
 			if (result == "Timeout" || result == "InternalServerError") {
 				return new Dictionary<string, int> ();
@@ -139,7 +141,7 @@ namespace Board.Infrastructure
 		}
 
 		public static bool UpdateBoard(string boardId, string json){
-			string result = JsonPOSTRequest ("http://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/updates?authToken="+AppDelegate.EncodedBoardToken, json);
+			string result = JsonPOSTRequest ("https://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/updates?authToken="+AppDelegate.EncodedBoardToken, json);
 
 			if (result == "200" || result == string.Empty) {
 				return true;
@@ -148,7 +150,7 @@ namespace Board.Infrastructure
 		}
 
 		public static List<Content> GetTimeline(CLLocationCoordinate2D location){
-			string request = "http://" + AppDelegate.APIAddress + "/api/boards/timeline?latitude=" +
+			string request = "https://" + AppDelegate.APIAddress + "/api/boards/timeline?latitude=" +
 			             location.Latitude.ToString (CultureInfo.InvariantCulture) + "&longitude=" + location.Longitude.ToString (CultureInfo.InvariantCulture) +
 			             "&authToken=" + AppDelegate.EncodedBoardToken;
 			string result = JsonGETRequest (request);
@@ -188,7 +190,7 @@ namespace Board.Infrastructure
 
 		public static MagazineResponse GetMagazine(CLLocationCoordinate2D location){
 
-			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/magazines/nearest?latitude="+
+			string result = JsonGETRequest ("https://"+AppDelegate.APIAddress+"/api/magazines/nearest?latitude="+
 				location.Latitude.ToString(CultureInfo.InvariantCulture)+"&longitude="+location.Longitude.ToString(CultureInfo.InvariantCulture)+
 				"&authToken="+AppDelegate.EncodedBoardToken);
 
@@ -206,7 +208,7 @@ namespace Board.Infrastructure
 		}
 
 		public static Dictionary<string, Content> GetBoardContent(string boardId){
-			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/snapshot?authToken="+AppDelegate.EncodedBoardToken);
+			string result = JsonGETRequest ("https://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/snapshot?authToken="+AppDelegate.EncodedBoardToken);
 
 			if (result == "Timeout" || result == "InternalServerError") {
 				return new Dictionary<string, Content> ();
@@ -245,7 +247,7 @@ namespace Board.Infrastructure
 		}
 
 		public static bool GetAmazonS3Ticket(string mimeType){
-			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/media/ticket?authToken="+AppDelegate.EncodedBoardToken+"&contentType="+mimeType);
+			string result = JsonGETRequest ("https://"+AppDelegate.APIAddress+"/api/media/ticket?authToken="+AppDelegate.EncodedBoardToken+"&contentType="+mimeType);
 
 			try{
 				AppDelegate.AmazonS3Ticket = JsonConvert.DeserializeObject<AmazonS3TicketResponse>(result);
@@ -257,7 +259,7 @@ namespace Board.Infrastructure
 		}
 
 		public static bool GetAmazonS3Ticket(){
-			string result = JsonGETRequest ("http://"+AppDelegate.APIAddress+"/api/media/ticket?authToken="+AppDelegate.EncodedBoardToken);
+			string result = JsonGETRequest ("https://"+AppDelegate.APIAddress+"/api/media/ticket?authToken="+AppDelegate.EncodedBoardToken);
 
 			try{
 				AppDelegate.AmazonS3Ticket = JsonConvert.DeserializeObject<AmazonS3TicketResponse>(result);
@@ -270,7 +272,7 @@ namespace Board.Infrastructure
 
 		public static bool DeleteBoard(string boardId){
 			
-			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/board/" + boardId + "?authToken=" + AppDelegate.EncodedBoardToken, "DELETE");
+			string result = JsonGETRequest ("https://" + AppDelegate.APIAddress + "/api/board/" + boardId + "?authToken=" + AppDelegate.EncodedBoardToken, "DELETE");
 
 			if (result == "200" || result == string.Empty) {
 				return true;
@@ -284,7 +286,7 @@ namespace Board.Infrastructure
 				return false;
 			}
 
-			string url = "http://" + AppDelegate.APIAddress + "/api/board/" + boardId + "/edit?authToken=" + AppDelegate.EncodedBoardToken;
+			string url = "https://" + AppDelegate.APIAddress + "/api/board/" + boardId + "/edit?authToken=" + AppDelegate.EncodedBoardToken;
 			string result = JsonGETRequest (url);
 
 			if (result == "200" || result == string.Empty) {
@@ -302,7 +304,7 @@ namespace Board.Infrastructure
 			string json = "{\"accessToken\": \"" + AccessToken.CurrentAccessToken.TokenString + "\", " +
 				"\"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\" }";
 			
-			string result = JsonPOSTRequest ("http://"+AppDelegate.APIAddress+"/api/account/login", json);
+			string result = JsonPOSTRequest ("https://"+AppDelegate.APIAddress+"/api/account/login", json);
 
 			TokenResponse tk;
 			try{
@@ -330,7 +332,9 @@ namespace Board.Infrastructure
 				data.CopyTo (dataStream);
 			}
 
+			httpRequest.KeepAlive = false;
 			var response = httpRequest.GetResponse() as HttpWebResponse;
+
 			var absoluteURL = response.ResponseUri.AbsoluteUri;
 			var indexOfParameter = absoluteURL.IndexOf ('?');
 
@@ -411,7 +415,7 @@ namespace Board.Infrastructure
 				"\"coverURL\": \"" + coverURL + "\" }";
 
 			Console.WriteLine ("Sending " + board.Name + " to server...");
-			string result = JsonPOSTRequest ("http://" + AppDelegate.APIAddress + "/api/board?authToken=" + AppDelegate.EncodedBoardToken, json);
+			string result = JsonPOSTRequest ("https://" + AppDelegate.APIAddress + "/api/board?authToken=" + AppDelegate.EncodedBoardToken, json);
 			Console.WriteLine ("Sent!");
 
 			if (result == "200" || result == string.Empty) {
@@ -434,7 +438,7 @@ namespace Board.Infrastructure
 				"\"logoURL\": \"" + board.LogoUrl + "\", " + 
 				"\"coverURL\": \"" + board.CoverImageUrl + "\" }";
 
-			string result = JsonPUTRequest ("http://" + AppDelegate.APIAddress + "/api/board/"+ board.Id +"?authToken=" + AppDelegate.EncodedBoardToken, json);
+			string result = JsonPUTRequest ("https://" + AppDelegate.APIAddress + "/api/board/"+ board.Id +"?authToken=" + AppDelegate.EncodedBoardToken, json);
 
 			if (result == "200" || result == string.Empty) {
 				return true;
@@ -443,7 +447,7 @@ namespace Board.Infrastructure
 		}
 
 		public static List<Board.Schema.Board> GetNearbyBoards(CLLocationCoordinate2D location, int meterRadius){
-			string request = "http://" + AppDelegate.APIAddress + "/api/boards/nearby?" +
+			string request = "https://" + AppDelegate.APIAddress + "/api/boards/nearby?" +
 			                 "authToken=" + AppDelegate.EncodedBoardToken + "&latitude=" + 
 				location.Latitude.ToString(CultureInfo.InvariantCulture) + "&longitude=" +
 				location.Longitude.ToString(CultureInfo.InvariantCulture) + "&radiusInMeters=" + meterRadius;
@@ -463,7 +467,7 @@ namespace Board.Infrastructure
 		}
 
 		public static List<Board.Schema.Board> GetAllBoards(){
-			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/boards?authToken=" + AppDelegate.EncodedBoardToken);
+			string result = JsonGETRequest ("https://" + AppDelegate.APIAddress + "/api/boards?authToken=" + AppDelegate.EncodedBoardToken);
 
 			BoardResponse response = BoardResponse.Deserialize (result);
 
@@ -474,7 +478,7 @@ namespace Board.Infrastructure
 
 		public static List<Board.Schema.Board> GetUserBoards(){
 			
-			string result = JsonGETRequest ("http://" + AppDelegate.APIAddress + "/api/user/boards?authToken=" + AppDelegate.EncodedBoardToken);
+			string result = JsonGETRequest ("https://" + AppDelegate.APIAddress + "/api/user/boards?authToken=" + AppDelegate.EncodedBoardToken);
 
 			BoardResponse response = BoardResponse.Deserialize (result);
 
@@ -507,7 +511,7 @@ namespace Board.Infrastructure
 				board = new Schema.Board ();
 
 				Console.WriteLine ("Getting location information from Google");
-				string jsonobj = JsonGETRequest ("https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+				string jsonobj = JsonGETRequest ("http://maps.googleapis.com/maps/api/geocode/json?latlng=" +
 					datum.latitude.ToString (CultureInfo.InvariantCulture) + "," + datum.longitude.ToString (CultureInfo.InvariantCulture) + "&key=" + AppDelegate.GoogleMapsAPIKey);
 
 				Console.WriteLine ("Deserializing Google geolocation");
@@ -537,7 +541,7 @@ namespace Board.Infrastructure
 		}
 
 		public static InstagramMediaResponse GetInstagramMedia(string locationId){
-			string result = JsonGETRequest("https://api.instagram.com/v1/locations/"+locationId+"/media/recent?access_token="+AppDelegate.InstagramServerToken);
+			string result = JsonGETRequest("http://api.instagram.com/v1/locations/"+locationId+"/media/recent?access_token="+AppDelegate.InstagramServerToken);
 
 			var instagramResponse = JsonConvert.DeserializeObject<InstagramMediaResponse> (result);
 
@@ -550,7 +554,7 @@ namespace Board.Infrastructure
 
 		public static UberProductResponse GetUberProducts(CLLocationCoordinate2D location){
 
-			string result = JsonGETRequest("https://api.uber.com/v1/products?latitude="+location.Latitude.ToString(CultureInfo.InvariantCulture)
+			string result = JsonGETRequest("http://api.uber.com/v1/products?latitude="+location.Latitude.ToString(CultureInfo.InvariantCulture)
 				+"&longitude="+location.Longitude.ToString(CultureInfo.InvariantCulture)+"&server_token="+AppDelegate.UberServerToken);
 
 			var productResponse = JsonConvert.DeserializeObject<UberProductResponse> (result);
@@ -573,6 +577,10 @@ namespace Board.Infrastructure
 
 		private static string JsonGETRequest (string url, string method = "GET", string contentType = "application/json")
 		{
+			/*var httpWebRequest2 = new HttpClient(new NativeMessageHandler());
+			httpWebRequest2.Timeout = new TimeSpan (0, 0, 8);
+			httpWebRequest2.*/
+
 			var httpWebRequest = (HttpWebRequest)WebRequest.Create (url);
 			httpWebRequest.ContentType = contentType;
 			httpWebRequest.Method = method;

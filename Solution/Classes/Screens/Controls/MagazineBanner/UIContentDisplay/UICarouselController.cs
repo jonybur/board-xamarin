@@ -128,7 +128,11 @@ namespace Board.Screens.Controls
 			backgroundLogoImageView.Center = logoImageView.Center;
 
 			var nameLabel = new UILabel ();
-			nameLabel = CreateNameLabel (board.Name, CommonUtils.GetDistanceFromUserToBoard (board), Width);
+			if (board.GeolocatorObject.Coordinate.Latitude == 0 && board.GeolocatorObject.Coordinate.Longitude == 0) {
+				nameLabel = CreateNameLabel (board.Name, Width);
+			} else {
+				nameLabel = CreateNameLabel (board.Name, CommonUtils.GetDistanceFromUserToBoard (board), Width);
+			}
 			nameLabel.Frame = new CGRect (5, Frame.Bottom + 10, nameLabel.Frame.Width - 10, nameLabel.Frame.Height);
 
 			AddSubviews (backgroundImageView, backgroundLogoImageView, logoImageView, nameLabel);
@@ -141,6 +145,38 @@ namespace Board.Screens.Controls
 					AppDelegate.NavigationController.PushViewController (AppDelegate.BoardInterface, true);
 				}
 			};
+		}
+
+		private UILabel CreateNameLabel (string nameString, float width)
+		{
+			var label = new UILabel ();
+
+			label.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
+
+			nameString = CommonUtils.FirstLetterOfEveryWordToUpper (nameString);
+			nameString = CommonUtils.LimitStringToWidth (nameString, UIFont.SystemFontOfSize (14), width - 20);
+
+			string compositeString = nameString;
+
+			var nameAttributes = new UIStringAttributes {
+				Font = UIFont.SystemFontOfSize (14),
+				ForegroundColor = UIColor.Black
+			};
+
+			var attributedString = new NSMutableAttributedString (compositeString);
+			attributedString.SetAttributes (nameAttributes.Dictionary, new NSRange (0, nameString.Length));
+
+			label.TextColor = AppDelegate.BoardBlack;
+			label.Lines = 0;
+			label.AttributedText = attributedString;
+			label.AdjustsFontSizeToFitWidth = false;
+			label.Font = UIFont.SystemFontOfSize (14);
+			label.Frame = new CGRect (5, width, width - 10, TextSpace);
+
+			var size = label.SizeThatFits (label.Frame.Size);
+			label.Frame = new CGRect (label.Frame.X, label.Frame.Y, label.Frame.Width, size.Height);
+
+			return label;
 		}
 
 		private UILabel CreateNameLabel (string nameString, double distance, float width)

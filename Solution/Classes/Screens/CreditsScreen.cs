@@ -1,9 +1,8 @@
-﻿using System;
-using UIKit;
-using Board.Screens.Controls;
+﻿using Board.Screens.Controls;
 using Board.Utilities;
 using CoreGraphics;
-using Foundation;
+using Haneke;
+using UIKit;
 
 namespace Board.Screens
 {
@@ -11,44 +10,147 @@ namespace Board.Screens
 	{
 		UIMenuBanner Banner;
 
-
 		public override void ViewDidLoad ()
 		{
-			View.BackgroundColor = UIColor.White;
 			LoadBanner ();
 
-			var thankyouLabel = new UILabel();
-			thankyouLabel.Frame = new CGRect(10, Banner.Frame.Bottom + 40, AppDelegate.ScreenWidth - 20, 30);
-			thankyouLabel.Text = "";
-			thankyouLabel.Font = AppDelegate.Narwhal30;
-			thankyouLabel.TextColor = AppDelegate.BoardOrange;
-			thankyouLabel.TextAlignment = UITextAlignment.Center;
-			thankyouLabel.AdjustsFontSizeToFitWidth = true;
+			var argentinaFlag = CreateArgentinaFlag();
+			argentinaFlag.Center = new CGPoint(AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight - argentinaFlag.Frame.Height / 2);
 
-			var creditsTextView = new UITextView ();
-			creditsTextView.Frame = new CGRect (10, (float)thankyouLabel.Frame.Bottom + 20, (float)thankyouLabel.Frame.Width, 0);
-			creditsTextView.Font = UIFont.SystemFontOfSize (16, UIFontWeight.Light);
-			creditsTextView.Text = "JONATHAN BURSZTYN - Frontend, Design\n"+
-				"HERNAN FUENTES ARAUJO - Backend\n\n" +
-				"Board\nCopyright 2016 Board Social. All rights reserved.";
-			creditsTextView.TextAlignment = UITextAlignment.Center;
-			var size = creditsTextView.SizeThatFits (creditsTextView.Frame.Size);
-			creditsTextView.Frame = new CGRect (creditsTextView.Frame.X, creditsTextView.Frame.Y, creditsTextView.Frame.Width, size.Height);
+			var settingsView = new CreditsView ();
+			View.AddSubviews (settingsView, Banner, argentinaFlag);
 
-			var argentinaLabel = new UILabel ();
-			argentinaLabel.Frame = new CGRect(0, AppDelegate.ScreenHeight - 24, AppDelegate.ScreenWidth, 24);
-			argentinaLabel.Font = AppDelegate.Narwhal18;
-			argentinaLabel.Text = "FROM 🇦🇷 WITH ❤";
-			argentinaLabel.TextAlignment = UITextAlignment.Center;
-			argentinaLabel.TextColor = AppDelegate.BoardOrange;
+			View.BackgroundColor = UIColor.White;
+		}
 
-			View.AddSubviews (thankyouLabel, creditsTextView, argentinaLabel, Banner);
+		private UIImageView CreateArgentinaFlag(){
+			var fullFlag = new UIImageView ();
+			fullFlag.Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, 36);
+
+			fullFlag.BackgroundColor = UIColor.White;
+
+			var topBlue = new UIImageView ();
+			topBlue.Frame = new CGRect(0, 0, fullFlag.Frame.Width, fullFlag.Frame.Height / 3);
+			topBlue.BackgroundColor = UIColor.FromRGB (114, 171, 225);
+
+			var bottomBlue = new UIImageView ();
+			bottomBlue.Frame = new CGRect(0, topBlue.Frame.Height * 2, fullFlag.Frame.Width, fullFlag.Frame.Height / 3);
+			bottomBlue.BackgroundColor = UIColor.FromRGB (114, 171, 225);
+
+			fullFlag.AddSubviews (topBlue, bottomBlue); 
+
+			return fullFlag;
 		}
 
 		public override void ViewDidDisappear (bool animated)
 		{
 			MemoryUtility.ReleaseUIViewWithChildren (View);
 		}
+
+		class CreditsView : UIScrollView{
+
+			public CreditsView(){
+				Frame = new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
+
+				var flagView = new UIImageView();
+				flagView.Frame = new CGRect(0, 0, 150, 100);
+				flagView.Center = new CGPoint(AppDelegate.ScreenWidth / 2, UIMenuBanner.Height * .75f + flagView.Frame.Height - 20);
+				flagView.ContentMode = UIViewContentMode.ScaleAspectFit;
+				flagView.SetImage("./screens/credits/long_flag.png");
+				flagView.Layer.CornerRadius = 10;
+				flagView.ClipsToBounds = true;
+				flagView.Alpha = .95f;
+
+				var thankYouLabel = new UILabel();
+				thankYouLabel.Frame = new CGRect(10, flagView.Frame.Bottom + 20, AppDelegate.ScreenWidth - 20, 30);
+				thankYouLabel.Text = "THANK YOU";
+				thankYouLabel.Font = AppDelegate.Narwhal30;
+				thankYouLabel.TextColor = AppDelegate.BoardOrange;
+				thankYouLabel.TextAlignment = UITextAlignment.Center;
+
+				var thankYou2Label = new UILabel();
+				thankYou2Label.Frame = new CGRect(10, thankYouLabel.Frame.Bottom + 3, AppDelegate.ScreenWidth - 20, 24);
+				thankYou2Label.Text = "FOR BEING ON BOARD";
+				thankYou2Label.Font = AppDelegate.Narwhal24;
+				thankYou2Label.TextColor = AppDelegate.BoardOrange;
+				thankYou2Label.TextAlignment = UITextAlignment.Center;
+
+				var jonathanLabel = new UILabel();
+				jonathanLabel.Frame = new CGRect(10, thankYou2Label.Frame.Bottom + 35, AppDelegate.ScreenWidth - 20, 18);
+				jonathanLabel.Text = "JONATHAN BURSZTYN";
+				jonathanLabel.Font = AppDelegate.Narwhal16;
+				jonathanLabel.TextColor = AppDelegate.BoardOrange;
+				jonathanLabel.TextAlignment = UITextAlignment.Center;
+
+				var jonathansubtitleLabel = new UILabel();
+				jonathansubtitleLabel.Frame = new CGRect(10, jonathanLabel.Frame.Bottom, AppDelegate.ScreenWidth - 20, 18);
+				jonathansubtitleLabel.Text = "Lead UI Engineer";
+				jonathansubtitleLabel.Font = UIFont.SystemFontOfSize(14, UIFontWeight.Light);
+				jonathansubtitleLabel.TextColor = UIColor.Black;
+				jonathansubtitleLabel.TextAlignment = UITextAlignment.Center;
+
+				var hernanLabel = new UILabel();
+				hernanLabel.Frame = new CGRect(10, jonathansubtitleLabel.Frame.Bottom + 20, AppDelegate.ScreenWidth - 20, 18);
+				hernanLabel.Text = "HERNAN FUENTES ARAUJO";
+				hernanLabel.Font = AppDelegate.Narwhal16;
+				hernanLabel.TextColor = AppDelegate.BoardOrange;
+				hernanLabel.TextAlignment = UITextAlignment.Center;
+
+				var hernansubtitleLabel = new UILabel();
+				hernansubtitleLabel.Frame = new CGRect(10, hernanLabel.Frame.Bottom, AppDelegate.ScreenWidth - 20, 18);
+				hernansubtitleLabel.Text = "Lead Infrastructure Engineer";
+				hernansubtitleLabel.Font = UIFont.SystemFontOfSize(14, UIFontWeight.Light);
+				hernansubtitleLabel.TextColor = UIColor.Black;
+				hernansubtitleLabel.TextAlignment = UITextAlignment.Center;
+
+				var specialThanksLabel = new UILabel();
+				specialThanksLabel.Frame = new CGRect(10, hernansubtitleLabel.Frame.Bottom + 20, AppDelegate.ScreenWidth - 20, 18);
+				specialThanksLabel.Text = "Channing Miller";
+				specialThanksLabel.Font = AppDelegate.Narwhal16;
+				specialThanksLabel.TextColor = AppDelegate.BoardOrange;
+				specialThanksLabel.TextAlignment = UITextAlignment.Center;
+
+				var specialThanksView = new UITextView();
+				specialThanksView.Frame = new CGRect(10, specialThanksLabel.Frame.Bottom - 5, AppDelegate.ScreenWidth - 20, 0);
+				specialThanksView.Text = "Business Development";
+				specialThanksView.Font = UIFont.SystemFontOfSize(14, UIFontWeight.Light);
+				specialThanksView.TextColor = UIColor.Black;
+				specialThanksView.TextAlignment = UITextAlignment.Center;
+				specialThanksView.Editable = false;
+				var size = specialThanksView.SizeThatFits(specialThanksView.Frame.Size);
+				specialThanksView.Frame = new CGRect(specialThanksView.Frame.X, specialThanksView.Frame.Y,
+					specialThanksView.Frame.Width, size.Height);
+
+				var thanksLabel = new UILabel();
+				thanksLabel.Frame = new CGRect(10, specialThanksView.Frame.Bottom + 20, AppDelegate.ScreenWidth - 20, 18);
+				thanksLabel.Text = "THANKS";
+				thanksLabel.Font = AppDelegate.Narwhal16;
+				thanksLabel.TextColor = AppDelegate.BoardOrange;
+				thanksLabel.TextAlignment = UITextAlignment.Center;
+
+				var thanksView = new UITextView();
+				thanksView.Frame = new CGRect(10, thanksLabel.Frame.Bottom - 5, AppDelegate.ScreenWidth - 20, 0);
+				thanksView.Text = "Magalí Bursztyn, Diego Zaks, Jessie Emanuel Katz, Alan Ispani, Ezequiel Levinton, " +
+					"Andrés Alejandro Peña, Nathan Levinsky, Kevin Cooper, " +
+					"Alex de Carvalho, Ingrid Pokropek, Manuel Seoane Torrealba, " +
+					"Micaela Padron, Leonardo Rothpflug, Santiago Gonzalez, Leo Lob";
+				
+				thanksView.Font = UIFont.SystemFontOfSize(14, UIFontWeight.Light);
+				thanksView.TextColor = UIColor.Black;
+				thanksView.TextAlignment = UITextAlignment.Center;
+				thanksView.Editable = false;
+				var size2 = thanksView.SizeThatFits(thanksView.Frame.Size);
+				thanksView.Frame = new CGRect(thanksView.Frame.X, thanksView.Frame.Y,
+					thanksView.Frame.Width, size2.Height);
+				
+				AddSubviews(flagView, thankYouLabel, thankYou2Label, jonathanLabel, jonathansubtitleLabel,
+					hernanLabel, hernansubtitleLabel, specialThanksLabel,
+					specialThanksView, thanksLabel, thanksView);
+
+				ContentSize = new CGSize(AppDelegate.ScreenWidth, thanksView.Frame.Bottom + 36 * 2);
+			}
+		}
+
 
 		private void LoadBanner()
 		{

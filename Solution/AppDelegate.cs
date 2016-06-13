@@ -53,7 +53,7 @@ namespace Board
 		public enum PhoneVersions { iPhone4, iPhone5, iPhone6, iPhone6Plus };
 		public static PhoneVersions PhoneVersion;
 
-		public const string APIAddress = "45.55.232.144";
+		public const string APIAddress = "api.boardack.com";
 		public const string FacebookAppId = "793699580736093";
 		public const string FacebookDisplayName = "Board Alpha - Deve­l­o­p­ment";
 		public const string GoogleMapsAPIKey = "AIzaSyAUO-UX9QKVWK421yjXqoo02N5TYrG_hY8";

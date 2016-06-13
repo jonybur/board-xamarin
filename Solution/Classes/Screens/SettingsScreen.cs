@@ -31,7 +31,7 @@ namespace Board.Screens
 		public override void ViewDidDisappear(bool animated)
 		{
 			Banner.UnsuscribeToEvents ();
-			//MemoryUtility.ReleaseUIViewWithChildren (View);
+			MemoryUtility.ReleaseUIViewWithChildren (View);
 		}
 
 		class SettingsView : UIScrollView{

@@ -44,7 +44,7 @@ namespace Board.Screens
 			case ScreenContact.BusinessScreen:
 				logoURL = "./screens/business/icon.png";
 				titleString = "CREATE A BOARD"; 
-				descriptionString = "Have a business on Nantucket?\nGet you business on Board\nJust send us an email and\na representative will assist you\nas soon as possible";
+				descriptionString = "Have a business on Nantucket?\nGet your business on Board\nJust send us an email and\na representative will assist you\nas soon as possible";
 				actionString = "EMAIL STAFF";
 				break;
 			}
