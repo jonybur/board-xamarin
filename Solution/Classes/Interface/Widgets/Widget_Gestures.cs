@@ -155,6 +155,7 @@ namespace Board.Interface.Widgets
 					}
 					else if (content is Announcement)
 					{
+						return;
 						lookUp = new AnnouncementLookUp((Announcement)content);
 					}
 					else if (content is BoardEvent)
@@ -163,6 +164,7 @@ namespace Board.Interface.Widgets
 					}
 					else if (content is Map)
 					{
+						return;
 						lookUp = new MapLookUp(UIBoardInterface.board.GeolocatorObject);
 					}
 					else if (content is Poll)

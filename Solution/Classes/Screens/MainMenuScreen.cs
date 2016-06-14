@@ -49,7 +49,8 @@ namespace Board.Screens
 
 			ListMapMarkers = new List<UIMapMarker> ();
 
-			AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(41.2835861,-70.1038089);
+			//NANTUCKET
+			//AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(41.2835861,-70.1038089);
 
 			if (Profile.CurrentProfile == null) {
 				AppDelegate.NavigationController.PopViewController (true);
@@ -116,11 +117,15 @@ namespace Board.Screens
 				firstLocationUpdate = true;
 				var location = change.ObjectForKey (NSObject.ChangeNewKey) as CoreLocation.CLLocation;
 
-				//AppDelegate.UserLocation = location.Coordinate;
+				Console.WriteLine ("Gets user location from maps");
+				AppDelegate.UserLocation = location.Coordinate;
+
+				CloudController.LogSession ();
+
 				// BUENOS AIRES
 				//AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(-34.584424, -58.435909);
 				// NANTUCKET
-				AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(41.2835861,-70.1038089);
+				//AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(41.2835861,-70.1038089);
 
 				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
 

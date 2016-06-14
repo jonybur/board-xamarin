@@ -145,9 +145,6 @@
     <Reference Include="Haneke">
       <HintPath>..\Components\haneke-1.0.1\lib\ios-unified\Haneke.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Maps">
-      <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.13.1.0\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
-    </Reference>
     <Reference Include="OpenTK-1.0" />
     <Reference Include="Facebook">
       <HintPath>..\packages\Xamarin.Facebook.iOS.4.10.0.0\lib\Xamarin.iOS10\Facebook.dll</HintPath>
@@ -155,13 +152,21 @@
     <Reference Include="ModernHttpClient">
       <HintPath>..\Components\modernhttpclient-2.4.2\lib\ios-unified\ModernHttpClient.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Threading.Tasks">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\portable-net45+win8+wpa81\Microsoft.Threading.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\portable-net45+win8+wpa81\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Maps">
+      <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.13.1.0\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\fonts\congress-font-medium.ttf" />
     <BundleResource Include="Resources\fonts\roboto-medium.ttf" />
     <BundleResource Include="Resources\fonts\roboto-regular.ttf" />
     <BundleResource Include="Resources\fonts\roboto-bold.ttf" />
-    <BundleResource Include="Resources\timelapse.mp4" />
     <BundleResource Include="Resources\fonts\Narwhal_bold.ttf" />
     <BundleResource Include="Resources\fonts\Narwhal.ttf" />
     <BundleResource Include="Resources\screens\create\1\content\6.jpg" />
@@ -173,7 +178,6 @@
     <BundleResource Include="Resources\screens\create\3\banner\6.jpg" />
     <BundleResource Include="Resources\screens\create\3\banner\6plus.jpg" />
     <BundleResource Include="Resources\screens\invite\icon.png" />
-    <BundleResource Include="Resources\screens\login\logo.png" />
     <BundleResource Include="Resources\screens\support\icon.png" />
     <BundleResource Include="Resources\Icon-60%402x.png" />
     <BundleResource Include="Resources\Icon.png" />
@@ -275,6 +279,12 @@
     <BundleResource Include="Resources\screens\business\icon.png" />
     <BundleResource Include="Resources\screens\settings\long_flag.png" />
     <BundleResource Include="Resources\screens\credits\long_flag.png" />
+    <BundleResource Include="Resources\timelapse.mp4" />
+    <BundleResource Include="Resources\screens\login\logo2.png" />
+    <BundleResource Include="Resources\screens\login\logo.png" />
+    <BundleResource Include="Resources\Icon-Small.png" />
+    <BundleResource Include="Resources\Icon-Small%402x.png" />
+    <BundleResource Include="Resources\Icon-Small-40%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -513,16 +523,16 @@
       <Version>1.0.1</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
-    <XamarinComponentReference Include="googleiosmaps">
-      <Version>1.13.1.0</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
     <XamarinComponentReference Include="facebookios">
       <Version>4.10.0.0</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
     <XamarinComponentReference Include="modernhttpclient">
       <Version>2.4.2</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="googleiosmaps">
+      <Version>1.13.1.0</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

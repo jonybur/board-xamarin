@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using Board.Infrastructure;
 using Board.Interface;
 using Board.JsonResponses;
@@ -44,6 +45,7 @@ namespace Board
 		public static UIFont SystemFontOfSize16;
 		public static UIFont SystemFontOfSize18;
 		public static UIFont SystemFontOfSize20;
+		public static bool HasLoggedSession;
 
 		public static User BoardUser;
 		public static CLLocationCoordinate2D UserLocation;
@@ -54,8 +56,10 @@ namespace Board
 		public static PhoneVersions PhoneVersion;
 
 		public const string APIAddress = "api.boardack.com";
-		public const string FacebookAppId = "793699580736093";
-		public const string FacebookDisplayName = "Board Alpha - Deve­l­o­p­ment";
+
+		public const string FacebookAppId = "761616930611025";
+		public const string FacebookDisplayName = "Board";
+
 		public const string GoogleMapsAPIKey = "AIzaSyAUO-UX9QKVWK421yjXqoo02N5TYrG_hY8";
 		public const string UberServerToken = "4y1kRu3Kt-LWdTeXcktgphAN7qZlltsTRTbvwIQ_";
 		public const string InstagramServerToken = "2292871863.37fcdb1.cdc6ab03abfa4a8db4a2da022ec5d3c2";
@@ -77,6 +81,8 @@ namespace Board
 
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
+			ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+
 			BoardLightBlue = UIColor.FromRGB (45, 121, 180);
 			BoardOrange = UIColor.FromRGB (244, 108, 85);
 

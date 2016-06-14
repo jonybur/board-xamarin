@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 using Board.Infrastructure;
 using Board.Interface;
 using Board.JsonResponses;
@@ -72,6 +73,10 @@ namespace Board.Screens.Controls
 		public const int ItemSeparation = 20;
 
 		public UICarouselController(List<Board.Schema.Board> boardList, string titleText){
+			if (Char.IsNumber (titleText [0])) {
+				titleText = titleText.Substring (1, titleText.Length - 1);
+			}
+				
 			TitleLabel = new UILocationLabel (titleText, ItemSeparation);
 			ListThumbs = new List<UIContentThumb> ();
 

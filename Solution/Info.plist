@@ -25,6 +25,9 @@
 		<string>Icon-60@2x</string>
 		<string>Icon@2x</string>
 		<string>Icon</string>
+		<string>Icon-Small</string>
+		<string>Icon-Small@2x</string>
+		<string>Icon-Small-40@2x</string>
 	</array>
 	<key>UILaunchImages</key>
 	<array>
@@ -77,7 +80,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb793699580736093</string>
+				<string>fb761616930611025</string>
 				<string>fbauth2</string>
 			</array>
 		</dict>
@@ -103,9 +106,9 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>CFBundleShortVersionString</key>
-	<string>0.4.82</string>
+	<string>0.4.91</string>
 	<key>CFBundleVersion</key>
-	<string>0.4.82</string>
+	<string>0.4.91</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>

@@ -25,6 +25,7 @@ namespace Board.Screens
 			DescriptionView.Frame = new CGRect (5, Banner.Frame.Bottom + 5, AppDelegate.ScreenWidth - 10, AppDelegate.ScreenHeight - 5 - UIMenuBanner.Height);
 			DescriptionView.Font = UIFont.SystemFontOfSize (14, UIFontWeight.Light);
 			DescriptionView.Editable = false;
+			DescriptionView.DataDetectorTypes = UIDataDetectorType.Link;
 			DescriptionView.Text = CurrentLicense.Description;
 
 			View.AddSubviews (Banner, DescriptionView);

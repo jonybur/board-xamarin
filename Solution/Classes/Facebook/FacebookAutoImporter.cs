@@ -18,7 +18,6 @@ namespace Board.Facebook
 		static List<Content> ContentToImport;
 		static CGPoint ItemLocation;
 		static string PageId;
-		const float startX = 500;
 
 		public static void ImportPages(params string[] pageIds){
 			foreach (var id in pageIds) {
@@ -74,9 +73,14 @@ namespace Board.Facebook
 			BTProgressHUD.Dismiss ();
 		}
 
+		const float startX = 500;
+		const float startTopY = 175;
+		const float startLowerY = 475;
+		const float xAggregate = 250;
+
 		public static void ImportPageContent(string pageId){
 			PageId = pageId;
-			ItemLocation = new CGPoint(startX,100);
+			ItemLocation = new CGPoint(startX, startTopY);
 			ContentToImport = new List<Content> ();
 			BTProgressHUD.Show("Importing Latest Posts...");
 			FacebookUtils.MakeGraphRequest(PageId, "?fields=posts.limit(9)", GetAnnouncements);
@@ -93,66 +97,77 @@ namespace Board.Facebook
 			// parses all posts
 			int announcementsToLoad = 0;
 
+
+			Console.WriteLine ("Got " + FacebookElements.Count + " posts");
+
+			var facebookElementsNoStories = FacebookElements.FindAll (obj => ((FacebookPost)obj).Message != null && ((FacebookPost)obj).Message != null);
+
 			// checks out the posts....
 			// posts can be pictures or announcements
-			foreach (FacebookPost fbPost in FacebookElements) {
+			foreach (FacebookPost fbPost in facebookElementsNoStories) {
+				
+				// change location of new widget
 
-				// if it has messages
-				if (fbPost.Message != "<null>" && fbPost.Message != null) {
+				// goes check out if it has an image
+				FacebookUtils.MakeGraphRequest (fbPost.Id, "?fields=full_picture", async delegate(List<FacebookElement> elementList) {
+					
+					if (elementList.Count > 0) {
 
-					// change location of new widget
+						// WE HAVE A PICTURE
 
-					// goes check out if it has an image
-					FacebookUtils.MakeGraphRequest (fbPost.Id, "?fields=full_picture", async delegate(List<FacebookElement> elementList) {
-						
-						if (elementList.Count > 0) {
+						// if it has an image, it adds it to the announcement (it searches in the announcement list for it)
+						var cover = elementList [0] as FacebookFullPicture;
 
-							// WE HAVE A PICTURE
+						if (!string.IsNullOrEmpty(cover.FullPicture)) {
 
-							// if it has an image, it adds it to the announcement (it searches in the announcement list for it)
-							var cover = elementList [0] as FacebookFullPicture;
 
-							if (!string.IsNullOrEmpty(cover.FullPicture)) {
-								var image = await CommonUtils.DownloadUIImageFromURL(cover.FullPicture);
-								var amazonUrl = CloudController.UploadToAmazon(image);
+							Console.WriteLine ("Downloading image from Facebook...");
+							var image = await CommonUtils.DownloadUIImageFromURL(cover.FullPicture);
 
-								var picture = new Picture (fbPost, amazonUrl, ItemLocation, CGAffineTransform.MakeIdentity());
-								ContentToImport.Add(picture);
+							Console.WriteLine ("Uploading image to AWS...");
+							var amazonUrl = CloudController.UploadToAmazon(image);
 
-							}else{
-								
-								var announcement = new Announcement (fbPost, ItemLocation, CGAffineTransform.MakeIdentity());
-								ContentToImport.Add(announcement);
-							}
+							var picture = new Picture (fbPost, amazonUrl, ItemLocation, CGAffineTransform.MakeIdentity());
+							ContentToImport.Add(picture);
 
-						} else {
+							Console.WriteLine ("Added a picture to import");
 
+						}else{
+							
 							var announcement = new Announcement (fbPost, ItemLocation, CGAffineTransform.MakeIdentity());
 							ContentToImport.Add(announcement);
 
+							Console.WriteLine ("Added an announcement to import");
 						}
 
-						// image or not, this announcement has been checked
-						announcementsToLoad ++;
-						ItemLocation.X += 150;
+					} else {
 
-						// if i checked all the announcements
-						if (announcementsToLoad == FacebookElements.Count){
-							
-							// goes to import events
-							BTProgressHUD.Show("Importing Events...");
-							FacebookUtils.MakeGraphRequest(PageId, "?fields=events.limit(3)", GetEvents);
-						}
-					});
+						var announcement = new Announcement (fbPost, ItemLocation, CGAffineTransform.MakeIdentity());
+						ContentToImport.Add(announcement);
 
-				} else {
-					// no message? next announcement please
-					continue;
-				}
+						Console.WriteLine ("Added an announcement to import");
+					}
+
+					// image or not, this announcement has been checked
+					announcementsToLoad ++;
+					ItemLocation.X += xAggregate;
+
+					// if i checked all the announcements
+					Console.WriteLine("Added " + announcementsToLoad + " of " + FacebookElements.Count);
+					if (announcementsToLoad == facebookElementsNoStories.Count){
+						
+						// goes to import events
+						Console.WriteLine ("Done importing posts");
+
+						BTProgressHUD.Show("Importing Events...");
+						FacebookUtils.MakeGraphRequest(PageId, "?fields=events.limit(3)", GetEvents);
+					}
+				});
+
 			}
 
 			// no announcements? goes seek events
-			if (FacebookElements.Count == 0) {
+			if (facebookElementsNoStories.Count == 0) {
 				BTProgressHUD.Show("Importing Events...");
 				FacebookUtils.MakeGraphRequest(PageId, "?fields=events.limit(3)", GetEvents);
 			} 
@@ -162,30 +177,41 @@ namespace Board.Facebook
 			// parses all events
 			int coversToLoad = 0;
 			var boardEvents = new List<BoardEvent> ();
-			ItemLocation = new CGPoint (startX, 200);
+			ItemLocation = new CGPoint (startX, startLowerY);
 
 			foreach (FacebookEvent fbEvent in FacebookElements) {
-				
+
 				var boardEvent = new BoardEvent (fbEvent, ItemLocation, CGAffineTransform.MakeIdentity());
+			
+				if (DateTime.Compare (boardEvent.StartDate, DateTime.Now) < 0) {
+					coversToLoad++;
+					continue;
+				}
+
 				boardEvents.Add (boardEvent);
 
 				FacebookUtils.MakeGraphRequest (fbEvent.Id, "?fields=cover,updated_time", async delegate(List<FacebookElement> elementList) {
 					if (elementList.Count > 0) {
 						var cover = elementList [0] as FacebookCoverUpdatedTime;
 						if (cover != null) {
+							Console.Write ("Uploading event image...");
+
 							var image = await CommonUtils.DownloadUIImageFromURL(cover.Source);
 							var amazonUrl = CloudController.UploadToAmazon(image);
 							boardEvents[coversToLoad].ImageUrl = amazonUrl;
+
+							Console.WriteLine(" done");
 						}
 						boardEvents[coversToLoad].CreationDate = DateTime.Parse(cover.UpdatedTime);
 					}
 
 					coversToLoad++;
-					ItemLocation.X += 150;
+					ItemLocation.X += xAggregate;
 
 					if (coversToLoad == FacebookElements.Count){
 						ContentToImport.AddRange(boardEvents);
 
+						Console.WriteLine("Done importing events");
 						// gets albums
 						BTProgressHUD.Show("Importing Videos...");
 						FacebookUtils.MakeGraphRequest (PageId, "videos?fields=source,description,updated_time,thumbnails&limit=3", GetVideos);
@@ -193,7 +219,7 @@ namespace Board.Facebook
 				});
 			}
 
-			if (FacebookElements.Count == 0) {
+			if (FacebookElements.Count == 0 || coversToLoad == FacebookElements.Count) {
 				// gets albums
 				BTProgressHUD.Show("Importing Videos...");
 				FacebookUtils.MakeGraphRequest (PageId, "videos?fields=source,description,updated_time,thumbnails&limit=3", GetVideos);
@@ -203,18 +229,19 @@ namespace Board.Facebook
 
 		static async void GetVideos(List<FacebookElement> FacebookElements){
 			// parses all videos
-
-			ItemLocation = new CGPoint (startX, 300);
 			int i = 1;
 			foreach (FacebookVideo fbVideo in FacebookElements) {
 
 				var video = new Video (fbVideo, ItemLocation, CGAffineTransform.MakeIdentity());
-				BTProgressHUD.Show("Importing Videos... " + i + "/" + FacebookElements.Count);
-				var byteArray = await CommonUtils.DownloadByteArrayFromURL (fbVideo.Source);
-				video.AmazonUrl = CloudController.UploadToAmazon (byteArray);
 
+				BTProgressHUD.Show("Importing Videos... " + i + "/" + FacebookElements.Count);
+				Console.WriteLine("Downloading video");
+				var byteArray = await CommonUtils.DownloadByteArrayFromURL (fbVideo.Source);
+				Console.WriteLine("Uploading video");
+				video.AmazonUrl = CloudController.UploadToAmazon (byteArray);
+				Console.WriteLine("Added video to import");
 				ContentToImport.Add (video);
-				ItemLocation.X += 150;
+				ItemLocation.X += xAggregate;
 				i++;
 			}
 
@@ -223,7 +250,10 @@ namespace Board.Facebook
 
 		static void UploadContent(){
 			var json = JsonUtilty.GenerateUpdateJson (ContentToImport);
+
+			Console.Write("Uploading all content...");
 			CloudController.UpdateBoard (UIBoardInterface.board.Id, json);
+			Console.WriteLine(" done");
 			BTProgressHUD.Dismiss();
 		}
 	}

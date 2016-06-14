@@ -103,26 +103,36 @@ namespace Board.Screens
 				hernansubtitleLabel.TextColor = UIColor.Black;
 				hernansubtitleLabel.TextAlignment = UITextAlignment.Center;
 
-				var specialThanksLabel = new UILabel();
-				specialThanksLabel.Frame = new CGRect(10, hernansubtitleLabel.Frame.Bottom + 20, AppDelegate.ScreenWidth - 20, 18);
-				specialThanksLabel.Text = "Channing Miller";
-				specialThanksLabel.Font = AppDelegate.Narwhal16;
-				specialThanksLabel.TextColor = AppDelegate.BoardOrange;
-				specialThanksLabel.TextAlignment = UITextAlignment.Center;
+				var channingLabel = new UILabel();
+				channingLabel.Frame = new CGRect(10, hernansubtitleLabel.Frame.Bottom + 20, AppDelegate.ScreenWidth - 20, 18);
+				channingLabel.Text = "Channing Miller";
+				channingLabel.Font = AppDelegate.Narwhal16;
+				channingLabel.TextColor = AppDelegate.BoardOrange;
+				channingLabel.TextAlignment = UITextAlignment.Center;
 
-				var specialThanksView = new UITextView();
-				specialThanksView.Frame = new CGRect(10, specialThanksLabel.Frame.Bottom - 5, AppDelegate.ScreenWidth - 20, 0);
-				specialThanksView.Text = "Business Development";
-				specialThanksView.Font = UIFont.SystemFontOfSize(14, UIFontWeight.Light);
-				specialThanksView.TextColor = UIColor.Black;
-				specialThanksView.TextAlignment = UITextAlignment.Center;
-				specialThanksView.Editable = false;
-				var size = specialThanksView.SizeThatFits(specialThanksView.Frame.Size);
-				specialThanksView.Frame = new CGRect(specialThanksView.Frame.X, specialThanksView.Frame.Y,
-					specialThanksView.Frame.Width, size.Height);
+				var channingsubtitleLabel = new UILabel();
+				channingsubtitleLabel.Frame = new CGRect(10, channingLabel.Frame.Bottom, AppDelegate.ScreenWidth - 20, 18);
+				channingsubtitleLabel.Text = "Head of Business Development";
+				channingsubtitleLabel.Font = UIFont.SystemFontOfSize(14, UIFontWeight.Light);
+				channingsubtitleLabel.TextColor = UIColor.Black;
+				channingsubtitleLabel.TextAlignment = UITextAlignment.Center;
+
+				var magaliLabel = new UILabel();
+				magaliLabel.Frame = new CGRect(10, channingsubtitleLabel.Frame.Bottom + 20, AppDelegate.ScreenWidth - 20, 18);
+				magaliLabel.Text = "Magali Bursztyn";
+				magaliLabel.Font = AppDelegate.Narwhal16;
+				magaliLabel.TextColor = AppDelegate.BoardOrange;
+				magaliLabel.TextAlignment = UITextAlignment.Center;
+
+				var magalisubtitleLabel = new UILabel();
+				magalisubtitleLabel.Frame = new CGRect(10, magaliLabel.Frame.Bottom, AppDelegate.ScreenWidth - 20, 18);
+				magalisubtitleLabel.Text = "Head of Communications";
+				magalisubtitleLabel.Font = UIFont.SystemFontOfSize(14, UIFontWeight.Light);
+				magalisubtitleLabel.TextColor = UIColor.Black;
+				magalisubtitleLabel.TextAlignment = UITextAlignment.Center;
 
 				var thanksLabel = new UILabel();
-				thanksLabel.Frame = new CGRect(10, specialThanksView.Frame.Bottom + 20, AppDelegate.ScreenWidth - 20, 18);
+				thanksLabel.Frame = new CGRect(10, magalisubtitleLabel.Frame.Bottom + 20, AppDelegate.ScreenWidth - 20, 18);
 				thanksLabel.Text = "THANKS";
 				thanksLabel.Font = AppDelegate.Narwhal16;
 				thanksLabel.TextColor = AppDelegate.BoardOrange;
@@ -130,10 +140,10 @@ namespace Board.Screens
 
 				var thanksView = new UITextView();
 				thanksView.Frame = new CGRect(10, thanksLabel.Frame.Bottom - 5, AppDelegate.ScreenWidth - 20, 0);
-				thanksView.Text = "Magalí Bursztyn, Diego Zaks, Jessie Emanuel Katz, Alan Ispani, Ezequiel Levinton, " +
+				thanksView.Text = "Diego Zaks, Jessie Emanuel Katz, Alan Ispani, Ezequiel Levinton, " +
 					"Andrés Alejandro Peña, Nathan Levinsky, Kevin Cooper, " +
 					"Alex de Carvalho, Ingrid Pokropek, Manuel Seoane Torrealba, " +
-					"Micaela Padron, Leonardo Rothpflug, Santiago Gonzalez, Leo Lob";
+					"Micaela Padron, Leonardo Rothpflug, Santiago Gonzalez, Leo Lob, Zack Samberg";
 				
 				thanksView.Font = UIFont.SystemFontOfSize(14, UIFontWeight.Light);
 				thanksView.TextColor = UIColor.Black;
@@ -144,8 +154,8 @@ namespace Board.Screens
 					thanksView.Frame.Width, size2.Height);
 				
 				AddSubviews(flagView, thankYouLabel, thankYou2Label, jonathanLabel, jonathansubtitleLabel,
-					hernanLabel, hernansubtitleLabel, specialThanksLabel,
-					specialThanksView, thanksLabel, thanksView);
+					hernanLabel, hernansubtitleLabel, channingLabel, channingsubtitleLabel, magaliLabel, magalisubtitleLabel,
+					thanksLabel, thanksView);
 
 				ContentSize = new CGSize(AppDelegate.ScreenWidth, thanksView.Frame.Bottom + 36 * 2);
 			}

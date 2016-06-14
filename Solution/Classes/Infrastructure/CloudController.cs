@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading;
+using System.Net.Http.Headers;
 using Board.JsonResponses;
 using Board.Schema;
 using Board.Utilities;
@@ -25,7 +25,7 @@ namespace Board.Infrastructure
 	public static class CloudController
 	{
 		public static void GetUserProfile(){
-			string result = JsonGETRequest ("https://" + AppDelegate.APIAddress + "/api/user?authToken=" + AppDelegate.EncodedBoardToken);
+			string result = GetJsonSync ("https://" + AppDelegate.APIAddress + "/api/user?authToken=" + AppDelegate.EncodedBoardToken);
 
 			if (result == "Timeout" || result == "InternalServerError") {
 				return;
@@ -42,7 +42,7 @@ namespace Board.Infrastructure
 			foreach (var id in publicationIds) {
 				publicationsToRequest += "publicationId=" + id + "&";
 			}
-			string result = JsonGETRequest ("https://"+AppDelegate.APIAddress+"/api/user/likes?"+publicationsToRequest+"authToken="+AppDelegate.EncodedBoardToken);
+			string result = GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/user/likes?"+publicationsToRequest+"authToken="+AppDelegate.EncodedBoardToken);
 
 			if (result == "Timeout" || result == "InternalServerError") {
 				return new Dictionary<string, bool> ();
@@ -67,7 +67,7 @@ namespace Board.Infrastructure
 		public static bool GetUserLike(string publicationId){
 			string request = "https://" + AppDelegate.APIAddress + "/api/user/likes?publicationId=" + publicationId +
 			                 "&authToken=" + AppDelegate.EncodedBoardToken;
-			string result = JsonGETRequest (request);
+			string result = GetJsonSync (request);
 
 			var jobject = JObject.Parse (result);
 
@@ -81,17 +81,17 @@ namespace Board.Infrastructure
 		}
 
 		public static void SendLike(string idToLike){
-			JsonAsyncPUTRequest ("https://"+AppDelegate.APIAddress+"/api/publications/"+idToLike+"/like?authToken="+AppDelegate.EncodedBoardToken+
+			PutJsonAsync ("https://"+AppDelegate.APIAddress+"/api/publications/"+idToLike+"/like?authToken="+AppDelegate.EncodedBoardToken+
 				"&time="+CommonUtils.GetUnixTimeStamp());
 		}
 
 		public static void SendDislike(string idToDislike){
-			JsonAsyncPUTRequest ("https://"+AppDelegate.APIAddress+"/api/publications/"+idToDislike+"/dislike?authToken="+AppDelegate.EncodedBoardToken+
+			PutJsonAsync ("https://"+AppDelegate.APIAddress+"/api/publications/"+idToDislike+"/dislike?authToken="+AppDelegate.EncodedBoardToken+
 				"&time="+CommonUtils.GetUnixTimeStamp());
 		}
 
 		public static int GetLike(string id){
-			string result = JsonGETRequest ("https://"+AppDelegate.APIAddress+"/api/publications/likes?publicationId=" + id + "&authToken="+AppDelegate.EncodedBoardToken);
+			string result = GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/publications/likes?publicationId=" + id + "&authToken="+AppDelegate.EncodedBoardToken);
 
 			if (result == "Timeout" || result == "InternalServerError") {
 				return -1;
@@ -117,7 +117,7 @@ namespace Board.Infrastructure
 				publicationsToRequest += "publicationId=" + id + "&";
 			}
 
-			string result = JsonGETRequest ("https://"+AppDelegate.APIAddress+"/api/publications/likes?"+publicationsToRequest+"authToken="+AppDelegate.EncodedBoardToken);
+			string result = GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/publications/likes?"+publicationsToRequest+"authToken="+AppDelegate.EncodedBoardToken);
 
 			if (result == "Timeout" || result == "InternalServerError") {
 				return new Dictionary<string, int> ();
@@ -141,7 +141,7 @@ namespace Board.Infrastructure
 		}
 
 		public static bool UpdateBoard(string boardId, string json){
-			string result = JsonPOSTRequest ("https://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/updates?authToken="+AppDelegate.EncodedBoardToken, json);
+			string result = PostJsonSync ("https://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/updates?authToken="+AppDelegate.EncodedBoardToken, json);
 
 			if (result == "200" || result == string.Empty) {
 				return true;
@@ -153,7 +153,7 @@ namespace Board.Infrastructure
 			string request = "https://" + AppDelegate.APIAddress + "/api/boards/timeline?latitude=" +
 			             location.Latitude.ToString (CultureInfo.InvariantCulture) + "&longitude=" + location.Longitude.ToString (CultureInfo.InvariantCulture) +
 			             "&authToken=" + AppDelegate.EncodedBoardToken;
-			string result = JsonGETRequest (request);
+			string result = GetJsonSync (request);
 
 			if (result == "Timeout" || result == "InternalServerError") {
 				return new List<Content> ();
@@ -190,7 +190,7 @@ namespace Board.Infrastructure
 
 		public static MagazineResponse GetMagazine(CLLocationCoordinate2D location){
 
-			string result = JsonGETRequest ("https://"+AppDelegate.APIAddress+"/api/magazines/nearest?latitude="+
+			string result = GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/magazines/nearest?latitude="+
 				location.Latitude.ToString(CultureInfo.InvariantCulture)+"&longitude="+location.Longitude.ToString(CultureInfo.InvariantCulture)+
 				"&authToken="+AppDelegate.EncodedBoardToken);
 
@@ -208,7 +208,7 @@ namespace Board.Infrastructure
 		}
 
 		public static Dictionary<string, Content> GetBoardContent(string boardId){
-			string result = JsonGETRequest ("https://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/snapshot?authToken="+AppDelegate.EncodedBoardToken);
+			string result = GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/snapshot?authToken="+AppDelegate.EncodedBoardToken);
 
 			if (result == "Timeout" || result == "InternalServerError") {
 				return new Dictionary<string, Content> ();
@@ -247,7 +247,7 @@ namespace Board.Infrastructure
 		}
 
 		public static bool GetAmazonS3Ticket(string mimeType){
-			string result = JsonGETRequest ("https://"+AppDelegate.APIAddress+"/api/media/ticket?authToken="+AppDelegate.EncodedBoardToken+"&contentType="+mimeType);
+			string result = GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/media/ticket?authToken="+AppDelegate.EncodedBoardToken+"&contentType="+mimeType);
 
 			try{
 				AppDelegate.AmazonS3Ticket = JsonConvert.DeserializeObject<AmazonS3TicketResponse>(result);
@@ -259,7 +259,7 @@ namespace Board.Infrastructure
 		}
 
 		public static bool GetAmazonS3Ticket(){
-			string result = JsonGETRequest ("https://"+AppDelegate.APIAddress+"/api/media/ticket?authToken="+AppDelegate.EncodedBoardToken);
+			string result = GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/media/ticket?authToken="+AppDelegate.EncodedBoardToken);
 
 			try{
 				AppDelegate.AmazonS3Ticket = JsonConvert.DeserializeObject<AmazonS3TicketResponse>(result);
@@ -272,7 +272,7 @@ namespace Board.Infrastructure
 
 		public static bool DeleteBoard(string boardId){
 			
-			string result = JsonGETRequest ("https://" + AppDelegate.APIAddress + "/api/board/" + boardId + "?authToken=" + AppDelegate.EncodedBoardToken, "DELETE");
+			string result = DeleteJsonSync ("https://" + AppDelegate.APIAddress + "/api/board/" + boardId + "?authToken=" + AppDelegate.EncodedBoardToken);
 
 			if (result == "200" || result == string.Empty) {
 				return true;
@@ -287,13 +287,27 @@ namespace Board.Infrastructure
 			}
 
 			string url = "https://" + AppDelegate.APIAddress + "/api/board/" + boardId + "/edit?authToken=" + AppDelegate.EncodedBoardToken;
-			string result = JsonGETRequest (url);
+			string result = GetJsonSync (url);
 
 			if (result == "200" || result == string.Empty) {
 				return true;
 			} else {
 				return false;
 			}
+		}
+
+		public static void LogSession(){
+			if (AppDelegate.HasLoggedSession){
+				return;
+			}
+
+			string json = "{\"latitude\": \"" + AppDelegate.UserLocation.Latitude.ToString(CultureInfo.InvariantCulture) + "\", " +
+				"\"longitude\": \"" + AppDelegate.UserLocation.Longitude.ToString(CultureInfo.InvariantCulture) + "\", " + 
+				"\"timestamp\": \"" + CommonUtils.GetUnixTimeStamp() + "\", " + 
+				"\"name\": \"" + AppDelegate.BoardUser.FirstName + " " + AppDelegate.BoardUser.LastName +"\" }";
+
+			PostJsonAsync ("https://admin.boardack.com/log-user", json);
+			AppDelegate.HasLoggedSession = true;
 		}
 
 		public static bool LogIn(){
@@ -303,8 +317,8 @@ namespace Board.Infrastructure
 
 			string json = "{\"accessToken\": \"" + AccessToken.CurrentAccessToken.TokenString + "\", " +
 				"\"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\" }";
-			
-			string result = JsonPOSTRequest ("https://"+AppDelegate.APIAddress+"/api/account/login", json);
+
+			string result = PostJsonSync ("https://" + AppDelegate.APIAddress + "/api/account/login", json);
 
 			TokenResponse tk;
 			try{
@@ -317,32 +331,8 @@ namespace Board.Infrastructure
 				AppDelegate.BoardToken = tk.authToken;
 				AppDelegate.EncodedBoardToken = WebUtility.UrlEncode(AppDelegate.BoardToken);
 				return true;
-			} else {
-				return false;
 			}
-		}
-
-		private static string UploadStream(string amazonUrl, Stream data, string mimeType)
-		{
-			HttpWebRequest httpRequest = WebRequest.Create(amazonUrl) as HttpWebRequest;
-			httpRequest.Method = "PUT";
-			httpRequest.ContentType = mimeType;
-
-			using (Stream dataStream = httpRequest.GetRequestStream()) {
-				data.CopyTo (dataStream);
-			}
-
-			httpRequest.KeepAlive = false;
-			var response = httpRequest.GetResponse() as HttpWebResponse;
-
-			var absoluteURL = response.ResponseUri.AbsoluteUri;
-			var indexOfParameter = absoluteURL.IndexOf ('?');
-
-			if (indexOfParameter != -1) {
-				absoluteURL = absoluteURL.Substring (0, indexOfParameter);
-			}
-
-			return absoluteURL;
+			return false;
 		}
 
 		public static string UploadToAmazon(byte[] byteArray, string mime = "video/mp4"){
@@ -388,19 +378,24 @@ namespace Board.Infrastructure
 			string logoURL = string.Empty, coverURL = string.Empty;
 
 			if (board.Logo != null) {
-				Console.WriteLine ("Uploading logo to AWS");
+				Console.Write ("Uploading logo to AWS... ");
 				logoURL = UploadToAmazon (board.Logo);
+				Console.WriteLine ("done - link: " + logoURL);
 			}
 			if (board.CoverImage != null) {
-				Console.WriteLine ("Uploading cover image to AWS");
+				Console.Write ("Uploading cover image to AWS... ");
 				coverURL = UploadToAmazon (board.CoverImage);
+				Console.WriteLine ("done - link: " + coverURL);
 			}
 
 			// HAS TO HAVE A LOGO
 			if (string.IsNullOrEmpty(logoURL)) {
+				Console.WriteLine ("No logo, cancelling operation");
 				return false;
 			}
-			
+
+			Console.WriteLine ("Finished uploading media to AWS");
+
 			string json = "{\"uuid\": \"" + board.Id  + "\", " + 
 				"\"latitude\": \"" + board.GeolocatorObject.Coordinate.Latitude  + "\", " +
 				"\"longitude\": \"" + board.GeolocatorObject.Coordinate.Longitude  + "\", " +
@@ -415,7 +410,7 @@ namespace Board.Infrastructure
 				"\"coverURL\": \"" + coverURL + "\" }";
 
 			Console.WriteLine ("Sending " + board.Name + " to server...");
-			string result = JsonPOSTRequest ("https://" + AppDelegate.APIAddress + "/api/board?authToken=" + AppDelegate.EncodedBoardToken, json);
+			string result = PostJsonSync ("https://" + AppDelegate.APIAddress + "/api/board?authToken=" + AppDelegate.EncodedBoardToken, json);
 			Console.WriteLine ("Sent!");
 
 			if (result == "200" || result == string.Empty) {
@@ -438,7 +433,7 @@ namespace Board.Infrastructure
 				"\"logoURL\": \"" + board.LogoUrl + "\", " + 
 				"\"coverURL\": \"" + board.CoverImageUrl + "\" }";
 
-			string result = JsonPUTRequest ("https://" + AppDelegate.APIAddress + "/api/board/"+ board.Id +"?authToken=" + AppDelegate.EncodedBoardToken, json);
+			string result = PutJsonSync ("https://" + AppDelegate.APIAddress + "/api/board/"+ board.Id +"?authToken=" + AppDelegate.EncodedBoardToken, json);
 
 			if (result == "200" || result == string.Empty) {
 				return true;
@@ -453,7 +448,7 @@ namespace Board.Infrastructure
 				location.Longitude.ToString(CultureInfo.InvariantCulture) + "&radiusInMeters=" + meterRadius;
 			
 			Console.WriteLine ("Getting nearby Boards... ");
-			string result = JsonGETRequest (request);
+			string result = GetJsonSync (request);
 
 			Console.WriteLine ("Deserializing Boards...");
 			var response = BoardResponse.Deserialize (result);
@@ -467,7 +462,7 @@ namespace Board.Infrastructure
 		}
 
 		public static List<Board.Schema.Board> GetAllBoards(){
-			string result = JsonGETRequest ("https://" + AppDelegate.APIAddress + "/api/boards?authToken=" + AppDelegate.EncodedBoardToken);
+			string result = GetJsonSync ("https://" + AppDelegate.APIAddress + "/api/boards?authToken=" + AppDelegate.EncodedBoardToken);
 
 			BoardResponse response = BoardResponse.Deserialize (result);
 
@@ -478,7 +473,7 @@ namespace Board.Infrastructure
 
 		public static List<Board.Schema.Board> GetUserBoards(){
 			
-			string result = JsonGETRequest ("https://" + AppDelegate.APIAddress + "/api/user/boards?authToken=" + AppDelegate.EncodedBoardToken);
+			string result = GetJsonSync ("https://" + AppDelegate.APIAddress + "/api/user/boards?authToken=" + AppDelegate.EncodedBoardToken);
 
 			BoardResponse response = BoardResponse.Deserialize (result);
 
@@ -511,7 +506,7 @@ namespace Board.Infrastructure
 				board = new Schema.Board ();
 
 				Console.WriteLine ("Getting location information from Google");
-				string jsonobj = JsonGETRequest ("http://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+				string jsonobj = GetJsonSync ("https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
 					datum.latitude.ToString (CultureInfo.InvariantCulture) + "," + datum.longitude.ToString (CultureInfo.InvariantCulture) + "&key=" + AppDelegate.GoogleMapsAPIKey);
 
 				Console.WriteLine ("Deserializing Google geolocation");
@@ -522,7 +517,7 @@ namespace Board.Infrastructure
 
 				StorageController.StoreBoard (board, jsonobj);
 			} else {
-				Console.WriteLine (datum.name + " was stored");
+				Console.WriteLine (datum.name + " is stored");
 			}
 
 			// finishes compiling board
@@ -541,7 +536,7 @@ namespace Board.Infrastructure
 		}
 
 		public static InstagramMediaResponse GetInstagramMedia(string locationId){
-			string result = JsonGETRequest("http://api.instagram.com/v1/locations/"+locationId+"/media/recent?access_token="+AppDelegate.InstagramServerToken);
+			string result = GetJsonSync("https://api.instagram.com/v1/locations/"+locationId+"/media/recent?access_token="+AppDelegate.InstagramServerToken);
 
 			var instagramResponse = JsonConvert.DeserializeObject<InstagramMediaResponse> (result);
 
@@ -554,7 +549,7 @@ namespace Board.Infrastructure
 
 		public static UberProductResponse GetUberProducts(CLLocationCoordinate2D location){
 
-			string result = JsonGETRequest("http://api.uber.com/v1/products?latitude="+location.Latitude.ToString(CultureInfo.InvariantCulture)
+			string result = GetJsonSync("https://api.uber.com/v1/products?latitude="+location.Latitude.ToString(CultureInfo.InvariantCulture)
 				+"&longitude="+location.Longitude.ToString(CultureInfo.InvariantCulture)+"&server_token="+AppDelegate.UberServerToken);
 
 			var productResponse = JsonConvert.DeserializeObject<UberProductResponse> (result);
@@ -575,218 +570,131 @@ namespace Board.Infrastructure
 			AppDelegate.BoardUser = null;
 		}
 
-		private static string JsonGETRequest (string url, string method = "GET", string contentType = "application/json")
+		private static async System.Threading.Tasks.Task<string> PostJsonAsync(string uri, string json){
+			string response;
+
+			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
+				httpClient.Timeout = new TimeSpan (0, 0, 8);
+				var httpContent = new StringContent (json, Encoding.UTF8, "application/json");
+				var httpResponse = await httpClient.PostAsync (uri, httpContent);
+				response = await httpResponse.Content.ReadAsStringAsync();
+			}
+			return response;
+		}
+
+		private static async System.Threading.Tasks.Task<string> PutJsonAsync(string uri, string json = ""){
+			string response;
+
+			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
+				httpClient.Timeout = new TimeSpan (0, 0, 8);
+				var httpContent = new StringContent (json, Encoding.UTF8, "application/json");
+				var httpResponse = await httpClient.PutAsync (uri, httpContent);
+				response = await httpResponse.Content.ReadAsStringAsync();
+			}
+			return response;
+		}
+
+		private static string PutJsonSync(string uri, string json){
+			string response;
+
+			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
+				httpClient.Timeout = new TimeSpan (0, 0, 8);
+				var httpContent = new StringContent (json, Encoding.UTF8, "application/json");
+				var postTask = httpClient.PutAsync (uri, httpContent);
+				var result = postTask.Result;
+				var responseTask = result.Content.ReadAsStringAsync();
+				response = responseTask.Result;
+			}
+			return response;
+		}
+
+		private static string PostJsonSync(string uri, string json){
+			string response;
+
+			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
+				//httpClient.Timeout = new TimeSpan (0, 0, 8);
+				var httpContent = new StringContent (json, Encoding.UTF8, "application/json");
+				var postTask = httpClient.PostAsync (uri, httpContent);
+				var result = postTask.Result;
+				var responseTask = result.Content.ReadAsStringAsync();
+				response = responseTask.Result;
+			}
+			return response;
+		}
+
+		private static string GetJsonSync(string uri){
+			string response = string.Empty;
+
+			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
+				//httpClient.Timeout = new TimeSpan (0, 0, 8);
+				var postTask = httpClient.GetAsync (uri);
+
+				try{
+					
+					var result = postTask.Result;
+					var responseTask = result.Content.ReadAsStringAsync();
+					response = responseTask.Result;
+
+				} catch (Exception e) {
+
+					Console.WriteLine(e.Message);
+					Console.WriteLine(e.InnerException.Message);
+
+				}
+
+			}
+			return response;
+		}
+
+		private static string DeleteJsonSync(string uri){
+			string response;
+
+			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
+				httpClient.Timeout = new TimeSpan (0, 0, 8);
+				var postTask = httpClient.DeleteAsync (uri);
+				var result = postTask.Result;
+				var responseTask = result.Content.ReadAsStringAsync();
+				response = responseTask.Result;
+			}
+			return response;
+		}
+
+		private static string UploadStream(string uri, Stream data, string mimeType)
 		{
-			/*var httpWebRequest2 = new HttpClient(new NativeMessageHandler());
-			httpWebRequest2.Timeout = new TimeSpan (0, 0, 8);
-			httpWebRequest2.*/
+			string response = string.Empty;
 
-			var httpWebRequest = (HttpWebRequest)WebRequest.Create (url);
-			httpWebRequest.ContentType = contentType;
-			httpWebRequest.Method = method;
-			httpWebRequest.Timeout = 8000;
+			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
+				httpClient.Timeout = new TimeSpan (0, 1, 0);
 
-			try {
-				Console.WriteLine ("Getting webrequest response...");
-				var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse ();
+				var httpContent = new StreamContent (data);
+				httpContent.Headers.ContentType = new MediaTypeHeaderValue (mimeType);
+				var postTask = httpClient.PutAsync (uri, httpContent);
 
-				string result = string.Empty;
 
-				var stream = httpResponse.GetResponseStream ();
+				try{
+					
+					var result = postTask.Result;
 
-				using (BufferedStream buffer = new BufferedStream (stream)) {
-					using (StreamReader reader = new StreamReader (buffer)) {
-						Console.WriteLine ("Reading response...");
-						result = reader.ReadToEnd ();		
+					var absoluteURL = result.RequestMessage.RequestUri.AbsoluteUri;
+					var indexOfParameter = absoluteURL.IndexOf ('?');
+
+					if (indexOfParameter != -1) {
+						absoluteURL = absoluteURL.Substring (0, indexOfParameter);
 					}
+
+					response = absoluteURL;
+
+				} catch(Exception e) {
+					
+					Console.WriteLine(e.Message);
+					Console.WriteLine(e.InnerException.Message);
+
 				}
-
-				Console.WriteLine ("Read response!");
-				return result;
-
-			} catch (WebException e) {
-
-				if (e.Status == WebExceptionStatus.ProtocolError) {
-					return ((HttpWebResponse)e.Response).StatusCode.ToString ();
-				}
-
-				return e.Status.ToString ();
-			}
-		}
-
-		public class RequestState
-		{
-			const int BufferSize = 1024;
-			public StringBuilder RequestData;
-			public byte[] BufferRead;
-			public WebRequest Request;
-			public Stream ResponseStream;
-			// Create Decoder for appropriate enconding type.
-			public Decoder StreamDecode = Encoding.UTF8.GetDecoder();
-
-			public RequestState()
-			{
-				BufferRead = new byte[BufferSize];
-				RequestData = new StringBuilder(String.Empty);
-				Request = null;
-				ResponseStream = null;
-			}     
-		}
-
-		private static async System.Threading.Tasks.Task JsonAsyncPUTRequest(string url){
-			var httpWebRequest = (HttpWebRequest)WebRequest.Create (url);
-			httpWebRequest.ContentType = "application/json";
-			httpWebRequest.Method = "PUT";
-			httpWebRequest.Timeout = 8000;
-
-			RequestState rs = new RequestState();
-			rs.Request = httpWebRequest;
-
-			var httpResponse = (HttpWebResponse)httpWebRequest.BeginGetResponse (new AsyncCallback(RespCallback), rs);
-		}
-
-		const int BUFFER_SIZE = 1024;
-		public static ManualResetEvent allDone = new ManualResetEvent(false);
-
-		private static void RespCallback(IAsyncResult ar)
-		{
-			// Get the RequestState object from the async result.
-			RequestState rs = (RequestState) ar.AsyncState;
-
-			// Get the WebRequest from RequestState.
-			WebRequest req = rs.Request;
-
-			// Call EndGetResponse, which produces the WebResponse object
-			//  that came from the request issued above.
-			WebResponse resp = req.EndGetResponse(ar);         
-
-			//  Start reading data from the response stream.
-			Stream ResponseStream = resp.GetResponseStream();
-
-			// Store the response stream in RequestState to read 
-			// the stream asynchronously.
-			rs.ResponseStream = ResponseStream;
-
-			//  Pass rs.BufferRead to BeginRead. Read data into rs.BufferRead
-			IAsyncResult iarRead = ResponseStream.BeginRead(rs.BufferRead, 0, 
-				BUFFER_SIZE, new AsyncCallback(ReadCallBack), rs); 
-		}
-
-		private static void ReadCallBack(IAsyncResult asyncResult)
-		{
-			// Get the RequestState object from AsyncResult.
-			RequestState rs = (RequestState)asyncResult.AsyncState;
-
-			// Retrieve the ResponseStream that was set in RespCallback. 
-			Stream responseStream = rs.ResponseStream;
-
-			// Read rs.BufferRead to verify that it contains data. 
-			int read = responseStream.EndRead( asyncResult );
-			if (read > 0)
-			{
-				// Prepare a Char array buffer for converting to Unicode.
-				Char[] charBuffer = new Char[BUFFER_SIZE];
-
-				// Convert byte stream to Char array and then to String.
-				// len contains the number of characters converted to Unicode.
-				int len = 
-					rs.StreamDecode.GetChars(rs.BufferRead, 0, read, charBuffer, 0);
-
-				String str = new String(charBuffer, 0, len);
-
-				// Append the recently read data to the RequestData stringbuilder
-				// object contained in RequestState.
-				rs.RequestData.Append(
-					Encoding.ASCII.GetString(rs.BufferRead, 0, read));         
-
-				// Continue reading data until 
-				// responseStream.EndRead returns –1.
-				IAsyncResult ar = responseStream.BeginRead( 
-					rs.BufferRead, 0, BUFFER_SIZE, 
-					new AsyncCallback(ReadCallBack), rs);
-			}
-			else
-			{
-				if(rs.RequestData.Length>0)
-				{
-					//  Display data to the console.
-					string strContent;                  
-					strContent = rs.RequestData.ToString();
-				}
-				// Close down the response stream.
-				responseStream.Close();         
-				// Set the ManualResetEvent so the main thread can exit.
-				allDone.Set();                           
-			}
-			return;
-		}
-
-		private static string JsonPUTRequest(string url, string json)
-		{
-			var httpWebRequest = (HttpWebRequest)WebRequest.Create (url);
-			httpWebRequest.ContentType = "application/json";
-			httpWebRequest.Method = "PUT";
-			httpWebRequest.Timeout = 8000;
-
-			try{
-				using (var streamWriter = new StreamWriter (httpWebRequest.GetRequestStream ())) {
-					streamWriter.Write (json);
-					streamWriter.Flush ();
-					streamWriter.Close ();
-				}
-
-				var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse ();
-				string result = string.Empty;
-				using (var streamReader = new StreamReader (httpResponse.GetResponseStream ())) {
-					result = streamReader.ReadToEnd ();
-				}
-				return result;
-			} catch (WebException e) {
-
-				if (e.Status == WebExceptionStatus.ProtocolError) 
-				{
-					return ((HttpWebResponse)e.Response).StatusCode.ToString();
-				}
-
-				return e.Status.ToString();
 
 			}
+			return response;
 		}
 
-		private static string JsonPOSTRequest(string url, string json)
-		{
-			var httpWebRequest = (HttpWebRequest)WebRequest.Create (url);
-			httpWebRequest.ContentType = "application/json";
-			httpWebRequest.Method = "POST";
-			httpWebRequest.Timeout = 8000;
-
-			try{
-				using (var streamWriter = new StreamWriter (httpWebRequest.GetRequestStream ())) {
-					streamWriter.Write (json);
-					streamWriter.Flush ();
-					streamWriter.Close ();
-				}
-
-				Console.WriteLine ("Getting response...");
-				var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse ();
-				string result = string.Empty;
-
-				using (var streamReader = new StreamReader (httpResponse.GetResponseStream ())) {
-					result = streamReader.ReadToEnd ();
-				}
-
-				return result;
-			} catch (WebException e) {
-
-				if (e.Status == WebExceptionStatus.ProtocolError) 
-				{
-					return ((HttpWebResponse)e.Response).StatusCode.ToString();
-				}
-
-				return e.Status.ToString();
-
-			}
-		}
 	}
 }
 

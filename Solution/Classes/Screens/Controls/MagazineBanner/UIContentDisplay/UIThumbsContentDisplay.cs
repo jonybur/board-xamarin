@@ -101,13 +101,13 @@ namespace Board.Screens.Controls
 
 			this._boardComparersByMode = new Dictionary<OrderMode, IBoardComparer> ();
 			this._boardComparersByMode.Add (OrderMode.Category, new CategoryComparer ());
+			//this._boardComparersByMode.Add (OrderMode.Neighborhood, new NeighbourhoodComparer ());
 			this._boardComparersByMode.Add (OrderMode.Alphabetic, new AlphabeticComparer ());
-			this._boardComparersByMode.Add (OrderMode.Neighborhood, new NeighbourhoodComparer ());
 			this._boardComparersByMode.Add (OrderMode.Distance, new DistanceComparer ());
 
 			Modes = new List<OrderMode> ();
 			Modes.Add (OrderMode.Category);
-			Modes.Add (OrderMode.Neighborhood);
+			//Modes.Add (OrderMode.Neighborhood);
 			Modes.Add (OrderMode.Alphabetic);
 			Modes.Add (OrderMode.Distance);
 

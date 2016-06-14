@@ -14,9 +14,6 @@ namespace Board.Screens
 
 		LoginButton logInButton;
 
-		public LoginScreen (){
-		}
-
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
@@ -28,11 +25,35 @@ namespace Board.Screens
 			InitializeInterface ();
 		}
 
+		private void InitializeInterface()
+		{
+			// create our image view
+			LoadBackground ();
+
+			// load buttons
+			LoadFBButton ();
+
+			LoadWarning ();
+		}
+
+		private void LoadBackground()
+		{
+			var repeaterVideo = new UIRepeatVideo (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight), NSUrl.FromFilename ("./timelapse.mp4"));
+
+			var logoView = new UIImageView ();
+			using (var logo = UIImage.FromFile ("./screens/login/logo.png")) {
+				logoView.Image = logo;
+				logoView.Frame = new RectangleF (0, 0, (float)(logo.Size.Width/2), (float)(logo.Size.Height/2));
+			}
+			logoView.Center = new PointF (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight * 0.35f);
+
+			View.AddSubviews (repeaterVideo.View, logoView);
+		}
+
 		private void LoadFBButton()
 		{
-			logInButton = new LoginButton (new CGRect (0, 0, AppDelegate.ScreenWidth - 70, 50)) {
+			logInButton = new LoginButton (new CGRect (40, AppDelegate.ScreenHeight - 100, AppDelegate.ScreenWidth - 80, 50)) {
 				LoginBehavior = LoginBehavior.Native,
-				Center = new CGPoint(AppDelegate.ScreenWidth/2, AppDelegate.ScreenHeight * (.90f)),
 				ReadPermissions = new [] { "public_profile", "user_birthday" }
 			};
 
@@ -62,29 +83,23 @@ namespace Board.Screens
 			View.AddSubview (logInButton);
 		}
 
-		private void InitializeInterface()
-		{
-			// create our image view
-			LoadBackground ();
+		private void LoadWarning (){
+			var label = new UITextView ();
+			label.Frame = new CGRect (5, logInButton.Frame.Bottom, AppDelegate.ScreenWidth - 10, 0);
+			label.Font = UIFont.SystemFontOfSize (11, UIFontWeight.Light);
+			label.TextColor = UIColor.White;
+			label.Text = "By continuing, you agree to our Terms of Service\nand Privacy Policy";
+			label.TextAlignment = UITextAlignment.Center;
+			label.ScrollEnabled = false;
+			label.Editable = false;
+			label.Selectable = false;
+			label.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 
-			// load buttons
-			LoadFBButton ();
+			var size = label.SizeThatFits (label.Frame.Size);
+			label.Frame = new CGRect (label.Frame.X, label.Frame.Y, label.Frame.Width, size.Height);
+
+			View.AddSubview (label);
 		}
 
-		private void LoadBackground()
-		{
-			this.AutomaticallyAdjustsScrollViewInsets = false;
-
-			var repeaterVideo = new UIRepeatVideo (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight), NSUrl.FromFilename ("./timelapse.mp4"));
-
-			UIImageView logoView;
-			using (UIImage logo = UIImage.FromFile ("./screens/login/logo.png")) {
-				logoView = new UIImageView (logo);
-				logoView.Frame = new RectangleF (0, 0, (float)(logo.Size.Width/2), (float)(logo.Size.Height/2));
-			}
-			logoView.Center = new PointF (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight/6);
-
-			View.AddSubviews (repeaterVideo.View, logoView);
-		}
 	}
 }
