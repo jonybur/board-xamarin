@@ -25,7 +25,6 @@ namespace Board.Screens.Controls
 		{
 			TouchUpInside += TapEvent;
 
-
 			TouchDown += (sender, e) => {
 				SetPressedColors();
 			};

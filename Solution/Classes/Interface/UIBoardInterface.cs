@@ -154,6 +154,12 @@ namespace Board.Interface
 		{
 			foreach(KeyValuePair<string, Widget> widget in DictionaryWidgets)
 			{
+				if (widget.Value is PictureWidget) {
+					((PictureWidget)widget.Value).CancelSetImage ();
+				} else if (widget.Value is AnnouncementWidget) {
+					((AnnouncementWidget)widget.Value).CancelSetImage ();
+				}
+
 				widget.Value.UnsuscribeFromEditingEvents ();
 				widget.Value.UnsuscribeFromUsabilityEvents ();
 				widget.Value.RemoveFromSuperview ();

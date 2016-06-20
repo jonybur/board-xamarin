@@ -2,6 +2,8 @@
 using Board.Screens.Controls;
 using Board.Utilities;
 using Foundation;
+using CoreLocation;
+using System;
 using UIKit;
 
 namespace Board.Screens
@@ -25,8 +27,6 @@ namespace Board.Screens
 			NavigationController.NavigationBarHidden = true;
 
 			LoadMainMenu ();
-
-			//LoadChangelogAlert ();
 		}
 
 		public override void ViewDidAppear(bool animated){
@@ -44,9 +44,7 @@ namespace Board.Screens
 				NSUserDefaults.StandardUserDefaults.SetBool(true, key);
 				defaults.Synchronize ();
 
-				UIAlertController alert = UIAlertController.Create ("Welcome to Board 0.4.1", "Changelog:\n" +
-					"· Boards have been autoimported from Facebook"
-					, UIAlertControllerStyle.Alert);
+				UIAlertController alert = UIAlertController.Create ("Welcome to Board 0.4.1", "", UIAlertControllerStyle.Alert);
 
 				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));	
 

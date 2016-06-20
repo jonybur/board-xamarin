@@ -149,6 +149,7 @@ namespace Board.Screens
 				thanksView.TextColor = UIColor.Black;
 				thanksView.TextAlignment = UITextAlignment.Center;
 				thanksView.Editable = false;
+				thanksView.ScrollEnabled = false;
 				var size2 = thanksView.SizeThatFits(thanksView.Frame.Size);
 				thanksView.Frame = new CGRect(thanksView.Frame.X, thanksView.Frame.Y,
 					thanksView.Frame.Width, size2.Height);

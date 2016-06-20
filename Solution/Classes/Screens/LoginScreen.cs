@@ -13,6 +13,8 @@ namespace Board.Screens
 		const int fontSize = 18;
 
 		LoginButton logInButton;
+		UIImageView emailView;
+		bool TapsEmailButton;
 
 		public override void ViewDidLoad ()
 		{
@@ -25,6 +27,10 @@ namespace Board.Screens
 			InitializeInterface ();
 		}
 
+		public override void ViewDidAppear(bool animated){
+			TapsEmailButton = false;			
+		}
+
 		private void InitializeInterface()
 		{
 			// create our image view
@@ -32,6 +38,8 @@ namespace Board.Screens
 
 			// load buttons
 			LoadFBButton ();
+
+			LoadEmailButton ();
 
 			LoadWarning ();
 		}
@@ -50,11 +58,43 @@ namespace Board.Screens
 			View.AddSubviews (repeaterVideo.View, logoView);
 		}
 
+		private void LoadEmailButton(){
+			emailView = new UIImageView ();
+			emailView.Frame = new CGRect (logInButton.Frame.X, logInButton.Frame.Bottom + 10, logInButton.Frame.Width, 30);
+			emailView.BackgroundColor = UIColor.FromRGBA (0,0,0,0);
+
+			var tapEmailView = new UITapGestureRecognizer (delegate(UITapGestureRecognizer obj) {
+				if (!TapsEmailButton){
+					TapsEmailButton = true;
+					var emailScreen = new EmailScreen();
+					AppDelegate.NavigationController.PresentViewController(emailScreen, true, null);
+				}
+			});
+			emailView.AddGestureRecognizer (tapEmailView);
+			emailView.UserInteractionEnabled = true;
+
+			var emailLabel = new UILabel ();
+			emailLabel.Frame = new CGRect (0, 0, emailView.Frame.Width, 0);
+			emailLabel.Font = UIFont.SystemFontOfSize (14, UIFontWeight.Light);
+			emailLabel.TextColor = UIColor.White;
+			emailLabel.Text = "or Log in with Email";
+			emailLabel.TextAlignment = UITextAlignment.Center;
+			emailLabel.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
+
+			var size = emailLabel.SizeThatFits (emailLabel.Frame.Size);
+			emailLabel.Frame = new CGRect (emailLabel.Frame.X, emailLabel.Frame.Y, emailLabel.Frame.Width, size.Height);
+
+			emailLabel.Center = new CGPoint (emailView.Frame.Width / 2, emailView.Frame.Height / 2);
+
+			emailView.AddSubview (emailLabel);
+			View.AddSubview (emailView);
+		}
+
 		private void LoadFBButton()
 		{
-			logInButton = new LoginButton (new CGRect (40, AppDelegate.ScreenHeight - 100, AppDelegate.ScreenWidth - 80, 50)) {
+			logInButton = new LoginButton (new CGRect (40, AppDelegate.ScreenHeight - 150, AppDelegate.ScreenWidth - 80, 50)) {
 				LoginBehavior = LoginBehavior.Native,
-				ReadPermissions = new [] { "public_profile", "user_birthday" }
+				ReadPermissions = new [] { "public_profile" } //, "user_birthday" }
 			};
 
 			logInButton.Completed += (sender, e) => {
@@ -62,7 +102,7 @@ namespace Board.Screens
 					return;
 				}
 
-				bool result = CloudController.LogIn();
+				bool result = CloudController.LogInFacebook();
 
 				if (result) {
 					AppDelegate.containerScreen = new ContainerScreen ();
@@ -75,17 +115,14 @@ namespace Board.Screens
 			};
 
 			// Handle actions once the user is logged out
-			logInButton.LoggedOut += (sender, e) => {
-				// Handle your logout
-				CloudController.LogOut();
-			};
+			logInButton.LoggedOut += (sender, e) => CloudController.LogOut ();
 
 			View.AddSubview (logInButton);
 		}
 
 		private void LoadWarning (){
 			var label = new UITextView ();
-			label.Frame = new CGRect (5, logInButton.Frame.Bottom, AppDelegate.ScreenWidth - 10, 0);
+			label.Frame = new CGRect (5, emailView.Frame.Bottom, AppDelegate.ScreenWidth - 10, 0);
 			label.Font = UIFont.SystemFontOfSize (11, UIFontWeight.Light);
 			label.TextColor = UIColor.White;
 			label.Text = "By continuing, you agree to our Terms of Service\nand Privacy Policy";

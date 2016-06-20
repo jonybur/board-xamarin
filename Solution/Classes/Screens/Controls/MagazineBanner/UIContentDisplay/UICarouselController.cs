@@ -6,6 +6,7 @@ using Board.JsonResponses;
 using CoreGraphics;
 using Foundation;
 using Board.Utilities;
+using CoreAnimation;
 using Haneke;
 using UIKit;
 
@@ -146,12 +147,20 @@ namespace Board.Screens.Controls
 
 				if (AppDelegate.BoardInterface == null)
 				{
-					AppDelegate.BoardInterface = new UIBoardInterface (board);
-					AppDelegate.NavigationController.PushViewController (AppDelegate.BoardInterface, true);
+					CATransaction.Begin ();
+
+					BigTed.BTProgressHUD.Show();
+					Alpha = 0.75f;
+
+					CATransaction.Commit();
+
+					CATransaction.CompletionBlock = delegate {
+						AppDelegate.BoardInterface = new UIBoardInterface (board);
+						AppDelegate.NavigationController.PushViewController (AppDelegate.BoardInterface, true);
+					};
 				}
 			};
 		}
-
 		private UILabel CreateNameLabel (string nameString, float width)
 		{
 			var label = new UILabel ();

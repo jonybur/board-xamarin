@@ -17,6 +17,13 @@ namespace Board.Schema
 		public string ProfilePictureURL { get; set; }
 		public UIImageView ProfilePicture { get; set; }
 
+		public void SetDefaultProfilePicture(){
+			ProfilePicture = new UIImageView ();
+			ProfilePicture.Frame = new CGRect (0, 0, 150, 150);
+			ProfilePicture.ContentMode = UIViewContentMode.ScaleAspectFit;
+			ProfilePicture.SetImage ("./DefaultUser.png");
+		}
+
 		public void SetProfilePictureFromURL(string url){
 			ProfilePicture = new UIImageView ();
 			ProfilePicture.Frame = new CGRect (0, 0, 150, 150);

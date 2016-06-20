@@ -29,6 +29,7 @@ namespace Board
 		public static UINavigationController NavigationController;
 		public static float ScreenWidth;
 		public static float ScreenHeight;
+		public static bool SimulatingNantucket;
 
 		public static UIColor BoardOrange;
 		public static UIColor BoardBlue;
@@ -132,7 +133,7 @@ namespace Board
 			// create a new window instance based on the screen size
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
 
-			bool result = CloudController.LogIn();
+			bool result = CloudController.LogInFacebook();
 
 			if (result) {
 				containerScreen = new ContainerScreen ();

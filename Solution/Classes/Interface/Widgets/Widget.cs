@@ -1,11 +1,11 @@
-﻿using Board.Infrastructure;
+﻿
+using Board.Infrastructure;
 using Board.Interface.Buttons;
 using Board.Schema;
 using Haneke;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
-using MGImageUtilitiesBinding;
 using UIKit;
 
 namespace Board.Interface.Widgets
@@ -120,8 +120,7 @@ namespace Board.Interface.Widgets
 			return descriptionView;
 		}
 
-		protected void CreateMounting(CGSize size)
-		{
+		protected void CreateMounting(CGSize size) {
 			MountingView = new UIImageView (new CGRect (0, 0, size.Width + SideMargin * 2, size.Height + 40 + TopMargin));
 			MountingView.BackgroundColor = UIColor.White;
 
@@ -133,49 +132,6 @@ namespace Board.Interface.Widgets
 			MountingView.Layer.CornerRadius = 10;
 
 			MountingView.AddSubviews (LikeComponent, EyeView, TimeStamp);
-		}
-
-		public UIView CreateLogoHeader(){
-			var header = new UIView ();
-			header.Frame = new CGRect (0, 0, Frame.Width - SideMargin * 2 - 10, TopMargin);
-
-			var headerLogo = new UIImageView ();
-			headerLogo.Frame = new CGRect (0, 0, TopMargin - 5, TopMargin - 5);
-			headerLogo.Center = new CGPoint (headerLogo.Center.X, header.Center.Y);
-			headerLogo.SetImage (new NSUrl(UIBoardInterface.board.LogoUrl));
-
-			header.AddSubviews (headerLogo);
-
-			header.Frame = new CGRect (0, 0, headerLogo.Frame.Right, TopMargin);
-			header.Center = new CGPoint (Frame.Width / 2, TopMargin / 2 + 2);
-
-			return header;
-		}
-
-		public UIView CreateFullHeader(){
-			var header = new UIView ();
-			header.Frame = new CGRect (0, 0, Frame.Width - SideMargin * 2 - 10, TopMargin);
-
-			var headerLogo = new UIImageView ();
-			var size = new CGSize(TopMargin, TopMargin);
-			headerLogo.Image = UIBoardInterface.board.Logo.ImageScaledToFitSize (size);
-			headerLogo.Frame = new CGRect (0, 0, headerLogo.Image.Size.Width, headerLogo.Image.Size.Height);
-			headerLogo.Center = new CGPoint (headerLogo.Center.X, header.Center.Y);
-
-			var headerText = new UILabel ();
-			float sizeOfHeaderLogo = (float)headerLogo.Frame.Right + 10;
-			headerText.Frame = new CGRect (sizeOfHeaderLogo, 0, header.Frame.Width - sizeOfHeaderLogo, header.Frame.Height);
-			headerText.Text = UIBoardInterface.board.Name;
-			headerText.Font = UIFont.BoldSystemFontOfSize (14);
-			headerText.SizeToFit ();
-			headerText.Center = new CGPoint (headerText.Center.X, header.Center.Y);
-
-			header.AddSubviews (headerLogo, headerText);
-
-			header.Frame = new CGRect (0, 0, headerText.Frame.Right, TopMargin);
-			header.Center = new CGPoint (Frame.Width / 2 - TopMargin / 2, TopMargin / 2 + 2);
-
-			return header;
 		}
 
 		public void Highlight(){
@@ -239,7 +195,42 @@ namespace Board.Interface.Widgets
 			ButtonInterface.SwitchButtonLayout (ButtonInterface.ButtonLayout.NavigationBar);
 			CloudController.UpdateBoard (UIBoardInterface.board.Id, deleteJson);
 		}
+	}
 
+	public class UIWidgetHeader : UIImageView{
+		public UIImageView Logo;
+
+		public void CancelSetImage(){
+			Logo.CancelSetImage ();
+			this.CancelSetImage ();
+		}
+
+		public UIWidgetHeader(float width, int topMargin){
+			Frame = new CGRect (0, 0, width, topMargin);
+
+			var LogoBackground = new UIImageView ();
+			LogoBackground.Frame = new CGRect (0, 0, topMargin - 5, topMargin - 5);
+			LogoBackground.Center = new CGPoint (Frame.Width / 2, Center.Y);
+			LogoBackground.BackgroundColor = UIColor.White;
+			AddSubviews (LogoBackground);
+
+			Logo = new UIImageView ();
+			Logo.Frame = new CGRect (0, 0, topMargin - 8, topMargin - 8);
+			Logo.Center = new CGPoint (Frame.Width / 2, Center.Y);
+			Logo.SetImage (new NSUrl(UIBoardInterface.board.LogoUrl));
+			AddSubviews (Logo);
+
+			ClipsToBounds = true;
+
+			this.ContentMode = UIViewContentMode.ScaleAspectFill;
+			this.SetImage (new NSUrl(UIBoardInterface.board.CoverImageUrl));
+			
+			this.Layer.AllowsEdgeAntialiasing = true;
+			LogoBackground.Layer.AllowsEdgeAntialiasing = true;
+			Logo.Layer.AllowsEdgeAntialiasing = true;
+
+			Center = new CGPoint (Frame.Width / 2, topMargin / 2);
+		}
 	}
 }
 

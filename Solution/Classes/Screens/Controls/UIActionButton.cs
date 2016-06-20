@@ -21,6 +21,17 @@ namespace Board.Screens.Controls
 			TouchDownEvent = new EventHandler (delegate {
 				Alpha = .75f;
 			});
+			TouchDownRepeat += (sender, e) => {
+				Alpha = .75f;
+			};
+
+			TouchUpInside += (sender, e) => {
+				Alpha = 1f;
+			};
+			TouchUpOutside += (sender, e) => {
+				Alpha = 1f;
+			};
+
 			TouchDown += TouchDownEvent;
 
 			AddSubviews (background, CustomTitleLabel);

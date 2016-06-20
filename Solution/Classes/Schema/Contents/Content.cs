@@ -41,22 +41,25 @@ namespace Board.Schema
 		[IgnoreDataMember]
 		public CGPoint Center{
 			get{
-				float percentageCorrection = 0f;
+				float percentageCorrectionX = 0f;
+				float percentageCorrectionY = 0f;
 				switch (AppDelegate.PhoneVersion) {
 				case AppDelegate.PhoneVersions.iPhone4:
-					percentageCorrection = .13f;
+					percentageCorrectionX = .13f;
 					break;
 				case AppDelegate.PhoneVersions.iPhone5:
-					percentageCorrection = .07f;
+					percentageCorrectionX = .07f;
+					percentageCorrectionY = -.02f;
 					break;
 				case AppDelegate.PhoneVersions.iPhone6:
-					percentageCorrection = 0f;
+					percentageCorrectionX = 0f;
 					break;
 				case AppDelegate.PhoneVersions.iPhone6Plus:
-					percentageCorrection = -.055f;
+					percentageCorrectionX = -.055f;
 					break;
 				}
-				var adaptedCenter = new CGPoint (center.X * (UIBoardScroll.AspectPercentage + percentageCorrection), center.Y * UIBoardScroll.AspectPercentage);
+				var adaptedCenter = new CGPoint (center.X * (UIBoardScroll.AspectPercentage + percentageCorrectionX),
+					center.Y * (UIBoardScroll.AspectPercentage + percentageCorrectionY));
 				return adaptedCenter;
 			}
 			set{ center = value; }

@@ -7,7 +7,7 @@
 	<key>MinimumOSVersion</key>
 	<string>9.3</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>This will allow Board to display nearby venues</string>
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>1</integer>
@@ -106,9 +106,9 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>CFBundleShortVersionString</key>
-	<string>0.4.91</string>
+	<string>0.5.03</string>
 	<key>CFBundleVersion</key>
-	<string>0.4.91</string>
+	<string>0.5.03</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>

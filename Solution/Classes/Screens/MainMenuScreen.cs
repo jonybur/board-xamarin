@@ -8,6 +8,8 @@ using CoreGraphics;
 using Facebook.CoreKit;
 using Foundation;
 using Google.Maps;
+using CoreLocation;
+using System.Threading;
 using UIKit;
 
 namespace Board.Screens
@@ -25,6 +27,8 @@ namespace Board.Screens
 		UIContentDisplay ContentDisplay;
 		List<Board.Schema.Board> BoardList;
 
+		const int ZoomLevel = 16;
+
 		bool mapInfoTapped, generatedMarkers, hasLoaded, firstLocationUpdate;
 
 		public override void DidReceiveMemoryWarning ()
@@ -36,29 +40,10 @@ namespace Board.Screens
 		{
 			base.ViewDidLoad ();
 
-			var defaults = NSUserDefaults.StandardUserDefaults;
-			const string key = "FirstTimeUse";
-			if (!defaults.BoolForKey (key)) {
-				// First launch
-				NSUserDefaults.StandardUserDefaults.SetBool (true, key);
-				defaults.Synchronize ();
-				BigTed.BTProgressHUD.Show ("Setting up Board\nfor first time use...");
-			} else { 
-				BigTed.BTProgressHUD.Show ();
-			}
+			ScrollView = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+			ScrollView.ScrollsToTop = true;
 
 			ListMapMarkers = new List<UIMapMarker> ();
-
-			//NANTUCKET
-			//AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(41.2835861,-70.1038089);
-
-			if (Profile.CurrentProfile == null) {
-				AppDelegate.NavigationController.PopViewController (true);
-			}
-
-			ScrollView = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
-
-			ScrollView.ScrollsToTop = true;
 
 			LoadMapButton ();
 			LoadBanner ();
@@ -69,24 +54,81 @@ namespace Board.Screens
 			statusBarView.BackgroundColor = AppDelegate.BoardOrange;
 
 			View.AddSubviews (ScrollView, map, Banner, map_button, statusBarView);
+
+			if (CLLocationManager.Status == CLAuthorizationStatus.NotDetermined) {
+				
+				var listenThread = new Thread (ListensToUndeterminedLocationService);
+				listenThread.Start ();
+
+			} else {
+
+				CheckLocationServices ();
+				if (AppDelegate.SimulatingNantucket) {
+					BigTed.BTProgressHUD.Show ();
+				}
+
+			}
+		}
+
+		private void ListensToUndeterminedLocationService(){
+
+			while (CLLocationManager.Status == CLAuthorizationStatus.NotDetermined) {
+				Thread.Sleep (500);
+			}
+
+			InvokeOnMainThread(delegate {
+				CheckLocationServices ();
+				if (AppDelegate.SimulatingNantucket) {
+					BigTed.BTProgressHUD.Show ();
+				}
+
+				ViewDidAppear (false);
+			});
 		}
 
 		public override void ViewDidAppear(bool animated)
 		{
-			if (AppDelegate.UserLocation.Latitude != 0 &&
-				AppDelegate.UserLocation.Longitude != 0 &&
-				!hasLoaded) {
-				LoadContent();
-				ContentDisplaySuscribeToEvents (ContentDisplay);
-				hasLoaded = true;
-				BigTed.BTProgressHUD.Dismiss ();
-			}
+			if (CLLocationManager.Status != CLAuthorizationStatus.NotDetermined) {
+				if (AppDelegate.UserLocation.Latitude != 0 &&
+				   AppDelegate.UserLocation.Longitude != 0 &&
+				   !hasLoaded) {
 
-			// suscribe to observers, gesture recgonizers, events 
-			map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
-			map_button.TouchUpInside += MapButtonEvent;	
-			mapInfoTapped = false;
-			Banner.SuscribeToEvents ();
+					LoadContent ();
+					ContentDisplaySuscribeToEvents (ContentDisplay);
+					hasLoaded = true;
+
+					if (AppDelegate.SimulatingNantucket) {
+						map.Camera = CameraPosition.FromCamera (AppDelegate.UserLocation, ZoomLevel);
+						GenerateMarkers ();
+					}
+
+					BigTed.BTProgressHUD.Dismiss ();
+				}
+
+				// suscribe to observers, gesture recgonizers, events 
+				map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
+				map_button.TouchUpInside += MapButtonEvent;	
+				mapInfoTapped = false;
+				Banner.SuscribeToEvents ();
+			}
+		}
+			
+		private void CheckLocationServices(){
+			
+			if (!CLLocationManager.LocationServicesEnabled ||
+				CLLocationManager.Status == CLAuthorizationStatus.Denied ||
+				CLLocationManager.Status == CLAuthorizationStatus.Restricted) {
+
+				if (!AppDelegate.SimulatingNantucket) {
+
+					var noContent = new UINoContent (UINoContent.Presets.LocationDisabled);
+					ScrollView.AddSubview (noContent);
+					map_button.Alpha = 0f;
+
+					BigTed.BTProgressHUD.Dismiss ();
+				}
+
+			}
 		}
 
 		public override void ViewDidDisappear(bool animated)
@@ -111,35 +153,63 @@ namespace Board.Screens
 			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 		}
 
+		private void ShowFirstTimeUseMessage(){
+			var defaults = NSUserDefaults.StandardUserDefaults;
+			const string key = "FirstTimeUse";
+			if (!defaults.BoolForKey (key)) {
+				// First launch
+				NSUserDefaults.StandardUserDefaults.SetBool (true, key);
+				defaults.Synchronize ();
+				BigTed.BTProgressHUD.Show ("Setting up Board\nfor first time use...");
+			} else { 
+				BigTed.BTProgressHUD.Show ();
+			}
+		}
+
+		public void SimulateNantucket(){
+			AppDelegate.UserLocation = new CLLocationCoordinate2D(41.284558, -70.098572);
+
+			AppDelegate.SimulatingNantucket = true;
+
+			LoadContent ();
+			ContentDisplaySuscribeToEvents (ContentDisplay);
+
+			hasLoaded = true;
+			map_button.Alpha = 1f;
+			map.Camera = new CameraPosition (AppDelegate.UserLocation, ZoomLevel, 0, 0);
+
+			GenerateMarkers ();
+
+			BigTed.BTProgressHUD.Dismiss ();
+		}
+
 		public override void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
-		{		
+		{	
 			if (!firstLocationUpdate) {
+
+				ShowFirstTimeUseMessage ();
+
 				firstLocationUpdate = true;
-				var location = change.ObjectForKey (NSObject.ChangeNewKey) as CoreLocation.CLLocation;
+				var location = change.ObjectForKey (NSObject.ChangeNewKey) as CLLocation;
 
-				Console.WriteLine ("Gets user location from maps");
-				AppDelegate.UserLocation = location.Coordinate;
+				if (!AppDelegate.SimulatingNantucket) {
+					Console.WriteLine ("Gets user location from maps");
 
-				CloudController.LogSession ();
+					AppDelegate.UserLocation = location.Coordinate;
+					CloudController.LogSession ();
 
-				// BUENOS AIRES
-				//AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(-34.584424, -58.435909);
-				// NANTUCKET
-				//AppDelegate.UserLocation = new CoreLocation.CLLocationCoordinate2D(41.2835861,-70.1038089);
-
-				map.Camera = CameraPosition.FromCamera (location.Coordinate, 15);
+					map.Camera = CameraPosition.FromCamera (location.Coordinate, ZoomLevel);
+				}
 
 				if (!hasLoaded) {
 					LoadContent ();
 					ContentDisplaySuscribeToEvents (ContentDisplay);
 					hasLoaded = true;
-					BigTed.BTProgressHUD.Dismiss ();
 				}
 
-				if (!generatedMarkers) {
-					GenerateMarkers ();
-					generatedMarkers = true;
-				}
+				GenerateMarkers ();
+
+				BigTed.BTProgressHUD.Dismiss ();
 			}
 		}
 
@@ -252,21 +322,24 @@ namespace Board.Screens
 
 			map.InfoTapped += (sender, e) => {
 				if (!mapInfoTapped) {
-					var board = BoardList.Find(t=>t.Id == ((NSString)e.Marker.UserData).ToString());
-					AppDelegate.BoardInterface = new UIBoardInterface(board);
-					AppDelegate.NavigationController.PushViewController(AppDelegate.BoardInterface, true);
+					var board = BoardList.Find(t => t.Id == ((NSString)e.Marker.UserData).ToString());
+					AppDelegate.BoardInterface = new UIBoardInterface (board);
+					AppDelegate.NavigationController.PushViewController (AppDelegate.BoardInterface, true);
 					mapInfoTapped = true;
 				}
 			};
 
-			InvokeOnMainThread (()=> map.MyLocationEnabled = true);
+			InvokeOnMainThread (() => map.MyLocationEnabled = true);
 		}
 
 		private void GenerateMarkers()
 		{
-			foreach (Board.Schema.Board board in BoardList) {
-				var marker = new UIMapMarker (board, map, UIMapMarker.SizeMode.Normal);
-				ListMapMarkers.Add (marker);
+			if (!generatedMarkers) {
+				foreach (Board.Schema.Board board in BoardList) {
+					var marker = new UIMapMarker (board, map, UIMapMarker.SizeMode.Normal);
+					ListMapMarkers.Add (marker);
+				}
+				generatedMarkers |= BoardList.Count > 0;
 			}
 		}
 

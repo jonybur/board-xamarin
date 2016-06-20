@@ -9,7 +9,7 @@ namespace Board.Interface.Widgets
 		// UIView contains ScrollView and BackButton
 		// ScrollView contains LookUpImage
 		private UITextView textview;
-		private UIView HeaderLogo;
+		private UIWidgetHeader HeaderLogo;
 
 		public Announcement announcement
 		{
@@ -31,7 +31,8 @@ namespace Board.Interface.Widgets
 			// mounting
 			CreateMounting (insideText.Frame.Size);
 			Frame = MountingView.Frame;
-			HeaderLogo = CreateLogoHeader ();
+			HeaderLogo = new UIWidgetHeader ((float)MountingView.Frame.Width, TopMargin);
+			ClipsToBounds = true;
 
 			AddSubviews (MountingView, insideText, HeaderLogo);
 
@@ -83,6 +84,10 @@ namespace Board.Interface.Widgets
 			Frame = frame;
 		}
 
+
+		public void CancelSetImage(){
+			HeaderLogo.CancelSetImage ();
+		}
 	}
 }
 

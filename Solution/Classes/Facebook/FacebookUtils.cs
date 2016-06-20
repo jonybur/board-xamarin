@@ -39,7 +39,8 @@ namespace Board.Facebook
 		public static void MakeGraphRequest(string id, string element, Action<List<FacebookElement>> callback)
 		{
 			string query = id + "/" + element;
-			var graph = new GraphRequest (query, null, AccessToken.CurrentAccessToken.TokenString, "v2.5", "GET");
+			string token = AccessToken.CurrentAccessToken != null ? AccessToken.CurrentAccessToken.TokenString : string.Empty;
+			var graph = new GraphRequest (query, null, token, "v2.5", "GET");
 			graph.Start (delegate (GraphRequestConnection connection, NSObject obj, NSError error) {
 
 				var ElementList = new List<FacebookElement> ();

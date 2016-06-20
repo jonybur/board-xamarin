@@ -81,7 +81,7 @@ namespace Board.Screens.Controls
 		}
 
 		public readonly float ThumbSize;
-		public enum OrderMode { Category = 0, Neighborhood, Alphabetic, Distance }
+		public enum OrderMode { Category = 0, /*Neighborhood,*/ Alphabetic, Distance }
 		public const int TopAndBottomSeparation = 20;
 
 		public List<UIBoardThumbComponent> ListThumbComponents;

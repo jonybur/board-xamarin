@@ -1,4 +1,5 @@
 ﻿using CoreGraphics;
+using CoreAnimation;
 using Haneke;
 using UIKit;
 
@@ -8,16 +9,19 @@ namespace Board.Screens
 	{
 		UITextView DescriptionView;
 		UIImageView ImageView;
+		bool LoadingNantucket;
 
-		public enum Presets { NotInArea };
+		public enum Presets { NotInArea, LocationDisabled };
 
 		public UINoContent (Presets preset)
 		{
 			string imageURL = string.Empty, descriptionText = string.Empty;
 
+			imageURL = "./screens/nocontent/noapp.png";
 			if (preset == Presets.NotInArea) {
-				imageURL = "./screens/nocontent/noapp.png";
 				descriptionText = "Board is not yet available in your area.\nPlease come back later!";
+			} else if (preset == Presets.LocationDisabled) {
+				descriptionText = "Location services are disabled.\nPlease enable them to enjoy Board.";
 			}
 
 			ImageView = new UIImageView ();
@@ -39,13 +43,41 @@ namespace Board.Screens
 			var size = DescriptionView.SizeThatFits (DescriptionView.Frame.Size);
 			DescriptionView.Frame = new CGRect (DescriptionView.Frame.X, DescriptionView.Frame.Y, DescriptionView.Frame.Width, size.Height);
 
-			AddSubviews (ImageView, DescriptionView);
+			var nantucketButton = new UIButton ();
+			nantucketButton.Frame = new CGRect (0, DescriptionView.Frame.Bottom + 30, AppDelegate.ScreenWidth * 0.75f, 50);
+			nantucketButton.BackgroundColor = AppDelegate.BoardBlue;
+			nantucketButton.Center = new CGPoint (DescriptionView.Frame.Width / 2, nantucketButton.Center.Y);
+			nantucketButton.SetTitle ("DISCOVER NANTUCKET", UIControlState.Normal);
 
-			Frame = new CGRect (0, 0, DescriptionView.Frame.Width, DescriptionView.Frame.Bottom);
+			nantucketButton.TouchUpInside += (sender, e) => {
+				CATransaction.Begin ();
+
+				BigTed.BTProgressHUD.Show("Loading Nantucket...");
+				Alpha = 0f;
+
+				CATransaction.Commit();
+
+				CATransaction.CompletionBlock = LoadNantucket;
+			};
+
+			AddSubviews (ImageView, DescriptionView, nantucketButton);
+
+			Frame = new CGRect (0, 0, DescriptionView.Frame.Width, nantucketButton.Frame.Bottom);
 
 			ImageView.Center = new CGPoint (Frame.Width / 2, ImageView.Center.Y);
 
 			Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight / 2);
+		}
+
+		void LoadNantucket(){
+			if (!LoadingNantucket){
+				LoadingNantucket = true;
+
+				var containerScreen = (ContainerScreen)AppDelegate.NavigationController.TopViewController;
+				var mainMenuScreen = (MainMenuScreen)containerScreen.CurrentScreenViewController;
+
+				mainMenuScreen.SimulateNantucket();
+			}
 		}
 	}
 }

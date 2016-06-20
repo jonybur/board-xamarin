@@ -156,9 +156,29 @@ namespace Board.Interface
 
 			// x2 - x1 = a
 
+			float percentageCorrectionX = 0f;
+			float percentageCorrectionY = 0f;
+			switch (AppDelegate.PhoneVersion) {
+			case AppDelegate.PhoneVersions.iPhone4:
+				percentageCorrectionY = .13f;
+				break;
+			case AppDelegate.PhoneVersions.iPhone5:
+				percentageCorrectionX = .2f;
+				percentageCorrectionY = .38f;
+				break;
+			case AppDelegate.PhoneVersions.iPhone6:
+				percentageCorrectionY = 0f;
+				break;
+			case AppDelegate.PhoneVersions.iPhone6Plus:
+				percentageCorrectionX = -.135f;
+				percentageCorrectionY = -.20f;
+				break;
+			}
+
 			foreach (var content in orderedContent) {
 				if (content.Center.X >= lastLeftContentX) {
-					content.Center = new CGPoint (content.Center.X - awidth + AppDelegate.ScreenWidth, content.Center.Y);
+					content.Center = new CGPoint (content.Center.X * (UIBoardScroll.AspectPercentage + percentageCorrectionX) - awidth + AppDelegate.ScreenWidth,
+						content.Center.Y * (UIBoardScroll.AspectPercentage + percentageCorrectionY));
 				}
 			}
 

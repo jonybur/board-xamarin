@@ -1,9 +1,8 @@
-﻿using System;
-using Board.Schema;
+﻿using Board.Schema;
 using CoreGraphics;
-using UIKit;
 using Foundation;
 using Haneke;
+using UIKit;
 
 namespace Board.Interface.Widgets
 {
@@ -72,6 +71,10 @@ namespace Board.Interface.Widgets
 
 		public void ErrorFromHaneke(NSError obj){
 			System.Console.WriteLine ("ERROR: " + obj.LocalizedDescription);
+		}
+
+		public void CancelSetImage(){
+			PictureImageView.CancelSetImage ();
 		}
 
 	}

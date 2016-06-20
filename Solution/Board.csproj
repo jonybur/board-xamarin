@@ -248,7 +248,6 @@
     <BundleResource Include="Resources\screens\sidemenus\5\main.png" />
     <BundleResource Include="Resources\screens\sidemenus\5\settings.png" />
     <BundleResource Include="Resources\screens\sidemenus\5\support.png" />
-    <BundleResource Include="Resources\demo\magazine\westpalmbeach.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\openeye.png" />
     <BundleResource Include="Resources\boardinterface\strokebuttons\closedeye.png" />
     <BundleResource Include="Resources\boardinterface\widget\deletebut.png" />
@@ -265,9 +264,7 @@
     <BundleResource Include="Resources\boardinterface\infobox\message.png" />
     <BundleResource Include="Resources\boardinterface\infobox\viewmore.png" />
     <BundleResource Include="Resources\boardinterface\infobox\viewmore2.png" />
-    <BundleResource Include="Resources\demo\magazine\nantucket_bak.png" />
     <BundleResource Include="Resources\demo\magazine\nantucket.png" />
-    <BundleResource Include="Resources\demo\timeline\example.png" />
     <BundleResource Include="Resources\boardinterface\infobox\emptylike.png" />
     <BundleResource Include="Resources\boardinterface\infobox\fulllike.png" />
     <BundleResource Include="Resources\Default-568h%402x.png" />
@@ -280,11 +277,11 @@
     <BundleResource Include="Resources\screens\settings\long_flag.png" />
     <BundleResource Include="Resources\screens\credits\long_flag.png" />
     <BundleResource Include="Resources\timelapse.mp4" />
-    <BundleResource Include="Resources\screens\login\logo2.png" />
     <BundleResource Include="Resources\screens\login\logo.png" />
     <BundleResource Include="Resources\Icon-Small.png" />
     <BundleResource Include="Resources\Icon-Small%402x.png" />
     <BundleResource Include="Resources\Icon-Small-40%402x.png" />
+    <BundleResource Include="Resources\DefaultUser.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -435,6 +432,8 @@
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIThumbsContentDisplay.cs" />
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UITimelineContentDisplay.cs" />
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UITimelineWidget.cs" />
+    <Compile Include="Classes\Infrastructure\WebAPI.cs" />
+    <Compile Include="Classes\Screens\EmailScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -498,7 +497,6 @@
     <Folder Include="Resources\demo\magazine\" />
     <Folder Include="Resources\boardinterface\nubuttons\" />
     <Folder Include="Resources\boardinterface\strokebuttons\white\" />
-    <Folder Include="Resources\demo\timeline\" />
     <Folder Include="Resources\screens\nocontent\" />
     <Folder Include="Resources\screens\business\" />
     <Folder Include="Resources\screens\settings\" />

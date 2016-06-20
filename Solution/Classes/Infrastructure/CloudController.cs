@@ -4,19 +4,15 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Net.Http.Headers;
 using Board.JsonResponses;
 using Board.Schema;
 using Board.Utilities;
 using CoreLocation;
 using Facebook.CoreKit;
 using Foundation;
-using ModernHttpClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UIKit;
-using System.Net.Http;
 
 namespace Board.Infrastructure
 {
@@ -24,10 +20,82 @@ namespace Board.Infrastructure
 
 	public static class CloudController
 	{
-		public static void GetUserProfile(){
-			string result = GetJsonSync ("https://" + AppDelegate.APIAddress + "/api/user?authToken=" + AppDelegate.EncodedBoardToken);
+		public static bool LogInFacebook(){
+			if (AccessToken.CurrentAccessToken == null) {
+				return false;
+			}
 
-			if (result == "Timeout" || result == "InternalServerError") {
+			string json = "{\"accessToken\": \"" + AccessToken.CurrentAccessToken.TokenString + "\", " +
+				"\"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\" }";
+
+			string result = WebAPI.PostJsonSync ("https://" + AppDelegate.APIAddress + "/api/account/login/facebook", json);
+			Console.WriteLine (result);
+			TokenResponse tk;
+			try{
+				tk = JsonConvert.DeserializeObject<TokenResponse> (result);
+			} catch {
+				tk = null;
+			}
+
+			if (tk != null && tk.authToken != null & tk.authToken != string.Empty) {
+				AppDelegate.BoardToken = tk.authToken;
+				AppDelegate.EncodedBoardToken = WebUtility.UrlEncode(AppDelegate.BoardToken);
+				return true;
+			}
+			return false;
+		}
+
+		public static bool LogInEmail(string username, string password){
+
+			string json = "{\"username\": \"" + username + "\", " +
+				"\"password\": \"" + password + "\" }";
+
+			string logInResult = WebAPI.PostJsonSync ("https://" + AppDelegate.APIAddress + "/api/account/login/email", json);
+
+			TokenResponse tk;
+			try{
+				tk = JsonConvert.DeserializeObject<TokenResponse> (logInResult);
+				Console.WriteLine("Logs in");
+			} catch {
+				tk = null;
+
+				Console.WriteLine ("Couldnt log in, trying to register");
+
+				WebAPI.PostJsonSync ("https://" + AppDelegate.APIAddress + "/api/account/register", json);
+
+				Console.WriteLine ("Logging in");
+
+				logInResult = WebAPI.PostJsonSync ("https://" + AppDelegate.APIAddress + "/api/account/login/email", json);
+
+				if (logInResult == "401") {
+					return false;
+				}
+
+				tk = JsonConvert.DeserializeObject<TokenResponse> (logInResult);
+
+				Console.WriteLine ("Logs in");
+
+			}
+
+			if (tk != null && tk.authToken != null & tk.authToken != string.Empty) {
+				AppDelegate.BoardToken = tk.authToken;
+				AppDelegate.EncodedBoardToken = WebUtility.UrlEncode(AppDelegate.BoardToken);
+				return true;
+			}
+
+			return false;
+		}
+
+		public static void GetUserProfile(){
+			string url = "https://" + AppDelegate.APIAddress + "/api/user?authToken=" + AppDelegate.EncodedBoardToken;
+			string result = WebAPI.GetJsonSync (url);
+
+			if (result == "500") {
+				AppDelegate.BoardUser = new User ();
+				AppDelegate.BoardUser.FirstName = "Board";
+				AppDelegate.BoardUser.LastName = "User";
+				AppDelegate.BoardUser.SetDefaultProfilePicture ();
+
 				return;
 			}
 
@@ -42,7 +110,7 @@ namespace Board.Infrastructure
 			foreach (var id in publicationIds) {
 				publicationsToRequest += "publicationId=" + id + "&";
 			}
-			string result = GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/user/likes?"+publicationsToRequest+"authToken="+AppDelegate.EncodedBoardToken);
+			string result = WebAPI.GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/user/likes?"+publicationsToRequest+"authToken="+AppDelegate.EncodedBoardToken);
 
 			if (result == "Timeout" || result == "InternalServerError") {
 				return new Dictionary<string, bool> ();
@@ -67,7 +135,7 @@ namespace Board.Infrastructure
 		public static bool GetUserLike(string publicationId){
 			string request = "https://" + AppDelegate.APIAddress + "/api/user/likes?publicationId=" + publicationId +
 			                 "&authToken=" + AppDelegate.EncodedBoardToken;
-			string result = GetJsonSync (request);
+			string result = WebAPI.GetJsonSync (request);
 
 			var jobject = JObject.Parse (result);
 
@@ -81,17 +149,17 @@ namespace Board.Infrastructure
 		}
 
 		public static void SendLike(string idToLike){
-			PutJsonAsync ("https://"+AppDelegate.APIAddress+"/api/publications/"+idToLike+"/like?authToken="+AppDelegate.EncodedBoardToken+
+			WebAPI.PutJsonAsync ("https://"+AppDelegate.APIAddress+"/api/publications/"+idToLike+"/like?authToken="+AppDelegate.EncodedBoardToken+
 				"&time="+CommonUtils.GetUnixTimeStamp());
 		}
 
 		public static void SendDislike(string idToDislike){
-			PutJsonAsync ("https://"+AppDelegate.APIAddress+"/api/publications/"+idToDislike+"/dislike?authToken="+AppDelegate.EncodedBoardToken+
+			WebAPI.PutJsonAsync ("https://"+AppDelegate.APIAddress+"/api/publications/"+idToDislike+"/dislike?authToken="+AppDelegate.EncodedBoardToken+
 				"&time="+CommonUtils.GetUnixTimeStamp());
 		}
 
 		public static int GetLike(string id){
-			string result = GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/publications/likes?publicationId=" + id + "&authToken="+AppDelegate.EncodedBoardToken);
+			string result = WebAPI.GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/publications/likes?publicationId=" + id + "&authToken="+AppDelegate.EncodedBoardToken);
 
 			if (result == "Timeout" || result == "InternalServerError") {
 				return -1;
@@ -117,7 +185,7 @@ namespace Board.Infrastructure
 				publicationsToRequest += "publicationId=" + id + "&";
 			}
 
-			string result = GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/publications/likes?"+publicationsToRequest+"authToken="+AppDelegate.EncodedBoardToken);
+			string result = WebAPI.GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/publications/likes?"+publicationsToRequest+"authToken="+AppDelegate.EncodedBoardToken);
 
 			if (result == "Timeout" || result == "InternalServerError") {
 				return new Dictionary<string, int> ();
@@ -141,7 +209,7 @@ namespace Board.Infrastructure
 		}
 
 		public static bool UpdateBoard(string boardId, string json){
-			string result = PostJsonSync ("https://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/updates?authToken="+AppDelegate.EncodedBoardToken, json);
+			string result = WebAPI.PostJsonSync ("https://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/updates?authToken="+AppDelegate.EncodedBoardToken, json);
 
 			if (result == "200" || result == string.Empty) {
 				return true;
@@ -153,7 +221,7 @@ namespace Board.Infrastructure
 			string request = "https://" + AppDelegate.APIAddress + "/api/boards/timeline?latitude=" +
 			             location.Latitude.ToString (CultureInfo.InvariantCulture) + "&longitude=" + location.Longitude.ToString (CultureInfo.InvariantCulture) +
 			             "&authToken=" + AppDelegate.EncodedBoardToken;
-			string result = GetJsonSync (request);
+			string result = WebAPI.GetJsonSync (request);
 
 			if (result == "Timeout" || result == "InternalServerError") {
 				return new List<Content> ();
@@ -190,7 +258,7 @@ namespace Board.Infrastructure
 
 		public static MagazineResponse GetMagazine(CLLocationCoordinate2D location){
 
-			string result = GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/magazines/nearest?latitude="+
+			string result = WebAPI.GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/magazines/nearest?latitude="+
 				location.Latitude.ToString(CultureInfo.InvariantCulture)+"&longitude="+location.Longitude.ToString(CultureInfo.InvariantCulture)+
 				"&authToken="+AppDelegate.EncodedBoardToken);
 
@@ -208,7 +276,7 @@ namespace Board.Infrastructure
 		}
 
 		public static Dictionary<string, Content> GetBoardContent(string boardId){
-			string result = GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/snapshot?authToken="+AppDelegate.EncodedBoardToken);
+			string result = WebAPI.GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/snapshot?authToken="+AppDelegate.EncodedBoardToken);
 
 			if (result == "Timeout" || result == "InternalServerError") {
 				return new Dictionary<string, Content> ();
@@ -247,7 +315,7 @@ namespace Board.Infrastructure
 		}
 
 		public static bool GetAmazonS3Ticket(string mimeType){
-			string result = GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/media/ticket?authToken="+AppDelegate.EncodedBoardToken+"&contentType="+mimeType);
+			string result = WebAPI.GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/media/ticket?authToken="+AppDelegate.EncodedBoardToken+"&contentType="+mimeType);
 
 			try{
 				AppDelegate.AmazonS3Ticket = JsonConvert.DeserializeObject<AmazonS3TicketResponse>(result);
@@ -259,7 +327,7 @@ namespace Board.Infrastructure
 		}
 
 		public static bool GetAmazonS3Ticket(){
-			string result = GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/media/ticket?authToken="+AppDelegate.EncodedBoardToken);
+			string result = WebAPI.GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/media/ticket?authToken="+AppDelegate.EncodedBoardToken);
 
 			try{
 				AppDelegate.AmazonS3Ticket = JsonConvert.DeserializeObject<AmazonS3TicketResponse>(result);
@@ -272,7 +340,7 @@ namespace Board.Infrastructure
 
 		public static bool DeleteBoard(string boardId){
 			
-			string result = DeleteJsonSync ("https://" + AppDelegate.APIAddress + "/api/board/" + boardId + "?authToken=" + AppDelegate.EncodedBoardToken);
+			string result = WebAPI.DeleteJsonSync ("https://" + AppDelegate.APIAddress + "/api/board/" + boardId + "?authToken=" + AppDelegate.EncodedBoardToken);
 
 			if (result == "200" || result == string.Empty) {
 				return true;
@@ -287,7 +355,7 @@ namespace Board.Infrastructure
 			}
 
 			string url = "https://" + AppDelegate.APIAddress + "/api/board/" + boardId + "/edit?authToken=" + AppDelegate.EncodedBoardToken;
-			string result = GetJsonSync (url);
+			string result = WebAPI.GetJsonSync (url);
 
 			if (result == "200" || result == string.Empty) {
 				return true;
@@ -301,38 +369,21 @@ namespace Board.Infrastructure
 				return;
 			}
 
+			string userName = string.Empty;
+			if (AppDelegate.BoardUser == null) {
+				userName = "EmailUser";
+			} else {
+				userName = AppDelegate.BoardUser.FirstName + " " + AppDelegate.BoardUser.LastName;
+			}
+
+
 			string json = "{\"latitude\": \"" + AppDelegate.UserLocation.Latitude.ToString(CultureInfo.InvariantCulture) + "\", " +
 				"\"longitude\": \"" + AppDelegate.UserLocation.Longitude.ToString(CultureInfo.InvariantCulture) + "\", " + 
 				"\"timestamp\": \"" + CommonUtils.GetUnixTimeStamp() + "\", " + 
-				"\"name\": \"" + AppDelegate.BoardUser.FirstName + " " + AppDelegate.BoardUser.LastName +"\" }";
+				"\"name\": \"" + userName + "\" }";
 
-			PostJsonAsync ("https://admin.boardack.com/log-user", json);
+			WebAPI.PostJsonAsync ("https://admin.boardack.com/log-user", json);
 			AppDelegate.HasLoggedSession = true;
-		}
-
-		public static bool LogIn(){
-			if (AccessToken.CurrentAccessToken == null) {
-				return false;
-			}
-
-			string json = "{\"accessToken\": \"" + AccessToken.CurrentAccessToken.TokenString + "\", " +
-				"\"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\" }";
-
-			string result = PostJsonSync ("https://" + AppDelegate.APIAddress + "/api/account/login", json);
-
-			TokenResponse tk;
-			try{
-				tk = JsonConvert.DeserializeObject<TokenResponse> (result);
-			} catch {
-				tk = null;
-			}
-
-			if (tk != null && tk.authToken != null & tk.authToken != string.Empty) {
-				AppDelegate.BoardToken = tk.authToken;
-				AppDelegate.EncodedBoardToken = WebUtility.UrlEncode(AppDelegate.BoardToken);
-				return true;
-			}
-			return false;
 		}
 
 		public static string UploadToAmazon(byte[] byteArray, string mime = "video/mp4"){
@@ -341,7 +392,7 @@ namespace Board.Infrastructure
 			string url;
 			if (AppDelegate.AmazonS3Ticket != null) {
 				var stream = new MemoryStream(byteArray);
-				url = UploadStream (AppDelegate.AmazonS3Ticket.url, stream, mime);
+				url = WebAPI.UploadStream (AppDelegate.AmazonS3Ticket.url, stream, mime);
 			} else {
 				return null;
 			}
@@ -355,7 +406,7 @@ namespace Board.Infrastructure
 			if (AppDelegate.AmazonS3Ticket != null) {
 				var byteArray = File.ReadAllBytes(localnsurl.Path);
 				var stream = new MemoryStream(byteArray);
-				url = UploadStream (AppDelegate.AmazonS3Ticket.url, stream, mime);
+				url = WebAPI.UploadStream (AppDelegate.AmazonS3Ticket.url, stream, mime);
 			} else {
 				return null;
 			}
@@ -367,7 +418,7 @@ namespace Board.Infrastructure
 
 			string url;
 			if (AppDelegate.AmazonS3Ticket != null) {
-				url = UploadStream (AppDelegate.AmazonS3Ticket.url, image.AsJPEG().AsStream(), mime);
+				url = WebAPI.UploadStream (AppDelegate.AmazonS3Ticket.url, image.AsJPEG().AsStream(), mime);
 			} else {
 				return null;
 			}
@@ -410,7 +461,7 @@ namespace Board.Infrastructure
 				"\"coverURL\": \"" + coverURL + "\" }";
 
 			Console.WriteLine ("Sending " + board.Name + " to server...");
-			string result = PostJsonSync ("https://" + AppDelegate.APIAddress + "/api/board?authToken=" + AppDelegate.EncodedBoardToken, json);
+			string result = WebAPI.PostJsonSync ("https://" + AppDelegate.APIAddress + "/api/board?authToken=" + AppDelegate.EncodedBoardToken, json);
 			Console.WriteLine ("Sent!");
 
 			if (result == "200" || result == string.Empty) {
@@ -433,7 +484,7 @@ namespace Board.Infrastructure
 				"\"logoURL\": \"" + board.LogoUrl + "\", " + 
 				"\"coverURL\": \"" + board.CoverImageUrl + "\" }";
 
-			string result = PutJsonSync ("https://" + AppDelegate.APIAddress + "/api/board/"+ board.Id +"?authToken=" + AppDelegate.EncodedBoardToken, json);
+			string result = WebAPI.PutJsonSync ("https://" + AppDelegate.APIAddress + "/api/board/"+ board.Id +"?authToken=" + AppDelegate.EncodedBoardToken, json);
 
 			if (result == "200" || result == string.Empty) {
 				return true;
@@ -448,7 +499,7 @@ namespace Board.Infrastructure
 				location.Longitude.ToString(CultureInfo.InvariantCulture) + "&radiusInMeters=" + meterRadius;
 			
 			Console.WriteLine ("Getting nearby Boards... ");
-			string result = GetJsonSync (request);
+			string result = WebAPI.GetJsonSync (request);
 
 			Console.WriteLine ("Deserializing Boards...");
 			var response = BoardResponse.Deserialize (result);
@@ -462,7 +513,7 @@ namespace Board.Infrastructure
 		}
 
 		public static List<Board.Schema.Board> GetAllBoards(){
-			string result = GetJsonSync ("https://" + AppDelegate.APIAddress + "/api/boards?authToken=" + AppDelegate.EncodedBoardToken);
+			string result = WebAPI.GetJsonSync ("https://" + AppDelegate.APIAddress + "/api/boards?authToken=" + AppDelegate.EncodedBoardToken);
 
 			BoardResponse response = BoardResponse.Deserialize (result);
 
@@ -473,7 +524,7 @@ namespace Board.Infrastructure
 
 		public static List<Board.Schema.Board> GetUserBoards(){
 			
-			string result = GetJsonSync ("https://" + AppDelegate.APIAddress + "/api/user/boards?authToken=" + AppDelegate.EncodedBoardToken);
+			string result = WebAPI.GetJsonSync ("https://" + AppDelegate.APIAddress + "/api/user/boards?authToken=" + AppDelegate.EncodedBoardToken);
 
 			BoardResponse response = BoardResponse.Deserialize (result);
 
@@ -506,7 +557,7 @@ namespace Board.Infrastructure
 				board = new Schema.Board ();
 
 				Console.WriteLine ("Getting location information from Google");
-				string jsonobj = GetJsonSync ("https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+				string jsonobj = WebAPI.GetJsonSync ("https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
 					datum.latitude.ToString (CultureInfo.InvariantCulture) + "," + datum.longitude.ToString (CultureInfo.InvariantCulture) + "&key=" + AppDelegate.GoogleMapsAPIKey);
 
 				Console.WriteLine ("Deserializing Google geolocation");
@@ -536,7 +587,7 @@ namespace Board.Infrastructure
 		}
 
 		public static InstagramMediaResponse GetInstagramMedia(string locationId){
-			string result = GetJsonSync("https://api.instagram.com/v1/locations/"+locationId+"/media/recent?access_token="+AppDelegate.InstagramServerToken);
+			string result = WebAPI.GetJsonSync("https://api.instagram.com/v1/locations/"+locationId+"/media/recent?access_token="+AppDelegate.InstagramServerToken);
 
 			var instagramResponse = JsonConvert.DeserializeObject<InstagramMediaResponse> (result);
 
@@ -549,7 +600,7 @@ namespace Board.Infrastructure
 
 		public static UberProductResponse GetUberProducts(CLLocationCoordinate2D location){
 
-			string result = GetJsonSync("https://api.uber.com/v1/products?latitude="+location.Latitude.ToString(CultureInfo.InvariantCulture)
+			string result = WebAPI.GetJsonSync("https://api.uber.com/v1/products?latitude="+location.Latitude.ToString(CultureInfo.InvariantCulture)
 				+"&longitude="+location.Longitude.ToString(CultureInfo.InvariantCulture)+"&server_token="+AppDelegate.UberServerToken);
 
 			var productResponse = JsonConvert.DeserializeObject<UberProductResponse> (result);
@@ -570,130 +621,6 @@ namespace Board.Infrastructure
 			AppDelegate.BoardUser = null;
 		}
 
-		private static async System.Threading.Tasks.Task<string> PostJsonAsync(string uri, string json){
-			string response;
-
-			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
-				httpClient.Timeout = new TimeSpan (0, 0, 8);
-				var httpContent = new StringContent (json, Encoding.UTF8, "application/json");
-				var httpResponse = await httpClient.PostAsync (uri, httpContent);
-				response = await httpResponse.Content.ReadAsStringAsync();
-			}
-			return response;
-		}
-
-		private static async System.Threading.Tasks.Task<string> PutJsonAsync(string uri, string json = ""){
-			string response;
-
-			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
-				httpClient.Timeout = new TimeSpan (0, 0, 8);
-				var httpContent = new StringContent (json, Encoding.UTF8, "application/json");
-				var httpResponse = await httpClient.PutAsync (uri, httpContent);
-				response = await httpResponse.Content.ReadAsStringAsync();
-			}
-			return response;
-		}
-
-		private static string PutJsonSync(string uri, string json){
-			string response;
-
-			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
-				httpClient.Timeout = new TimeSpan (0, 0, 8);
-				var httpContent = new StringContent (json, Encoding.UTF8, "application/json");
-				var postTask = httpClient.PutAsync (uri, httpContent);
-				var result = postTask.Result;
-				var responseTask = result.Content.ReadAsStringAsync();
-				response = responseTask.Result;
-			}
-			return response;
-		}
-
-		private static string PostJsonSync(string uri, string json){
-			string response;
-
-			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
-				//httpClient.Timeout = new TimeSpan (0, 0, 8);
-				var httpContent = new StringContent (json, Encoding.UTF8, "application/json");
-				var postTask = httpClient.PostAsync (uri, httpContent);
-				var result = postTask.Result;
-				var responseTask = result.Content.ReadAsStringAsync();
-				response = responseTask.Result;
-			}
-			return response;
-		}
-
-		private static string GetJsonSync(string uri){
-			string response = string.Empty;
-
-			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
-				//httpClient.Timeout = new TimeSpan (0, 0, 8);
-				var postTask = httpClient.GetAsync (uri);
-
-				try{
-					
-					var result = postTask.Result;
-					var responseTask = result.Content.ReadAsStringAsync();
-					response = responseTask.Result;
-
-				} catch (Exception e) {
-
-					Console.WriteLine(e.Message);
-					Console.WriteLine(e.InnerException.Message);
-
-				}
-
-			}
-			return response;
-		}
-
-		private static string DeleteJsonSync(string uri){
-			string response;
-
-			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
-				httpClient.Timeout = new TimeSpan (0, 0, 8);
-				var postTask = httpClient.DeleteAsync (uri);
-				var result = postTask.Result;
-				var responseTask = result.Content.ReadAsStringAsync();
-				response = responseTask.Result;
-			}
-			return response;
-		}
-
-		private static string UploadStream(string uri, Stream data, string mimeType)
-		{
-			string response = string.Empty;
-
-			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
-				httpClient.Timeout = new TimeSpan (0, 1, 0);
-
-				var httpContent = new StreamContent (data);
-				httpContent.Headers.ContentType = new MediaTypeHeaderValue (mimeType);
-				var postTask = httpClient.PutAsync (uri, httpContent);
-
-
-				try{
-					
-					var result = postTask.Result;
-
-					var absoluteURL = result.RequestMessage.RequestUri.AbsoluteUri;
-					var indexOfParameter = absoluteURL.IndexOf ('?');
-
-					if (indexOfParameter != -1) {
-						absoluteURL = absoluteURL.Substring (0, indexOfParameter);
-					}
-
-					response = absoluteURL;
-
-				} catch(Exception e) {
-					
-					Console.WriteLine(e.Message);
-					Console.WriteLine(e.InnerException.Message);
-
-				}
-
-			}
-			return response;
-		}
 
 	}
 }
