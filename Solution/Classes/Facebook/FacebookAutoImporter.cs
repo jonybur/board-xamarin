@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using BigTed;
 using Board.Infrastructure;
 using Board.Interface;
 using Board.JsonResponses;
-using System;
 using Board.Schema;
-using System.Threading;
 using Board.Utilities;
 using CoreGraphics;
 using UIKit;
@@ -80,27 +79,24 @@ namespace Board.Facebook
 
 		public static void ImportPageContent(string pageId){
 			PageId = pageId;
-			ItemLocation = new CGPoint(startX, startTopY);
+			ItemLocation = new CGPoint (startX, startTopY);
 			ContentToImport = new List<Content> ();
-			BTProgressHUD.Show("Importing Latest Posts...");
-			FacebookUtils.MakeGraphRequest(PageId, "?fields=posts.limit(9)", GetAnnouncements);
+			BTProgressHUD.Show ("Importing Latest Posts...");
+			FacebookUtils.MakeGraphRequest (PageId, "?fields=posts.limit(9)", GetPosts);
 		}
-
 
 		// GET POSTS -> IF IT HAS A PICTURE THEN ITS A PICTURE
 		// 			 	IF IT DOESNT HAS A PICTURE THEN ITS AN ANNOUNCEMENT
 
 		// THEN EVENTS, VIDEOS
 
-
-		static void GetAnnouncements(List<FacebookElement> FacebookElements){
+		static void GetPosts(List<FacebookElement> FacebookElements){
 			// parses all posts
 			int announcementsToLoad = 0;
 
-
 			Console.WriteLine ("Got " + FacebookElements.Count + " posts");
 
-			var facebookElementsNoStories = FacebookElements.FindAll (obj => ((FacebookPost)obj).Message != null && ((FacebookPost)obj).Message != null);
+			var facebookElementsNoStories = FacebookElements.FindAll (obj => ((FacebookPost)obj).Message != "<null>" && ((FacebookPost)obj).Message != null);
 
 			// checks out the posts....
 			// posts can be pictures or announcements

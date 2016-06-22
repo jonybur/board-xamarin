@@ -12,7 +12,13 @@ namespace Board.Schema
 	{
 		[IgnoreDataMember]
 		public NSUrl AmazonNSUrl {
-			get{ return NSUrl.FromString (AmazonUrl); }
+			get{ 
+				if (AmazonUrl != null) {
+					return NSUrl.FromString (AmazonUrl);
+				} else {
+					return new NSUrl (string.Empty);
+				}
+			}
 			set{ AmazonUrl = value.AbsoluteString; }
 		}
 
@@ -64,6 +70,20 @@ namespace Board.Schema
 			longitude = boardCoordinate.Longitude;
 
 			boardId = UIBoardInterface.board.Id;
+		}
+
+		public Video(FacebookVideo fbVideo, CGPoint center, CGAffineTransform transform, Board board){
+			CreationDate = DateTime.Now;
+			Description = fbVideo.Description;
+			CreationDate = DateTime.Parse(fbVideo.UpdatedTime);
+			Center = center;
+			Transform = transform;
+
+			var boardCoordinate = board.GeolocatorObject.Coordinate;
+			latitude = boardCoordinate.Latitude;
+			longitude = boardCoordinate.Longitude;
+
+			boardId = board.Id;
 		}
 	}
 }

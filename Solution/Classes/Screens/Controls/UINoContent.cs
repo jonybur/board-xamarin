@@ -2,6 +2,7 @@
 using CoreAnimation;
 using Haneke;
 using UIKit;
+using Foundation;
 
 namespace Board.Screens
 {
@@ -52,7 +53,7 @@ namespace Board.Screens
 			nantucketButton.TouchUpInside += (sender, e) => {
 				CATransaction.Begin ();
 
-				BigTed.BTProgressHUD.Show("Loading Nantucket...");
+				ShowFirstTimeUseMessage();
 				Alpha = 0f;
 
 				CATransaction.Commit();
@@ -68,6 +69,20 @@ namespace Board.Screens
 
 			Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight / 2);
 		}
+
+		private void ShowFirstTimeUseMessage(){
+			var defaults = NSUserDefaults.StandardUserDefaults;
+			const string key = "FirstTimeNantucketUse";
+			if (!defaults.BoolForKey (key)) {
+				// First launch
+				NSUserDefaults.StandardUserDefaults.SetBool (true, key);
+				defaults.Synchronize ();
+				BigTed.BTProgressHUD.Show ("Ready to get on Board?");
+			} else { 
+				BigTed.BTProgressHUD.Show("Loading Nantucket...");
+			}
+		}
+
 
 		void LoadNantucket(){
 			if (!LoadingNantucket){

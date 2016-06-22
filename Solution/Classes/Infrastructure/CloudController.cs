@@ -29,7 +29,7 @@ namespace Board.Infrastructure
 				"\"userId\": \"" + AccessToken.CurrentAccessToken.UserID + "\" }";
 
 			string result = WebAPI.PostJsonSync ("https://" + AppDelegate.APIAddress + "/api/account/login/facebook", json);
-			Console.WriteLine (result);
+		
 			TokenResponse tk;
 			try{
 				tk = JsonConvert.DeserializeObject<TokenResponse> (result);
@@ -276,7 +276,8 @@ namespace Board.Infrastructure
 		}
 
 		public static Dictionary<string, Content> GetBoardContent(string boardId){
-			string result = WebAPI.GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/board/"+boardId+"/snapshot?authToken="+AppDelegate.EncodedBoardToken);
+			string url = "https://" + AppDelegate.APIAddress + "/api/board/" + boardId + "/snapshot?authToken=" + AppDelegate.EncodedBoardToken;
+			string result = WebAPI.GetJsonSync (url);
 
 			if (result == "Timeout" || result == "InternalServerError") {
 				return new Dictionary<string, Content> ();

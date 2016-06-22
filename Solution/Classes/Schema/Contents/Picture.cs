@@ -77,6 +77,21 @@ namespace Board.Schema
 			boardId = UIBoardInterface.board.Id;
 		}
 
+		public Picture(FacebookPost facebookPost, string imageUrl, CGPoint center, CGAffineTransform transform, Board board){
+			CreationDate = DateTime.Parse(facebookPost.CreatedTime);
+			FacebookId = facebookPost.Id;
+			Center = center;
+			Transform = transform;
+			ImageUrl = imageUrl;
+			Description = facebookPost.Message;
+
+			var boardCoordinate = board.GeolocatorObject.Coordinate;
+			latitude = boardCoordinate.Latitude;
+			longitude = boardCoordinate.Longitude;
+
+			boardId = board.Id;
+		}
+
 		public Picture(FacebookPhoto facebookPhoto, CGPoint center, CGAffineTransform transform){
 			CreationDate = DateTime.Parse(facebookPhoto.CreatedTime);
 			FacebookId = facebookPhoto.Id;
@@ -89,6 +104,20 @@ namespace Board.Schema
 			longitude = boardCoordinate.Longitude;
 
 			boardId = UIBoardInterface.board.Id;
+		}
+
+		public Picture(FacebookPhoto facebookPhoto, CGPoint center, CGAffineTransform transform, Board board){
+			CreationDate = DateTime.Parse(facebookPhoto.CreatedTime);
+			FacebookId = facebookPhoto.Id;
+			Center = center;
+			Transform = transform;
+			Description = facebookPhoto.Name;
+
+			var boardCoordinate = board.GeolocatorObject.Coordinate;
+			latitude = boardCoordinate.Latitude;
+			longitude = boardCoordinate.Longitude;
+
+			boardId = board.Id;
 		}
 	}
 }

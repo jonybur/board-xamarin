@@ -15,7 +15,7 @@ namespace Board.Interface
 	public class SettingsScreen : UIViewController
 	{
 		UIMenuBanner Banner;
-		UIOneLineMenuButton SyncButton, AnalyticsButton, DeleteButton, ImportButton, ColorPicker;
+		UIOneLineMenuButton SyncButton, AnalyticsButton, DeleteButton, ImportButton, UpdaterButton, ColorPicker;
 
 		public override void ViewDidLoad ()
 		{
@@ -25,9 +25,10 @@ namespace Board.Interface
 			CreateColorPicker ((float)AnalyticsButton.Frame.Bottom + 1);
 			CreateSyncButton ((float)ColorPicker.Frame.Bottom + 1);
 			CreateImportButton ((float)SyncButton.Frame.Bottom + 1);
-			CreateDeleteButton ((float)ImportButton.Frame.Bottom + 1);
+			CreateUpdaterButton ((float)ImportButton.Frame.Bottom + 1);
+			CreateDeleteButton ((float)UpdaterButton.Frame.Bottom + 1);
 
-			View.AddSubviews (SyncButton, AnalyticsButton, ColorPicker, ImportButton, DeleteButton);
+			View.AddSubviews (SyncButton, AnalyticsButton, ColorPicker, ImportButton, DeleteButton, UpdaterButton);
 
 			View.BackgroundColor = UIColor.White;
 		}
@@ -67,6 +68,26 @@ namespace Board.Interface
 				AppDelegate.NavigationController.PresentViewController (alert, true, null);
 			});
 			DeleteButton.SuscribeToEvent ();
+		}
+
+		private void CreateUpdaterButton(float yPosition)
+		{
+			UpdaterButton = new UIOneLineMenuButton (yPosition);
+			UpdaterButton.SetLabel ("Update content from Facebook");
+
+			UpdaterButton.SetTapEvent (delegate {
+
+				UIAlertController alert = UIAlertController.Create("Continue?", "This will update and overwrite the Board with content from a Facebook page.\nThis process might take a few minutes.", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, delegate {
+				}));
+				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate {
+					
+				}));
+
+				AppDelegate.NavigationController.PresentViewController (alert, true, null);
+
+			});
+			UpdaterButton.SuscribeToEvent ();
 		}
 
 		private void CreateImportButton(float yPosition)

@@ -200,7 +200,7 @@ namespace Board.Interface.Widgets
 	public class UIWidgetHeader : UIImageView{
 		public UIImageView Logo;
 
-		public void CancelSetImage(){
+		public void WidgetCancelSetImage(){
 			Logo.CancelSetImage ();
 			this.CancelSetImage ();
 		}

@@ -86,7 +86,7 @@ namespace Board.Interface.Widgets
 
 
 		public void CancelSetImage(){
-			HeaderLogo.CancelSetImage ();
+			HeaderLogo.WidgetCancelSetImage ();
 		}
 	}
 }

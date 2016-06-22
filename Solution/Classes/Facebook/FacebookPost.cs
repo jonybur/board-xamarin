@@ -1,4 +1,7 @@
-﻿namespace Board.Facebook
+﻿using System;
+using Board.Utilities;
+
+namespace Board.Facebook
 {
 	public class FacebookPost : FacebookElement
 	{
@@ -6,6 +9,7 @@
 		public string Story;
 		public string PictureURL;
 		public string CreatedTime;
+		public int Timestamp;
 
 		public FacebookPost(){
 		}
@@ -17,6 +21,7 @@
 			CreatedTime = createdtime;
 			Id = id;
 			PictureURL = pictureURL;
+			Timestamp = CommonUtils.GetUnixTimeStamp(DateTime.Parse (createdtime));
 		}
 	}
 

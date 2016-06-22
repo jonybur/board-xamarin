@@ -160,7 +160,7 @@ namespace Board.Screens
 				// First launch
 				NSUserDefaults.StandardUserDefaults.SetBool (true, key);
 				defaults.Synchronize ();
-				BigTed.BTProgressHUD.Show ("Setting up Board\nfor first time use...");
+				BigTed.BTProgressHUD.Show ("Ready to get on Board?");
 			} else { 
 				BigTed.BTProgressHUD.Show ();
 			}

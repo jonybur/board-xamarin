@@ -46,6 +46,20 @@ namespace Board.Schema
 			boardId = UIBoardInterface.board.Id;
 		}
 
+		public Announcement(FacebookPost facebookPost, CGPoint center, CGAffineTransform transform, Board board){
+			Text = facebookPost.Message;
+			CreationDate = DateTime.Parse (facebookPost.CreatedTime);
+			Transform = transform;
+			Center = center;
+			FacebookId = facebookPost.Id;
+
+			var boardCoordinate = board.GeolocatorObject.Coordinate;
+			latitude = boardCoordinate.Latitude;
+			longitude = boardCoordinate.Longitude;
+
+			boardId = board.Id;
+		}
+
 		public Announcement(string text, CGPoint center, string creatorid, DateTime creationdate, CGAffineTransform transform)
 		{
 			CreationDate = DateTime.Now;

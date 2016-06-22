@@ -434,6 +434,7 @@
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UITimelineWidget.cs" />
     <Compile Include="Classes\Infrastructure\WebAPI.cs" />
     <Compile Include="Classes\Screens\EmailScreen.cs" />
+    <Compile Include="Classes\Facebook\FacebookAutoUpdater.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

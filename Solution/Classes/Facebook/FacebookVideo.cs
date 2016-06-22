@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Board.Utilities;
 
 namespace Board.Facebook
 {
@@ -6,6 +8,7 @@ namespace Board.Facebook
 	{
 		public string Description;
 		public string UpdatedTime;
+		public int Timestamp;
 		public string Source;
 		public List<string> ThumbnailUris;
 
@@ -15,6 +18,7 @@ namespace Board.Facebook
 			UpdatedTime = updatedTime;
 			Id = id;
 			Source = source; 
+			Timestamp = CommonUtils.GetUnixTimeStamp(DateTime.Parse (updatedTime));
 
 			var splitted = thumbnailuri.Split (new []{ "\"" }, System.StringSplitOptions.None);
 

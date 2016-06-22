@@ -5,6 +5,7 @@
 		public string Description;
 		public string EndTime;
 		public string StartTime;
+		public int StartTimestamp;
 		public string Name;
 
 		public FacebookEvent(string id, string name, string description, string starttime, string endtime)
@@ -17,6 +18,7 @@
 			}
 			if (starttime != "<null>") {
 				StartTime = starttime;
+				StartTimestamp = Board.Utilities.CommonUtils.GetUnixTimeStamp (System.DateTime.Parse (StartTime));
 			}
 		}
 	}

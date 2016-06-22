@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Board.Interface.Widgets;
@@ -44,17 +45,20 @@ namespace Board.Interface
 					AddSubview (imageView);
 				}
 
-				bool blockButton = false;
-				TouchUpInside += (sender, e) => {
-					if (!blockButton){
-						var containerScreen = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 2] as ContainerScreen;
-						if (containerScreen != null) {
-							containerScreen.LoadLastScreen();
-						}
-						AppDelegate.PopViewControllerWithCallback(AppDelegate.ExitBoardInterface);
-						blockButton = true;
+				TouchUpInside += TouchButton;
+			}
+
+			bool blockButton = false;
+
+			private void TouchButton(object obj, EventArgs args){
+				if (!blockButton){
+					var containerScreen = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 2] as ContainerScreen;
+					if (containerScreen != null) {
+						containerScreen.LoadLastScreen();
 					}
-				};
+					AppDelegate.PopViewControllerWithCallback(AppDelegate.ExitBoardInterface);
+					blockButton = true;
+				}
 			}
 		}
 

@@ -4,6 +4,7 @@ using CoreGraphics;
 using System.Threading.Tasks;
 using Board.Utilities;
 using System.Globalization;
+using CoreLocation;
 using Board.Interface;
 using MGImageUtilitiesBinding;
 using Board.Interface.Widgets;
@@ -120,6 +121,32 @@ namespace Board.Schema
 			longitude = boardCoordinate.Longitude;
 
 			boardId = UIBoardInterface.board.Id;
+
+			CoverLoaded = false;
+		}
+
+		public BoardEvent(FacebookEvent facebookEvent, CGPoint center, CGAffineTransform transform, Board board){
+			try{
+				StartDate = DateTime.Parse (facebookEvent.StartTime);
+			}catch{
+				StartDate = new DateTime();
+			}
+			try {
+				EndDate = DateTime.Parse (facebookEvent.EndTime);
+			}catch{
+				EndDate = StartDate.AddHours(1);
+			}
+			Name = facebookEvent.Name;
+			Description = facebookEvent.Description;
+			Center = center;
+			Transform = transform;
+			FacebookId = facebookEvent.Id;
+
+			var boardCoordinate = board.GeolocatorObject.Coordinate;
+			latitude = boardCoordinate.Latitude;
+			longitude = boardCoordinate.Longitude;
+
+			boardId = board.Id;
 
 			CoverLoaded = false;
 		}
