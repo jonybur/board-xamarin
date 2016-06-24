@@ -24,7 +24,6 @@ namespace Board.Screens.Controls
 					continue;
 				}
 
-
 				var board = boardList.FirstOrDefault (x => x.Id == content.boardId);
 
 				if (board == null) {

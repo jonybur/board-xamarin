@@ -89,12 +89,12 @@ namespace Board.Screens
 					AppDelegate.containerScreen.BringSideMenuUp("business");
 				}
 				else if (AppDelegate.ScreenWidth / 4 * 3 < tg.LocationInView(this.View).X){
-					/*
 
+					/*
 					UIAlertController alert = UIAlertController.Create("Facebook Page Importer", null, UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 					alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate {
-						
+
 						if (alert.TextFields.Length == 0){
 							return;
 						}
@@ -115,7 +115,6 @@ namespace Board.Screens
 					});
 
 					NavigationController.PresentViewController(alert, true, null);
-
 					*/
 				}
 			});

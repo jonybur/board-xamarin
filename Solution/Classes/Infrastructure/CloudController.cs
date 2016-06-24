@@ -108,11 +108,13 @@ namespace Board.Infrastructure
 			string publicationsToRequest = string.Empty;
 
 			foreach (var id in publicationIds) {
+			
 				publicationsToRequest += "publicationId=" + id + "&";
 			}
-			string result = WebAPI.GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/user/likes?"+publicationsToRequest+"authToken="+AppDelegate.EncodedBoardToken);
+			string url = "https://" + AppDelegate.APIAddress + "/api/user/likes?" + publicationsToRequest + "authToken=" + AppDelegate.EncodedBoardToken;
+			string result = WebAPI.GetJsonSync (url);
 
-			if (result == "Timeout" || result == "InternalServerError") {
+			if (result == "408" || result == "500") {
 				return new Dictionary<string, bool> ();
 			}
 
@@ -161,7 +163,7 @@ namespace Board.Infrastructure
 		public static int GetLike(string id){
 			string result = WebAPI.GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/publications/likes?publicationId=" + id + "&authToken="+AppDelegate.EncodedBoardToken);
 
-			if (result == "Timeout" || result == "InternalServerError") {
+			if (result == "408" || result == "500") {
 				return -1;
 			}
 
@@ -185,15 +187,15 @@ namespace Board.Infrastructure
 				publicationsToRequest += "publicationId=" + id + "&";
 			}
 
-			string result = WebAPI.GetJsonSync ("https://"+AppDelegate.APIAddress+"/api/publications/likes?"+publicationsToRequest+"authToken="+AppDelegate.EncodedBoardToken);
+			string url = "https://" + AppDelegate.APIAddress + "/api/publications/likes?" + publicationsToRequest + "authToken=" + AppDelegate.EncodedBoardToken;
+			string result = WebAPI.GetJsonSync (url);
 
-			if (result == "Timeout" || result == "InternalServerError") {
+			if (result == "408" || result == "500") {
 				return new Dictionary<string, int> ();
 			}
 
 			var jobject = JObject.Parse (result);
 
-			// TODO: see if this can get simplified using just json.deserialize or such
 			var dictionaryLikes = new Dictionary<string, int> ();
 			foreach (var id in ids) {
 				var likes = jobject [id];
@@ -223,7 +225,7 @@ namespace Board.Infrastructure
 			             "&authToken=" + AppDelegate.EncodedBoardToken;
 			string result = WebAPI.GetJsonSync (request);
 
-			if (result == "Timeout" || result == "InternalServerError") {
+			if (result == "408" || result == "500") {
 				return new List<Content> ();
 			}
 
@@ -262,7 +264,7 @@ namespace Board.Infrastructure
 				location.Latitude.ToString(CultureInfo.InvariantCulture)+"&longitude="+location.Longitude.ToString(CultureInfo.InvariantCulture)+
 				"&authToken="+AppDelegate.EncodedBoardToken);
 
-			if (result == "Timeout" || result == "InternalServerError") {
+			if (result == "408" || result == "500") {
 				return new MagazineResponse ();
 			}
 
@@ -279,7 +281,7 @@ namespace Board.Infrastructure
 			string url = "https://" + AppDelegate.APIAddress + "/api/board/" + boardId + "/snapshot?authToken=" + AppDelegate.EncodedBoardToken;
 			string result = WebAPI.GetJsonSync (url);
 
-			if (result == "Timeout" || result == "InternalServerError") {
+			if (result == "408" || result == "500") {
 				return new Dictionary<string, Content> ();
 			}
 
@@ -550,7 +552,6 @@ namespace Board.Infrastructure
 			GoogleGeolocatorObject geolocatorObject;
 
 			Schema.Board board = StorageController.BoardIsStored(datum.uuid);
-
 
 			if (board == null) {
 				Console.WriteLine (datum.name + " is not stored");

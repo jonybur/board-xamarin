@@ -155,8 +155,7 @@ namespace Board.Screens.Controls
 					CATransaction.Commit();
 
 					CATransaction.CompletionBlock = delegate {
-						AppDelegate.BoardInterface = new UIBoardInterface (board);
-						AppDelegate.NavigationController.PushViewController (AppDelegate.BoardInterface, true);
+						AppDelegate.OpenBoard(board);
 					};
 				}
 			};

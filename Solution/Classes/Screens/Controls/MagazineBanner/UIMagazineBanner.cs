@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Board.Infrastructure;
+using Board.Schema;
 using Board.JsonResponses;
+using System;
 using CoreGraphics;
 using MGImageUtilitiesBinding;
 using UIKit;
@@ -35,18 +37,40 @@ namespace Board.Screens.Controls
 		public static Dictionary<string, int> ContentLikes;
 		public static Dictionary<string, bool> UserLikes;
 
+		static MagazineResponse magazine;
+
+		class Timeline{
+			public static List<Content> ContentList;
+			public static DateTime UpdatedTime;
+
+			public static void Update(){
+				ContentList = CloudController.GetTimeline (AppDelegate.UserLocation);
+
+				var publicationIds = Timeline.ContentList.Select (x => x.Id).ToArray ();
+				ContentLikes = CloudController.GetLikes (publicationIds);
+				UserLikes = CloudController.GetUserLikes (publicationIds);
+
+				UpdatedTime = DateTime.Now;
+			}
+		}
+
+
 		// generates the magazine headers
 		private void GeneratePages(List<Board.Schema.Board> boardList){
-			
-			var magazine = CloudController.GetMagazine (AppDelegate.UserLocation);
+
+			if (magazine == null || magazine.UpdatedTime.TimeOfDay.TotalMinutes + 60 < DateTime.Now.TimeOfDay.TotalMinutes) {
+				Console.WriteLine ("Gets magazine");
+				magazine = CloudController.GetMagazine (AppDelegate.UserLocation);
+			}
+
 			bool theresMagazine = MagazineResponse.IsValidMagazine (magazine);
 
-			var timeline = CloudController.GetTimeline (AppDelegate.UserLocation);
-			bool theresTimeline = timeline.Count > 0;
+			if (Timeline.ContentList == null || Timeline.UpdatedTime.TimeOfDay.TotalMinutes + 10 < DateTime.Now.TimeOfDay.TotalMinutes){
+				Console.WriteLine ("Gets timeline");
+				Timeline.Update ();
+			}
 
-			var publicationIds = timeline.Select (x => x.Id).ToArray ();
-			ContentLikes = CloudController.GetLikes (publicationIds);
-			UserLikes = CloudController.GetUserLikes (publicationIds);
+			bool theresTimeline = Timeline.ContentList.Count > 0;
 
 			var pagesName = new List<string> ();
 
@@ -83,7 +107,7 @@ namespace Board.Screens.Controls
 			}
 
 			if (theresTimeline) {
-				pages [screenNumber].ContentDisplay = new UITimelineContentDisplay (boardList, timeline);
+				pages [screenNumber].ContentDisplay = new UITimelineContentDisplay (boardList, Timeline.ContentList);
 				screenNumber++;
 			}
 

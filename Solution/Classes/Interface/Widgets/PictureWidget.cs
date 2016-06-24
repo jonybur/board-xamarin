@@ -30,10 +30,13 @@ namespace Board.Interface.Widgets
 			PictureImageView.Frame = new CGRect (SideMargin, TopMargin, Widget.Autosize, Widget.Autosize);
 			PictureImageView.ContentMode = UIViewContentMode.ScaleAspectFill;
 
+
 			if (pic.Image == null) {
-				PictureImageView.SetImage (new NSUrl (picture.ImageUrl),
-					UIImage.FromFile ("./demo/magazine/nantucket.png"),
-					ImageFromHaneke, ErrorFromHaneke);
+				if (picture.ImageUrl != null) {
+					PictureImageView.SetImage (new NSUrl (picture.ImageUrl),
+						UIImage.FromFile ("./demo/magazine/nantucket.png"),
+						ImageFromHaneke, ErrorFromHaneke);
+				}
 			} else {
 				SetWidget ();
 			}

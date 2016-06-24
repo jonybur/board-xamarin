@@ -77,7 +77,7 @@ namespace Board.Interface
 
 			UpdaterButton.SetTapEvent (delegate {
 
-				UIAlertController alert = UIAlertController.Create("Continue?", "This will update and overwrite the Board with content from a Facebook page.\nThis process might take a few minutes.", UIAlertControllerStyle.Alert);
+				UIAlertController alert = UIAlertController.Create("Continue?", "This will update and overwrite all the content in all the boards.\nThis process might take a few minutes.", UIAlertControllerStyle.Alert);
 				alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, delegate {
 				}));
 				alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate {

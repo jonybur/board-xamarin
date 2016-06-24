@@ -37,7 +37,7 @@ namespace Board.Interface.FacebookImport
 			View.AddSubview (GallerySV);
 
 			BTProgressHUD.Show ();
-			FacebookUtils.MakeGraphRequest (AlbumID, "photos", Completion);
+			FacebookUtils.MakeGraphRequest (AlbumID, "?fields=photos", Completion);
 
 			View.AddSubviews (Banner);
 		}

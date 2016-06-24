@@ -39,10 +39,9 @@ namespace Board.Facebook
 					Console.WriteLine("On hold...");
 					while (isRunning){}
 					Console.WriteLine("Finishes loop");
-				}	
+				}
 			}));
 			mainThread.Start ();
-			BTProgressHUD.ShowSuccessWithStatus ("All Boards updated");
 
 
 		}
@@ -229,7 +228,6 @@ namespace Board.Facebook
 				BTProgressHUD.Show(currentBoard.Name + "\nImporting Videos...");
 				FacebookUtils.MakeGraphRequest (currentBoard.FacebookId, "videos?fields=source,description,updated_time,thumbnails&limit=3", GetVideos);
 			}
-
 		}
 		*/
 
@@ -274,11 +272,12 @@ namespace Board.Facebook
 			}
 			Console.WriteLine("done");
 
-			var json = JsonUtilty.GenerateUpdateJson (ContentToImport);
-
-			Console.Write("Uploading new content... ");
-			CloudController.UpdateBoard (currentBoard.Id, json);
-			Console.WriteLine("done");
+			if (ContentToImport.Count > 0) {
+				var json = JsonUtilty.GenerateUpdateJson (ContentToImport);
+				Console.Write ("Uploading new content... ");
+				CloudController.UpdateBoard (currentBoard.Id, json);
+				Console.WriteLine ("done");
+			}
 
 			Console.WriteLine ("IsRunning false");
 			isRunning = false;

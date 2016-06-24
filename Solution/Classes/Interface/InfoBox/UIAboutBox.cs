@@ -11,7 +11,6 @@ namespace Board.Interface
 			BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 
 			Editable = false;
-			//Selectable = false;
 			ScrollEnabled = false;
 
 			DataDetectorTypes = UIDataDetectorType.Link;

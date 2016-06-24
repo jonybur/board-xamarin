@@ -3,7 +3,6 @@ using CoreLocation;
 using Facebook.CoreKit;
 using Facebook.LoginKit;
 using Foundation;
-using System.Net;
 using UIKit;
 using System.Collections.Generic;
 
@@ -11,7 +10,6 @@ namespace Board.Facebook
 {
 	public static class FacebookUtils
 	{
-
 		// TODO: modify to accept permission params
 		public static async System.Threading.Tasks.Task GetReadPermission(UIViewController uiv, string permission)
 		{
@@ -40,7 +38,7 @@ namespace Board.Facebook
 		{
 			string query = id + "/" + element;
 			string token = AccessToken.CurrentAccessToken != null ? AccessToken.CurrentAccessToken.TokenString : string.Empty;
-			var graph = new GraphRequest (query, null, token, "v2.5", "GET");
+			var graph = new GraphRequest (query, null, token, "v2.6", "GET");
 			graph.Start (delegate (GraphRequestConnection connection, NSObject obj, NSError error) {
 
 				var ElementList = new List<FacebookElement> ();
@@ -56,6 +54,14 @@ namespace Board.Facebook
 						var fbevent = new FacebookEvent (objects [i, 0], objects [i, 1], objects [i, 2], objects [i, 3], objects [i, 4]);
 						ElementList.Add (fbevent);
 					}
+				} else if (element == "?fields=fan_count"){
+					string[,] objects = NSObjectToElement (obj, "id", "fan_count");
+
+					for (int i = 0; i < objects.GetLength (0); i++) {
+						var fbfancount = new FacebookFanCount (objects [i, 0], objects [i, 1]);
+						ElementList.Add (fbfancount);
+					}
+					
 				} else if (element.StartsWith("videos?fields=source,description,updated_time,thumbnails", StringComparison.Ordinal)) {
 
 					string[,] objects = NSObjectToElement (obj, "data.description", "data.updated_time", "data.id", "data.source", "data.thumbnails.data.uri");
@@ -65,8 +71,8 @@ namespace Board.Facebook
 						ElementList.Add (fbvideo);
 					}
 
-				} else if (element.StartsWith("photos", StringComparison.Ordinal)) {
-					string[,] objects = NSObjectToElement (obj, "data.id", "data.name", "data.created_time");
+				} else if (element.StartsWith("?fields=photos", StringComparison.Ordinal)) {
+					string[,] objects = NSObjectToElement (obj, "photos.data.id", "photos.data.name", "photos.data.created_time");
 
 					for (int i = 0; i < objects.GetLength (0); i++) {
 						var fbphoto = new FacebookPhoto (objects [i, 0], objects [i, 1], objects [i, 2]);
@@ -79,8 +85,8 @@ namespace Board.Facebook
 						var fbpage = new FacebookPage (objects [i, 0], objects [i, 1], objects [i, 2]);
 						ElementList.Add (fbpage);
 					}
-				} else if (element.StartsWith("albums", StringComparison.Ordinal)) {
-					string[,] objects = NSObjectToElement (obj, "data.id", "data.name", "data.created_time");
+				} else if (element.StartsWith("?fields=albums", StringComparison.Ordinal)) {
+					string[,] objects = NSObjectToElement (obj, "albums.data.id", "albums.data.name", "albums.data.created_time");
 
 					for (int i = 0; i < objects.GetLength (0); i++) {
 						var fbalbum = new FacebookAlbum (objects [i, 0], objects [i, 1], objects [i, 2]);
@@ -163,10 +169,6 @@ namespace Board.Facebook
 					callback (ElementList);
 				}
 			});
-		}
-
-		enum GraphRequestType{
-			Events = 1, Posts, Videos, Photos, Accounts, Albums, FieldsImages, FieldsCover, FieldsIdSourceThumbnails, FieldsNameLocationAboutCoverPicture
 		}
 
 		// first parameter must be primary key

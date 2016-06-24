@@ -8,6 +8,8 @@ namespace Board.JsonResponses
 	[Preserve(AllMembers = true)]
 	public class MagazineResponse
 	{
+		public DateTime UpdatedTime;
+
 		[Preserve(AllMembers = true)]
 		public class Entry
 		{
@@ -25,6 +27,10 @@ namespace Board.JsonResponses
 			public double latitude { get; set; }
 			public double longitude { get; set; }
 			public List<Entry> entries { get; set; }
+		}
+
+		public MagazineResponse(){
+			UpdatedTime = DateTime.Now;
 		}
 
 		public Data data { get; set; }

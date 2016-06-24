@@ -3,6 +3,7 @@ using CoreGraphics;
 using Board.Schema;
 using Board.Utilities;
 using Board.Infrastructure;
+using CoreAnimation;
 using Foundation;
 using Haneke;
 
@@ -91,7 +92,17 @@ namespace Board.Screens.Controls
 			var boardButton = new UIButton ();
 
 			boardButton.TouchUpInside += delegate {
-				AppDelegate.OpenBoard (board);
+			
+				CATransaction.Begin ();
+
+				BigTed.BTProgressHUD.Show();
+				boardButton.Alpha = 0.75f;
+
+				CATransaction.Commit();
+
+				CATransaction.CompletionBlock = delegate {
+					AppDelegate.OpenBoard(board);
+				};
 			};
 
 			boardButton.Frame = new CGRect (0, 0, headerView.Frame.Width * .7f, headerHeight);
@@ -168,10 +179,18 @@ namespace Board.Screens.Controls
 			if (!isLiked){
 				CloudController.SendLike(content.Id);
 				likes++;
+
+				UIMagazine.ContentLikes [content.Id]++;
+				UIMagazine.UserLikes [content.Id] = true;
+
 				heartView.SetImage(fullHeartImageUrl);
 			} else {
 				CloudController.SendDislike(content.Id);
 				likes--;
+
+				UIMagazine.ContentLikes [content.Id]--;
+				UIMagazine.UserLikes [content.Id] = false;
+
 				heartView.SetImage(emptyHeartImageUrl);
 			}
 			likeLabel.Text = likes.ToString();

@@ -435,6 +435,7 @@
     <Compile Include="Classes\Infrastructure\WebAPI.cs" />
     <Compile Include="Classes\Screens\EmailScreen.cs" />
     <Compile Include="Classes\Facebook\FacebookAutoUpdater.cs" />
+    <Compile Include="Classes\Facebook\FacebookFanCount.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

@@ -99,7 +99,7 @@ namespace Board.Utilities
 			return distance;
 		}
 
-		private static double DistanceBetweenCoordinates(CLLocationCoordinate2D location1, CLLocationCoordinate2D location2, char unit = 'K')
+		public static double DistanceBetweenCoordinates(CLLocationCoordinate2D location1, CLLocationCoordinate2D location2, char unit = 'K')
 		{
 			double rlat1 = Math.PI*location1.Latitude/180;
 			double rlat2 = Math.PI*location2.Latitude/180;

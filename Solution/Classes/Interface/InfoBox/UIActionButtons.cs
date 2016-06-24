@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using Board.Infrastructure;
 using CoreGraphics;
 using Haneke;
+using Board.Facebook;
 using UIKit;
 
 namespace Board.Interface
 {
 	class UIActionButtons
-	{
-		
+	{	
 		public List<UIActionButton> ListActionButton;
 
 		public UIActionButtons(Board.Schema.Board board, float yposition, float infoboxWidth){
@@ -58,13 +58,16 @@ namespace Board.Interface
 
 		const string fullHeart = "fulllike", emptyHeart = "emptylike";
 
+		UILabel likeLabel;
+		int likes;
+
 		private UIActionButton CreateLikeButton(){
-			var likeLabel = new UILabel ();
+			likeLabel = new UILabel ();
 			likeLabel = new UILabel();
 			likeLabel.Font = UIFont.SystemFontOfSize(20, UIFontWeight.Light);
 
-			int likes = UIBoardInterface.DictionaryLikes[UIBoardInterface.board.Id];
-			likeLabel.Text = likes.ToString();
+			likes = UIBoardInterface.DictionaryLikes[UIBoardInterface.board.Id];
+			likeLabel.Text = string.Empty;
 
 			bool isLiked = UIBoardInterface.DictionaryUserLikes[UIBoardInterface.board.Id];
 			var firstImage = isLiked ? fullHeart : emptyHeart;
@@ -90,7 +93,19 @@ namespace Board.Interface
 
 			likeButton.AddSubview (likeLabel);
 
+			FacebookUtils.MakeGraphRequest (UIBoardInterface.board.FacebookId, "?fields=fan_count", LoadFanCount);
+
 			return likeButton;
+		}
+
+		private void LoadFanCount(List<FacebookElement> obj){
+			if (obj.Count > 0) {
+				var fanCount = (FacebookFanCount)obj [0];
+				likes += fanCount.Count;
+			}
+			likeLabel.Text = likes.ToString ();
+			var sizeLikeLabel = likeLabel.Text.StringSize (likeLabel.Font);
+			likeLabel.Frame = new CGRect (likeLabel.Frame.X, likeLabel.Frame.Y, sizeLikeLabel.Width + 20, sizeLikeLabel.Height);
 		}
 
 		private UIActionButton CreateMessageButton(string facebookId){

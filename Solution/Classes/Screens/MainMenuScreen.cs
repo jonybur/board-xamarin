@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Board.Infrastructure;
 using Board.Interface;
 using Board.Screens.Controls;
 using Board.Utilities;
 using CoreGraphics;
-using Facebook.CoreKit;
+using CoreLocation;
 using Foundation;
 using Google.Maps;
-using CoreLocation;
-using System.Threading;
 using UIKit;
 
 namespace Board.Screens
@@ -25,9 +24,19 @@ namespace Board.Screens
 		UIActionButton map_button;
 		EventHandler MapButtonEvent;
 		UIContentDisplay ContentDisplay;
-		List<Board.Schema.Board> BoardList;
+
+		class FetchedBoards{
+			public static List<Board.Schema.Board> BoardList;
+			public static CLLocationCoordinate2D Location;
+
+			public static void Update(){
+				FetchedBoards.BoardList = CloudController.GetNearbyBoards (AppDelegate.UserLocation, 10000);
+				FetchedBoards.Location = AppDelegate.UserLocation;
+			}
+		}
 
 		const int ZoomLevel = 16;
+		enum ScrollViewDirection { Up, Down };
 
 		bool mapInfoTapped, generatedMarkers, hasLoaded, firstLocationUpdate;
 
@@ -70,28 +79,12 @@ namespace Board.Screens
 			}
 		}
 
-		private void ListensToUndeterminedLocationService(){
-
-			while (CLLocationManager.Status == CLAuthorizationStatus.NotDetermined) {
-				Thread.Sleep (500);
-			}
-
-			InvokeOnMainThread(delegate {
-				CheckLocationServices ();
-				if (AppDelegate.SimulatingNantucket) {
-					BigTed.BTProgressHUD.Show ();
-				}
-
-				ViewDidAppear (false);
-			});
-		}
-
 		public override void ViewDidAppear(bool animated)
 		{
 			if (CLLocationManager.Status != CLAuthorizationStatus.NotDetermined) {
 				if (AppDelegate.UserLocation.Latitude != 0 &&
-				   AppDelegate.UserLocation.Longitude != 0 &&
-				   !hasLoaded) {
+					AppDelegate.UserLocation.Longitude != 0 &&
+					!hasLoaded) {
 
 					LoadContent ();
 					ContentDisplaySuscribeToEvents (ContentDisplay);
@@ -111,6 +104,22 @@ namespace Board.Screens
 				mapInfoTapped = false;
 				Banner.SuscribeToEvents ();
 			}
+		}
+
+		private void ListensToUndeterminedLocationService(){
+
+			while (CLLocationManager.Status == CLAuthorizationStatus.NotDetermined) {
+				Thread.Sleep (500);
+			}
+
+			InvokeOnMainThread(delegate {
+				CheckLocationServices ();
+				if (AppDelegate.SimulatingNantucket) {
+					BigTed.BTProgressHUD.Show ();
+				}
+
+				ViewDidAppear (false);
+			});
 		}
 			
 		private void CheckLocationServices(){
@@ -223,11 +232,19 @@ namespace Board.Screens
 		{
 			ScrollView.BackgroundColor = UIColor.White;
 
-			BoardList = CloudController.GetNearbyBoards (AppDelegate.UserLocation, 10000);
+			if (FetchedBoards.BoardList == null || FetchedBoards.BoardList.Count == 0) {
+				Console.WriteLine ("Fills BoardList");
+				FetchedBoards.Update ();
 
-			if (BoardList.Count > 0) {
+			} else if (CommonUtils.DistanceBetweenCoordinates (FetchedBoards.Location, AppDelegate.UserLocation) > 1) {
+				Console.WriteLine ("Updates BoardList from new UserLocation");
+				FetchedBoards.Update ();
+			}
+
+
+			if (FetchedBoards.BoardList.Count > 0) {
 				
-				Magazine = new UIMagazine (BoardList);
+				Magazine = new UIMagazine (FetchedBoards.BoardList);
 
 				ContentDisplay = Magazine.Pages [0].ContentDisplay;
 				ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, ContentDisplay.Frame.Bottom);
@@ -291,8 +308,6 @@ namespace Board.Screens
 			};
 		}
 
-		enum ScrollViewDirection { Up, Down };
-
 		private void LoadBanner()
 		{
 			Banner = new UIMenuBanner ("BOARD", "menu_left");
@@ -322,7 +337,7 @@ namespace Board.Screens
 
 			map.InfoTapped += (sender, e) => {
 				if (!mapInfoTapped) {
-					var board = BoardList.Find(t => t.Id == ((NSString)e.Marker.UserData).ToString());
+					var board = FetchedBoards.BoardList.Find(t => t.Id == ((NSString)e.Marker.UserData).ToString());
 					AppDelegate.BoardInterface = new UIBoardInterface (board);
 					AppDelegate.NavigationController.PushViewController (AppDelegate.BoardInterface, true);
 					mapInfoTapped = true;
@@ -335,11 +350,11 @@ namespace Board.Screens
 		private void GenerateMarkers()
 		{
 			if (!generatedMarkers) {
-				foreach (Board.Schema.Board board in BoardList) {
+				foreach (Board.Schema.Board board in FetchedBoards.BoardList) {
 					var marker = new UIMapMarker (board, map, UIMapMarker.SizeMode.Normal);
 					ListMapMarkers.Add (marker);
 				}
-				generatedMarkers |= BoardList.Count > 0;
+				generatedMarkers |= FetchedBoards.BoardList.Count > 0;
 			}
 		}
 

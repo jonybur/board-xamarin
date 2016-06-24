@@ -155,8 +155,8 @@ namespace Board.Facebook
 						// goes to import events
 						Console.WriteLine ("Done importing posts");
 
-						BTProgressHUD.Show("Importing Events...");
-						FacebookUtils.MakeGraphRequest(PageId, "?fields=events.limit(3)", GetEvents);
+						BTProgressHUD.Show("Importing Videos...");
+						FacebookUtils.MakeGraphRequest (PageId, "videos?fields=source,description,updated_time,thumbnails&limit=3", GetVideos);
 					}
 				});
 
@@ -164,11 +164,12 @@ namespace Board.Facebook
 
 			// no announcements? goes seek events
 			if (facebookElementsNoStories.Count == 0) {
-				BTProgressHUD.Show("Importing Events...");
-				FacebookUtils.MakeGraphRequest(PageId, "?fields=events.limit(3)", GetEvents);
+				BTProgressHUD.Show("Importing Videos...");
+				FacebookUtils.MakeGraphRequest (PageId, "videos?fields=source,description,updated_time,thumbnails&limit=3", GetVideos);
 			} 
 		}
 
+		/*
 		static void GetEvents(List<FacebookElement> FacebookElements){
 			// parses all events
 			int coversToLoad = 0;
@@ -222,10 +223,13 @@ namespace Board.Facebook
 			}
 
 		}
+		*/
 
 		static async void GetVideos(List<FacebookElement> FacebookElements){
 			// parses all videos
 			int i = 1;
+			ItemLocation = new CGPoint (startX, startLowerY);
+
 			foreach (FacebookVideo fbVideo in FacebookElements) {
 
 				var video = new Video (fbVideo, ItemLocation, CGAffineTransform.MakeIdentity());
@@ -250,6 +254,11 @@ namespace Board.Facebook
 			Console.Write("Uploading all content...");
 			CloudController.UpdateBoard (UIBoardInterface.board.Id, json);
 			Console.WriteLine(" done");
+
+			foreach (var content in ContentToImport){
+				AppDelegate.BoardInterface.AddWidgetToDictionaryFromContent (content);
+			}
+
 			BTProgressHUD.Dismiss();
 		}
 	}
