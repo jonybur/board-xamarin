@@ -1,10 +1,12 @@
-﻿using Board.Interface.Buttons;
+﻿using System.Collections.Generic;
+using Board.Facebook;
+using Board.Infrastructure;
+using Board.Interface.Buttons;
+using Board.Utilities;
 using CoreAnimation;
 using CoreGraphics;
-using Board.Utilities;
 using Foundation;
 using UIKit;
-using Board.Infrastructure;
 
 namespace Board.Interface.Widgets
 {
@@ -107,17 +109,17 @@ namespace Board.Interface.Widgets
 			}
 
 			likeView = CreateLike (LikeComponent.Frame);
-			likeLabel = CreateLikeLabel (likeView.Center);
+			LikeLabel = CreateLikeLabel (likeView.Center);
 
 			if (liked) {
 				likeView.TintColor = AppDelegate.BoardOrange;
-				likeLabel.TextColor = AppDelegate.BoardOrange;
+				LikeLabel.TextColor = AppDelegate.BoardOrange;
 			} else {
 				likeView.TintColor = WidgetGrey;
-				likeLabel.TextColor = WidgetGrey;
+				LikeLabel.TextColor = WidgetGrey;
 			}
 
-			LikeComponent.AddSubviews (likeView, likeLabel);
+			LikeComponent.AddSubviews (likeView, LikeLabel);
 		}
 
 		public void Like()
@@ -127,10 +129,10 @@ namespace Board.Interface.Widgets
 				CloudController.SendLike(content.Id);
 				
 				likes ++;
-				likeLabel.Text = likes.ToString();
+				LikeLabel.Text = likes.ToString();
 
 				likeView.TintColor = AppDelegate.BoardOrange;
-				likeLabel.TextColor = AppDelegate.BoardOrange;
+				LikeLabel.TextColor = AppDelegate.BoardOrange;
 
 				CAKeyFrameAnimation scale = new CAKeyFrameAnimation ();
 				scale.KeyPath = "transform";
@@ -156,10 +158,10 @@ namespace Board.Interface.Widgets
 				CloudController.SendDislike(content.Id);
 
 				likes --;
-				likeLabel.Text = likes.ToString();
+				LikeLabel.Text = likes.ToString();
 
 				likeView.TintColor = WidgetGrey;
-				likeLabel.TextColor = WidgetGrey;
+				LikeLabel.TextColor = WidgetGrey;
 
 				liked = false;
 			}
@@ -186,18 +188,37 @@ namespace Board.Interface.Widgets
 
 			CGSize likeLabelSize = likes.ToString().StringSize (likeFont);
 
-			UILabel likeLabel = new UILabel(new CGRect(0, 0, likeLabelSize.Width + 20, likeLabelSize.Height));
+			UILabel likeLabel = new UILabel();
+			likeLabel.Frame = new CGRect (IconSize, center.Y - likeLabelSize.Height / 2, likeLabelSize.Width + 20, likeLabelSize.Height);
 
 			likeLabel.Font = likeFont;
 			if (UIBoardInterface.DictionaryLikes.ContainsKey (content.Id)) {
 				likes = UIBoardInterface.DictionaryLikes [content.Id];
 			}
 			likeLabel.Text = likes.ToString();
-			likeLabel.Center = new CGPoint (center.X + likeLabel.Frame.Width / 2 + 5, center.Y);
-			likeLabel.TextAlignment = UITextAlignment.Center;
+			//likeLabel.Center = new CGPoint (center.X + likeLabel.Frame.Width / 2 + 5, center.Y);
+			likeLabel.TextAlignment = UITextAlignment.Left;
+
+			FacebookUtils.MakeGraphRequest (content.FacebookId, "?fields=likes", LoadFacebookLike);
 
 			return likeLabel;
 		}
+
+		private void LoadFacebookLike(List<FacebookElement> obj){
+
+			if (obj.Count > 0) {
+				int facebookLikeCount = 0;
+				var fblikes = (FacebookLikes)obj [0];
+
+				if (fblikes.LikesData != null) {
+					facebookLikeCount = CommonUtils.CountStringOccurrences (fblikes.LikesData, "id");
+				}
+
+				likes += facebookLikeCount;
+				LikeLabel.Text = likes.ToString ();
+			}
+		}
+
 
 	}
 }

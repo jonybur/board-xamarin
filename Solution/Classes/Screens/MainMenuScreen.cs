@@ -232,15 +232,10 @@ namespace Board.Screens
 		{
 			ScrollView.BackgroundColor = UIColor.White;
 
-			if (FetchedBoards.BoardList == null || FetchedBoards.BoardList.Count == 0) {
-				Console.WriteLine ("Fills BoardList");
-				FetchedBoards.Update ();
-
-			} else if (CommonUtils.DistanceBetweenCoordinates (FetchedBoards.Location, AppDelegate.UserLocation) > 1) {
-				Console.WriteLine ("Updates BoardList from new UserLocation");
+			if (FetchedBoards.BoardList == null || FetchedBoards.BoardList.Count == 0 || CommonUtils.DistanceBetweenCoordinates (FetchedBoards.Location, AppDelegate.UserLocation) > 1) {
+				Console.WriteLine ("Updates BoardList");
 				FetchedBoards.Update ();
 			}
-
 
 			if (FetchedBoards.BoardList.Count > 0) {
 				

@@ -1,5 +1,4 @@
-﻿using System;
-using UIKit;
+﻿using UIKit;
 using CoreGraphics;
 using Plugin.Share;
 using MessageUI;
@@ -13,7 +12,6 @@ namespace Board.Screens
 		UILabel TitleLabel;
 		UITextView DescriptionView;
 		UIButton ActionButton;
-
 
 		UIWindow window;
 		private void HideWindow()
@@ -89,7 +87,8 @@ namespace Board.Screens
 					
 					await ShareImplementation.Init ();
 					var shareImplementation = new ShareImplementation ();
-					await shareImplementation.Share ("Check out Board... it shows you what's going on nearby!\nwww.getonboard.us", null);
+
+					await shareImplementation.Share("Check out Board... it shows you what's going on nearby!\nDownload now: http://apple.co/28Kt9JO", UIActivityType.Mail);
 
 				}else{
 

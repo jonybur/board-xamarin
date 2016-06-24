@@ -2,8 +2,11 @@
 using System.Linq;
 using Board.Infrastructure;
 using Board.Schema;
+using Board.Utilities;
+using Board.Facebook;
 using Board.JsonResponses;
 using System;
+using Newtonsoft.Json.Linq;
 using CoreGraphics;
 using MGImageUtilitiesBinding;
 using UIKit;
@@ -39,21 +42,53 @@ namespace Board.Screens.Controls
 
 		static MagazineResponse magazine;
 
-		class Timeline{
+		static class TimelineContent{
 			public static List<Content> ContentList;
 			public static DateTime UpdatedTime;
 
 			public static void Update(){
 				ContentList = CloudController.GetTimeline (AppDelegate.UserLocation);
 
-				var publicationIds = Timeline.ContentList.Select (x => x.Id).ToArray ();
+				var publicationIds = TimelineContent.ContentList.Select (x => x.Id).ToArray ();
+
 				ContentLikes = CloudController.GetLikes (publicationIds);
 				UserLikes = CloudController.GetUserLikes (publicationIds);
 
+				foreach (var content in TimelineContent.ContentList) {
+					FacebookUtils.MakeGraphRequest (content.FacebookId, "?fields=likes", LoadFacebookLike);
+				}
+
 				UpdatedTime = DateTime.Now;
+			}
+
+			private static void LoadFacebookLike(List<FacebookElement> obj){
+
+				if (obj.Count > 0) {
+					int facebookLikeCount = 0;
+					var likes = (FacebookLikes)obj [0];
+
+					if (likes.LikesData != null) {
+						facebookLikeCount = CommonUtils.CountStringOccurrences (likes.LikesData, "id");
+					}
+
+					var contentId = TimelineContent.ContentList.Find (x => x.FacebookId == obj [0].Id).Id;
+					ContentLikes [contentId] += facebookLikeCount;
+
+					UITimelineContentDisplay.UpdateWidgetLikeCount (contentId, ContentLikes [contentId]);
+				}
+
 			}
 		}
 
+		public static void AddLikeToContent(string contentId){
+			UIMagazine.ContentLikes [contentId]++;
+			UIMagazine.UserLikes [contentId] = true;
+		}
+
+		public static void RemoveLikeToContent(string contentId){
+			UIMagazine.ContentLikes [contentId]--;
+			UIMagazine.UserLikes [contentId] = false;
+		}
 
 		// generates the magazine headers
 		private void GeneratePages(List<Board.Schema.Board> boardList){
@@ -65,12 +100,12 @@ namespace Board.Screens.Controls
 
 			bool theresMagazine = MagazineResponse.IsValidMagazine (magazine);
 
-			if (Timeline.ContentList == null || Timeline.UpdatedTime.TimeOfDay.TotalMinutes + 10 < DateTime.Now.TimeOfDay.TotalMinutes){
+			if (TimelineContent.ContentList == null || TimelineContent.UpdatedTime.TimeOfDay.TotalMinutes + 10 < DateTime.Now.TimeOfDay.TotalMinutes){
 				Console.WriteLine ("Gets timeline");
-				Timeline.Update ();
+				TimelineContent.Update ();
 			}
 
-			bool theresTimeline = Timeline.ContentList.Count > 0;
+			bool theresTimeline = TimelineContent.ContentList.Count > 0;
 
 			var pagesName = new List<string> ();
 
@@ -98,7 +133,6 @@ namespace Board.Screens.Controls
 				pages [i].Banner = controller;
 			}
 
-
 			int screenNumber = 0;
 
 			if (theresMagazine) {
@@ -107,7 +141,7 @@ namespace Board.Screens.Controls
 			}
 
 			if (theresTimeline) {
-				pages [screenNumber].ContentDisplay = new UITimelineContentDisplay (boardList, Timeline.ContentList);
+				pages [screenNumber].ContentDisplay = new UITimelineContentDisplay (boardList, TimelineContent.ContentList);
 				screenNumber++;
 			}
 

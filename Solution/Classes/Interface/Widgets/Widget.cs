@@ -33,7 +33,7 @@ namespace Board.Interface.Widgets
 		protected UILabel TimeStamp;
 
 		private UIImageView likeView;
-		private UILabel likeLabel;
+		private UILabel LikeLabel;
 
 		private const int IconSize = 30;
 

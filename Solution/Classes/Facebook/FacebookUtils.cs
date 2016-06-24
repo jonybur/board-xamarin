@@ -92,6 +92,13 @@ namespace Board.Facebook
 						var fbalbum = new FacebookAlbum (objects [i, 0], objects [i, 1], objects [i, 2]);
 						ElementList.Add (fbalbum);
 					}
+				} else if (element == "?fields=likes") {
+					string[,] objects = NSObjectToElement (obj, "id", "likes");
+
+					for (int i = 0; i < objects.GetLength (0); i++) {
+						var fbimage = new FacebookLikes (objects [i, 0], objects [i, 1]);
+						ElementList.Add (fbimage);
+					}
 				} else if (element == "?fields=images") {
 					string[,] objects = NSObjectToElement (obj, "id", "images.height", "images.source", "images.width");
 

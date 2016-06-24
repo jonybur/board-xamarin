@@ -21,7 +21,7 @@ namespace Board.Interface
 				ListActionButton.Add(CreateMessageButton(board.FacebookId));
 			}
 
-			if (board.Phone != null) {
+			if (!string.IsNullOrEmpty(board.Phone)) {
 				ListActionButton.Add (CreateCallButton (board.Phone));
 			}
 

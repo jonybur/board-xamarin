@@ -4,6 +4,7 @@ using CoreGraphics;
 using Foundation;
 using Haneke;
 using UIKit;
+using CoreAnimation;
 
 namespace Board.Screens.Controls
 {
@@ -127,7 +128,18 @@ namespace Board.Screens.Controls
 			imageView.Center = new CGPoint (Frame.Size.Width / 2, Frame.Size.Height / 2);
 			AddSubview (imageView);
 
-			TouchEvent = (sender, e) => AppDelegate.OpenBoard (board);
+			TouchEvent = delegate {
+
+				CATransaction.Begin ();
+
+				BigTed.BTProgressHUD.Show();
+
+				CATransaction.Commit();
+
+				CATransaction.CompletionBlock = delegate {
+					AppDelegate.OpenBoard(board);
+				};
+			};
 
 			UserInteractionEnabled = true;
 			ClipsToBounds = true;

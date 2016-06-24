@@ -92,11 +92,24 @@ namespace Board.Utilities
 			var location = AppDelegate.UserLocation;
 			double distance = 0;
 
-			if (location.IsValid()) {
+			if (location.IsValid ()) {
 				distance = DistanceBetweenCoordinates (board.GeolocatorObject.Coordinate, location, 'M');
 				board.Distance = distance;
 			}
 			return distance;
+		}
+
+		public static int CountStringOccurrences(string text, string pattern)
+		{
+			// Loop through all instances of the string 'text'.
+			int count = 0;
+			int i = 0;
+			while ((i = text.IndexOf(pattern, i)) != -1)
+			{
+				i += pattern.Length;
+				count++;
+			}
+			return count;
 		}
 
 		public static double DistanceBetweenCoordinates(CLLocationCoordinate2D location1, CLLocationCoordinate2D location2, char unit = 'K')

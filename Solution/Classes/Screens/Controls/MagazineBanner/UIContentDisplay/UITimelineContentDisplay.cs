@@ -1,22 +1,27 @@
-﻿using UIKit;
-using System.Collections.Generic;
-using CoreGraphics;
-using Board.Schema;
-using Board.Utilities;
-using Board.Infrastructure;
-using Foundation;
-using Haneke;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Board.Schema;
+using CoreGraphics;
 
 namespace Board.Screens.Controls
 {	
 	public class UITimelineContentDisplay : UIContentDisplay {
 
 		const float SeparationBetweenObjects = 30;
+		public static Dictionary<string, UITimelineWidget> TimelineWidgets;
+
+		public static void UpdateWidgetLikeCount(string contentId, int likeCount){
+			if (TimelineWidgets != null) {
+				if (TimelineWidgets.ContainsKey (contentId)) {
+					TimelineWidgets [contentId].AddLikeCount (likeCount);
+				}
+			}
+		}
 
 		public UITimelineContentDisplay(List<Board.Schema.Board> boardList, List<Content> timelineContent) {
 			
 			float yposition = UIMagazineBannerPage.Height + UIMenuBanner.Height + 30;
+			TimelineWidgets = new Dictionary<string, UITimelineWidget> ();
 
 			foreach (var content in timelineContent){
 
@@ -34,6 +39,7 @@ namespace Board.Screens.Controls
 				timelineWidget.Center = new CGPoint (AppDelegate.ScreenWidth / 2, yposition + timelineWidget.Frame.Height / 2);
 				
 				AddSubview (timelineWidget);
+				TimelineWidgets.Add (content.Id, timelineWidget);
 
 				yposition += (float)timelineWidget.Frame.Height + SeparationBetweenObjects;
 			}

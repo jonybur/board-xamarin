@@ -9,7 +9,7 @@ using Haneke;
 
 namespace Board.Screens.Controls
 {
-	class UITimelineWidget : UIView{
+	public class UITimelineWidget : UIView{
 		// includes logo, name, distance and time
 		UIView headerView;
 
@@ -28,7 +28,7 @@ namespace Board.Screens.Controls
 		bool isLiked;
 		int likes;
 		UIImageView heartView;
-		UILabel likeLabel;
+		public UILabel LikeLabel;
 
 		const string emptyHeartImageUrl = "./boardinterface/infobox/emptylike.png";
 		const string fullHeartImageUrl = "./boardinterface/infobox/fulllike.png";
@@ -158,42 +158,47 @@ namespace Board.Screens.Controls
 
 			heartView.Center = new CGPoint (heartView.Frame.Width / 2, likeButton.Frame.Height / 2 - 5);
 
-			likeLabel = new UILabel ();
-			likeLabel = new UILabel();
-			likeLabel.Font = UIFont.SystemFontOfSize(18, UIFontWeight.Light);
+			LikeLabel = new UILabel ();
+			LikeLabel = new UILabel();
+			LikeLabel.Font = UIFont.SystemFontOfSize(18, UIFontWeight.Light);
 
 			likes = UIMagazine.ContentLikes[content.Id];
-			likeLabel.Text = likes.ToString();
+			LikeLabel.Text = likes.ToString();
 
-			var sizeLikeLabel = likeLabel.Text.StringSize (likeLabel.Font);
-			likeLabel.Frame = new CGRect(0, 0, sizeLikeLabel.Width * 2, sizeLikeLabel.Height);
-			likeLabel.Center = new CGPoint (heartView.Frame.Right + likeLabel.Frame.Width / 2 + 10, heartView.Center.Y);
-			likeButton.AddSubviews (heartView, likeLabel);
+			var sizeLikeLabel = LikeLabel.Text.StringSize (LikeLabel.Font);
+			LikeLabel.Frame = new CGRect(0, 0, sizeLikeLabel.Width * 2, sizeLikeLabel.Height);
+			LikeLabel.Center = new CGPoint (heartView.Frame.Right + LikeLabel.Frame.Width / 2 + 10, heartView.Center.Y);
+			likeButton.AddSubviews (heartView, LikeLabel);
 
-			likeButton.TouchUpInside += (sender, e) => {
-				Like();
-			};
+			likeButton.TouchUpInside += (sender, e) => Like ();
+		}
+
+		public void AddLikeCount(int newLikes){
+			likes += newLikes;
+			LikeLabel.Text = likes.ToString ();
+			var sizeLikeLabel = LikeLabel.Text.StringSize (LikeLabel.Font);
+			LikeLabel.Frame = new CGRect(LikeLabel.Frame.X, LikeLabel.Frame.Y, sizeLikeLabel.Width * 2, sizeLikeLabel.Height);
+
 		}
 
 		private void Like(){
 			if (!isLiked){
+				
 				CloudController.SendLike(content.Id);
 				likes++;
 
-				UIMagazine.ContentLikes [content.Id]++;
-				UIMagazine.UserLikes [content.Id] = true;
-
+				UIMagazine.AddLikeToContent (content.Id);
 				heartView.SetImage(fullHeartImageUrl);
+
 			} else {
+				
 				CloudController.SendDislike(content.Id);
 				likes--;
 
-				UIMagazine.ContentLikes [content.Id]--;
-				UIMagazine.UserLikes [content.Id] = false;
-
+				UIMagazine.RemoveLikeToContent (content.Id);
 				heartView.SetImage(emptyHeartImageUrl);
 			}
-			likeLabel.Text = likes.ToString();
+			LikeLabel.Text = likes.ToString();
 			isLiked = !isLiked;
 		}
 
