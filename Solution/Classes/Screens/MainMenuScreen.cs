@@ -26,7 +26,7 @@ namespace Board.Screens
 		EventHandler MapButtonEvent;
 		UIContentDisplay ContentDisplay;
 
-		class FetchedBoards{
+		static class FetchedBoards{
 			public static List<Board.Schema.Board> BoardList;
 			public static CLLocationCoordinate2D Location;
 
@@ -317,11 +317,11 @@ namespace Board.Screens
 			bool taps = false;
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					/*if (!taps){
+					if (!taps){
 						taps = true;
 						Facebook.FacebookAutoUpdater.UpdateAllBoards(FetchedBoards.BoardList);
-					}*/
-					AppDelegate.containerScreen.BringSideMenuUp("main");
+					}
+					//AppDelegate.containerScreen.BringSideMenuUp("main");
 				}
 			});
 

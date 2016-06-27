@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using Board.JsonResponses;
+using System.Threading;
 using Board.Schema;
 using Board.Utilities;
 using CoreLocation;
@@ -104,7 +105,7 @@ namespace Board.Infrastructure
 			AppDelegate.BoardUser.SetProfilePictureFromURL (AppDelegate.BoardUser.ProfilePictureURL);
 		}
 
-		public static async void GetUserLikesAsyncWithCallback(Action<Dictionary<string, bool>> callback, params string[] publicationIds){
+		public static async System.Threading.Tasks.Task<Dictionary<string, bool>> GetUserLikesAsync(CancellationToken cts, params string[] publicationIds){
 			string publicationsToRequest = string.Empty;
 
 			foreach (var id in publicationIds) {
@@ -112,10 +113,10 @@ namespace Board.Infrastructure
 				publicationsToRequest += "publicationId=" + id + "&";
 			}
 			string url = "https://" + AppDelegate.APIAddress + "/api/user/likes?" + publicationsToRequest + "authToken=" + AppDelegate.EncodedBoardToken;
-			string result = await WebAPI.GetJsonAsync (url);
+			string result = await WebAPI.GetJsonAsync (url, cts);
 
 			if (result == "408" || result == "500") {
-				callback(new Dictionary<string, bool>());
+				return new Dictionary<string, bool>();
 			}
 
 			var jobject = JObject.Parse (result);
@@ -131,7 +132,7 @@ namespace Board.Infrastructure
 				}
 			}
 
-			callback (dictionaryLikes);
+			return dictionaryLikes;
 		}
 
 		public static Dictionary<string, bool> GetUserLikes(params string[] publicationIds){
@@ -240,12 +241,7 @@ namespace Board.Infrastructure
 			return dictionaryLikes;		
 		}
 
-		public static async void GetLikesAsyncWithCallback(Action<Dictionary<string, int>> callback, params string[] ids){
-			var dictionary = await GetLikesAsync (ids);
-			callback (dictionary);
-		}
-
-		public static async System.Threading.Tasks.Task<Dictionary<string, int>> GetLikesAsync(params string[] ids){
+		public static async System.Threading.Tasks.Task<Dictionary<string, int>> GetLikesAsync(CancellationToken cts, params string[] ids){
 			string publicationsToRequest = string.Empty;
 
 			foreach (var id in ids) {
@@ -253,7 +249,7 @@ namespace Board.Infrastructure
 			}
 
 			string url = "https://" + AppDelegate.APIAddress + "/api/publications/likes?" + publicationsToRequest + "authToken=" + AppDelegate.EncodedBoardToken;
-			string result = await WebAPI.GetJsonAsync (url);
+			string result = await WebAPI.GetJsonAsync (url, cts);
 
 			if (result == "408" || result == "500") {
 				return new Dictionary<string, int> ();
@@ -368,13 +364,12 @@ namespace Board.Infrastructure
 			return compiledDictionary;
 		}
 
-		public static async void GetBoardContentAsyncWithCallback(Action<Dictionary<string, Content>> callback, string boardId){
+		public static async System.Threading.Tasks.Task<Dictionary<string, Content>> GetBoardContentAsync(CancellationToken cts, string boardId){
 			string url = "https://" + AppDelegate.APIAddress + "/api/board/" + boardId + "/snapshot?authToken=" + AppDelegate.EncodedBoardToken;
 			string result = await WebAPI.GetJsonAsync (url);
 
 			if (result == "408" || result == "500") {
-				callback (new Dictionary<string, Content>());
-				return;
+				return new Dictionary<string, Content> ();
 			}
 
 			var fullJson = JsonConvert.DeserializeObject<Dictionary<string, object>> (result);
@@ -392,7 +387,7 @@ namespace Board.Infrastructure
 				FillDictionary<BoardEvent> (contentsLevel, "events", ref compiledDictionary);
 			}
 
-			callback (compiledDictionary);
+			return compiledDictionary;
 		}
 
 		private static void FillDictionary<T>(Dictionary<string, object> contentsLevel, 
@@ -445,20 +440,18 @@ namespace Board.Infrastructure
 			}
 		}
 
-		public static async void UserCanEditBoardAsyncWithCallback(Action<bool> callback, string boardId){
+		public static async System.Threading.Tasks.Task<bool> UserCanEditBoardAsync(string boardId, CancellationToken ct){
 			if (AccessToken.CurrentAccessToken == null) {
-				callback (false);
-				return;
+				return false;
 			}
 
 			string url = "https://" + AppDelegate.APIAddress + "/api/board/" + boardId + "/edit?authToken=" + AppDelegate.EncodedBoardToken;
-			string result = await WebAPI.GetJsonAsync (url);
+			string result = await WebAPI.GetJsonAsync (url, ct);
 
 			if (result == "200" || result == string.Empty) {
-				callback (true);
-				return;
+				return true;
 			}
-			callback (false);
+			return false;
 		}
 
 		public static void LogSession(){

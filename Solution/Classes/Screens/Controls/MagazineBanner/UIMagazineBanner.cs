@@ -109,12 +109,12 @@ namespace Board.Screens.Controls
 
 			var pagesName = new List<string> ();
 
-			if (theresMagazine) {
-				pagesName.Add("FEATURED");
-			}
-
 			if (theresTimeline) {
 				pagesName.Add ("TRENDING");
+			}
+
+			if (theresMagazine) {
+				pagesName.Add("FEATURED");
 			}
 
 			pagesName.Add("DIRECTORY");
@@ -135,13 +135,13 @@ namespace Board.Screens.Controls
 
 			int screenNumber = 0;
 
-			if (theresMagazine) {
-				pages [screenNumber].ContentDisplay = new UICarouselContentDisplay (magazine);
+			if (theresTimeline) {
+				pages [screenNumber].ContentDisplay = new UITimelineContentDisplay (boardList, TimelineContent.ContentList);
 				screenNumber++;
 			}
 
-			if (theresTimeline) {
-				pages [screenNumber].ContentDisplay = new UITimelineContentDisplay (boardList, TimelineContent.ContentList);
+			if (theresMagazine) {
+				pages [screenNumber].ContentDisplay = new UICarouselContentDisplay (magazine);
 				screenNumber++;
 			}
 

@@ -51,6 +51,8 @@ namespace Board.Interface
 
 			private void TouchButton(object obj, EventArgs args){
 				if (!blockButton){
+					UIBoardInterface.DownloadCancellation.Cancel ();
+
 					var containerScreen = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 2] as ContainerScreen;
 					if (containerScreen != null) {
 						containerScreen.LoadLastScreen();

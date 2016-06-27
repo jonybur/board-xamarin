@@ -8,6 +8,7 @@ using Facebook.CoreKit;
 using Board.Interface.Widgets;
 using Board.Schema;
 using Board.Utilities;
+using System.Threading;
 using CoreGraphics;
 using UIKit;
 using System.Linq;
@@ -32,11 +33,13 @@ namespace Board.Interface
 		public static Dictionary<string, Content> DictionaryContent;
 		public static Dictionary<string, Widget> DictionaryWidgets;
 		public static Dictionary<string, UISticker> DictionaryStickers;
+		public static CancellationTokenSource DownloadCancellation;
 
 		bool firstLoad;
 
 		public UIBoardInterface (Board.Schema.Board _board){
 			board = _board;
+			DownloadCancellation = new CancellationTokenSource();
 			firstLoad = true;
 		}
 
@@ -158,7 +161,7 @@ namespace Board.Interface
 			DictionaryWidgets = new Dictionary<string, Widget>();
 		}
 
-		private void LoadButtons()
+		private async void LoadButtons()
 		{
 			ButtonInterface.Initialize ();
 
@@ -166,8 +169,8 @@ namespace Board.Interface
 			buttonBackground.BackgroundColor = UIColor.FromRGBA(255, 255, 255, 220);
 			View.AddSubview (buttonBackground);
 
-			CloudController.UserCanEditBoardAsyncWithCallback (delegate(bool userCanEditBoard){
-				UserCanEditBoard = userCanEditBoard;
+			try{
+				UserCanEditBoard = await CloudController.UserCanEditBoardAsync (board.Id, DownloadCancellation.Token);
 
 				if (UserCanEditBoard) {
 					View.AddSubviews (ButtonInterface.GetCreatorButtons().ToArray());
@@ -176,46 +179,42 @@ namespace Board.Interface
 				}
 
 				ButtonInterface.SwitchButtonLayout (ButtonInterface.ButtonLayout.NavigationBar);
-
-			}, board.Id);
+			} catch (OperationCanceledException) {
+				Console.WriteLine ("Task got cancelled");
+			}
 		}
 
 
-		public void GenerateWidgets()
+		public async void GenerateWidgets()
 		{
 			// looks for new keys in the DictionaryContent
 			// draws new widget in case new content is found
 
-			CloudController.GetBoardContentAsyncWithCallback (delegate (Dictionary<string, Content> dictionaryContent){
-				DictionaryContent = dictionaryContent;
+			try{
+				DictionaryContent = await CloudController.GetBoardContentAsync (DownloadCancellation.Token, board.Id);
+				
 				var listContentIds = DictionaryContent.Values.Select (x => x.Id).ToList ();
+
 				listContentIds.Add (UIBoardInterface.board.Id);
 				var contentIds = listContentIds.ToArray ();
 
-				CloudController.GetLikesAsyncWithCallback(delegate(Dictionary<string, int> dictionaryLikes) {
+				DictionaryLikes = await CloudController.GetLikesAsync(DownloadCancellation.Token, contentIds);
 
-					DictionaryLikes = dictionaryLikes;
+				DictionaryUserLikes = await CloudController.GetUserLikesAsync(DownloadCancellation.Token, contentIds);
 
-					CloudController.GetUserLikesAsyncWithCallback(delegate(Dictionary<string, bool> dictionaryUserLikes) {
+				foreach (KeyValuePair<string, Content> c in DictionaryContent) {
+					if (!DictionaryWidgets.ContainsKey (c.Key)) {
+						AddWidgetToDictionaryFromContent (c.Value);
+					}
+				}
 
-						DictionaryUserLikes = dictionaryUserLikes;
+				var newContentCount = DictionaryWidgets.Values.ToList ().Count (widget => !widget.EyeOpen);
+				ButtonInterface.navigationButton.RefreshNavigationButtonText (newContentCount);
 
-						foreach (KeyValuePair<string, Content> c in DictionaryContent) {
-							if (!DictionaryWidgets.ContainsKey (c.Key)) {
-								AddWidgetToDictionaryFromContent (c.Value);
-							}
-						}
-
-						var newContentCount = DictionaryWidgets.Values.ToList ().Count (widget => !widget.EyeOpen);
-						ButtonInterface.navigationButton.RefreshNavigationButtonText (newContentCount);
-
-						BoardScroll.RecalculateBoardSize();
-
-					}, contentIds);
-
-				}, contentIds);
-					
-			}, board.Id);
+				BoardScroll.RecalculateBoardSize();
+			}catch (OperationCanceledException){
+				Console.WriteLine ("Task got cancelled");
+			}
 		}
 
 		public void AddStickerToDictionaryFromContent(Sticker content){

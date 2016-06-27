@@ -3,12 +3,24 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using ModernHttpClient;
 
 namespace Board.Infrastructure
 {
 	public static class WebAPI
 	{
+		public static async System.Threading.Tasks.Task<string> GetJsonAsync(string uri, CancellationToken ct){
+			string response;
+
+			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
+				var getTask = await httpClient.GetAsync (uri, ct);
+				response = await getTask.Content.ReadAsStringAsync();
+			}
+
+			return response;
+		}
+
 		public static async System.Threading.Tasks.Task<string> GetJsonAsync(string uri){
 			string response;
 
