@@ -229,6 +229,7 @@ namespace Board.Screens
 			}
 		}
 
+		bool addedScrollEvents;
 		private void LoadContent()
 		{
 			ScrollView.BackgroundColor = UIColor.White;
@@ -262,46 +263,51 @@ namespace Board.Screens
 
 			var direction = ScrollViewDirection.Up;
 
-			ScrollView.DraggingEnded += (sender, e) => {
-				if (direction == ScrollViewDirection.Up){
-					Banner.AnimateShow();
-				} else if (direction == ScrollViewDirection.Down && ScrollView.ContentOffset.Y > Banner.Frame.Height) {
-					Banner.AnimateHide();
-				}
-			};
-
-			ScrollView.Scrolled += (sender, e) => {
+			if(!addedScrollEvents){
+				addedScrollEvents = true;
 				
-				if (ScrollView.ContentOffset.Y < 0){
-					
-					Magazine.Banner.Center = new CGPoint(Magazine.Banner.Center.X,
-						UIMenuBanner.Height + Magazine.Banner.Frame.Height / 2 + ScrollView.ContentOffset.Y);
-
-					Banner.Frame = new CGRect(Banner.Frame.X, 0, Banner.Frame.Width, Banner.Frame.Height);
-
-
-				} else if (ScrollView.ContentOffset.Y < ScrollView.ContentSize.Height - AppDelegate.ScreenHeight) {
-					
-					var diff = previousOffset - ScrollView.ContentOffset.Y;
-
-					if (Banner.Frame.Y + diff > 0){
-						Banner.Frame = new CGRect(Banner.Frame.X, 0, Banner.Frame.Width, Banner.Frame.Height);
-					} else if (Banner.Frame.Y + diff < -Banner.Frame.Height){
-						Banner.Frame = new CGRect(Banner.Frame.X, -Banner.Frame.Height, Banner.Frame.Width, Banner.Frame.Height);
-					} else {
-						Banner.Frame = new CGRect(Banner.Frame.X, Banner.Frame.Y + diff, Banner.Frame.Width, Banner.Frame.Height);
+				ScrollView.DraggingEnded += (sender, e) => {
+					if (direction == ScrollViewDirection.Up){
+						Banner.AnimateShow();
+					} else if (direction == ScrollViewDirection.Down && ScrollView.ContentOffset.Y > Banner.Frame.Height) {
+						Banner.AnimateHide();
 					}
-				}
+				};
 
-				if (previousOffset < ScrollView.ContentOffset.Y) { 
-					direction = ScrollViewDirection.Down;
-				}else{
-					direction = ScrollViewDirection.Up;
-				}
+				ScrollView.Scrolled += (sender, e) => {
+					
+					if (ScrollView.ContentOffset.Y < 0){
+						
+						Magazine.Banner.Center = new CGPoint(Magazine.Banner.Center.X,
+							UIMenuBanner.Height + Magazine.Banner.Frame.Height / 2 + ScrollView.ContentOffset.Y);
 
-				previousOffset = (float)ScrollView.ContentOffset.Y;
+						Banner.Frame = new CGRect(Banner.Frame.X, 0, Banner.Frame.Width, Banner.Frame.Height);
 
-			};
+
+					} else if (ScrollView.ContentOffset.Y < ScrollView.ContentSize.Height - AppDelegate.ScreenHeight) {
+						
+						var diff = previousOffset - ScrollView.ContentOffset.Y;
+
+						if (Banner.Frame.Y + diff > 0){
+							Banner.Frame = new CGRect(Banner.Frame.X, 0, Banner.Frame.Width, Banner.Frame.Height);
+						} else if (Banner.Frame.Y + diff < -Banner.Frame.Height){
+							Banner.Frame = new CGRect(Banner.Frame.X, -Banner.Frame.Height, Banner.Frame.Width, Banner.Frame.Height);
+						} else {
+							Banner.Frame = new CGRect(Banner.Frame.X, Banner.Frame.Y + diff, Banner.Frame.Width, Banner.Frame.Height);
+						}
+					}
+
+					if (previousOffset < ScrollView.ContentOffset.Y) { 
+						direction = ScrollViewDirection.Down;
+					}else{
+						direction = ScrollViewDirection.Up;
+					}
+
+					previousOffset = (float)ScrollView.ContentOffset.Y;
+
+				};
+
+			}
 		}
 
 		private void LoadBanner()
