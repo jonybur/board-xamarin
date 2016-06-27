@@ -88,9 +88,10 @@ namespace Board.Screens
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					AppDelegate.containerScreen.BringSideMenuUp("business");
 				}
-				else if (AppDelegate.ScreenWidth / 4 * 3 < tg.LocationInView(this.View).X){
+				/*else if (AppDelegate.ScreenWidth / 4 * 3 < tg.LocationInView(this.View).X){
 
-					/*
+					Board.Facebook.FacebookAutoImporter.ImportPage("203220306158");
+
 					UIAlertController alert = UIAlertController.Create("Facebook Page Importer", null, UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 					alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate {
@@ -101,7 +102,7 @@ namespace Board.Screens
 
 						var textField = alert.TextFields[0];
 
-						if (textField.Text == string.Empty || textField.Text == null){ 
+						if (string.IsNullOrEmpty (textField.Text)) { 
 							return;
 						}
 
@@ -115,8 +116,7 @@ namespace Board.Screens
 					});
 
 					NavigationController.PresentViewController(alert, true, null);
-					*/
-				}
+				}*/
 			});
 
 			Banner.AddTap (tap);
@@ -148,6 +148,14 @@ namespace Board.Screens
 		"FlyBladeNow", "hylinehouse", "178575612198721", "hyline.greylady", "NantucketBikeShop", "EasyRidersBicycles", 
 		"157791807592525", "169666099847084", "153259373989", "sunkenshipnantucket", "nantucketsalt",
 		"gazebo.nantucket", "47998764919", "NantucketHistoricalAssociation"
+
+
+
+
+
+
+
+
 
 		*/
 

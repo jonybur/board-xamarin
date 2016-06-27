@@ -3,8 +3,8 @@ using System.Net;
 using Board.Infrastructure;
 using Board.Interface;
 using Board.JsonResponses;
-using Board.Screens;
 using Board.Schema;
+using Board.Screens;
 using CoreAnimation;
 using CoreLocation;
 using Facebook.CoreKit;
@@ -79,6 +79,14 @@ namespace Board
 		//
 		// You have 17 seconds to return from this method, or iOS will terminate your application.
 		//
+
+		public override void OnActivated (UIApplication application)
+		{
+			// Call the 'activateApp' method to log an app event for use
+			// in analytics and advertising reporting.
+			AppEvents.ActivateApp ();
+			AppEvents.LogEvent ("activatesApp");
+		}
 
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{

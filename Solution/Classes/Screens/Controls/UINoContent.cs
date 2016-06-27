@@ -77,7 +77,7 @@ namespace Board.Screens
 				// First launch
 				NSUserDefaults.StandardUserDefaults.SetBool (true, key);
 				defaults.Synchronize ();
-				BigTed.BTProgressHUD.Show ("Ready to get on Board?");
+				BigTed.BTProgressHUD.Show ("Setting up Board\nfor first time use...");
 			} else { 
 				BigTed.BTProgressHUD.Show("Loading Nantucket...");
 			}

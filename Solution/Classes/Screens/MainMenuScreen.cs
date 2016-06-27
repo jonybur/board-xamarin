@@ -6,6 +6,7 @@ using Board.Interface;
 using Board.Screens.Controls;
 using Board.Utilities;
 using CoreGraphics;
+using System.Linq;
 using CoreLocation;
 using Foundation;
 using Google.Maps;
@@ -169,7 +170,7 @@ namespace Board.Screens
 				// First launch
 				NSUserDefaults.StandardUserDefaults.SetBool (true, key);
 				defaults.Synchronize ();
-				BigTed.BTProgressHUD.Show ("Ready to get on Board?");
+				BigTed.BTProgressHUD.Show ("Setting up Board\nfor first time use...");
 			} else { 
 				BigTed.BTProgressHUD.Show ();
 			}
@@ -307,8 +308,13 @@ namespace Board.Screens
 		{
 			Banner = new UIMenuBanner ("BOARD", "menu_left");
 
+			bool taps = false;
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
+					/*if (!taps){
+						taps = true;
+						Facebook.FacebookAutoUpdater.UpdateAllBoards(FetchedBoards.BoardList);
+					}*/
 					AppDelegate.containerScreen.BringSideMenuUp("main");
 				}
 			});

@@ -4,6 +4,7 @@ using BigTed;
 using Board.Infrastructure;
 using Board.Interface;
 using Board.Interface.Buttons;
+using Facebook.CoreKit;
 using Board.Interface.Widgets;
 using Board.Schema;
 using Board.Utilities;
@@ -46,6 +47,8 @@ namespace Board.Interface
 
 		public override void ViewDidLoad ()
 		{
+			AppEvents.LogEvent ("entersBoard");
+
 			//var json = JsonUtilty.GenerateDeleteAllJson ();
 			//CloudController.UpdateBoard (board.Id, json);
 
@@ -57,20 +60,6 @@ namespace Board.Interface
 			BTProgressHUD.Show();
 
 			InitializeLists ();
-
-			UserCanEditBoard = CloudController.UserCanEditBoard (board.Id);
-
-			// gets content, puts it in dictionarycontent
-			DictionaryContent = CloudController.GetBoardContent (board.Id);
-
-			var listContentIds = DictionaryContent.Values.Select (x => x.Id).ToList ();
-			listContentIds.Add (UIBoardInterface.board.Id);
-
-			var contentIds = listContentIds.ToArray ();
-
-			DictionaryLikes = CloudController.GetLikes (contentIds);
-
-			DictionaryUserLikes = CloudController.GetUserLikes (contentIds);
 
 			InitializeInterface ();
 
@@ -108,8 +97,7 @@ namespace Board.Interface
 			LoadButtons ();
 		}
 
-		public override void ViewDidDisappear(bool animated)
-		{
+		public override void ViewDidDisappear(bool animated) {
 			RemoveAllContent ();
 		}
 
@@ -178,33 +166,56 @@ namespace Board.Interface
 			buttonBackground.BackgroundColor = UIColor.FromRGBA(255, 255, 255, 220);
 			View.AddSubview (buttonBackground);
 
-			if (UserCanEditBoard) {
-				View.AddSubviews (ButtonInterface.GetCreatorButtons().ToArray());
-			} else {
-				View.AddSubviews (ButtonInterface.GetUserButtons ().ToArray());
-			}
+			CloudController.UserCanEditBoardAsyncWithCallback (delegate(bool userCanEditBoard){
+				UserCanEditBoard = userCanEditBoard;
 
-			ButtonInterface.SwitchButtonLayout (ButtonInterface.ButtonLayout.NavigationBar);
+				if (UserCanEditBoard) {
+					View.AddSubviews (ButtonInterface.GetCreatorButtons().ToArray());
+				} else {
+					View.AddSubviews (ButtonInterface.GetUserButtons ().ToArray());
+				}
+
+				ButtonInterface.SwitchButtonLayout (ButtonInterface.ButtonLayout.NavigationBar);
+
+			}, board.Id);
 		}
 
 
 		public void GenerateWidgets()
 		{
-			BTProgressHUD.Show ();
-
 			// looks for new keys in the DictionaryContent
 			// draws new widget in case new content is found
 
-			foreach (KeyValuePair<string, Content> c in DictionaryContent) {
-				if (!DictionaryWidgets.ContainsKey (c.Key)) {
-					AddWidgetToDictionaryFromContent (c.Value);
-				}
-			}
+			CloudController.GetBoardContentAsyncWithCallback (delegate (Dictionary<string, Content> dictionaryContent){
+				DictionaryContent = dictionaryContent;
+				var listContentIds = DictionaryContent.Values.Select (x => x.Id).ToList ();
+				listContentIds.Add (UIBoardInterface.board.Id);
+				var contentIds = listContentIds.ToArray ();
 
-			var newContentCount = DictionaryWidgets.Values.ToList ().Count (widget => !widget.EyeOpen);
-			ButtonInterface.navigationButton.RefreshNavigationButtonText (newContentCount);
+				CloudController.GetLikesAsyncWithCallback(delegate(Dictionary<string, int> dictionaryLikes) {
 
-			BTProgressHUD.Dismiss ();
+					DictionaryLikes = dictionaryLikes;
+
+					CloudController.GetUserLikesAsyncWithCallback(delegate(Dictionary<string, bool> dictionaryUserLikes) {
+
+						DictionaryUserLikes = dictionaryUserLikes;
+
+						foreach (KeyValuePair<string, Content> c in DictionaryContent) {
+							if (!DictionaryWidgets.ContainsKey (c.Key)) {
+								AddWidgetToDictionaryFromContent (c.Value);
+							}
+						}
+
+						var newContentCount = DictionaryWidgets.Values.ToList ().Count (widget => !widget.EyeOpen);
+						ButtonInterface.navigationButton.RefreshNavigationButtonText (newContentCount);
+
+						BoardScroll.RecalculateBoardSize();
+
+					}, contentIds);
+
+				}, contentIds);
+					
+			}, board.Id);
 		}
 
 		public void AddStickerToDictionaryFromContent(Sticker content){

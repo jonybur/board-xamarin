@@ -51,7 +51,7 @@ namespace Board.Screens.Controls
 
 				var publicationIds = TimelineContent.ContentList.Select (x => x.Id).ToArray ();
 
-				ContentLikes = CloudController.GetLikes (publicationIds);
+				ContentLikes = CloudController.GetLikesSync (publicationIds);
 				UserLikes = CloudController.GetUserLikes (publicationIds);
 
 				foreach (var content in TimelineContent.ContentList) {

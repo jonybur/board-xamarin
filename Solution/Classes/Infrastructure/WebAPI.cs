@@ -9,7 +9,6 @@ namespace Board.Infrastructure
 {
 	public static class WebAPI
 	{
-
 		public static async System.Threading.Tasks.Task<string> GetJsonAsync(string uri){
 			string response;
 

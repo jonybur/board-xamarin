@@ -63,42 +63,62 @@ namespace Board.Interface
 
 		private UIActionButton CreateLikeButton(){
 			likeLabel = new UILabel ();
-			likeLabel = new UILabel();
-			likeLabel.Font = UIFont.SystemFontOfSize(20, UIFontWeight.Light);
+			likeLabel = new UILabel ();
+			likeLabel.Font = UIFont.SystemFontOfSize (20, UIFontWeight.Light);
 
-			likes = UIBoardInterface.DictionaryLikes[UIBoardInterface.board.Id];
+			likes = 0;
 			likeLabel.Text = string.Empty;
 
-			bool isLiked = UIBoardInterface.DictionaryUserLikes[UIBoardInterface.board.Id];
-			var firstImage = isLiked ? fullHeart : emptyHeart;
-			var likeButton = new UIActionButton (firstImage, delegate { });
+			bool isLiked = false;
 
-			likeButton.TouchUpInside += (sender, e) => {
-				if (!isLiked){
-					CloudController.SendLike(UIBoardInterface.board.Id);
-					likes ++;
-					likeButton.ChangeImage(fullHeart);
-				} else {
-					CloudController.SendDislike(UIBoardInterface.board.Id);
-					likes --;
-					likeButton.ChangeImage(emptyHeart);
-				}
-				likeLabel.Text = likes.ToString();
-				isLiked = !isLiked;
-			};
+			var firstImage = isLiked ? fullHeart : emptyHeart;
+
+			var likeButton = new UIActionButton (firstImage, delegate {});
 
 			var sizeLikeLabel = likeLabel.Text.StringSize (likeLabel.Font);
-			likeLabel.Frame = new CGRect(0, 0, sizeLikeLabel.Width + 20, sizeLikeLabel.Height);
+			likeLabel.Frame = new CGRect (0, 0, sizeLikeLabel.Width + 20, sizeLikeLabel.Height);
 			likeLabel.Center = new CGPoint (likeButton.Frame.Right + likeLabel.Frame.Width / 2 + 5, likeButton.Center.Y);
 
 			likeButton.AddSubview (likeLabel);
 
-			FacebookUtils.MakeGraphRequest (UIBoardInterface.board.FacebookId, "?fields=fan_count", LoadFanCount);
+			// asynchroniously fetches like count from DB, if user liked the board, sets the touch event on the button & gets the facebook like count
+			CloudController.GetLikesAsyncWithCallback (async delegate(Dictionary<string, int> likesDictionary) {
+				// gets the likes
+				likes = likesDictionary[UIBoardInterface.board.Id];
+
+				CloudController.GetUserLikesAsyncWithCallback(async delegate(Dictionary<string, bool> isLikedDictionary) {
+					// gets if user liked it
+					isLiked = isLikedDictionary[UIBoardInterface.board.Id];
+					firstImage = isLiked ? fullHeart : emptyHeart;
+					likeButton.ChangeImage(firstImage);
+
+					likeButton.TouchUpInside += (sender, e) => {
+						if (!isLiked) {
+							CloudController.SendLike (UIBoardInterface.board.Id);
+							likes++;
+							likeButton.ChangeImage (fullHeart);
+						} else {
+							CloudController.SendDislike (UIBoardInterface.board.Id);
+							likes--;
+							likeButton.ChangeImage (emptyHeart);
+						}
+						likeLabel.Text = likes.ToString ();
+						isLiked = !isLiked;
+					};
+
+					// gets facebook likes
+					FacebookUtils.MakeGraphRequest (UIBoardInterface.board.FacebookId, "?fields=fan_count", LoadFanCount);
+
+				}, UIBoardInterface.board.Id);
+
+			}, UIBoardInterface.board.Id);
+
 
 			return likeButton;
 		}
 
 		private void LoadFanCount(List<FacebookElement> obj){
+			// loads facebook likes
 			if (obj.Count > 0) {
 				var fanCount = (FacebookFanCount)obj [0];
 				likes += fanCount.Count;

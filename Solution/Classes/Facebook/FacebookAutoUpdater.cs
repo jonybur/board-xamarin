@@ -155,16 +155,14 @@ namespace Board.Facebook
 
 						ReplacedContents = localReplace;
 
-						FacebookUtils.MakeGraphRequest (currentBoard.FacebookId, "videos?fields=source,description,updated_time,thumbnails&limit=3", GetVideos);
+						UploadContent (); 
 					}
 				});
 			}
 
 			// no announcements? goes seek events
 			if (facebookElementsNoStories.Count == 0) {
-				BTProgressHUD.Show(currentBoard.Name + "\nImporting Videos...");
-				FacebookUtils.MakeGraphRequest (currentBoard.FacebookId, "videos?fields=source,description,updated_time,thumbnails&limit=3", GetVideos);
-
+				UploadContent (); 
 			} 
 		}
 
@@ -229,7 +227,6 @@ namespace Board.Facebook
 				FacebookUtils.MakeGraphRequest (currentBoard.FacebookId, "videos?fields=source,description,updated_time,thumbnails&limit=3", GetVideos);
 			}
 		}
-		*/
 
 		static async void GetVideos(List<FacebookElement> FacebookElements){
 			// parses all videos
@@ -259,7 +256,7 @@ namespace Board.Facebook
 			}
 
 			UploadContent (); 
-		}
+		}*/
 
 		static void UploadContent(){
 
@@ -267,10 +264,11 @@ namespace Board.Facebook
 			for (int i = 0; i < ReplacedContents; i++) {
 				
 				string deleteJson = JsonUtilty.GenerateDeleteJson (CurrentContent[i]);
+				Console.WriteLine ("Deleting " + CurrentContent [i].Id);
 				CloudController.UpdateBoard (currentBoard.Id, deleteJson);
 
 			}
-			Console.WriteLine("done");
+			Console.WriteLine ("Done deleting content");
 
 			if (ContentToImport.Count > 0) {
 				var json = JsonUtilty.GenerateUpdateJson (ContentToImport);

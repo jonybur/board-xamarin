@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Board.Interface.Widgets;
@@ -198,6 +197,32 @@ namespace Board.Interface
 			return new CGPoint (center.X - LastLeftScreen * ScrollViewWidthSize, center.Y);
 		}
 
+		public CGPoint ConvertBoardScrollPointToPoint(CGPoint center){
+			return new CGPoint (center.X + LastLeftScreen * ScrollViewWidthSize, center.Y);
+		}
+
+		public void RecalculateBoardSize(){
+			
+			var lastPoint = ConvertPointToBoardScrollPoint (ScrollView.ContentOffset);
+
+			if (!UIBoardInterface.UserCanEditBoard) {
+				CalculateBoardSize ();
+			} else {
+				ScrollViewWidthSize = GetDefaultScrollWidth();
+			}
+			Frame = new CGRect (0, 0, ScrollViewTotalWidthSize, AppDelegate.ScreenHeight);
+			ScrollView.ContentSize = new CGSize (ScrollViewTotalWidthSize, AppDelegate.ScreenHeight);
+
+			var newPoint = ConvertBoardScrollPointToPoint (lastPoint);;
+
+			ScrollView.SetContentOffset(newPoint, false);
+
+			SelectiveRendering ();
+
+			// repositions infobox
+			infoBox.Center = new CGPoint ((ScrollViewWidthSize * rightScreenNumber) + infoBox.Frame.Width/ 2 + UIInfoBox.XMargin, infoBox.Center.Y);
+		}
+
 		private void GenerateScrollViews()
 		{
 			if (!UIBoardInterface.UserCanEditBoard) {
@@ -225,7 +250,7 @@ namespace Board.Interface
 
 				} else if (!IsHighlighting) {
 					
-					if (Math.Abs ((ScrollView.ContentOffset.X + Frame.Width / 2) - infoBox.Center.X) < 100)
+					if (Math.Abs ((ScrollView.ContentOffset.X + AppDelegate.ScreenWidth / 2) - infoBox.Center.X) < 100)
 					{
 						target = new CGPoint(infoBox.Center.X - infoBox.Frame.Width / 2 - UIInfoBox.XMargin, 0);
 						ScrollView.SetContentOffset (target, true);
