@@ -157,8 +157,7 @@ namespace Board
 			window.AddSubview (NavigationController.View);
 			window.MakeKeyAndVisible ();
 
-			UIApplication.SharedApplication.SetStatusBarStyle (UIStatusBarStyle.LightContent, false);
-
+			UIApplication.SharedApplication.SetStatusBarStyle (UIStatusBarStyle.Default, false);
 
 			return true;
 		}

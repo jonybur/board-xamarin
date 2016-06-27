@@ -43,7 +43,7 @@ namespace Board.Screens.Controls
 
 		private UIImageView GenerateBackground(){
 			var background = new UIImageView (new CGRect (0, 0, AppDelegate.ScreenWidth, Height));
-			background.BackgroundColor = AppDelegate.BoardOrange;
+			background.BackgroundColor = UIColor.FromRGB(249, 249, 249);
 			background.Alpha = .95f;
 			return background;
 		}
@@ -51,7 +51,7 @@ namespace Board.Screens.Controls
 		private UILabel GenerateTitle(string title){
 			var label = new UILabel ();
 			label.Font = AppDelegate.Narwhal24;
-			label.TextColor = UIColor.White;
+			label.TextColor = AppDelegate.BoardOrange;
 			label.Text = title;
 			label.TextAlignment = UITextAlignment.Center;
 			label.Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, title.StringSize(label.Font).Height);

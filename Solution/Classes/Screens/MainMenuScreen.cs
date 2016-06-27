@@ -61,7 +61,7 @@ namespace Board.Screens
 
 			var statusBarView = new UIView (new CGRect (0, 0, AppDelegate.ScreenWidth, 20));
 			statusBarView.Alpha = .95f;
-			statusBarView.BackgroundColor = AppDelegate.BoardOrange;
+			statusBarView.BackgroundColor = UIColor.FromRGB(249, 249, 249);
 
 			View.AddSubviews (ScrollView, map, Banner, map_button, statusBarView);
 
@@ -317,11 +317,11 @@ namespace Board.Screens
 			bool taps = false;
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					if (!taps){
+					/*if (!taps){
 						taps = true;
 						Facebook.FacebookAutoUpdater.UpdateAllBoards(FetchedBoards.BoardList);
-					}
-					//AppDelegate.containerScreen.BringSideMenuUp("main");
+					}*/
+					AppDelegate.containerScreen.BringSideMenuUp("main");
 				}
 			});
 

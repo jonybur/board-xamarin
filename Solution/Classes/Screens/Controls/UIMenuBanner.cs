@@ -52,8 +52,8 @@ namespace Board.Screens.Controls
 
 		private UIImageView GenerateStepsBackground(){
 			var background = new UIImageView (new CGRect (0, Height + 1, AppDelegate.ScreenWidth, 33));
-			background.BackgroundColor = AppDelegate.BoardOrange;
-			background.Alpha = .95f;
+			background.BackgroundColor = UIColor.FromRGB(249, 249, 249);
+			//background.Alpha = .95f;
 
 			return background;
 		}
@@ -67,7 +67,7 @@ namespace Board.Screens.Controls
 
 				label.Font = AppDelegate.Narwhal20;
 				label.Text = labelText.ToString();
-				label.TextColor = UIColor.White;
+				label.TextColor = AppDelegate.BoardOrange;//UIColor.White;
 
 				if (labelText != current_step) {
 					label.Alpha = .5f;
@@ -117,8 +117,10 @@ namespace Board.Screens.Controls
 			using (var img = UIImage.FromFile ("./menubanner/"+filename+".png")) {
 				float imgw = (float)img.Size.Width / 2, imgh = (float)img.Size.Height / 2;
 				float xposition = ontheleft ? 0 : (float)Frame.Width - imgw;
-				buttonView.Image = img;
+
+				buttonView.Image = img.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 				buttonView.Frame = new CGRect (xposition, 0, imgw, imgh);
+				buttonView.TintColor = AppDelegate.BoardOrange;
 			}
 
 			return buttonView;
@@ -126,15 +128,15 @@ namespace Board.Screens.Controls
 
 		private UIImageView GenerateBackground(){
 			var background = new UIImageView (new CGRect (0, 0, AppDelegate.ScreenWidth, 66));
-			background.BackgroundColor = AppDelegate.BoardOrange;
-			background.Alpha = .95f;
+			background.BackgroundColor = UIColor.FromRGB(249, 249, 249);
+
 			return background;
 		}
 
 		private UILabel GenerateTitle(string title){
 			var label = new UILabel (new CGRect (0, 0, AppDelegate.ScreenWidth, 30));
 			label.Font = AppDelegate.Narwhal30;
-			label.TextColor = UIColor.White;
+			label.TextColor = AppDelegate.BoardOrange;
 			label.Text = title;
 			label.TextAlignment = UITextAlignment.Center;
 			label.SizeToFit ();

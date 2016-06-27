@@ -2,8 +2,6 @@
 using Board.Screens.Controls;
 using Board.Utilities;
 using Foundation;
-using CoreLocation;
-using System;
 using UIKit;
 
 namespace Board.Screens

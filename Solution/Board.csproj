@@ -282,6 +282,7 @@
     <BundleResource Include="Resources\Icon-Small%402x.png" />
     <BundleResource Include="Resources\Icon-Small-40%402x.png" />
     <BundleResource Include="Resources\DefaultUser.png" />
+    <BundleResource Include="Resources\Default-736h%403x.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
