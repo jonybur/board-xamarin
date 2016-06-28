@@ -276,7 +276,7 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			Banner = new UIMenuBanner("CREATE", "arrow_left", "arrow_right", 3, 2);
+			Banner = new UIMenuBanner("Create", "arrow_left", "arrow_right", 3, 2);
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer ((tg) => {
 				

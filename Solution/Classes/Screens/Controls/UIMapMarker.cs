@@ -47,8 +47,10 @@ namespace Board.Screens.Controls
 			var imageView = new UIImageView ();
 			imageView.Frame = new CGRect (0, 0, 50, 50);
 			imageView.ContentMode = UIViewContentMode.ScaleAspectFit;
-			imageView.SetImage (new NSUrl(board.LogoUrl), new UIImage ("./demo/magazine/nantucket.png"),
-				image => Icon = CreateMarkerImage(image), delegate(NSError obj) { });
+			imageView.SetImage (new NSUrl(board.LogoUrl), new UIImage ("./demo/magazine/nantucket.png"), delegate(UIImage image) {
+				Icon = CreateMarkerImage(image);
+				System.Console.WriteLine("Loads MapMarker image");
+			}, delegate(NSError obj) { });
 
 			Draggable = false;
 			Title = board.Name;

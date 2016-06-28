@@ -82,7 +82,7 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			Banner = new UIMenuBanner ("BUSINESS", "menu_left");
+			Banner = new UIMenuBanner ("Business", "menu_left");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){

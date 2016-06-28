@@ -21,7 +21,6 @@ namespace Board.Screens
 		List<UIMapMarker> ListMapMarkers;
 
 		UIMagazine Magazine;
-		//UIActionButton map_button;
 		UIMultiActionButtons LowerButtons;
 		EventHandler MapButtonEvent;
 		UIContentDisplay ContentDisplay;
@@ -55,13 +54,11 @@ namespace Board.Screens
 
 			ListMapMarkers = new List<UIMapMarker> ();
 
-			LoadMapButton ();
+			LowerButtons = new UIMultiActionButtons ();
 			LoadBanner ();
 			LoadMap ();
 
-			var statusBarView = new UIView (new CGRect (0, 0, AppDelegate.ScreenWidth, 20));
-			statusBarView.Alpha = .95f;
-			statusBarView.BackgroundColor = UIColor.FromRGB(249, 249, 249);
+			var statusBarView = new UIStatusBar ();
 
 			View.AddSubviews (ScrollView, map, Banner, LowerButtons, statusBarView);
 
@@ -243,9 +240,7 @@ namespace Board.Screens
 
 				ContentDisplay = Magazine.Pages [0].ContentDisplay;
 				ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, ContentDisplay.Frame.Bottom);
-
 				ScrollView.AddSubview (ContentDisplay);
-				ScrollView.AddSubview (Magazine.Banner);
 
 			} else {
 
@@ -274,13 +269,9 @@ namespace Board.Screens
 
 				ScrollView.Scrolled += (sender, e) => {
 					
-					if (ScrollView.ContentOffset.Y < 0){
-						
-						Magazine.Banner.Center = new CGPoint(Magazine.Banner.Center.X,
-							UIMenuBanner.Height + Magazine.Banner.Frame.Height / 2 + ScrollView.ContentOffset.Y);
+					if (ScrollView.ContentOffset.Y < 0) {
 
 						Banner.Frame = new CGRect(Banner.Frame.X, 0, Banner.Frame.Width, Banner.Frame.Height);
-
 
 					} else if (ScrollView.ContentOffset.Y < ScrollView.ContentSize.Height - AppDelegate.ScreenHeight) {
 						
@@ -310,10 +301,11 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			Banner = new UIMenuBanner ("BOARD", "menu_left");
+			Banner = new UIMenuBanner ("", "menu_left");
+			Banner.ChangeTitle ("Board", AppDelegate.Narwhal26);
 
-			//bool taps = false;
-			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
+			bool taps = false;
+			var tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					/*if (!taps){
 						taps = true;
@@ -363,12 +355,21 @@ namespace Board.Screens
 			}
 		}
 
-		public void PlaceNewScreen(UIContentDisplay newDisplay){
+		public void PlaceNewScreen(UIContentDisplay newDisplay, string screenName, UIFont newFont){
+			PlaceNewScreen (newDisplay, screenName, newFont, AppDelegate.BoardBlack);
+		}
+
+		// 3 lower buttons
+		public void PlaceNewScreen(UIContentDisplay newDisplay, string screenName, UIFont newFont, UIColor newColor){
+			map.Alpha = 0f;
+
 			ContentDisplay.UnsuscribeToEvents ();
 			ContentDisplay.RemoveFromSuperview ();
 
 			// this updates distance to thumbs everytime user switches screen
 			if (newDisplay is UIThumbsContentDisplay) {
+				((UIThumbsContentDisplay)newDisplay).GenerateList ();
+
 				var listThumbs = ((UIThumbsContentDisplay)newDisplay).ListThumbComponents;
 				if (listThumbs != null){
 					foreach (var thumb in listThumbs) {
@@ -382,12 +383,30 @@ namespace Board.Screens
 			ScrollView.SendSubviewToBack (ContentDisplay);
 			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, newDisplay.Frame.Height);
 			ContentDisplaySuscribeToEvents (ContentDisplay);
+			// animates banner to be shown
+
+			Banner.ChangeTitle (screenName, newFont, newColor);
+
+			Banner.AnimateShow();
 		} 
 
-		private void LoadMapButton()
-		{
-			LowerButtons = new UIMultiActionButtons ();
+		public void ScrollsUp(){
+			ScrollView.SetContentOffset (new CGPoint (0, 0), true);
 		}
 
+		// map button
+		public void ShowMap(){
+			
+			map.Alpha = 1f;
+
+			// stops scrollview
+			ScrollView.SetContentOffset(ScrollView.ContentOffset, false);
+
+			// animates banner to be shown
+			Banner.AnimateShow();
+
+			Banner.ChangeTitle ("Map", UIFont.SystemFontOfSize(20, UIFontWeight.Medium));
+
+		}
 	}
 }

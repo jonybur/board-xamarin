@@ -18,23 +18,23 @@ namespace Board.Screens.Controls
 		private class AlphabeticComparer : IBoardComparer
 		{
 			public string Description { 
-				get { return "ALPHABETIC"; }
+				get { return "Alphabetical Order"; }
 			}
 
 			public int Compare (Board.Schema.Board x, Board.Schema.Board y)
 			{
-				return String.Compare(x.Name[0].ToString(), y.Name[0].ToString());
+				return String.Compare(x.Name[0].ToString().ToLower(), y.Name[0].ToString().ToLower());
 			}
 
 			public string GetComparisonPropertyDescription(Board.Schema.Board target) {
-				return target.Name [0].ToString ();
+				return target.Name [0].ToString ().ToLower();
 			}
 		}
 
 		private class NeighbourhoodComparer : IBoardComparer
 		{
 			public string Description { 
-				get { return "NEIGHBOURHOOD"; }
+				get { return "Neighbourhood"; }
 			}
 
 			public int Compare (Board.Schema.Board x, Board.Schema.Board y)
@@ -50,7 +50,7 @@ namespace Board.Screens.Controls
 		private class CategoryComparer : IBoardComparer
 		{
 			public string Description {
-				get { return "CATEGORY"; }
+				get { return "Category"; }
 			}
 
 			public int Compare (Board.Schema.Board x, Board.Schema.Board y)
@@ -67,12 +67,12 @@ namespace Board.Screens.Controls
 		private class DistanceComparer : IBoardComparer
 		{
 			public string Description { 
-				get { return "DISTANCE"; }
+				get { return "Distance"; }
 			}
 
 			public int Compare (Board.Schema.Board x, Board.Schema.Board y)
 			{
-				return (int)Math.Floor(x.Distance*10.0) - (int)Math.Floor(y.Distance*10.0);
+				return (int)Math.Floor(x.Distance*100.0) - (int)Math.Floor(y.Distance*100.0);
 			}
 		
 			public string GetComparisonPropertyDescription(Board.Schema.Board target) {
@@ -89,10 +89,13 @@ namespace Board.Screens.Controls
 
 		private IBoardComparer _boardComparer;
 		private Dictionary<OrderMode, IBoardComparer> _boardComparersByMode; 
+		private List<Board.Schema.Board> BoardList;
 
 		public UIThumbsContentDisplay (List<Board.Schema.Board> boardList, OrderMode mode,
 			float extraTopMargin = 0, float extraLowMargin = 0)
 		{
+			BoardList = boardList;
+
 			if (boardList.Count == 0) {
 				return;
 			} 
@@ -111,32 +114,39 @@ namespace Board.Screens.Controls
 			Modes.Add (OrderMode.Alphabetic);
 			Modes.Add (OrderMode.Distance);
 
-			GenerateList (boardList, mode, extraTopMargin, extraLowMargin);
+			GenerateList (mode, extraTopMargin, extraLowMargin);
 
 			UserInteractionEnabled = true;
 		}
+		bool didHaveFirstLoad = false;
+		public void GenerateList(){
+			if (!didHaveFirstLoad) {
+				MemoryUtility.ReleaseSubviews(Subviews);
+				GenerateList (OrderMode.Distance);
+				didHaveFirstLoad = true;
+			}
+		}
 
-		private void GenerateList(List<Board.Schema.Board> boardList, OrderMode mode,
-			float extraTopMargin = 0, float extraLowMargin = 0){
+		private void GenerateList(OrderMode mode, float extraTopMargin = 0, float extraLowMargin = 0){
 
 			ListThumbs = new List<UIContentThumb> ();
 			ListThumbComponents = new List<UIBoardThumbComponent> ();
 
 			this._boardComparer = this._boardComparersByMode [mode];
 
-			boardList = boardList.OrderBy(x => x, this._boardComparer).ToList();
+			BoardList = BoardList.OrderBy(x => x, this._boardComparer).ToList();
 
-			var comparer = boardList[0];
+			var comparer = BoardList[0];
 
 			// starting point
 			int linecounter = 1, sectionNumber = 0, i = 0;
 
 			float yposition = TopAndBottomSeparation + UIMenuBanner.Height + extraTopMargin;
 
-			var tap = new UITapGestureRecognizer(tg => {
+			var tap = new UITapGestureRecognizer (tg => {
 				MemoryUtility.ReleaseSubviews(Subviews);
 				int nextMode = ((int)mode + 1) % Modes.Count;
-				GenerateList (boardList, Modes[nextMode], extraTopMargin, extraLowMargin);
+				GenerateList (Modes[nextMode], extraTopMargin, extraLowMargin);
 			});
 
 			var filterSelector = new UIFilterSelector (yposition - 20, _boardComparer.Description, tap);
@@ -148,7 +158,7 @@ namespace Board.Screens.Controls
 				locationSeparation = 40; minSeparation = 30; separationBetweenThumbs = 20;
 			}
 
-			foreach (Board.Schema.Board b in boardList) {
+			foreach (Board.Schema.Board b in BoardList) {
 				if (this._boardComparer.Compare(comparer, b) != 0 || i == 0) {
 
 					string header = _boardComparer.GetComparisonPropertyDescription (b);
@@ -205,10 +215,10 @@ namespace Board.Screens.Controls
 
 			public UIFilterSelector(float yposition, string text, UITapGestureRecognizer tap){
 				Frame = new CGRect(20, yposition, AppDelegate.ScreenWidth - 40, 50);
-				Font = AppDelegate.Narwhal16;
+				Font = UIFont.SystemFontOfSize (16, UIFontWeight.Medium);
 				TextColor = AppDelegate.BoardOrange;
 				AdjustsFontSizeToFitWidth = true;
-				Text = "SORT: " + text;
+				Text = "Sorted by " + text;
 				TextAlignment = UITextAlignment.Center;
 
 				UserInteractionEnabled = true;

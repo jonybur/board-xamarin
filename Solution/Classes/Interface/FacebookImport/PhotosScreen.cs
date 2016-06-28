@@ -124,7 +124,7 @@ namespace Board.Interface.FacebookImport
 			
 		private void LoadBanner()
 		{
-			Banner = new UIMenuBanner ("PHOTOS", "arrow_left");
+			Banner = new UIMenuBanner ("Photos", "arrow_left");
 
 			var tap = new UITapGestureRecognizer (tg => {
 				if (!CanGoBack){

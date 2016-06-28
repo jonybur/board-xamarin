@@ -31,19 +31,19 @@ namespace Board.Screens
 				logoURL = "./screens/support/icon.png";
 				titleString = "CONTACT BOARD";
 				descriptionString = "Want to contact our staff?\nJust send us an email and\na representative will assist you\nas soon as possible";
-				actionString = "EMAIL STAFF";
+				actionString = "Email Staff";
 				break;
 			case ScreenContact.InviteScreen:
 				logoURL = "./screens/invite/icon.png";
 				titleString = "SHARE BOARD";
 				descriptionString = "Invite your friends\nand tell them to get on Board!";
-				actionString = "SEND INVITE";
+				actionString = "Send Invite";
 				break;
 			case ScreenContact.BusinessScreen:
 				logoURL = "./screens/business/icon.png";
 				titleString = "CREATE A BOARD"; 
 				descriptionString = "Have a business in Nantucket?\nGet your business on Board\nJust send us an email and\na representative will assist you\nas soon as possible";
-				actionString = "EMAIL STAFF";
+				actionString = "Email Staff";
 				break;
 			}
 
@@ -76,10 +76,16 @@ namespace Board.Screens
 			size = DescriptionView.SizeThatFits (DescriptionView.Frame.Size);
 			DescriptionView.Frame = new CGRect(DescriptionView.Frame.X, DescriptionView.Frame.Y, DescriptionView.Frame.Width, size.Height);
 
-			ActionButton = new UIButton ();
+			ActionButton = new UIButton (UIButtonType.Custom);
 			ActionButton.Frame = new CGRect (0, DescriptionView.Frame.Bottom + 30, AppDelegate.ScreenWidth / 2, 50);
-			ActionButton.BackgroundColor = AppDelegate.BoardBlue;
+
 			ActionButton.SetTitle (actionString, UIControlState.Normal);
+			ActionButton.BackgroundColor = AppDelegate.BoardBlue;
+
+			ActionButton.ClipsToBounds = true;
+			ActionButton.Layer.MasksToBounds = true;
+
+			ActionButton.Layer.CornerRadius = 10;
 
 			ActionButton.TouchUpInside += async (sender, e) => {
 

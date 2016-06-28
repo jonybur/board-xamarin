@@ -28,7 +28,7 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			Banner = new UIMenuBanner ("SUPPORT", "menu_left");
+			Banner = new UIMenuBanner ("Support", "menu_left");
 
 			var tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){

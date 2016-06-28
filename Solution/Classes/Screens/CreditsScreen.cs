@@ -165,7 +165,7 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			Banner = new UIMenuBanner ("CREDITS", "arrow_left");
+			Banner = new UIMenuBanner ("Credits", "arrow_left");
 
 			bool taps = false;
 

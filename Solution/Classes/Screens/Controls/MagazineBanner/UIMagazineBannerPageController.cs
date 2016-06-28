@@ -48,7 +48,7 @@ namespace Board.Screens.Controls
 				var containerScreen = AppDelegate.NavigationController.TopViewController as ContainerScreen;
 				var mainMenuScreen = containerScreen.CurrentScreenViewController as MainMenuScreen;
 
-				mainMenuScreen.PlaceNewScreen (UIMagazineServices.Pages[indexOfCurrentViewController].ContentDisplay);
+				mainMenuScreen.PlaceNewScreen (UIMagazineServices.Pages[indexOfCurrentViewController].ContentDisplay, "Board", AppDelegate.Narwhal26);
 			}	
 		}
 

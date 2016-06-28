@@ -48,7 +48,12 @@ namespace Board.Screens
 			nantucketButton.Frame = new CGRect (0, DescriptionView.Frame.Bottom + 30, AppDelegate.ScreenWidth * 0.75f, 50);
 			nantucketButton.BackgroundColor = AppDelegate.BoardBlue;
 			nantucketButton.Center = new CGPoint (DescriptionView.Frame.Width / 2, nantucketButton.Center.Y);
-			nantucketButton.SetTitle ("DISCOVER NANTUCKET", UIControlState.Normal);
+			nantucketButton.SetTitle ("Discover Nantucket", UIControlState.Normal);
+
+			nantucketButton.ClipsToBounds = true;
+			nantucketButton.Layer.MasksToBounds = true;
+			nantucketButton.Layer.CornerRadius = 10;
+			
 
 			nantucketButton.TouchUpInside += (sender, e) => {
 				CATransaction.Begin ();

@@ -123,7 +123,7 @@ namespace Board.Interface.FacebookImport
 
 		private void LoadBanner()
 		{
-			Banner = new UIMenuBanner ("ALBUMS", "cross_left");
+			Banner = new UIMenuBanner ("Albums", "cross_left");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (!canGoBack){

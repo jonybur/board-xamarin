@@ -145,7 +145,7 @@ namespace Board.Screens.Controls
 				screenNumber++;
 			}
 
-			pages [screenNumber].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Category, UIMagazineBannerPage.Height, UIActionButton.Height);
+			pages [screenNumber].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Distance, UIMagazineBannerPage.Height, UIActionButton.Height);
 
 			Pages = pages;
 		}

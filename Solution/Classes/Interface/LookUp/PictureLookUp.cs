@@ -69,7 +69,11 @@ namespace Board.Interface.LookUp
 			textview.ScrollEnabled = true;
 			textview.DataDetectorTypes = UIDataDetectorType.Link;
 			textview.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
-			textview.Text = description;
+			if (description != "<null>" && !string.IsNullOrEmpty(description)) {
+				textview.Text = description;
+			} else {
+				textview.Text = string.Empty;
+			}
 			textview.Font = UIFont.SystemFontOfSize (14);
 			textview.TextColor = UIColor.White;
 			var size = textview.SizeThatFits (new CGSize (AppDelegate.ScreenWidth - 10, 60));

@@ -9,9 +9,26 @@ namespace Board.Screens.Controls
 	public sealed class UIMenuBanner : UIImageView
 	{
 		List<UITapGestureRecognizer> taps;
+		UILabel TitleLabel;
 
 		public const int Height = 66;
 
+		public void ChangeTitle(string newTitle){
+			TitleLabel.Text = newTitle;	
+			TitleLabel.SizeToFit ();
+			TitleLabel.Center = new CGPoint (AppDelegate.ScreenWidth / 2, Height / 2 + UIStatusBar.Height / 2);
+		}
+
+		public void ChangeTitle(string newTitle, UIFont newFont){
+			TitleLabel.Font = newFont;
+			ChangeTitle (newTitle);
+		}
+
+		public void ChangeTitle(string newTitle, UIFont newFont, UIColor newColor){
+			TitleLabel.Font = newFont;
+			TitleLabel.TextColor = newColor;
+			ChangeTitle (newTitle);
+		}
 
 		public UIMenuBanner (string title, string left_button = null, string right_button = null, int steps_number = 0, int current_step = 0)
 		{
@@ -20,7 +37,12 @@ namespace Board.Screens.Controls
 			var backgroundView = GenerateBackground ();
 			Frame = backgroundView.Frame;
 
-			var titleLabel = GenerateTitle (title);
+			var bottomLineView = new UIImageView ();
+			bottomLineView.Frame = new CGRect (0, backgroundView.Frame.Bottom - 1, backgroundView.Frame.Width, 1);
+			bottomLineView.BackgroundColor = AppDelegate.BoardBlack;
+			bottomLineView.Alpha = .25f;
+
+			TitleLabel = GenerateTitle (title);
 
 			AddSubview (backgroundView);
 
@@ -33,7 +55,7 @@ namespace Board.Screens.Controls
 				AddSubview (rightButton);
 			}
 
-			AddSubviews (titleLabel);
+			AddSubviews (TitleLabel);
 
 			if (steps_number > 0) {
 				var stepsView = GenerateStepsBackground();
@@ -47,11 +69,13 @@ namespace Board.Screens.Controls
 				Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, stepsView.Frame.Bottom);
 			}
 
+			AddSubview (bottomLineView);
+
 			UserInteractionEnabled = true;
 		}
 
 		private UIImageView GenerateStepsBackground(){
-			var background = new UIImageView (new CGRect (0, Height + 1, AppDelegate.ScreenWidth, 33));
+			var background = new UIImageView (new CGRect (0, Height + 1, AppDelegate.ScreenWidth, Height / 2));
 			background.BackgroundColor = UIColor.FromRGB(249, 249, 249);
 			//background.Alpha = .95f;
 
@@ -67,7 +91,7 @@ namespace Board.Screens.Controls
 
 				label.Font = AppDelegate.Narwhal20;
 				label.Text = labelText.ToString();
-				label.TextColor = AppDelegate.BoardOrange;//UIColor.White;
+				label.TextColor = AppDelegate.BoardBlack;//UIColor.White;
 
 				if (labelText != current_step) {
 					label.Alpha = .5f;
@@ -120,27 +144,32 @@ namespace Board.Screens.Controls
 
 				buttonView.Image = img.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 				buttonView.Frame = new CGRect (xposition, 0, imgw, imgh);
-				buttonView.TintColor = AppDelegate.BoardOrange;
+				buttonView.TintColor = AppDelegate.BoardBlack;
+				buttonView.Alpha = .75f;
 			}
 
 			return buttonView;
 		}
 
 		private UIImageView GenerateBackground(){
-			var background = new UIImageView (new CGRect (0, 0, AppDelegate.ScreenWidth, 66));
+			var background = new UIImageView (new CGRect (0, 0, AppDelegate.ScreenWidth, Height));
 			background.BackgroundColor = UIColor.FromRGB(249, 249, 249);
 
 			return background;
 		}
 
 		private UILabel GenerateTitle(string title){
-			var label = new UILabel (new CGRect (0, 0, AppDelegate.ScreenWidth, 30));
-			label.Font = AppDelegate.Narwhal30;
-			label.TextColor = AppDelegate.BoardOrange;
+			var label = new UILabel (new CGRect (0, 0, AppDelegate.ScreenWidth, 1));
+
+			label.Font = UIFont.SystemFontOfSize(20, UIFontWeight.Medium);
+
+			label.TextColor = AppDelegate.BoardBlack;
 			label.Text = title;
 			label.TextAlignment = UITextAlignment.Center;
+
 			label.SizeToFit ();
-			label.Center = new CGPoint (Center.X, Center.Y + 12);
+
+			label.Center = new CGPoint (Center.X, Height / 2 + UIStatusBar.Height / 2);
 			return label;
 		}
 

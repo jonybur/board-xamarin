@@ -15,6 +15,11 @@ namespace Board.Infrastructure
 
 			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
 				var getTask = await httpClient.GetAsync (uri, ct);
+
+				if (!getTask.IsSuccessStatusCode) {
+					return ((int)getTask.StatusCode).ToString ();
+				}
+
 				response = await getTask.Content.ReadAsStringAsync();
 			}
 
@@ -26,6 +31,11 @@ namespace Board.Infrastructure
 
 			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
 				var getTask = await httpClient.GetAsync (uri);
+
+				if (!getTask.IsSuccessStatusCode) {
+					return ((int)getTask.StatusCode).ToString ();
+				}
+
 				response = await getTask.Content.ReadAsStringAsync();
 			}
 
@@ -53,6 +63,7 @@ namespace Board.Infrastructure
 				var httpResponse = await httpClient.PutAsync (uri, httpContent);
 				response = await httpResponse.Content.ReadAsStringAsync();
 			}
+
 			return response;
 		}
 

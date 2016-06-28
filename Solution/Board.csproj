@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -60,6 +60,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>full</DebugType>
+    <MtouchEnableBitcode>false</MtouchEnableBitcode>
     <Optimize>true</Optimize>
     <OutputPath>bin\iPhone\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
@@ -267,10 +268,6 @@
     <BundleResource Include="Resources\demo\magazine\nantucket.png" />
     <BundleResource Include="Resources\boardinterface\infobox\emptylike.png" />
     <BundleResource Include="Resources\boardinterface\infobox\fulllike.png" />
-    <BundleResource Include="Resources\Default-568h%402x.png" />
-    <BundleResource Include="Resources\Default-667h%402x.png" />
-    <BundleResource Include="Resources\Default.png" />
-    <BundleResource Include="Resources\Default%402x.png" />
     <BundleResource Include="Resources\screens\main\magazine\flagpin.png" />
     <BundleResource Include="Resources\screens\nocontent\noapp.png" />
     <BundleResource Include="Resources\screens\business\icon.png" />
@@ -282,15 +279,19 @@
     <BundleResource Include="Resources\Icon-Small%402x.png" />
     <BundleResource Include="Resources\Icon-Small-40%402x.png" />
     <BundleResource Include="Resources\DefaultUser.png" />
+    <BundleResource Include="Resources\Default-667h%402x.png" />
+    <BundleResource Include="Resources\Default.png" />
     <BundleResource Include="Resources\Default-736h%403x.png" />
-    <BundleResource Include="Resources\screens\main\buttons\empty_star.png" />
-    <BundleResource Include="Resources\screens\main\buttons\full_star.png" />
+    <BundleResource Include="Resources\Default%402x.png" />
+    <BundleResource Include="Resources\Default-568h%402x.png" />
     <BundleResource Include="Resources\screens\main\buttons\empty_directory.png" />
     <BundleResource Include="Resources\screens\main\buttons\empty_house.png" />
     <BundleResource Include="Resources\screens\main\buttons\empty_map.png" />
+    <BundleResource Include="Resources\screens\main\buttons\empty_star.png" />
     <BundleResource Include="Resources\screens\main\buttons\full_directory.png" />
     <BundleResource Include="Resources\screens\main\buttons\full_house.png" />
     <BundleResource Include="Resources\screens\main\buttons\full_map.png" />
+    <BundleResource Include="Resources\screens\main\buttons\full_star.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -434,19 +435,20 @@
     <Compile Include="Classes\Schema\Contents\Poll.cs" />
     <Compile Include="Classes\Schema\Contents\Video.cs" />
     <Compile Include="Classes\Schema\Contents\Sticker.cs" />
-    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIBoardThumb.cs" />
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UICarouselController.cs" />
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentDisplay.cs" />
-    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentThumb.cs" />
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIThumbsContentDisplay.cs" />
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UITimelineContentDisplay.cs" />
-    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UITimelineWidget.cs" />
     <Compile Include="Classes\Infrastructure\WebAPI.cs" />
     <Compile Include="Classes\Screens\EmailScreen.cs" />
     <Compile Include="Classes\Facebook\FacebookAutoUpdater.cs" />
     <Compile Include="Classes\Facebook\FacebookFanCount.cs" />
     <Compile Include="Classes\Facebook\FacebookLikes.cs" />
     <Compile Include="Classes\Screens\Controls\UIMultiActionButtons.cs" />
+    <Compile Include="Classes\Screens\Controls\UIStatusBar.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentDisplayComponents\UIBoardThumb.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentDisplayComponents\UIContentThumb.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentDisplayComponents\UITimelineWidget.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -517,6 +519,7 @@
     <Folder Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\" />
     <Folder Include="Resources\screens\credits\" />
     <Folder Include="Resources\screens\main\buttons\" />
+    <Folder Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentDisplayComponents\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="sqlite-net">

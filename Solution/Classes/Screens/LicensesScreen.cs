@@ -71,7 +71,7 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			Banner = new UIMenuBanner ("LICENSES", "arrow_left");
+			Banner = new UIMenuBanner ("Licenses", "arrow_left");
 
 			bool taps = false;
 

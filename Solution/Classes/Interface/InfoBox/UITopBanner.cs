@@ -5,8 +5,6 @@ using Board.Interface.LookUp;
 using Board.Screens.Controls;
 using Board.Utilities;
 using CoreGraphics;
-using CoreLocation;
-using Google.Maps;
 using Haneke;
 using UIKit;
 
@@ -15,6 +13,7 @@ namespace Board.Interface
 	public class UITopBanner : UIView {
 		UIImageView BackgroundImage;
 		UIBoardBannerPage BannerPage;
+		public const int Height = 175;
 
 		public float Bottom{
 			get { 
@@ -23,7 +22,7 @@ namespace Board.Interface
 		}
 
 		public UITopBanner(UIImage boardImage, float width){
-			BackgroundImage = new UIImageView (new CGRect(0, 0, width, UIMagazineBannerPage.Height));
+			BackgroundImage = new UIImageView (new CGRect(0, 0, width, Height));
 
 			BackgroundImage.ClipsToBounds = true;
 			BannerPage = new UIBoardBannerPage (width);

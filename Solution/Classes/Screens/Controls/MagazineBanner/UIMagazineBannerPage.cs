@@ -8,7 +8,7 @@ namespace Board.Screens.Controls
 {
 	public sealed class UIMagazineBannerPage : UIImageView
 	{
-		public const int Height = 175;
+		public const int Height = 0;
 
 		public UIMagazineBannerPage(string subtitleText)
 		{

@@ -114,8 +114,8 @@ namespace Board.Screens.Controls
 
 			var nameView = new UILabel ();
 			nameView.Frame = new CGRect (logoView.Frame.Right + 10, 3, boardButton.Frame.Width, 20);
-			nameView.Text = board.Name;
-			nameView.Font = AppDelegate.Narwhal16;
+			nameView.Text =  CommonUtils.FirstLetterOfEveryWordToUpper (board.Name);
+			nameView.Font = UIFont.SystemFontOfSize (16, UIFontWeight.Medium);//AppDelegate.Narwhal16;
 			nameView.TextColor = AppDelegate.BoardOrange;
 			nameView.AdjustsFontSizeToFitWidth = true;
 
@@ -124,7 +124,7 @@ namespace Board.Screens.Controls
 			var distance = CommonUtils.GetDistanceFromUserToBoard (board);
 			var formattedDistance = CommonUtils.GetFormattedDistance (distance);
 			distanceView.Text = formattedDistance;
-			distanceView.Font = AppDelegate.Narwhal12;
+			distanceView.Font = UIFont.SystemFontOfSize (12, UIFontWeight.Light);//AppDelegate.Narwhal12;
 			distanceView.TextColor = UIColor.Black;
 			distanceView.AdjustsFontSizeToFitWidth = true;
 

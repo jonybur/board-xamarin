@@ -42,6 +42,7 @@ namespace Board
 		public static UIFont Narwhal18;
 		public static UIFont Narwhal20;
 		public static UIFont Narwhal24;
+		public static UIFont Narwhal26;
 		public static UIFont Narwhal30;
 		public static UIFont SystemFontOfSize16;
 		public static UIFont SystemFontOfSize18;
@@ -103,6 +104,7 @@ namespace Board
 			Narwhal18 = UIFont.FromName ("narwhal-bold", 18);
 			Narwhal20 = UIFont.FromName ("narwhal-bold", 20);
 			Narwhal24 = UIFont.FromName ("narwhal-bold", 24);
+			Narwhal26 = UIFont.FromName ("narwhal-bold", 26);
 			Narwhal30 = UIFont.FromName ("narwhal-bold", 29);
 
 			SystemFontOfSize16 = UIFont.SystemFontOfSize (16);

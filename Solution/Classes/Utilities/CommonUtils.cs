@@ -70,22 +70,34 @@ namespace Board.Utilities
 		}
 
 		public static string GetFormattedDistance(double distance){
+			string distanceString, distanceTotalString;
 
-			string farAway;
-			if (distance != 1) {
-				farAway = " miles away";
+			if (distance < .18) {
+
+				distance *= 5280;
+				distanceString = ((int)distance).ToString ();
+				distanceTotalString = distanceString + " feet away";
+
+				return distanceTotalString;
+
 			} else {
-				farAway = " mile away";
+
+				string farAway;
+				if (distance != 1) {
+					farAway = " miles away";
+				} else {
+					farAway = " mile away";
+				}
+
+				distanceString = distance.ToString ("F1", CultureInfo.InvariantCulture);
+				if (distanceString.EndsWith (".0")) {
+					distanceString = distanceString.Substring (0, distanceString.Length - 2);
+				}
+
+				distanceTotalString = distanceString + farAway;
+
+				return distanceTotalString;
 			}
-
-			string distanceString = distance.ToString ("F1", CultureInfo.InvariantCulture);
-			if (distanceString.EndsWith(".0")) {
-				distanceString = distanceString.Substring (0, distanceString.Length - 2);
-			}
-
-			string distanceTotalString = distanceString + farAway;
-
-			return distanceTotalString;
 		}
 
 		public static double GetDistanceFromUserToBoard(Board.Schema.Board board){

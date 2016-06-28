@@ -27,7 +27,6 @@ namespace Board.Screens.Controls
 			AddSubviews (BoardThumb, NameLabel);
 		}
 
-
 		public void UpdateDistanceLabel ()
 		{
 			NameLabel.RemoveFromSuperview ();
