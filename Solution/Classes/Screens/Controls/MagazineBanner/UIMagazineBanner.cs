@@ -34,7 +34,7 @@ namespace Board.Screens.Controls
 
 		public UIMagazine(List<Board.Schema.Board> boardList){
 			GeneratePages (boardList);
-			Banner = new UIMagazineBanner ();
+			//Banner = new UIMagazineBanner ();
 		}
 
 		public static Dictionary<string, int> ContentLikes;

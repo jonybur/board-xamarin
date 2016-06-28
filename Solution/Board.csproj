@@ -283,6 +283,14 @@
     <BundleResource Include="Resources\Icon-Small-40%402x.png" />
     <BundleResource Include="Resources\DefaultUser.png" />
     <BundleResource Include="Resources\Default-736h%403x.png" />
+    <BundleResource Include="Resources\screens\main\buttons\empty_star.png" />
+    <BundleResource Include="Resources\screens\main\buttons\full_star.png" />
+    <BundleResource Include="Resources\screens\main\buttons\empty_directory.png" />
+    <BundleResource Include="Resources\screens\main\buttons\empty_house.png" />
+    <BundleResource Include="Resources\screens\main\buttons\empty_map.png" />
+    <BundleResource Include="Resources\screens\main\buttons\full_directory.png" />
+    <BundleResource Include="Resources\screens\main\buttons\full_house.png" />
+    <BundleResource Include="Resources\screens\main\buttons\full_map.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -438,6 +446,7 @@
     <Compile Include="Classes\Facebook\FacebookAutoUpdater.cs" />
     <Compile Include="Classes\Facebook\FacebookFanCount.cs" />
     <Compile Include="Classes\Facebook\FacebookLikes.cs" />
+    <Compile Include="Classes\Screens\Controls\UIMultiActionButtons.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -507,6 +516,7 @@
     <Folder Include="Classes\Schema\Contents\" />
     <Folder Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\" />
     <Folder Include="Resources\screens\credits\" />
+    <Folder Include="Resources\screens\main\buttons\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="sqlite-net">

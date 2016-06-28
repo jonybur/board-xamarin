@@ -6,7 +6,6 @@ using Board.Interface;
 using Board.Screens.Controls;
 using Board.Utilities;
 using CoreGraphics;
-using System.Linq;
 using CoreLocation;
 using Foundation;
 using Google.Maps;
@@ -22,7 +21,8 @@ namespace Board.Screens
 		List<UIMapMarker> ListMapMarkers;
 
 		UIMagazine Magazine;
-		UIActionButton map_button;
+		//UIActionButton map_button;
+		UIMultiActionButtons LowerButtons;
 		EventHandler MapButtonEvent;
 		UIContentDisplay ContentDisplay;
 
@@ -63,7 +63,7 @@ namespace Board.Screens
 			statusBarView.Alpha = .95f;
 			statusBarView.BackgroundColor = UIColor.FromRGB(249, 249, 249);
 
-			View.AddSubviews (ScrollView, map, Banner, map_button, statusBarView);
+			View.AddSubviews (ScrollView, map, Banner, LowerButtons, statusBarView);
 
 			if (CLLocationManager.Status == CLAuthorizationStatus.NotDetermined) {
 				
@@ -101,7 +101,6 @@ namespace Board.Screens
 
 				// suscribe to observers, gesture recgonizers, events 
 				map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
-				map_button.TouchUpInside += MapButtonEvent;	
 				mapInfoTapped = false;
 				Banner.SuscribeToEvents ();
 			}
@@ -133,7 +132,7 @@ namespace Board.Screens
 
 					var noContent = new UINoContent (UINoContent.Presets.LocationDisabled);
 					ScrollView.AddSubview (noContent);
-					map_button.Alpha = 0f;
+					LowerButtons.Alpha = 0f;
 
 					BigTed.BTProgressHUD.Dismiss ();
 				}
@@ -145,7 +144,6 @@ namespace Board.Screens
 		{
 			// unsuscribe from observers, gesture recgonizers, events
 			map.RemoveObserver (this, new NSString ("myLocation"));
-			map_button.TouchUpInside -= MapButtonEvent;
 
 			if (ContentDisplay != null) {
 				ContentDisplay.UnsuscribeToEvents ();
@@ -185,7 +183,7 @@ namespace Board.Screens
 			ContentDisplaySuscribeToEvents (ContentDisplay);
 
 			hasLoaded = true;
-			map_button.Alpha = 1f;
+			LowerButtons.Alpha = 1f;
 			map.Camera = new CameraPosition (AppDelegate.UserLocation, ZoomLevel, 0, 0);
 
 			GenerateMarkers ();
@@ -253,7 +251,7 @@ namespace Board.Screens
 
 				var noContent = new UINoContent (UINoContent.Presets.NotInArea);
 				ScrollView.AddSubview (noContent);
-				map_button.Alpha = 0f;
+				LowerButtons.Alpha = 0f;
 
 			}
 
@@ -314,7 +312,7 @@ namespace Board.Screens
 		{
 			Banner = new UIMenuBanner ("BOARD", "menu_left");
 
-			bool taps = false;
+			//bool taps = false;
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
 					/*if (!taps){
@@ -388,26 +386,7 @@ namespace Board.Screens
 
 		private void LoadMapButton()
 		{
-			map_button = new UIActionButton ("MAP");
-
-			MapButtonEvent = (sender, e) => {
-				map_button.Alpha = 1f;
-
-				if (map.Alpha == 0f) { 
-					map.Alpha = 1f;
-
-					// stops scrollview
-					ScrollView.SetContentOffset(ScrollView.ContentOffset, false);
-
-					// animates banner to be shown
-					Banner.AnimateShow();
-
-					map_button.ChangeTitle("LIST");
-				} else {
-					map.Alpha = 0f;
-					map_button.ChangeTitle("MAP");
-				} 
-			};
+			LowerButtons = new UIMultiActionButtons ();
 		}
 
 	}
