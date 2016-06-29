@@ -29,6 +29,8 @@ namespace Board.Screens.Controls
 			flagView.Frame = new CGRect (0, 0, 100, 100);
 			flagView.BackgroundColor = UIColor.White;
 			flagView.Center = Center;
+			flagView.Layer.CornerRadius = flagView.Frame.Width / 2;
+			flagView.ClipsToBounds = true;
 
 			var flagLogo = new UIImageView ();
 			flagLogo.Frame = new CGRect (0, 0, 90, 90);
@@ -36,6 +38,8 @@ namespace Board.Screens.Controls
 			flagLogo.ContentMode = UIViewContentMode.ScaleAspectFit;
 			flagLogo.SetImage (new NSUrl(UIBoardInterface.board.LogoUrl));
 			flagLogo.Center = new CGPoint (flagView.Frame.Size.Width / 2, flagView.Frame.Size.Height / 2);
+			flagLogo.Layer.CornerRadius = flagLogo.Frame.Width / 2;
+			flagLogo.ClipsToBounds = true;
 
 			flagView.AddSubview (flagLogo);
 

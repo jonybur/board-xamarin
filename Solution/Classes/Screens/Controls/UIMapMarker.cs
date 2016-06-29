@@ -5,6 +5,7 @@ using Foundation;
 using CoreLocation;
 using CoreGraphics;
 using Haneke;
+using CoreAnimation;
 
 namespace Board.Screens.Controls
 {
@@ -48,8 +49,8 @@ namespace Board.Screens.Controls
 			imageView.Frame = new CGRect (0, 0, 50, 50);
 			imageView.ContentMode = UIViewContentMode.ScaleAspectFit;
 			imageView.SetImage (new NSUrl(board.LogoUrl), new UIImage ("./demo/magazine/nantucket.png"), delegate(UIImage image) {
+				System.Console.WriteLine("Load marker");
 				Icon = CreateMarkerImage(image);
-				System.Console.WriteLine("Loads MapMarker image");
 			}, delegate(NSError obj) { });
 
 			Draggable = false;
@@ -85,10 +86,30 @@ namespace Board.Screens.Controls
 
 			logo = logo.ImageScaledToFitSize (new CGSize(autosize,autosize));
 
+			logo = MakeRoundedImage (logo);
+
 			logo.Draw (new CGRect (position - logo.Size.Width / 2, position - logo.Size.Height / 2, logo.Size.Width, logo.Size.Height));
 
 			return UIGraphics.GetImageFromCurrentImageContext ();
 		}
+
+		private UIImage MakeRoundedImage (UIImage image)
+		{
+			var imageLayer = new CALayer ();
+			imageLayer.Frame = new CGRect(0, 0, image.Size.Width, image.Size.Height);
+			imageLayer.Contents = image.CGImage;
+
+			imageLayer.MasksToBounds = true;
+			imageLayer.CornerRadius = image.Size.Width / 2;
+
+			UIGraphics.BeginImageContext(image.Size);
+			imageLayer.RenderInContext (UIGraphics.GetCurrentContext ());
+			var roundedImage = UIGraphics.GetImageFromCurrentImageContext();
+			UIGraphics.EndImageContext();
+
+			return roundedImage;
+		}
+
 	}
 }
 

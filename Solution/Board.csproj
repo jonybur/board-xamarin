@@ -225,7 +225,6 @@
     <BundleResource Include="Resources\screens\main\map\markercontainer_black.png" />
     <BundleResource Include="Resources\menubanner\cross_left.png" />
     <BundleResource Include="Resources\menubanner\import_right.png" />
-    <BundleResource Include="Resources\menubanner\menu_left.png" />
     <BundleResource Include="Resources\menubanner\plus_right.png" />
     <BundleResource Include="Resources\menubanner\arrow_left.png" />
     <BundleResource Include="Resources\menubanner\arrow_right.png" />
@@ -292,6 +291,7 @@
     <BundleResource Include="Resources\screens\main\buttons\full_house.png" />
     <BundleResource Include="Resources\screens\main\buttons\full_map.png" />
     <BundleResource Include="Resources\screens\main\buttons\full_star.png" />
+    <BundleResource Include="Resources\menubanner\menu_left.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

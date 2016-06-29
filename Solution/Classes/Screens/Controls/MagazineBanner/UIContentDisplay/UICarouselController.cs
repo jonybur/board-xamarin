@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using Board.Infrastructure;
-using Board.Interface;
 using Board.JsonResponses;
-using CoreGraphics;
-using Foundation;
 using Board.Utilities;
 using CoreAnimation;
+using CoreGraphics;
+using Foundation;
 using Haneke;
 using UIKit;
 
@@ -54,7 +53,7 @@ namespace Board.Screens.Controls
 					carousel.View.Frame.Height / 2 + (carousel.View.Frame.Height + SeparationBetweenCarousels) * i);
 				testCarousels.Add (carousel);
 
-				AddSubview (carousel.View);
+				ListViews.Add (carousel.View);
 
 				ListThumbs.AddRange (carousel.ListThumbs);
 				i++;
@@ -125,10 +124,14 @@ namespace Board.Screens.Controls
 			logoImageView.Frame = new CGRect (0, 0, Height / 2, Height / 2);
 			logoImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
 			logoImageView.SetImage (new NSUrl (board.LogoUrl));
+			logoImageView.Layer.CornerRadius = logoImageView.Frame.Width / 2;
+			logoImageView.ClipsToBounds = true;
 
 			var backgroundLogoImageView = new UIImageView ();
 			backgroundLogoImageView.Frame = new CGRect (0, 0, Height / 2 + 6, Height / 2 + 6);
 			backgroundLogoImageView.BackgroundColor = UIColor.White;
+			backgroundLogoImageView.Layer.CornerRadius = backgroundLogoImageView.Frame.Width / 2;
+			backgroundLogoImageView.ClipsToBounds = true;
 
 			logoImageView.Center = new CGPoint (Frame.Width / 2, Frame.Height / 2);
 			backgroundLogoImageView.Center = logoImageView.Center;

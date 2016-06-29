@@ -39,8 +39,8 @@ namespace Board.Screens.Controls
 
 			var bottomLineView = new UIImageView ();
 			bottomLineView.Frame = new CGRect (0, backgroundView.Frame.Bottom - 1, backgroundView.Frame.Width, 1);
-			bottomLineView.BackgroundColor = AppDelegate.BoardBlack;
-			bottomLineView.Alpha = .25f;
+			bottomLineView.BackgroundColor = AppDelegate.BoardOrange;
+			bottomLineView.Alpha = .5f;
 
 			TitleLabel = GenerateTitle (title);
 

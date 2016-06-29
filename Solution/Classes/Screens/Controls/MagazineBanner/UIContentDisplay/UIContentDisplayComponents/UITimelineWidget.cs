@@ -111,6 +111,8 @@ namespace Board.Screens.Controls
 			logoView.Frame = new CGRect (0, 0, headerHeight, headerHeight);
 			logoView.ContentMode = UIViewContentMode.ScaleAspectFit;
 			logoView.SetImage (new NSUrl(board.LogoUrl));
+			logoView.Layer.CornerRadius = logoView.Frame.Width / 2;
+			logoView.ClipsToBounds = true;
 
 			var nameView = new UILabel ();
 			nameView.Frame = new CGRect (logoView.Frame.Right + 10, 3, boardButton.Frame.Width, 20);

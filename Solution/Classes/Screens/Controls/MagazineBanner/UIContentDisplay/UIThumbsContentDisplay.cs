@@ -147,6 +147,7 @@ namespace Board.Screens.Controls
 				MemoryUtility.ReleaseSubviews(Subviews);
 				int nextMode = ((int)mode + 1) % Modes.Count;
 				GenerateList (Modes[nextMode], extraTopMargin, extraLowMargin);
+				SelectiveThumbsRendering(new CGPoint(0,0));
 			});
 
 			var filterSelector = new UIFilterSelector (yposition - 20, _boardComparer.Description, tap);
@@ -158,7 +159,7 @@ namespace Board.Screens.Controls
 				locationSeparation = 40; minSeparation = 30; separationBetweenThumbs = 20;
 			}
 
-			foreach (Board.Schema.Board b in BoardList) {
+			foreach (var b in BoardList) {
 				if (this._boardComparer.Compare(comparer, b) != 0 || i == 0) {
 
 					string header = _boardComparer.GetComparisonPropertyDescription (b);
@@ -195,7 +196,7 @@ namespace Board.Screens.Controls
 				var btComponent = new UIBoardThumbComponent (b, new CGPoint ((AppDelegate.ScreenWidth/ 4) * linecounter, yposition), ThumbSize);
 				ListThumbs.Add (btComponent.BoardThumb);
 				ListThumbComponents.Add (btComponent);
-				AddSubview (btComponent);
+				//AddSubview (btComponent);
 				linecounter++;
 				i++;
 			}
@@ -208,6 +209,23 @@ namespace Board.Screens.Controls
 			}
 
 			SuscribeToEvents ();
+		}
+
+		public void SelectiveThumbsRendering(CGPoint contentOffset){
+			foreach (var thumb in ListThumbComponents) {
+
+				if (thumb.Frame.Y > (contentOffset.Y - thumb.Frame.Height) &&
+					thumb.Frame.Y < (contentOffset.Y + AppDelegate.ScreenHeight)) {
+
+					AddSubview (thumb);
+
+				} else {
+					
+					thumb.RemoveFromSuperview ();
+
+				}
+
+			}
 		}
 
 		class UIFilterSelector : UILabel{

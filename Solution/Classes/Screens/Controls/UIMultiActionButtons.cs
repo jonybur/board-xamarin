@@ -9,7 +9,7 @@ namespace Board.Screens.Controls
 	public sealed class UIMultiActionButtons : UIView
 	{
 		public const int Height = 50;
-		List<UIMultiActionButton> ListButtons;
+		public List<UIMultiActionButton> ListButtons;
 
 		public UIMultiActionButtons ()
 		{
@@ -35,7 +35,7 @@ namespace Board.Screens.Controls
 			float xposition = AppDelegate.ScreenWidth / 8;
 
 			if (ListButtons.Count == 4) {
-				ListButtons [0].SetFullImage ();
+				//ListButtons [0].SetFullImage ();
 				ListButtons [0].Center = new CGPoint (xposition * 1, ListButtons [0].Center.Y);
 				ListButtons [1].Center = new CGPoint (xposition * 3, ListButtons [1].Center.Y);
 				ListButtons [2].Center = new CGPoint (xposition * 5, ListButtons [2].Center.Y);
@@ -160,15 +160,13 @@ namespace Board.Screens.Controls
 
 			Frame = new CGRect (0, 0, 50, 50);
 			lowerLine = new UIImageView ();
-			lowerLine.Frame = new CGRect (0, Frame.Bottom - 2, Frame.Width, 2);
-			lowerLine.BackgroundColor = AppDelegate.BoardBlack;
+			lowerLine.Frame = new CGRect (0, Frame.Bottom - 3, Frame.Width, 3);
 			lowerLine.Alpha = 0f;
 
 			imageView = new UIImageView();
 			imageView.Frame = new CGRect(0, 0, Frame.Size.Width * .5f, Frame.Size.Height * .5f);
 			imageView.Center = new CGPoint(Frame.Width / 2, Frame.Height / 2);
 			SetEmptyImage();
-			imageView.TintColor = AppDelegate.BoardBlack;
 
 			this.AddSubviews(imageView, lowerLine);
 		}
@@ -176,12 +174,16 @@ namespace Board.Screens.Controls
 		public void SetEmptyImage(){
 			imageView.SetImage(UIImage.FromFile("./screens/main/buttons/"+EmptyImage+".png").ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), EmptyImage);
 			lowerLine.Alpha = 0f;
+			imageView.TintColor = AppDelegate.BoardBlack;
+			lowerLine.BackgroundColor = AppDelegate.BoardBlack;
 			isOn = false;
 		}
 
 		public void SetFullImage(){
 			imageView.SetImage(UIImage.FromFile("./screens/main/buttons/"+FullImage+".png").ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), FullImage);
 			lowerLine.Alpha = 1f;
+			imageView.TintColor = AppDelegate.BoardOrange;
+			lowerLine.BackgroundColor = AppDelegate.BoardOrange;
 			isOn = true;
 		}
 	}

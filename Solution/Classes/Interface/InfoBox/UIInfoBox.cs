@@ -2,6 +2,7 @@
 using CoreGraphics;
 using UIKit;
 using System;
+using Board.Utilities;
 using Board.Facebook;
 
 namespace Board.Interface
@@ -24,13 +25,13 @@ namespace Board.Interface
 			BackgroundColor = UIColor.White;
 			ClipsToBounds = true;
 			 
-			Banner = new UITopBanner (board.Logo, (float)Frame.Width);
+			Banner = new UITopBanner ((float)Frame.Width);
 			NameLabel = new UITitleLabel (Banner.Bottom + 20, (float)Frame.Width,
-				AppDelegate.Narwhal20, UIBoardInterface.board.Name);
+				UIFont.SystemFontOfSize(20, UIFontWeight.Medium), CommonUtils.FirstLetterOfEveryWordToUpper(UIBoardInterface.board.Name));
 			CategoryLabel = new UITitleLabel ((float)NameLabel.Frame.Bottom + 3, (float)Frame.Width,
-				AppDelegate.Narwhal14, board.Category);
+				UIFont.SystemFontOfSize(14, UIFontWeight.Regular), board.Category.ToUpper());
 
-			OpenLabel = new UITitleLabel ((float)CategoryLabel.Frame.Bottom, (float)Frame.Width, AppDelegate.Narwhal14, string.Empty);
+			OpenLabel = new UITitleLabel ((float)CategoryLabel.Frame.Bottom, (float)Frame.Width, UIFont.SystemFontOfSize(14, UIFontWeight.Regular), string.Empty);
 			OpenLabel.Text = "CHECKING...";
 
 			FacebookUtils.MakeGraphRequest (board.FacebookId, "?fields=hours", CheckIfOpen);

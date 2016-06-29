@@ -38,7 +38,7 @@ namespace Board.Screens.Controls
 				var timelineWidget = new UITimelineWidget (board, content);
 				timelineWidget.Center = new CGPoint (AppDelegate.ScreenWidth / 2, yposition + timelineWidget.Frame.Height / 2);
 				
-				AddSubview (timelineWidget);
+				ListViews.Add (timelineWidget);
 				TimelineWidgets.Add (content.Id, timelineWidget);
 
 				yposition += (float)timelineWidget.Frame.Height + SeparationBetweenObjects;

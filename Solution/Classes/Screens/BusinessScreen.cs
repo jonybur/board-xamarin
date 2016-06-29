@@ -71,6 +71,10 @@ namespace Board.Screens
 
 			ScrollView.ScrollEnabled = true;
 			ScrollView.UserInteractionEnabled = true;
+
+			ThumbsScreen.SelectiveThumbsRendering (ScrollView.ContentOffset);
+
+			ScrollView.Scrolled += (sender, e) => ThumbsScreen.SelectiveThumbsRendering (ScrollView.ContentOffset);
 		}
 
 		private void LoadNoContent()

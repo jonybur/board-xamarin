@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Board.Infrastructure;
-using Board.Interface.LookUp;
-using Board.Screens.Controls;
-using Board.Utilities;
+﻿using Board.Screens.Controls;
 using CoreGraphics;
 using Haneke;
 using UIKit;
@@ -21,7 +16,7 @@ namespace Board.Interface
 			}
 		}
 
-		public UITopBanner(UIImage boardImage, float width){
+		public UITopBanner(float width){
 			BackgroundImage = new UIImageView (new CGRect(0, 0, width, Height));
 
 			BackgroundImage.ClipsToBounds = true;

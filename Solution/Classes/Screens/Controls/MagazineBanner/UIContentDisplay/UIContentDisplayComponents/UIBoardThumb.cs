@@ -117,7 +117,7 @@ namespace Board.Screens.Controls
 			Frame = new CGRect (0, 0, autosize, autosize);
 			Center = new CGPoint (imgx, imgy);
 
-			UIImage circle = CreateThumbImage(Frame.Size);
+			var circle = CreateThumbImage(Frame.Size);
 			SetBackgroundImage (circle, UIControlState.Normal);
 
 			var imageView = new UIImageView ();
@@ -125,6 +125,9 @@ namespace Board.Screens.Controls
 			imageView.ContentMode = UIViewContentMode.ScaleAspectFit;
 			imageView.SetImage (new NSUrl(board.LogoUrl));
 			imageView.Center = new CGPoint (Frame.Size.Width / 2, Frame.Size.Height / 2);
+			imageView.Layer.CornerRadius = imageView.Frame.Width / 2;
+			imageView.ClipsToBounds = true;
+
 			AddSubview (imageView);
 
 			TouchEvent = delegate {

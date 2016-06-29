@@ -260,8 +260,8 @@ namespace Board.Facebook
 
 		static void UploadContent(){
 
-			Console.Write ("Deleting old content... ");
-			for (int i = 0; i < ReplacedContents; i++) {
+			Console.Write ("Deleting " + ReplacedContents + " old content... ");
+			for (int i = 0; i < (ReplacedContents + 1); i++) {
 				
 				string deleteJson = JsonUtilty.GenerateDeleteJson (CurrentContent[i]);
 				Console.WriteLine ("Deleting " + CurrentContent [i].Id);
