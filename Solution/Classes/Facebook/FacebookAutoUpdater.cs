@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using BigTed;
 using Board.Infrastructure;
-using Board.Interface;
 using Board.Schema;
 using Board.Utilities;
-using System.Threading.Tasks;
 using UIKit;
 
 namespace Board.Facebook
