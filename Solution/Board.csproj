@@ -292,6 +292,10 @@
     <BundleResource Include="Resources\screens\main\buttons\full_map.png" />
     <BundleResource Include="Resources\screens\main\buttons\full_star.png" />
     <BundleResource Include="Resources\menubanner\menu_left.png" />
+    <BundleResource Include="Resources\screens\main\buttons\empty_calendar.png" />
+    <BundleResource Include="Resources\screens\main\buttons\full_calendar.png" />
+    <BundleResource Include="Resources\screens\main\buttons\empty_timeline.png" />
+    <BundleResource Include="Resources\screens\main\buttons\full_timeline.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

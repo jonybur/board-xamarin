@@ -26,7 +26,7 @@ namespace Board.Screens
 		UIContentDisplay ContentDisplay;
 
 		enum ScrollViewDirection { Up, Down };
-		enum SubScreens { Featured, Timeline, Directory, Map };
+		enum SubScreens { Featured, Timeline, Calendar, Directory, Map };
 
 		const int ZoomLevel = 16;
 		bool mapInfoTapped, generatedMarkers, hasLoaded, firstLocationUpdate, addedScrollEvents;
@@ -95,7 +95,6 @@ namespace Board.Screens
 
 					if (AppDelegate.SimulatingNantucket) {
 						map.Camera = CameraPosition.FromCamera (AppDelegate.UserLocation, ZoomLevel);
-						GenerateMarkers ();
 					}
 
 					BigTed.BTProgressHUD.Dismiss ();
@@ -188,8 +187,6 @@ namespace Board.Screens
 			LowerButtons.Alpha = 1f;
 			map.Camera = new CameraPosition (AppDelegate.UserLocation, ZoomLevel, 0, 0);
 
-			GenerateMarkers ();
-
 			BigTed.BTProgressHUD.Dismiss ();
 		}
 
@@ -216,8 +213,6 @@ namespace Board.Screens
 					ContentDisplaySuscribeToEvents (ContentDisplay);
 					hasLoaded = true;
 				}
-
-				GenerateMarkers ();
 
 				BigTed.BTProgressHUD.Dismiss ();
 			}
@@ -254,13 +249,18 @@ namespace Board.Screens
 					ContentDisplay = Magazine.Pages [1].ContentDisplay;
 					ContentDisplay.SelectiveRendering (ScrollView.ContentOffset);
 					break;
-				case SubScreens.Directory:
+				case SubScreens.Calendar:
 					LowerButtons.ListButtons [2].SetFullImage ();
+					ContentDisplay = Magazine.Pages [2].ContentDisplay;
+					ContentDisplay.SelectiveRendering (ScrollView.ContentOffset);
+					break;
+				case SubScreens.Directory:
+					LowerButtons.ListButtons [3].SetFullImage ();
 					ContentDisplay = Magazine.Pages [2].ContentDisplay;
 					((UIThumbsContentDisplay)ContentDisplay).SelectiveThumbsRendering (ScrollView.ContentOffset);
 					break;
 				case SubScreens.Map:
-					LowerButtons.ListButtons [3].SetFullImage ();
+					LowerButtons.ListButtons [4].SetFullImage ();
 					ContentDisplay = Magazine.Pages [0].ContentDisplay;
 					ShowMap ();
 					break;
@@ -447,6 +447,8 @@ namespace Board.Screens
 			LastScreenStatus.CurrentScreen = SubScreens.Map;
 
 			map.Alpha = 1f;
+
+			GenerateMarkers ();
 
 			// stops scrollview
 			ScrollView.SetContentOffset (new CGPoint (0, 0), false);
