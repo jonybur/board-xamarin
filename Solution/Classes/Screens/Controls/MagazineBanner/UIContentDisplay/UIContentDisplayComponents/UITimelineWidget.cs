@@ -253,7 +253,11 @@ namespace Board.Screens.Controls
 			public UITimelinePicture(string url) {
 				this.Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenWidth);
 				this.ContentMode = UIViewContentMode.ScaleAspectFit;
-				this.SetImage(new NSUrl(url));
+				if (!string.IsNullOrEmpty(url)){
+					this.SetImage(new NSUrl(url));
+				}else{
+					this.BackgroundColor = UIColor.Red;
+				}
 			}
 		}
 

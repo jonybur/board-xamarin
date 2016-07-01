@@ -268,6 +268,7 @@ namespace Board.Facebook
 			}
 			Console.WriteLine ("Done deleting content");
 
+			//double check all images are not null
 			if (ContentToImport.Count > 0) {
 				var json = JsonUtilty.GenerateUpdateJson (ContentToImport);
 				Console.Write ("Uploading new content... ");

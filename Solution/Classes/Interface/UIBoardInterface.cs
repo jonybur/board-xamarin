@@ -52,8 +52,12 @@ namespace Board.Interface
 		{
 			AppEvents.LogEvent ("entersBoard");
 
-			//var json = JsonUtilty.GenerateDeleteAllJson ();
-			//CloudController.UpdateBoard (board.Id, json);
+			/*
+			var toDelete = new Picture ();
+			toDelete.Id = "2ad77805-3368-4822-b848-c005fa308111";
+			var json = JsonUtilty.GenerateDeleteJson (toDelete);
+			CloudController.UpdateBoard (board.Id, json);
+			*/
 
 			// if it reaches this section, user has been logged in and authorized
 			base.ViewDidLoad ();
