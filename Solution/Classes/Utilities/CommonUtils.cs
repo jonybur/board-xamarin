@@ -1,4 +1,5 @@
 ﻿using System;
+using Clubby.Schema;
 using System.Collections.Generic;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -9,7 +10,7 @@ using CoreLocation;
 using Foundation;
 using UIKit;
 
-namespace Board.Utilities
+namespace Clubby.Utilities
 {
 	public class TypeSwitch
 	{
@@ -100,7 +101,7 @@ namespace Board.Utilities
 			}
 		}
 
-		public static double GetDistanceFromUserToBoard(Board.Schema.Board board){
+		public static double GetDistanceFromUserToBoard(Venue board){
 			var location = AppDelegate.UserLocation;
 			double distance = 0;
 

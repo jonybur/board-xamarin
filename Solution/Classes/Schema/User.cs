@@ -4,7 +4,7 @@ using CoreGraphics;
 using Haneke;
 using Foundation;
 
-namespace Board.Schema
+namespace Clubby.Schema
 {
 	[Preserve(AllMembers = true)]
 	public class User

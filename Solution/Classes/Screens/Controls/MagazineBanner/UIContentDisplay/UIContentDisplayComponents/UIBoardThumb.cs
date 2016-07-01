@@ -1,12 +1,13 @@
 ﻿using System;
-using Board.Utilities;
+using Clubby.Utilities;
 using CoreGraphics;
 using Foundation;
+using Clubby.Schema;
 using Haneke;
 using UIKit;
 using CoreAnimation;
 
-namespace Board.Screens.Controls
+namespace Clubby.Screens.Controls
 {
 	public class UIBoardThumbComponent : UIView{
 		public UIBoardThumb BoardThumb;
@@ -14,7 +15,7 @@ namespace Board.Screens.Controls
 		public const int TextSpace = 60;
 		public readonly float Size;
 
-		public UIBoardThumbComponent(Board.Schema.Board board, CGPoint contentOffset, float size){
+		public UIBoardThumbComponent(Venue board, CGPoint contentOffset, float size){
 			Size = size;
 			BoardThumb = new UIBoardThumb (board, contentOffset, size);
 
@@ -70,19 +71,19 @@ namespace Board.Screens.Controls
 
 			var nameAttributes = new UIStringAttributes {
 				Font = UIFont.SystemFontOfSize(14),
-				ForegroundColor = UIColor.Black
+				ForegroundColor = UIColor.White
 			};
 
 			var distanceAttributes = new UIStringAttributes {
 				Font = UIFont.SystemFontOfSize(14),
-				ForegroundColor = UIColor.FromRGB(100,100,100)
+				ForegroundColor = UIColor.FromRGBA(255,255,255, 200)
 			};
 
 			var attributedString = new NSMutableAttributedString (compositeString);
 			attributedString.SetAttributes (nameAttributes.Dictionary, new NSRange (0, nameString.Length));
 			attributedString.SetAttributes (distanceAttributes, new NSRange (nameString.Length, distanceTotalString.Length + 1));
 
-			label.TextColor = AppDelegate.BoardBlack;
+			label.TextColor = AppDelegate.ClubbyBlack;
 			label.Lines = 0;
 			label.AttributedText = attributedString;
 			label.AdjustsFontSizeToFitWidth = false;
@@ -94,9 +95,9 @@ namespace Board.Screens.Controls
 		}
 	}
 
-	public class UIBoardThumb : UIContentThumb
+	public sealed class UIBoardThumb : UIContentThumb
 	{
-		public UIBoardThumb (Board.Schema.Board board, CGPoint contentOffset, float size)
+		public UIBoardThumb (Venue board, CGPoint contentOffset, float size)
 		{ 
 			Board = board;
 
@@ -153,13 +154,10 @@ namespace Board.Screens.Controls
 
 			CGContext current = UIGraphics.GetCurrentContext ();
 
-			current.SetFillColor (UIColor.White.CGColor);
+			current.SetFillColor (AppDelegate.ClubbyBlack.CGColor);
 			current.FillEllipseInRect (new CGRect(0, 0, size.Width, size.Height));
 
 			return UIGraphics.GetImageFromCurrentImageContext ();
 		}
 	}
-
-
 }
-

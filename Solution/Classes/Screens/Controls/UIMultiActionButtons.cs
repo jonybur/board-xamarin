@@ -4,7 +4,7 @@ using CoreGraphics;
 using Haneke;
 using UIKit;
 
-namespace Board.Screens.Controls
+namespace Clubby.Screens.Controls
 {
 	public sealed class UIMultiActionButtons : UIView
 	{
@@ -16,16 +16,15 @@ namespace Board.Screens.Controls
 			Frame = new CGRect(0, AppDelegate.ScreenHeight - Height, AppDelegate.ScreenWidth, Height);
 			BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 			var backgroundView = new UIImageView (new CGRect(0,0,Frame.Width, Frame.Height));
-			backgroundView.BackgroundColor = UIColor.FromRGB(249, 249, 249);
+			backgroundView.BackgroundColor = AppDelegate.ClubbyBlack;
 			backgroundView.Alpha = .95f;
 			AddSubview (backgroundView);
 
 			ListButtons = new List<UIMultiActionButton> ();
 			UserInteractionEnabled = true;
 
-			CreateFeaturedButton ();
 			CreateTimelineButton ();
-			CreateCalendarButton ();
+			CreateFeaturedButton ();
 			CreateDirectoryButton ();
 			CreateMapButton ();
 
@@ -33,20 +32,19 @@ namespace Board.Screens.Controls
 				AddSubview (button);
 			}
 
-			float xposition = AppDelegate.ScreenWidth / 16;
+			float xposition = AppDelegate.ScreenWidth / 8;
 
-			if (ListButtons.Count == 5) {
+			if (ListButtons.Count == 4) {
 				//ListButtons [0].SetFullImage ();
-				ListButtons [0].Center = new CGPoint (xposition * 2, ListButtons [0].Center.Y);
-				ListButtons [1].Center = new CGPoint (xposition * 5, ListButtons [1].Center.Y);
-				ListButtons [2].Center = new CGPoint (xposition * 8, ListButtons [2].Center.Y);
-				ListButtons [3].Center = new CGPoint (xposition * 11, ListButtons [3].Center.Y);
-				ListButtons [4].Center = new CGPoint (xposition * 14, ListButtons [4].Center.Y);
+				ListButtons [0].Center = new CGPoint (xposition * 1, ListButtons [0].Center.Y);
+				ListButtons [1].Center = new CGPoint (xposition * 3, ListButtons [1].Center.Y);
+				ListButtons [2].Center = new CGPoint (xposition * 5, ListButtons [2].Center.Y);
+				ListButtons [3].Center = new CGPoint (xposition * 7, ListButtons [3].Center.Y);
 			}
 		}
 
 		private void CreateTimelineButton(){
-			var timelineButton = new UIMultiActionButton ("empty_timeline", "full_timeline");
+			var timelineButton = new UIMultiActionButton ("empty_house", "full_house");
 
 			timelineButton.TouchUpInside += delegate {
 
@@ -57,7 +55,7 @@ namespace Board.Screens.Controls
 
 				UnselectAllButtons();
 				timelineButton.SetFullImage();
-				SwitchScreen(0, "Timeline", UIFont.SystemFontOfSize(20, UIFontWeight.Medium));
+				SwitchScreen(0, "Clubby", AppDelegate.Narwhal26, UIColor.White);
 			};
 
 			ListButtons.Add (timelineButton);	
@@ -75,25 +73,7 @@ namespace Board.Screens.Controls
 
 				UnselectAllButtons();
 				featuredButton.SetFullImage();
-				SwitchScreen(1, "Weekly Features", UIFont.SystemFontOfSize(20, UIFontWeight.Medium));
-			};
-
-			ListButtons.Add (featuredButton);
-		}
-
-		private void CreateCalendarButton(){
-			var featuredButton = new UIMultiActionButton ("empty_calendar", "full_calendar");
-
-			featuredButton.TouchUpInside += delegate {
-
-				if (featuredButton.IsOn){
-					ScrollsUp();
-					return;
-				}
-
-				UnselectAllButtons();
-				featuredButton.SetFullImage();
-				SwitchScreen(1, "Calendar", UIFont.SystemFontOfSize(20, UIFontWeight.Medium));
+				SwitchScreen(1, "Friends Favorites", UIFont.SystemFontOfSize(20, UIFontWeight.Medium), UIColor.White);
 			};
 
 			ListButtons.Add (featuredButton);
@@ -111,7 +91,7 @@ namespace Board.Screens.Controls
 
 				UnselectAllButtons();
 				directoryButton.SetFullImage();
-				SwitchScreen(2, "Directory", UIFont.SystemFontOfSize(20, UIFontWeight.Medium));
+				SwitchScreen(1, "Directory", UIFont.SystemFontOfSize(20, UIFontWeight.Medium), UIColor.White);
 			};
 
 			ListButtons.Add (directoryButton);
@@ -151,7 +131,7 @@ namespace Board.Screens.Controls
 		}
 
 		private void SwitchScreen(int indexOfCurrentViewController, string screenName, UIFont newFont){
-			SwitchScreen (indexOfCurrentViewController, screenName, newFont, AppDelegate.BoardBlack);
+			SwitchScreen (indexOfCurrentViewController, screenName, newFont, AppDelegate.ClubbyBlack);
 		}
 
 		private void ScrollsUp(){
@@ -192,18 +172,19 @@ namespace Board.Screens.Controls
 		}
 
 		public void SetEmptyImage(){
-			imageView.SetImage(UIImage.FromFile("./screens/main/buttons/"+EmptyImage+".png").ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), EmptyImage);
+			imageView.SetImage("./screens/main/buttons/"+EmptyImage+".png");
 			lowerLine.Alpha = 0f;
-			imageView.TintColor = AppDelegate.BoardBlack;
-			lowerLine.BackgroundColor = AppDelegate.BoardBlack;
+			imageView.TintColor = UIColor.White;
+			this.TintColor = UIColor.White;
 			isOn = false;
 		}
 
 		public void SetFullImage(){
-			imageView.SetImage(UIImage.FromFile("./screens/main/buttons/"+FullImage+".png").ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), FullImage);
+			imageView.SetImage("./screens/main/buttons/"+FullImage+".png");
 			lowerLine.Alpha = 1f;
-			imageView.TintColor = AppDelegate.BoardOrange;
-			lowerLine.BackgroundColor = AppDelegate.BoardOrange;
+			imageView.TintColor = AppDelegate.ClubbyYellow;
+			this.TintColor = AppDelegate.ClubbyYellow;
+			lowerLine.BackgroundColor = AppDelegate.ClubbyYellow;
 			isOn = true;
 		}
 	}

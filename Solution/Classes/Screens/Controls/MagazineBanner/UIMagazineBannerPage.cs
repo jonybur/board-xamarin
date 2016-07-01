@@ -4,7 +4,7 @@ using Foundation;
 using Haneke;
 using UIKit;
 
-namespace Board.Screens.Controls
+namespace Clubby.Screens.Controls
 {
 	public sealed class UIMagazineBannerPage : UIImageView
 	{
@@ -32,7 +32,7 @@ namespace Board.Screens.Controls
 			flagView.Frame = new CGRect (0, 0, FlagWidth, FlagHeight);
 			flagView.Center = Center;
 			flagView.Alpha = .95f;
-			flagView.BackgroundColor = AppDelegate.BoardOrange;
+			flagView.BackgroundColor = AppDelegate.ClubbyYellow;
 			flagView.Layer.CornerRadius = 10;
 			flagView.ClipsToBounds = true;
 

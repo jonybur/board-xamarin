@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using ModernHttpClient;
 
-namespace Board.Infrastructure
+namespace Clubby.Infrastructure
 {
 	public static class WebAPI
 	{

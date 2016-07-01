@@ -5,9 +5,10 @@ using Foundation;
 using CoreLocation;
 using CoreGraphics;
 using Haneke;
+using Clubby.Schema;
 using CoreAnimation;
 
-namespace Board.Screens.Controls
+namespace Clubby.Screens.Controls
 {
 	public class UIMapMarker : Marker
 	{
@@ -25,7 +26,7 @@ namespace Board.Screens.Controls
 			InfoWindowAnchor = new CGPoint (.5, .5);
 		}
 
-		public UIMapMarker (Board.Schema.Board board, MapView map)
+		public UIMapMarker (Venue board, MapView map)
 		{
 			AppearAnimation = MarkerAnimation.Pop;
 			Position = board.GeolocatorObject.Coordinate;
@@ -38,7 +39,7 @@ namespace Board.Screens.Controls
 			UserData = new NSString(board.Id);
 		}
 
-		public UIMapMarker (Board.Schema.Board board, MapView map, SizeMode mode)
+		public UIMapMarker (Venue board, MapView map, SizeMode mode)
 		{
 			sizeMode = mode;
 			AppearAnimation = MarkerAnimation.Pop;
@@ -102,7 +103,7 @@ namespace Board.Screens.Controls
 			imageLayer.MasksToBounds = true;
 			imageLayer.CornerRadius = image.Size.Width / 2;
 
-			UIGraphics.BeginImageContext(image.Size);
+			UIGraphics.BeginImageContextWithOptions(image.Size, false, 2f);
 			imageLayer.RenderInContext (UIGraphics.GetCurrentContext ());
 			var roundedImage = UIGraphics.GetImageFromCurrentImageContext();
 			UIGraphics.EndImageContext();

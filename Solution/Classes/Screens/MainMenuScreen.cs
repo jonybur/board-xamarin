@@ -1,17 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
-using Board.Infrastructure;
-using Board.Interface;
-using Board.Screens.Controls;
-using Board.Utilities;
+using Clubby.Infrastructure;
+using Clubby.Interface;
+using Clubby.Schema;
+using Clubby.Screens.Controls;
+using Clubby.Utilities;
 using CoreGraphics;
 using CoreLocation;
 using Foundation;
 using Google.Maps;
 using UIKit;
 
-namespace Board.Screens
+namespace Clubby.Screens
 {
 	public class MainMenuScreen : UIViewController
 	{
@@ -26,7 +28,7 @@ namespace Board.Screens
 		UIContentDisplay ContentDisplay;
 
 		enum ScrollViewDirection { Up, Down };
-		enum SubScreens { Featured, Timeline, Calendar, Directory, Map };
+		enum SubScreens { Featured, Timeline, Directory, Map };
 
 		const int ZoomLevel = 16;
 		bool mapInfoTapped, generatedMarkers, hasLoaded, firstLocationUpdate, addedScrollEvents;
@@ -36,13 +38,27 @@ namespace Board.Screens
 			public static CGPoint ContentOffset = new CGPoint(0, 0);
 		}
 
-		static class FetchedBoards{
-			public static List<Board.Schema.Board> BoardList;
+		public static class FetchedVenues{
+			public static List<Venue> VenueList;
 			public static CLLocationCoordinate2D Location;
 
-			public static void Update(){
-				FetchedBoards.BoardList = CloudController.GetNearbyBoards (AppDelegate.UserLocation, 10000);
-				FetchedBoards.Location = AppDelegate.UserLocation;
+			public static List<Content> GetTimeline(){
+				Console.Write ("Getting timeline... ");
+
+				var timelineContent = new List<Content>();
+				foreach (var venue in VenueList) {
+					if (venue.InstagramPage != null) {
+						timelineContent.AddRange (venue.ContentList);
+					}
+				}
+				timelineContent = timelineContent.OrderByDescending (x => x.CreationDate).ToList();
+
+				return timelineContent;
+			}
+
+			public static async System.Threading.Tasks.Task Update(){
+				FetchedVenues.VenueList = await CloudController.GetNearbyVenues (AppDelegate.UserLocation, 10000);
+				FetchedVenues.Location = AppDelegate.UserLocation;
 			}
 		}
 
@@ -60,6 +76,7 @@ namespace Board.Screens
 
 			ListMapMarkers = new List<UIMapMarker> ();
 			LowerButtons = new UIMultiActionButtons ();
+
 			LoadBanner ();
 			LoadMap ();
 
@@ -75,9 +92,35 @@ namespace Board.Screens
 			} else {
 
 				CheckLocationServices ();
-				if (AppDelegate.SimulatingNantucket) {
-					BigTed.BTProgressHUD.Show ();
-				}
+
+			}
+		}
+
+		private void ListensToUndeterminedLocationService(){
+
+			while (CLLocationManager.Status == CLAuthorizationStatus.NotDetermined) {
+				Thread.Sleep (500);
+			}
+
+			InvokeOnMainThread(delegate {
+				CheckLocationServices ();
+
+				ViewDidAppear (false);
+			});
+
+		}
+
+		private void CheckLocationServices(){
+
+			if (!CLLocationManager.LocationServicesEnabled ||
+				CLLocationManager.Status == CLAuthorizationStatus.Denied ||
+				CLLocationManager.Status == CLAuthorizationStatus.Restricted) {
+
+				var noContent = new UINoContent (UINoContent.Presets.LocationDisabled);
+				ScrollView.AddSubview (noContent);
+				LowerButtons.Alpha = 0f;
+
+				BigTed.BTProgressHUD.Dismiss ();
 
 			}
 		}
@@ -93,10 +136,6 @@ namespace Board.Screens
 					ContentDisplaySuscribeToEvents (ContentDisplay);
 					hasLoaded = true;
 
-					if (AppDelegate.SimulatingNantucket) {
-						map.Camera = CameraPosition.FromCamera (AppDelegate.UserLocation, ZoomLevel);
-					}
-
 					BigTed.BTProgressHUD.Dismiss ();
 				}
 
@@ -104,40 +143,6 @@ namespace Board.Screens
 				map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
 				mapInfoTapped = false;
 				Banner.SuscribeToEvents ();
-			}
-		}
-
-		private void ListensToUndeterminedLocationService(){
-
-			while (CLLocationManager.Status == CLAuthorizationStatus.NotDetermined) {
-				Thread.Sleep (500);
-			}
-
-			InvokeOnMainThread(delegate {
-				CheckLocationServices ();
-				if (AppDelegate.SimulatingNantucket) {
-					BigTed.BTProgressHUD.Show ();
-				}
-
-				ViewDidAppear (false);
-			});
-		}
-			
-		private void CheckLocationServices(){
-			
-			if (!CLLocationManager.LocationServicesEnabled ||
-				CLLocationManager.Status == CLAuthorizationStatus.Denied ||
-				CLLocationManager.Status == CLAuthorizationStatus.Restricted) {
-
-				if (!AppDelegate.SimulatingNantucket) {
-
-					var noContent = new UINoContent (UINoContent.Presets.LocationDisabled);
-					ScrollView.AddSubview (noContent);
-					LowerButtons.Alpha = 0f;
-
-					BigTed.BTProgressHUD.Dismiss ();
-				}
-
 			}
 		}
 
@@ -169,25 +174,10 @@ namespace Board.Screens
 				// First launch
 				NSUserDefaults.StandardUserDefaults.SetBool (true, key);
 				defaults.Synchronize ();
-				BigTed.BTProgressHUD.Show ("Setting up Board\nfor first time use...");
+				BigTed.BTProgressHUD.Show ("Setting up Clubby\nfor first time use...");
 			} else { 
 				BigTed.BTProgressHUD.Show ();
 			}
-		}
-
-		public void SimulateNantucket(){
-			AppDelegate.UserLocation = new CLLocationCoordinate2D(41.284558, -70.098572);
-
-			AppDelegate.SimulatingNantucket = true;
-
-			LoadContent ();
-			ContentDisplaySuscribeToEvents (ContentDisplay);
-
-			hasLoaded = true;
-			LowerButtons.Alpha = 1f;
-			map.Camera = new CameraPosition (AppDelegate.UserLocation, ZoomLevel, 0, 0);
-
-			BigTed.BTProgressHUD.Dismiss ();
 		}
 
 		public override void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
@@ -199,14 +189,12 @@ namespace Board.Screens
 				firstLocationUpdate = true;
 				var location = change.ObjectForKey (NSObject.ChangeNewKey) as CLLocation;
 
-				if (!AppDelegate.SimulatingNantucket) {
-					Console.WriteLine ("Gets user location from maps");
+				Console.WriteLine ("Gets user location from maps");
 
-					AppDelegate.UserLocation = location.Coordinate;
-					CloudController.LogSession ();
+				AppDelegate.UserLocation = location.Coordinate;
+				CloudController.LogSession ();
 
-					map.Camera = CameraPosition.FromCamera (location.Coordinate, ZoomLevel);
-				}
+				map.Camera = CameraPosition.FromCamera (location.Coordinate, ZoomLevel);
 
 				if (!hasLoaded) {
 					LoadContent ();
@@ -224,18 +212,18 @@ namespace Board.Screens
 			}
 		}
 
-		private void LoadContent()
+		private async void LoadContent()
 		{
-			ScrollView.BackgroundColor = UIColor.White;
+			ScrollView.BackgroundColor = AppDelegate.ClubbyBlack;
 
-			if (FetchedBoards.BoardList == null || FetchedBoards.BoardList.Count == 0 || CommonUtils.DistanceBetweenCoordinates (FetchedBoards.Location, AppDelegate.UserLocation) > 1) {
-				Console.WriteLine ("Updates BoardList");
-				FetchedBoards.Update ();
+			if (FetchedVenues.VenueList == null || FetchedVenues.VenueList.Count == 0 || CommonUtils.DistanceBetweenCoordinates (FetchedVenues.Location, AppDelegate.UserLocation) > 1) {
+				Console.WriteLine ("Updates venues list");
+				await FetchedVenues.Update ();
 			}
 
-			if (FetchedBoards.BoardList.Count > 0) {
+			if (FetchedVenues.VenueList.Count > 0) {
 				
-				Magazine = new UIMagazine (FetchedBoards.BoardList);
+				Magazine = new UIMagazine (FetchedVenues.VenueList);
 				ScrollView.SetContentOffset (LastScreenStatus.ContentOffset, false);
 
 				switch (LastScreenStatus.CurrentScreen) {
@@ -244,23 +232,13 @@ namespace Board.Screens
 					ContentDisplay = Magazine.Pages [0].ContentDisplay;
 					ContentDisplay.SelectiveRendering (ScrollView.ContentOffset);
 					break;
-				case SubScreens.Featured:
+				case SubScreens.Directory:
 					LowerButtons.ListButtons [1].SetFullImage ();
 					ContentDisplay = Magazine.Pages [1].ContentDisplay;
-					ContentDisplay.SelectiveRendering (ScrollView.ContentOffset);
-					break;
-				case SubScreens.Calendar:
-					LowerButtons.ListButtons [2].SetFullImage ();
-					ContentDisplay = Magazine.Pages [2].ContentDisplay;
-					ContentDisplay.SelectiveRendering (ScrollView.ContentOffset);
-					break;
-				case SubScreens.Directory:
-					LowerButtons.ListButtons [3].SetFullImage ();
-					ContentDisplay = Magazine.Pages [2].ContentDisplay;
 					((UIThumbsContentDisplay)ContentDisplay).SelectiveThumbsRendering (ScrollView.ContentOffset);
 					break;
 				case SubScreens.Map:
-					LowerButtons.ListButtons [4].SetFullImage ();
+					LowerButtons.ListButtons [2].SetFullImage ();
 					ContentDisplay = Magazine.Pages [0].ContentDisplay;
 					ShowMap ();
 					break;
@@ -337,21 +315,8 @@ namespace Board.Screens
 
 		private void LoadBanner()
 		{
-			Banner = new UIMenuBanner ("", "menu_left");
-			Banner.ChangeTitle ("Board", AppDelegate.Narwhal26);
-
-			bool taps = false;
-			var tap = new UITapGestureRecognizer (tg => {
-				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					if (!taps){
-						taps = true;
-						Facebook.FacebookAutoUpdater.UpdateAllBoards(FetchedBoards.BoardList);
-					}
-					//AppDelegate.containerScreen.BringSideMenuUp("main");
-				}
-			});
-
-			Banner.AddTap (tap);
+			Banner = new UIMenuBanner ("");
+			Banner.ChangeTitle ("Clubby", AppDelegate.Narwhal26);
 		}
 
 		private void LoadMap()
@@ -370,9 +335,9 @@ namespace Board.Screens
 
 			map.InfoTapped += (sender, e) => {
 				if (!mapInfoTapped) {
-					var board = FetchedBoards.BoardList.Find(t => t.Id == ((NSString)e.Marker.UserData).ToString());
-					AppDelegate.BoardInterface = new UIBoardInterface (board);
-					AppDelegate.NavigationController.PushViewController (AppDelegate.BoardInterface, true);
+					var board = FetchedVenues.VenueList.Find(t => t.Id == ((NSString)e.Marker.UserData).ToString());
+					AppDelegate.VenueInterface = new UIVenueInterface (board);
+					AppDelegate.NavigationController.PushViewController (AppDelegate.VenueInterface, true);
 					mapInfoTapped = true;
 				}
 			};
@@ -383,16 +348,16 @@ namespace Board.Screens
 		private void GenerateMarkers()
 		{
 			if (!generatedMarkers) {
-				foreach (Board.Schema.Board board in FetchedBoards.BoardList) {
+				foreach (Venue board in FetchedVenues.VenueList) {
 					var marker = new UIMapMarker (board, map, UIMapMarker.SizeMode.Normal);
 					ListMapMarkers.Add (marker);
 				}
-				generatedMarkers |= FetchedBoards.BoardList.Count > 0;
+				generatedMarkers |= FetchedVenues.VenueList.Count > 0;
 			}
 		}
 
 		public void PlaceNewScreen(UIContentDisplay newDisplay, string screenName, UIFont newFont){
-			PlaceNewScreen (newDisplay, screenName, newFont, AppDelegate.BoardBlack);
+			PlaceNewScreen (newDisplay, screenName, newFont, UIColor.White);
 		}
 
 		// 3 lower buttons
@@ -447,7 +412,6 @@ namespace Board.Screens
 			LastScreenStatus.CurrentScreen = SubScreens.Map;
 
 			map.Alpha = 1f;
-
 			GenerateMarkers ();
 
 			// stops scrollview

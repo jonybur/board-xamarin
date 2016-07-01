@@ -1,15 +1,14 @@
-﻿using Board.Infrastructure;
-using Board.Screens.Controls;
-using Board.Utilities;
+﻿using Clubby.Infrastructure;
+using Clubby.Screens.Controls;
+using Clubby.Utilities;
 using Foundation;
 using UIKit;
 
-namespace Board.Screens
+namespace Clubby.Screens
 {
 	public class ContainerScreen : UIViewController
 	{
 		public UIViewController CurrentScreenViewController;
-		UISideMenu sideMenu;
 
 		public static Screens CurrentScreen;
 
@@ -19,7 +18,7 @@ namespace Board.Screens
 
 		public override void ViewDidLoad ()
 		{
-			View.BackgroundColor = UIColor.White;
+			View.BackgroundColor = AppDelegate.ClubbyBlack;
 
 			AutomaticallyAdjustsScrollViewInsets = false;
 			NavigationController.NavigationBarHidden = true;
@@ -40,12 +39,6 @@ namespace Board.Screens
 			} else {
 				UIRemoteNotificationType notificationTypes = UIRemoteNotificationType.Alert | UIRemoteNotificationType.Badge | UIRemoteNotificationType.Sound;
 				UIApplication.SharedApplication.RegisterForRemoteNotificationTypes (notificationTypes);
-			}
-		}
-
-		public override void ViewDidAppear(bool animated){
-			if (AppDelegate.BoardUser == null) {
-				CloudController.GetUserProfile ();
 			}
 		}
 
@@ -71,9 +64,6 @@ namespace Board.Screens
 			case Screens.MainMenu:
 				LoadMainMenu ();
 				break;
-			case Screens.Business:
-				LoadBusinessScreen ();
-				break;
 			}
 		}
 
@@ -85,32 +75,10 @@ namespace Board.Screens
 			CurrentScreen = Screens.MainMenu;
 		}
 
-		public void LoadBusinessScreen()
-		{
-			CurrentScreenViewController = new BusinessScreen ();
-			AddChildViewController (CurrentScreenViewController);
-			View.AddSubview (CurrentScreenViewController.View);
-			CurrentScreen = Screens.Business;
-		}
-
-		public void LoadSettingsScreen()
-		{
-			CurrentScreenViewController = new SettingsScreen ();
-			AddChildViewController (CurrentScreenViewController);
-			View.AddSubview (CurrentScreenViewController.View);
-			CurrentScreen = Screens.Settings;
-		}
-
 		public override void ViewDidDisappear(bool animated)
 		{
 			CurrentScreenViewController.ViewDidDisappear (animated);
 			MemoryUtility.ReleaseUIViewWithChildren (View);
-		}
-
-		public void BringSideMenuUp(string fromScreen)
-		{
-			sideMenu = new UISideMenu (fromScreen);
-			View.AddSubview (sideMenu.View);
 		}
 
 		public void ChangeToMainScreen()
@@ -120,42 +88,6 @@ namespace Board.Screens
 			AddChildViewController (CurrentScreenViewController);
 			View.AddSubview (CurrentScreenViewController.View);
 			CurrentScreen = Screens.MainMenu;
-		}
-
-		public void ChangeToBusinessScreen()
-		{	
-			RemoveCurrentScreenViewController ();
-			CurrentScreenViewController = new BusinessScreen ();
-			AddChildViewController (CurrentScreenViewController);
-			View.AddSubview (CurrentScreenViewController.View);
-			CurrentScreen = Screens.Business;
-		}
-
-		public void ChangeToSettingsScreen()
-		{
-			RemoveCurrentScreenViewController ();
-			CurrentScreenViewController = new SettingsScreen ();
-			AddChildViewController (CurrentScreenViewController);
-			View.AddSubview (CurrentScreenViewController.View);
-			CurrentScreen = Screens.Settings;
-		}
-
-		public void ChangeToInviteScreen()
-		{
-			RemoveCurrentScreenViewController ();
-			CurrentScreenViewController = new InviteScreen ();
-			AddChildViewController (CurrentScreenViewController);
-			View.AddSubview (CurrentScreenViewController.View);
-			CurrentScreen = Screens.Invite;
-		}
-
-		public void ChangeToSupportScreen()
-		{
-			RemoveCurrentScreenViewController ();
-			CurrentScreenViewController = new SupportScreen ();
-			AddChildViewController (CurrentScreenViewController);
-			View.AddSubview (CurrentScreenViewController.View);
-			CurrentScreen = Screens.Support;
 		}
 
 		private void RemoveCurrentScreenViewController()

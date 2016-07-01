@@ -7,7 +7,7 @@ using CoreLocation;
 using Newtonsoft.Json;
 using Foundation;
 
-namespace Board.JsonResponses
+namespace Clubby.JsonResponses
 {
 	[Preserve(AllMembers = true)]
 	public class AddressComponent

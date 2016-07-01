@@ -1,17 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Board.Infrastructure;
-using Board.Schema;
-using Board.Utilities;
-using Board.Facebook;
-using Board.JsonResponses;
-using System;
-using Newtonsoft.Json.Linq;
 using CoreGraphics;
 using MGImageUtilitiesBinding;
+using Clubby.Schema;
 using UIKit;
 
-namespace Board.Screens.Controls
+namespace Clubby.Screens.Controls
 {
 	public static class UIMagazineServices{
 		public static UIMagazinePage[] Pages;
@@ -32,76 +27,26 @@ namespace Board.Screens.Controls
 			set { UIMagazineServices.Pages = value; }
 		}
 
-		public UIMagazine(List<Board.Schema.Board> boardList){
+		public UIMagazine(List<Venue> boardList){
 			GeneratePages (boardList);
 			//Banner = new UIMagazineBanner ();
 		}
-
-		public static Dictionary<string, int> ContentLikes;
-		public static Dictionary<string, bool> UserLikes;
-
-		static MagazineResponse magazine;
 
 		static class TimelineContent{
 			public static List<Content> ContentList;
 			public static DateTime UpdatedTime;
 
 			public static void Update(){
-				ContentList = CloudController.GetTimeline (AppDelegate.UserLocation);
-
-				var publicationIds = TimelineContent.ContentList.Select (x => x.Id).ToArray ();
-
-				ContentLikes = CloudController.GetLikesSync (publicationIds);
-				UserLikes = CloudController.GetUserLikes (publicationIds);
-
-				foreach (var content in TimelineContent.ContentList) {
-					FacebookUtils.MakeGraphRequest (content.FacebookId, "?fields=likes", LoadFacebookLike);
-				}
-
+				// get from all venues
+				ContentList = MainMenuScreen.FetchedVenues.GetTimeline();
 				UpdatedTime = DateTime.Now;
 			}
-
-			private static void LoadFacebookLike(List<FacebookElement> obj){
-
-				if (obj.Count > 0) {
-					int facebookLikeCount = 0;
-					var likes = (FacebookLikes)obj [0];
-
-					if (likes.LikesData != null) {
-						facebookLikeCount = CommonUtils.CountStringOccurrences (likes.LikesData, "id");
-					}
-
-					var contentId = TimelineContent.ContentList.Find (x => x.FacebookId == obj [0].Id).Id;
-					ContentLikes [contentId] += facebookLikeCount;
-
-					UITimelineContentDisplay.UpdateWidgetLikeCount (contentId, ContentLikes [contentId]);
-				}
-
-			}
-		}
-
-		public static void AddLikeToContent(string contentId){
-			UIMagazine.ContentLikes [contentId]++;
-			UIMagazine.UserLikes [contentId] = true;
-		}
-
-		public static void RemoveLikeToContent(string contentId){
-			UIMagazine.ContentLikes [contentId]--;
-			UIMagazine.UserLikes [contentId] = false;
 		}
 
 		// generates the magazine headers
-		private void GeneratePages(List<Board.Schema.Board> boardList){
-
-			if (magazine == null || magazine.UpdatedTime.TimeOfDay.TotalMinutes + 60 < DateTime.Now.TimeOfDay.TotalMinutes) {
-				Console.WriteLine ("Gets magazine");
-				magazine = CloudController.GetMagazine (AppDelegate.UserLocation);
-			}
-
-			bool theresMagazine = MagazineResponse.IsValidMagazine (magazine);
-
+		private void GeneratePages(List<Venue> boardList){
+			
 			if (TimelineContent.ContentList == null || TimelineContent.UpdatedTime.TimeOfDay.TotalMinutes + 10 < DateTime.Now.TimeOfDay.TotalMinutes){
-				Console.WriteLine ("Gets timeline");
 				TimelineContent.Update ();
 			}
 
@@ -111,10 +56,6 @@ namespace Board.Screens.Controls
 
 			if (theresTimeline) {
 				pagesName.Add ("TRENDING");
-			}
-
-			if (theresMagazine) {
-				pagesName.Add("FEATURED");
 			}
 
 			pagesName.Add("DIRECTORY");
@@ -137,11 +78,6 @@ namespace Board.Screens.Controls
 
 			if (theresTimeline) {
 				pages [screenNumber].ContentDisplay = new UITimelineContentDisplay (boardList, TimelineContent.ContentList);
-				screenNumber++;
-			}
-
-			if (theresMagazine) {
-				pages [screenNumber].ContentDisplay = new UICarouselContentDisplay (magazine);
 				screenNumber++;
 			}
 

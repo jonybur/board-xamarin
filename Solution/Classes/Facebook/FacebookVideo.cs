@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Board.Utilities;
+using Clubby.Utilities;
 
-namespace Board.Facebook
+namespace Clubby.Facebook
 {
 	public class FacebookVideo : FacebookElement
 	{

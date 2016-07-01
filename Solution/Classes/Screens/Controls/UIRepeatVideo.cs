@@ -1,11 +1,11 @@
 ﻿using AVFoundation;
 using AVKit;
-using Board.Utilities;
+using Clubby.Utilities;
 using CoreGraphics;
 using CoreMedia;
 using Foundation;
 
-namespace Board.Screens.Controls
+namespace Clubby.Screens.Controls
 {
 	public class UIRepeatVideo : AVPlayerViewController
 	{

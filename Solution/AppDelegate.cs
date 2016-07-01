@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Net;
-using Board.Infrastructure;
-using Board.Interface;
-using Board.JsonResponses;
-using Board.Schema;
-using Board.Screens;
+using Clubby.Infrastructure;
+using Clubby.Interface;
+using Clubby.JsonResponses;
+using Facebook.CoreKit;
+using Clubby.Schema;
+using Clubby.Screens;
 using CoreAnimation;
 using CoreLocation;
-using Facebook.CoreKit;
 using Foundation;
 using Google.Maps;
 using UIKit;
 
-namespace Board
+namespace Clubby
 {
 	// The UIApplicationDelegate for the application. This class is responsible for launching the
 	// User Interface of the application, as well as listening (and optionally responding) to
@@ -29,12 +29,12 @@ namespace Board
 		public static UINavigationController NavigationController;
 		public static float ScreenWidth;
 		public static float ScreenHeight;
-		public static bool SimulatingNantucket;
 
-		public static UIColor BoardOrange;
+		public static UIColor ClubbyYellow;
+		public static UIColor ClubbyBlack;
 		public static UIColor BoardBlue;
 		public static UIColor BoardLightBlue;
-		public static UIColor BoardBlack;
+		public static UIColor ClubbyOrange;
 
 		public static UIFont Narwhal12;
 		public static UIFont Narwhal14;
@@ -51,7 +51,7 @@ namespace Board
 
 		public static User BoardUser;
 		public static CLLocationCoordinate2D UserLocation;
-		public static UIBoardInterface BoardInterface;
+		public static UIVenueInterface VenueInterface;
 
 
 		public enum PhoneVersions { iPhone4, iPhone5, iPhone6, iPhone6Plus };
@@ -59,14 +59,12 @@ namespace Board
 
 		public const string APIAddress = "api.boardack.com";
 
-		public const string FacebookAppId = "761616930611025";
-		public const string FacebookDisplayName = "Board";
+		public const string FacebookAppId = "1614192198892777";
+		public const string FacebookDisplayName = "Clubby";
 
-		public const string GoogleMapsAPIKey = "AIzaSyAUO-UX9QKVWK421yjXqoo02N5TYrG_hY8";
-		public const string UberServerToken = "4y1kRu3Kt-LWdTeXcktgphAN7qZlltsTRTbvwIQ_";
-		public const string InstagramServerToken = "2292871863.37fcdb1.cdc6ab03abfa4a8db4a2da022ec5d3c2";
-
-		const string MapsApiKey = "AIzaSyAyjPtEvhmhHHa5_aPiZPiPN3GUtIXxO6I";
+		//public const string MapsApiKey = "AIzaSyCDZ9asTW293TTiaYkMrlLNtlBdzBD_FQw";
+		public const string GoogleMapsAPIKey = "AIzaSyCDZ9asTW293TTiaYkMrlLNtlBdzBD_FQw";
+		public const string UberServerToken = "X0Vn_KDBicJ_U-wJzS3at6SoirGqWhSydSftTHpm";
 
 		public static string BoardToken;
 		public static AmazonS3TicketResponse AmazonS3Ticket;
@@ -94,10 +92,12 @@ namespace Board
 			ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 
 			BoardLightBlue = UIColor.FromRGB (45, 121, 180);
-			BoardOrange = UIColor.FromRGB (244, 108, 85);
-
-			BoardBlack = UIColor.FromRGB (40, 40, 40);
 			BoardBlue = UIColor.FromRGB (38, 106, 154);
+			ClubbyOrange = UIColor.FromRGB (244, 108, 85);
+			ClubbyBlack = UIColor.FromRGB (16, 16, 16);
+			ClubbyYellow = UIColor.FromRGB (252, 183, 0);
+
+
 			Narwhal12 = UIFont.FromName ("narwhal-bold", 12);
 			Narwhal14 = UIFont.FromName ("narwhal-bold", 14);
 			Narwhal16 = UIFont.FromName ("narwhal-bold", 16);
@@ -113,7 +113,7 @@ namespace Board
 
 			StorageController.Initialize ();
 
-			MapServices.ProvideAPIKey (MapsApiKey);
+			MapServices.ProvideAPIKey (GoogleMapsAPIKey);
 
 			// FACEBOOK
 			Profile.EnableUpdatesOnAccessTokenChange (true);
@@ -143,9 +143,7 @@ namespace Board
 			// create a new window instance based on the screen size
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
 
-			bool result = CloudController.LogInFacebook();
-
-			if (result) {
+			if (AccessToken.CurrentAccessToken != null) {
 				containerScreen = new ContainerScreen ();
 				screen = containerScreen;
 			} else {
@@ -159,7 +157,7 @@ namespace Board
 			window.AddSubview (NavigationController.View);
 			window.MakeKeyAndVisible ();
 
-			UIApplication.SharedApplication.SetStatusBarStyle (UIStatusBarStyle.Default, false);
+			UIApplication.SharedApplication.SetStatusBarStyle (UIStatusBarStyle.LightContent, false);
 
 			return true;
 		}
@@ -172,9 +170,10 @@ namespace Board
 
 		public static void ExitBoardInterface()
 		{
-			BoardInterface.ExitBoard ();
-			BoardInterface.Dispose ();
-			BoardInterface = null;
+			VenueInterface.ExitBoard ();
+			VenueInterface.Dispose ();
+			VenueInterface = null;
+
 			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 		}
 
@@ -263,11 +262,11 @@ namespace Board
 			NavigationController.PopToViewController(screen, false);
 		}
 
-		public static void OpenBoard(Board.Schema.Board board){
-			if (BoardInterface == null)
+		public static void OpenBoard(Venue board){
+			if (VenueInterface == null)
 			{
-				BoardInterface = new UIBoardInterface (board);
-				NavigationController.PushViewController (BoardInterface, true);
+				VenueInterface = new UIVenueInterface (board);
+				NavigationController.PushViewController (VenueInterface, true);
 			}
 		}
 

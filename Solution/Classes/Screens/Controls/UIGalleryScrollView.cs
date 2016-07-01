@@ -4,7 +4,7 @@ using CoreGraphics;
 using MGImageUtilitiesBinding;
 using System;
 
-namespace Board.Screens.Controls
+namespace Clubby.Screens.Controls
 {
 	public class UIGalleryScrollView : UIScrollView {
 		private List<UIPictureButton> Pictures;

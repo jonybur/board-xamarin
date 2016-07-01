@@ -4,7 +4,7 @@ using System.Linq;
 using MessageUI;
 using UIKit;
 
-namespace Board.Utilities
+namespace Clubby.Utilities
 {
 	public interface ICanCleanUpMyself
 	{

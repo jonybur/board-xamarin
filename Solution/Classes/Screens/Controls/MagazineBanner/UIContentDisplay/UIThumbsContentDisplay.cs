@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Board.Utilities;
+using Clubby.Utilities;
+using Clubby.Schema;
 using CoreGraphics;
 using UIKit;
 
-namespace Board.Screens.Controls
+namespace Clubby.Screens.Controls
 {
 	public class UIThumbsContentDisplay : UIContentDisplay
 	{
-		private interface IBoardComparer : IComparer<Board.Schema.Board> {
-			string GetComparisonPropertyDescription(Board.Schema.Board target);
+		private interface IBoardComparer : IComparer<Venue> {
+			string GetComparisonPropertyDescription(Venue target);
 
 			string Description { get; }
 		}
@@ -21,12 +22,12 @@ namespace Board.Screens.Controls
 				get { return "Alphabetical Order"; }
 			}
 
-			public int Compare (Board.Schema.Board x, Board.Schema.Board y)
+			public int Compare (Venue x, Venue y)
 			{
 				return String.Compare(x.Name[0].ToString().ToLower(), y.Name[0].ToString().ToLower());
 			}
 
-			public string GetComparisonPropertyDescription(Board.Schema.Board target) {
+			public string GetComparisonPropertyDescription(Venue target) {
 				return target.Name [0].ToString ().ToLower();
 			}
 		}
@@ -37,12 +38,12 @@ namespace Board.Screens.Controls
 				get { return "Neighbourhood"; }
 			}
 
-			public int Compare (Board.Schema.Board x, Board.Schema.Board y)
+			public int Compare (Venue x, Venue y)
 			{
 				return String.Compare(x.GeolocatorObject.Neighborhood, y.GeolocatorObject.Neighborhood);
 			}
 
-			public string GetComparisonPropertyDescription(Board.Schema.Board target) {
+			public string GetComparisonPropertyDescription(Venue target) {
 				return target.GeolocatorObject.Neighborhood;
 			}
 		}
@@ -53,14 +54,14 @@ namespace Board.Screens.Controls
 				get { return "Category"; }
 			}
 
-			public int Compare (Board.Schema.Board x, Board.Schema.Board y)
+			public int Compare (Venue x, Venue y)
 			{
-				return String.Compare (x.Category, y.Category);
+				return String.Compare (x.GetAllCategories(), y.GetAllCategories());
 			}
 
-			public string GetComparisonPropertyDescription (Board.Schema.Board target)
+			public string GetComparisonPropertyDescription (Venue target)
 			{
-				return target.Category;
+				return target.GetAllCategories();
 			}
 		}
 
@@ -70,18 +71,18 @@ namespace Board.Screens.Controls
 				get { return "Distance"; }
 			}
 
-			public int Compare (Board.Schema.Board x, Board.Schema.Board y)
+			public int Compare (Venue x, Venue y)
 			{
 				return (int)Math.Floor(x.Distance*100.0) - (int)Math.Floor(y.Distance*100.0);
 			}
 		
-			public string GetComparisonPropertyDescription(Board.Schema.Board target) {
+			public string GetComparisonPropertyDescription(Venue target) {
 				return string.Empty;
 			}
 		}
 
 		public readonly float ThumbSize;
-		public enum OrderMode { Category = 0, /*Neighborhood,*/ Alphabetic, Distance }
+		public enum OrderMode { Category = 0, Neighborhood, Alphabetic, Distance }
 		public const int TopAndBottomSeparation = 20;
 
 		public List<UIBoardThumbComponent> ListThumbComponents;
@@ -89,9 +90,9 @@ namespace Board.Screens.Controls
 
 		private IBoardComparer _boardComparer;
 		private Dictionary<OrderMode, IBoardComparer> _boardComparersByMode; 
-		private List<Board.Schema.Board> BoardList;
+		private List<Venue> BoardList;
 
-		public UIThumbsContentDisplay (List<Board.Schema.Board> boardList, OrderMode mode,
+		public UIThumbsContentDisplay (List<Venue> boardList, OrderMode mode,
 			float extraTopMargin = 0, float extraLowMargin = 0)
 		{
 			BoardList = boardList;
@@ -103,14 +104,14 @@ namespace Board.Screens.Controls
 			ThumbSize = AppDelegate.ScreenWidth / 3.5f;
 
 			this._boardComparersByMode = new Dictionary<OrderMode, IBoardComparer> ();
-			this._boardComparersByMode.Add (OrderMode.Category, new CategoryComparer ());
-			//this._boardComparersByMode.Add (OrderMode.Neighborhood, new NeighbourhoodComparer ());
+			//this._boardComparersByMode.Add (OrderMode.Category, new CategoryComparer ());
+			this._boardComparersByMode.Add (OrderMode.Neighborhood, new NeighbourhoodComparer ());
 			this._boardComparersByMode.Add (OrderMode.Alphabetic, new AlphabeticComparer ());
 			this._boardComparersByMode.Add (OrderMode.Distance, new DistanceComparer ());
 
 			Modes = new List<OrderMode> ();
-			Modes.Add (OrderMode.Category);
-			//Modes.Add (OrderMode.Neighborhood);
+			//Modes.Add (OrderMode.Category);
+			Modes.Add (OrderMode.Neighborhood);
 			Modes.Add (OrderMode.Alphabetic);
 			Modes.Add (OrderMode.Distance);
 
@@ -234,7 +235,7 @@ namespace Board.Screens.Controls
 			public UIFilterSelector(float yposition, string text, UITapGestureRecognizer tap){
 				Frame = new CGRect(20, yposition, AppDelegate.ScreenWidth - 40, 50);
 				Font = UIFont.SystemFontOfSize (16, UIFontWeight.Medium);
-				TextColor = AppDelegate.BoardOrange;
+				TextColor = AppDelegate.ClubbyYellow;
 				AdjustsFontSizeToFitWidth = true;
 				Text = "Sorted by " + text;
 				TextAlignment = UITextAlignment.Center;

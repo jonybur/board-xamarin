@@ -1,6 +1,6 @@
-﻿using Board.Facebook;
+﻿using Clubby.Facebook;
 
-namespace Board
+namespace Clubby
 {
 	public class FacebookAlbum : FacebookElement
 	{

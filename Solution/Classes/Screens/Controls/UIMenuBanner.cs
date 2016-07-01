@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using CoreAnimation;
 using Foundation;
 
-namespace Board.Screens.Controls
+namespace Clubby.Screens.Controls
 {
 	public sealed class UIMenuBanner : UIImageView
 	{
@@ -39,8 +39,8 @@ namespace Board.Screens.Controls
 
 			var bottomLineView = new UIImageView ();
 			bottomLineView.Frame = new CGRect (0, backgroundView.Frame.Bottom - 1, backgroundView.Frame.Width, 1);
-			bottomLineView.BackgroundColor = AppDelegate.BoardOrange;
-			bottomLineView.Alpha = .5f;
+			bottomLineView.BackgroundColor = AppDelegate.ClubbyYellow;
+			bottomLineView.Alpha = .75f;
 
 			TitleLabel = GenerateTitle (title);
 
@@ -76,7 +76,7 @@ namespace Board.Screens.Controls
 
 		private UIImageView GenerateStepsBackground(){
 			var background = new UIImageView (new CGRect (0, Height + 1, AppDelegate.ScreenWidth, Height / 2));
-			background.BackgroundColor = UIColor.FromRGB(249, 249, 249);
+			background.BackgroundColor = UIColor.FromRGB(16, 16, 16);
 			//background.Alpha = .95f;
 
 			return background;
@@ -91,7 +91,7 @@ namespace Board.Screens.Controls
 
 				label.Font = AppDelegate.Narwhal20;
 				label.Text = labelText.ToString();
-				label.TextColor = AppDelegate.BoardBlack;//UIColor.White;
+				label.TextColor = AppDelegate.ClubbyBlack;//UIColor.White;
 
 				if (labelText != current_step) {
 					label.Alpha = .5f;
@@ -144,7 +144,7 @@ namespace Board.Screens.Controls
 
 				buttonView.Image = img.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 				buttonView.Frame = new CGRect (xposition, 0, imgw, imgh);
-				buttonView.TintColor = AppDelegate.BoardBlack;
+				buttonView.TintColor = AppDelegate.ClubbyBlack;
 				buttonView.Alpha = .75f;
 			}
 
@@ -153,7 +153,7 @@ namespace Board.Screens.Controls
 
 		private UIImageView GenerateBackground(){
 			var background = new UIImageView (new CGRect (0, 0, AppDelegate.ScreenWidth, Height));
-			background.BackgroundColor = UIColor.FromRGB(249, 249, 249);
+			background.BackgroundColor = UIColor.FromRGB(16, 16, 16);
 
 			return background;
 		}
@@ -163,7 +163,7 @@ namespace Board.Screens.Controls
 
 			label.Font = UIFont.SystemFontOfSize(20, UIFontWeight.Medium);
 
-			label.TextColor = AppDelegate.BoardBlack;
+			label.TextColor = UIColor.White;
 			label.Text = title;
 			label.TextAlignment = UITextAlignment.Center;
 

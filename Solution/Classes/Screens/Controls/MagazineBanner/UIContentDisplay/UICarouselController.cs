@@ -1,46 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using Board.Infrastructure;
-using Board.JsonResponses;
-using Board.Utilities;
+using Clubby.Infrastructure;
+using Clubby.Schema;
+using Clubby.JsonResponses;
+using Clubby.Utilities;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
 using Haneke;
 using UIKit;
 
-namespace Board.Screens.Controls
+namespace Clubby.Screens.Controls
 {
 	public class UICarouselContentDisplay : UIContentDisplay {
 
 		const float SeparationBetweenCarousels = 30;
 
-		public UICarouselContentDisplay(MagazineResponse magazine){
+		public UICarouselContentDisplay(){
 			ListThumbs = new List<UIContentThumb> ();
 
-			var magazineDictionary = new Dictionary<string, List<Board.Schema.Board>> ();
-			var magazineList = new List<Board.Schema.Board> ();
+			var magazineDictionary = new Dictionary<string, List<Venue>> ();
+			var magazineList = new List<Venue> ();
 
 			string section = string.Empty;
-
-			foreach (var entries in magazine.data.entries) {
-				var board = CloudController.GenerateBoardFromBoardResponse (entries.board);
-
-				if (section == string.Empty) {
-					section = entries.section;
-					magazineList.Add (board);
-					continue;
-				}
-
-				if (section != entries.section) {
-					magazineDictionary.Add (section, magazineList);
-
-					section = entries.section;
-					magazineList = new List<Board.Schema.Board> ();
-				}
-				magazineList.Add (board);
-			}
-			magazineDictionary.Add (section, magazineList);
 
 			var testCarousels = new List<UICarouselController> ();
 
@@ -72,7 +54,7 @@ namespace Board.Screens.Controls
 
 		public const int ItemSeparation = 20;
 
-		public UICarouselController(List<Board.Schema.Board> boardList, string titleText){
+		public UICarouselController(List<Venue> boardList, string titleText){
 			if (Char.IsNumber (titleText [0])) {
 				titleText = titleText.Substring (1, titleText.Length - 1);
 			}
@@ -109,7 +91,7 @@ namespace Board.Screens.Controls
 		public const int Height = 100;
 		public const int TextSpace = 60;
 
-		public UICarouselLargeItem (Schema.Board board) {
+		public UICarouselLargeItem (Venue board) {
 			Frame = new CGRect (0, 0, Width, Height);
 
 			var backgroundImageView = new UIImageView ();
@@ -148,7 +130,7 @@ namespace Board.Screens.Controls
 
 			TouchEvent = (sender, e) => {
 
-				if (AppDelegate.BoardInterface == null)
+				if (AppDelegate.VenueInterface == null)
 				{
 					CATransaction.Begin ();
 
@@ -182,7 +164,7 @@ namespace Board.Screens.Controls
 			var attributedString = new NSMutableAttributedString (compositeString);
 			attributedString.SetAttributes (nameAttributes.Dictionary, new NSRange (0, nameString.Length));
 
-			label.TextColor = AppDelegate.BoardBlack;
+			label.TextColor = AppDelegate.ClubbyBlack;
 			label.Lines = 0;
 			label.AttributedText = attributedString;
 			label.AdjustsFontSizeToFitWidth = false;
@@ -222,7 +204,7 @@ namespace Board.Screens.Controls
 			attributedString.SetAttributes (nameAttributes.Dictionary, new NSRange (0, nameString.Length));
 			attributedString.SetAttributes (distanceAttributes, new NSRange (nameString.Length, distanceTotalString.Length + 1));
 
-			label.TextColor = AppDelegate.BoardBlack;
+			label.TextColor = AppDelegate.ClubbyBlack;
 			label.Lines = 0;
 			label.AttributedText = attributedString;
 			label.AdjustsFontSizeToFitWidth = false;

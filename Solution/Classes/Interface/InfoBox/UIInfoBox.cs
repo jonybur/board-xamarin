@@ -1,15 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Clubby.Facebook;
+using Clubby.Schema;
+using Clubby.Screens;
+using Clubby.Utilities;
 using CoreGraphics;
 using UIKit;
-using System;
-using Board.Utilities;
-using Board.Facebook;
 
-namespace Board.Interface
+namespace Clubby.Interface
 {
 	public sealed class UIInfoBox : UIScrollView
 	{
-		public const int XMargin = 10;
+		public const int XMargin = 0;
 
 		UIMapContainer Container;
 		UILabel NameLabel, CategoryLabel, InstagramLabel, OpenLabel;
@@ -18,8 +20,9 @@ namespace Board.Interface
 		UIActionButtons ActionButtons;
 		UIInstagramGallery InstagramGallery;
 		UIImageView Line1, Line2;
+		List<UIView> ListSubviews;
 
-		public UIInfoBox(Board.Schema.Board board){
+		public UIInfoBox(Venue venue){
 			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth - XMargin * 2, AppDelegate.ScreenHeight);
 			Center = new CGPoint (XMargin + Frame.Width / 2, AppDelegate.ScreenHeight / 2);
 			BackgroundColor = UIColor.White;
@@ -27,59 +30,93 @@ namespace Board.Interface
 			 
 			Banner = new UITopBanner ((float)Frame.Width);
 			NameLabel = new UITitleLabel (Banner.Bottom + 20, (float)Frame.Width,
-				UIFont.SystemFontOfSize(20, UIFontWeight.Medium), CommonUtils.FirstLetterOfEveryWordToUpper(UIBoardInterface.board.Name));
+				UIFont.SystemFontOfSize(20, UIFontWeight.Medium), CommonUtils.FirstLetterOfEveryWordToUpper(UIVenueInterface.venue.Name));
+			
 			CategoryLabel = new UITitleLabel ((float)NameLabel.Frame.Bottom + 3, (float)Frame.Width,
-				UIFont.SystemFontOfSize(14, UIFontWeight.Regular), board.Category.ToUpper());
+				UIFont.SystemFontOfSize(14, UIFontWeight.Regular), venue.GetAllCategories().ToUpper());
 
 			OpenLabel = new UITitleLabel ((float)CategoryLabel.Frame.Bottom, (float)Frame.Width, UIFont.SystemFontOfSize(14, UIFontWeight.Regular), string.Empty);
 			OpenLabel.Text = "CHECKING...";
 
-			FacebookUtils.MakeGraphRequest (board.FacebookId, "?fields=hours", CheckIfOpen);
+			FacebookUtils.MakeGraphRequest (venue.FacebookId, "?fields=hours", CheckIfOpen);
 
-			ActionButtons = new UIActionButtons (board, (float)OpenLabel.Frame.Bottom + 10, (float)Frame.Width);
-			AboutBox = new UIAboutBox (board.About, (float)OpenLabel.Frame.Bottom + 75, (float)Frame.Width);
+			ActionButtons = new UIActionButtons (venue, (float)OpenLabel.Frame.Bottom + 10, (float)Frame.Width);
+			AboutBox = new UIAboutBox (venue.About, (float)OpenLabel.Frame.Bottom + 75, (float)Frame.Width);
 
 			float lastBottom = (float)AboutBox.Frame.Bottom;
 
-			if (board.GeolocatorObject.Coordinate.Latitude != 0 && board.GeolocatorObject.Coordinate.Longitude != 0) {
+			if (venue.GeolocatorObject.Coordinate.Latitude != 0 && venue.GeolocatorObject.Coordinate.Longitude != 0) {
 				Container = new UIMapContainer (Frame, (float)AboutBox.Frame.Bottom + 30);
 				lastBottom = (float)Container.Map.Frame.Bottom;
 			}
 
-			/*
 			Line1 = new UIImageView (new CGRect (0, Container.Map.Frame.Bottom + 20, Frame.Width, 1));
 			Line1.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 90);
 
 			InstagramLabel = new UITitleLabel ((float)Line1.Frame.Bottom + 20, (float)Frame.Width,
-												AppDelegate.Narwhal16, "LATEST CUSTOMER PHOTOS");
-			
-			var images = new List<UIImage> ();
+				UIFont.SystemFontOfSize(16, UIFontWeight.Medium), "Latest Photos");
 
-			var testImage = UIImage.FromFile ("./demo/magazine/nantucket.png");
-			for (int i = 0; i < 8; i++) {
-				images.Add (testImage);
-			}
+			var images = UIVenueInterface.venue.ContentList.GetRange(0, 11);
 
 			InstagramGallery = new UIInstagramGallery ((float)Frame.Width, (float)InstagramLabel.Frame.Bottom + 15, images);
-			*/
+			lastBottom = (float)InstagramGallery.Frame.Bottom;
 
-			AddSubviews (Banner, CategoryLabel, NameLabel, NameLabel, AboutBox, OpenLabel);//, Line1, InstagramGallery, InstagramLabel);
+			ListSubviews = new List<UIView> ();
+
+			AddSubview(Banner);
+
+			ListSubviews.Add (CategoryLabel);
+			ListSubviews.Add (NameLabel);
+			ListSubviews.Add (AboutBox);
+			ListSubviews.Add (OpenLabel);
+			ListSubviews.Add (Line1);
+			ListSubviews.Add (InstagramGallery);
+			ListSubviews.Add (InstagramLabel);
 
 			if (Container != null) {
-				AddSubview(Container.Map);
+				ListSubviews.Add (Container.Map);
 			}
 
 			foreach (var button in ActionButtons.ListActionButton) {
-				AddSubview (button);
+				ListSubviews.Add (button);
 			}
 
-			ContentSize = new CGSize (Frame.Width, lastBottom + Board.Interface.Buttons.ButtonInterface.ButtonBarHeight * 3);
+			ContentSize = new CGSize (Frame.Width, lastBottom + 20 * 3);
+
+			SelectiveRendering (new CGPoint(0,0));
 
 			Scrolled += (sender, e) => {
 				if (ContentOffset.Y < 0){
 					Banner.Center = new CGPoint(Banner.Center.X, Banner.Frame.Height / 2 + ContentOffset.Y);
 				}
+
+				SelectiveRendering(ContentOffset);
 			};
+		}
+
+		public void SelectiveRendering(CGPoint contentOffset){
+
+			foreach (var view in ListSubviews) {
+
+				// if its on a screenheight * 2 range...
+				if (view.Frame.Y > (contentOffset.Y - view.Frame.Height) &&
+					view.Frame.Y < (contentOffset.Y + AppDelegate.ScreenHeight * 2)) {
+
+					// if its on a screenheight range
+					if (view.Frame.Y > (contentOffset.Y - view.Frame.Height) &&
+						view.Frame.Y < (contentOffset.Y + AppDelegate.ScreenHeight)) {
+
+						AddSubview (view);
+					}
+
+				} else if (view.Superview != null) {
+
+					// if its not on a screenheight * 2 range and has been drawn, dissolve it
+					view.RemoveFromSuperview ();
+
+				}
+
+			}
 		}
 
 		public void CheckIfOpen(List<FacebookElement> obj){

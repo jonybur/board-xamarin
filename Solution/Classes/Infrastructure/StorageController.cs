@@ -1,9 +1,10 @@
 using System.IO;
-using Board.JsonResponses;
+using Clubby.Schema;
+using Clubby.JsonResponses;
 using Foundation;
 using SQLite;
 
-namespace Board.Infrastructure
+namespace Clubby.Infrastructure
 {
 	[Preserve(AllMembers = true)]
 	public static class StorageController
@@ -83,12 +84,12 @@ namespace Board.Infrastructure
 			database.Insert(seenContent);
 		}
 
-		public static Board.Schema.Board BoardIsStored(string id){
+		public static Venue BoardIsStored(string id){
 			var boardL = database.Query<BoardL> ("SELECT * FROM Boards WHERE id = ?", id);
 
 			if (boardL.Count > 0) {
 				// gets image and location from storage
-				var board = new Board.Schema.Board (id);
+				var board = new Venue (id);
 				board.GeolocatorObject = JsonHandler.DeserializeObject (boardL [0].GeolocatorJson);
 				return board;
 			}
@@ -96,7 +97,7 @@ namespace Board.Infrastructure
 			return null;
 		}
 
-		public static void StoreBoard(Board.Schema.Board board, string geolocationJson){
+		public static void StoreBoard(Venue board, string geolocationJson){
 			var boardL = new BoardL (board.Id, geolocationJson);
 			database.Insert (boardL);
 		}

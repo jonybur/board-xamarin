@@ -1,29 +1,32 @@
 ﻿using System.Collections.Generic;
-using UIKit;
-using Board.Interface.LookUp;
+using Clubby.Infrastructure;
+using Clubby.Schema;
 using CoreGraphics;
-using MGImageUtilitiesBinding;
-using Board.Infrastructure;
+using Clubby.Interface.LookUp;
+using Foundation;
+using Haneke;
+using UIKit;
 
-namespace Board.Interface
+namespace Clubby.Interface
 {
 	class UIInstagramGallery : UIScrollView {
 		public static float ButtonSize;
 		List<UIButton> InstagramPhotos;
 
-		public UIInstagramGallery (float width, float yposition, List<UIImage> images){
+		public UIInstagramGallery (float width, float yposition, List<Content> contents){
 			ScrollEnabled = false;
 			ButtonSize = width / 3 - 10;
 			Frame = new CGRect (0, 0, width, ButtonSize * 2);
 
 			InstagramPhotos = new List<UIButton> ();
 
-			int imagesCount = (images.Count > 11) ? 11 : images.Count;
+			int imagesCount = (contents.Count > 11) ? 11 : contents.Count;
 
 			if (imagesCount != 0) {
-				for (int i = 0; i < imagesCount; i++) {
-					SetImage (images [i]);
+				foreach (Picture picture in contents) {
+					SetImage (picture);
 				}
+
 				SetInstagramThumb ();
 			}
 
@@ -33,18 +36,17 @@ namespace Board.Interface
 		}
 
 		private void SetInstagramThumb(){
-			var image = UIImage.FromFile ("./boardinterface/infobox/viewmore2.png");
 			var pictureButton = new UIButton(new CGRect (0, 0, ButtonSize, ButtonSize));
-			var fixedImg = image.ImageCroppedToFitSize(pictureButton.Frame.Size);
-			var imageView = new UIImageView (fixedImg);
-			pictureButton.Alpha = .75f;
+			var imageView = new UIImageView (pictureButton.Frame);
+			imageView.SetImage ("./boardinterface/infobox/viewmore3.png");
+			pictureButton.Alpha = .5f;
 			pictureButton.AddSubview(imageView);
 			pictureButton.Layer.CornerRadius = 10;
 			pictureButton.ClipsToBounds = true;
 			pictureButton.TouchUpInside += (sender, e) => {
 				// opens instagram
 				if (AppsController.CanOpenInstagram()){
-					AppsController.OpenInstagram("788029");
+					AppsController.OpenInstagram(UIVenueInterface.venue.InstagramId);
 				}
 
 				//location?id=LOCATION_ID
@@ -53,21 +55,16 @@ namespace Board.Interface
 			InstagramPhotos.Add(pictureButton);
 		}
 
-		private void SetImage (UIImage image){
-			if (image == null) {
-				return;
-			}
-
+		private void SetImage (Picture picture){
 			var pictureButton = new UIButton(new CGRect (0, 0, ButtonSize, ButtonSize));
-			var fixedImg = image.ImageCroppedToFitSize(pictureButton.Frame.Size);
-			var imageView = new UIImageView (fixedImg);
+			var imageView = new UIImageView (pictureButton.Frame);
+			imageView.SetImage (new NSUrl(picture.ThumbnailImageUrl));
 			pictureButton.AddSubview(imageView);
 			pictureButton.Layer.CornerRadius = 10;
 			pictureButton.ClipsToBounds = true;
 			pictureButton.TouchUpInside += (sender, e) => {
-				var picture = new Board.Schema.Picture(image, "", new CGPoint(), "", CGAffineTransform.MakeIdentity());
-				var pictureLookUp = new PictureLookUp(picture, false);
-				AppDelegate.PushViewLikePresentView(pictureLookUp);
+				var lookUp = new PictureLookUp(picture);
+				AppDelegate.PushViewLikePresentView(lookUp);
 			};
 
 			InstagramPhotos.Add(pictureButton);

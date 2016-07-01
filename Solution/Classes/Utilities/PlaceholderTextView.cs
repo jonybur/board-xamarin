@@ -15,7 +15,7 @@
 using CoreGraphics;
 using UIKit;
 
-namespace Board.Utilities
+namespace Clubby.Utilities
 {
 	/// <summary>
 	/// A quick subclass of UITextView to enable placeholder text

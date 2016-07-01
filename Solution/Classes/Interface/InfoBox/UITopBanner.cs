@@ -1,9 +1,9 @@
-﻿using Board.Screens.Controls;
+﻿using Clubby.Screens.Controls;
 using CoreGraphics;
 using Haneke;
 using UIKit;
 
-namespace Board.Interface
+namespace Clubby.Interface
 {
 	public class UITopBanner : UIView {
 		UIImageView BackgroundImage;
@@ -28,7 +28,7 @@ namespace Board.Interface
 		}
 
 		public void LoadCoverImage(){
-			var localBoard = UIBoardInterface.board;
+			var localBoard = UIVenueInterface.venue;
 			var scaledImageView = new UIImageView ();
 			scaledImageView.Frame = BackgroundImage.Frame;
 			scaledImageView.ContentMode = UIViewContentMode.ScaleAspectFill;

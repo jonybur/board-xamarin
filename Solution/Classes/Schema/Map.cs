@@ -1,6 +1,6 @@
 ﻿using CoreGraphics;
 
-namespace Board.Schema
+namespace Clubby.Schema
 {
 	public class Map : Content
 	{

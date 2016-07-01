@@ -2,7 +2,7 @@
 using CoreGraphics;
 using System.Collections.Generic;
 
-namespace Board.Screens.Controls
+namespace Clubby.Screens.Controls
 {
 	public class UIContentDisplay : UIView
 	{
@@ -14,14 +14,32 @@ namespace Board.Screens.Controls
 		}
 
 		public void SelectiveRendering(CGPoint contentOffset){
+
 			foreach (var view in ListViews) {
-
+				
+				// if its on a screenheight * 2 range...
 				if (view.Frame.Y > (contentOffset.Y - view.Frame.Height) &&
-					view.Frame.Y < (contentOffset.Y + AppDelegate.ScreenHeight)) {
+				    view.Frame.Y < (contentOffset.Y + AppDelegate.ScreenHeight * 2)) {
 
-					AddSubview (view);
+					if (view is UITimelineWidget) {
+						var timelineWidget = (UITimelineWidget)view;
+						timelineWidget.ActivateImage ();
+					}
 
-				} else {
+					// if its on a screenheight range
+					if (view.Frame.Y > (contentOffset.Y - view.Frame.Height) &&
+					    view.Frame.Y < (contentOffset.Y + AppDelegate.ScreenHeight)) {
+
+						AddSubview (view);
+					}
+
+				} else if (view.Superview != null) {
+
+					// if its not on a screenheight * 2 range and has been drawn, dissolve it
+
+					if (view is UITimelineWidget || view is UIBoardThumbComponent) {
+						System.Console.WriteLine ("a widget gets dissolved");
+					}
 
 					view.RemoveFromSuperview ();
 

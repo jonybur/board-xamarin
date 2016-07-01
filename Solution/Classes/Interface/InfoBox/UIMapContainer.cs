@@ -1,13 +1,13 @@
-﻿using Board.Infrastructure;
-using Board.Interface.LookUp;
-using Board.Screens.Controls;
-using Board.Utilities;
+﻿using Clubby.Infrastructure;
+using Clubby.Screens.Controls;
+using Clubby.Interface.LookUp;
+using Clubby.Utilities;
 using CoreGraphics;
 using CoreLocation;
 using Google.Maps;
 using UIKit;
 
-namespace Board.Interface
+namespace Clubby.Interface
 {
 	public class UIMapContainer : UIViewController
 	{
@@ -22,11 +22,11 @@ namespace Board.Interface
 			CreateMap ((float)frame.Width);
 
 			MapTap = new UITapGestureRecognizer(obj => {
-				var lookUp = new MapLookUp(UIBoardInterface.board.GeolocatorObject);
+				var lookUp = new MapLookUp(UIVenueInterface.venue.GeolocatorObject);
 				AppDelegate.PushViewLikePresentView(lookUp);
 			});
-
 			Map.AddGestureRecognizer (MapTap);
+
 			Map.Center = new CGPoint (frame.Width / 2, yposition + Map.Frame.Height / 2);
 			Map.ClipsToBounds = true;
 
@@ -44,8 +44,8 @@ namespace Board.Interface
 
 				if (AppsController.CanOpenUber()) {
 
-					var location = new CLLocationCoordinate2D(UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lat,
-						UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lng);
+					var location = new CLLocationCoordinate2D(UIVenueInterface.venue.GeolocatorObject.results [0].geometry.location.lat,
+						UIVenueInterface.venue.GeolocatorObject.results [0].geometry.location.lng);
 
 					var listproducts = CloudController.GetUberProducts(location);
 
@@ -78,8 +78,8 @@ namespace Board.Interface
 
 			directionsTap = new UITapGestureRecognizer (tg => {
 
-				var location = new CLLocationCoordinate2D(UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lat,
-					UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lng);
+				var location = new CLLocationCoordinate2D(UIVenueInterface.venue.GeolocatorObject.results [0].geometry.location.lat,
+					UIVenueInterface.venue.GeolocatorObject.results [0].geometry.location.lng);
 
 				UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
 
@@ -117,8 +117,8 @@ namespace Board.Interface
 			mapView.UserInteractionEnabled = false;
 			mapView.Layer.AllowsEdgeAntialiasing = true;
 			mapView.MyLocationEnabled = true;
-			mapView.Camera = CameraPosition.FromCamera (UIBoardInterface.board.GeolocatorObject.Coordinate, 16);
-			mapMarker = new UIMapMarker (UIBoardInterface.board, mapView);
+			mapView.Camera = CameraPosition.FromCamera (UIVenueInterface.venue.GeolocatorObject.Coordinate, 16);
+			mapMarker = new UIMapMarker (UIVenueInterface.venue, mapView);
 
 			var edgeInsets = new UIEdgeInsets (0, 0, ButtonHeight, 0);
 			mapView.Padding = edgeInsets;

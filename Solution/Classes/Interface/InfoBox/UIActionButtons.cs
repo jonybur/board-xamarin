@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using Board.Infrastructure;
+using Clubby.Infrastructure;
+using Clubby.Schema;
 using CoreGraphics;
 using Haneke;
-using Board.Facebook;
+using Clubby.Facebook;
 using UIKit;
 
-namespace Board.Interface
+namespace Clubby.Interface
 {
 	class UIActionButtons
 	{	
 		public List<UIActionButton> ListActionButton;
 
-		public UIActionButtons(Board.Schema.Board board, float yposition, float infoboxWidth){
+		public UIActionButtons(Venue board, float yposition, float infoboxWidth){
 			ListActionButton = new List<UIActionButton>();
 
 			ListActionButton.Add(CreateLikeButton());
@@ -21,7 +22,7 @@ namespace Board.Interface
 				ListActionButton.Add(CreateMessageButton(board.FacebookId));
 			}
 
-			if (!string.IsNullOrEmpty(board.Phone)) {
+			if (!string.IsNullOrEmpty(board.Phone) && board.Phone != "<<not-applicable>>") {
 				ListActionButton.Add (CreateCallButton (board.Phone));
 			}
 
@@ -65,7 +66,6 @@ namespace Board.Interface
 
 		private UIActionButton CreateLikeButton(){
 			likeLabel = new UILabel ();
-			likeLabel = new UILabel ();
 			likeLabel.Font = UIFont.SystemFontOfSize (20, UIFontWeight.Light);
 
 			likes = 0;
@@ -79,48 +79,9 @@ namespace Board.Interface
 
 			likeButton.AddSubview (likeLabel);
 
-			DownloadLikeData (likeButton);
+			FacebookUtils.MakeGraphRequest (UIVenueInterface.venue.FacebookId, "?fields=fan_count", LoadFanCount);
 
 			return likeButton;
-		}
-
-		private async void DownloadLikeData(UIActionButton likeButton){
-			
-			// asynchroniously fetches like count from DB, if user liked the board, sets the touch event on the button & gets the facebook like count
-			try{
-				var likesDictionary = await CloudController.GetLikesAsync (UIBoardInterface.DownloadCancellation.Token, UIBoardInterface.board.Id);
-
-				// gets the likes
-				likes = likesDictionary[UIBoardInterface.board.Id];
-
-				var isLikedDictionary = await CloudController.GetUserLikesAsync (UIBoardInterface.DownloadCancellation.Token, UIBoardInterface.board.Id);
-
-				// gets if user liked it
-				isLiked = isLikedDictionary[UIBoardInterface.board.Id];
-			}catch (OperationCanceledException){
-				Console.WriteLine ("Task got cancelled");
-			}
-
-			firstImage = isLiked ? fullHeart : emptyHeart;
-			likeButton.ChangeImage(firstImage);
-
-			likeButton.TouchUpInside += (sender, e) => {
-				if (!isLiked) {
-					CloudController.SendLike (UIBoardInterface.board.Id);
-					likes++;
-					likeButton.ChangeImage (fullHeart);
-				} else {
-					CloudController.SendDislike (UIBoardInterface.board.Id);
-					likes--;
-					likeButton.ChangeImage (emptyHeart);
-				}
-				likeLabel.Text = likes.ToString ();
-				isLiked = !isLiked;
-			};
-
-
-			// gets facebook likes
-			FacebookUtils.MakeGraphRequest (UIBoardInterface.board.FacebookId, "?fields=fan_count", LoadFanCount);
 		}
 
 		private void LoadFanCount(List<FacebookElement> obj){

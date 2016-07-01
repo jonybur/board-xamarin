@@ -1,44 +1,44 @@
 ﻿using System;
 using CoreLocation;
-using Facebook.CoreKit;
-using Facebook.LoginKit;
 using Foundation;
-using UIKit;
+using Newtonsoft.Json.Linq;
+using Clubby.Infrastructure;
+using Facebook.CoreKit;
 using System.Collections.Generic;
 
-namespace Board.Facebook
+namespace Clubby.Facebook
 {
 	public static class FacebookUtils
 	{
-		// TODO: modify to accept permission params
-		public static async System.Threading.Tasks.Task GetReadPermission(UIViewController uiv, string permission)
-		{
-			if (!HasPermission(permission))
-			{
-				LoginManager manager = new LoginManager ();
-				await manager.LogInWithReadPermissionsAsync (new []{ permission }, uiv);
+		private static string facebookAccessToken;
+
+		/*
+		private static async System.Threading.Tasks.Task<string> FetchFacebookAccessToken(){
+			string accessToken = await WebAPI.GetJsonAsync ("https://graph.facebook.com/oauth/access_token?%20" +
+				"client_id=1614192198892777&" +
+				"client_secret=b2d869cdd379966deda4f6d3031aedac" +
+				"&%20grant_type=client_credentials");
+
+			return accessToken.Substring(accessToken.IndexOf ('=') + 1);
+		}
+
+		public static async System.Threading.Tasks.Task<string> GetFacebookAccessToken(){
+			if (string.IsNullOrEmpty(facebookAccessToken)) {
+				facebookAccessToken = await FetchFacebookAccessToken ();
 			}
+			return facebookAccessToken;
+		}
+		*/
+
+		public static string GetFacebookAccessToken(){
+			return AccessToken.CurrentAccessToken != null ? AccessToken.CurrentAccessToken.TokenString : string.Empty;
 		}
 
-		public static async System.Threading.Tasks.Task GetPublishPermission(UIViewController uiv, string permission)
-		{
-			if (!HasPermission(permission))
-			{
-				LoginManager manager = new LoginManager ();
-				await manager.LogInWithPublishPermissionsAsync (new []{ permission }, uiv);
-			}
-		}
-
-		public static bool HasPermission(string permission)
-		{
-			return AccessToken.CurrentAccessToken.HasGranted (permission);
-		}
-
-		public static void MakeGraphRequest(string id, string element, Action<List<FacebookElement>> callback)
+		public static async System.Threading.Tasks.Task MakeGraphRequest(string id, string element, Action<List<FacebookElement>> callback)
 		{
 			string query = id + "/" + element;
-			string token = AccessToken.CurrentAccessToken != null ? AccessToken.CurrentAccessToken.TokenString : string.Empty;
-			var graph = new GraphRequest (query, null, token, "v2.6", "GET");
+			var accessToken = GetFacebookAccessToken ();
+			var graph = new GraphRequest (query, null, accessToken, "v2.6", "GET");
 			graph.Start (delegate (GraphRequestConnection connection, NSObject obj, NSError error) {
 
 				var ElementList = new List<FacebookElement> ();
@@ -61,7 +61,7 @@ namespace Board.Facebook
 						var fbfancount = new FacebookFanCount (objects [i, 0], objects [i, 1]);
 						ElementList.Add (fbfancount);
 					}
-					
+
 				} else if (element.StartsWith("videos?fields=source,description,updated_time,thumbnails", StringComparison.Ordinal)) {
 
 					string[,] objects = NSObjectToElement (obj, "data.description", "data.updated_time", "data.id", "data.source", "data.thumbnails.data.uri");
@@ -130,24 +130,6 @@ namespace Board.Facebook
 						ElementList.Add (fbhours);
 					}
 
-				} else if (element.StartsWith ("?fields=name,location,about,cover,phone,category_list,picture", StringComparison.Ordinal)) {
-					string[,] objects = NSObjectToElement (obj, "id", "name", "location.latitude", "location.longitude", "about", "cover.source",
-						"picture.data.url", "phone", "category_list.name");
-
-					for (int i = 0; i < objects.GetLength (0); i++) {
-
-						CLLocationCoordinate2D location;
-						if (objects [i, 2] != null && objects [i, 3] != null) {
-							location = new CLLocationCoordinate2D (Double.Parse (objects [i, 2]), Double.Parse (objects [i, 3]));
-						} else {
-							location = new CLLocationCoordinate2D ();
-						}
-
-						var fbimportedpage = new FacebookImportedPage (objects [i, 0], objects [i, 1], location,
-							objects [i, 4], objects [i, 5], objects [i, 6], objects [i, 7], objects [i, 8]);
-
-						ElementList.Add (fbimportedpage);
-					}
 				} else if (element.StartsWith("?fields=posts", StringComparison.Ordinal)) {
 					string[,] objects = NSObjectToElement (obj, "posts.data.id", "posts.data.message", "posts.data.story", "posts.data.created_time", "posts.data.full_picture");
 
@@ -176,6 +158,50 @@ namespace Board.Facebook
 					callback (ElementList);
 				}
 			});
+		}
+
+		public static FacebookImportedPage ReadFacebookResponse(string json){
+			var jobject = JObject.Parse (json);
+
+			//"id", "name", "location.latitude", "location.longitude", "about", "cover.source", "picture.data.url", "phone", "category_list.name"
+
+			string id = 	     TryGetJsonValue((JValue)jobject ["id"]);
+			string name = 	     TryGetJsonValue((JValue)jobject ["name"]);
+			string latitude =    TryGetJsonValue((JValue)jobject ["location"]["latitude"]);
+			string longitude =   TryGetJsonValue((JValue)jobject ["location"]["longitude"]);
+			string about = 	     TryGetJsonValue((JValue)jobject ["about"]);
+			string cover = 	     TryGetJsonValue((JValue)jobject ["cover"]["source"]);
+			string picture =     TryGetJsonValue((JValue)jobject ["picture"]["data"]["url"]);
+			string phone =       TryGetJsonValue((JValue)jobject ["phone"]);
+			string friendLikes = TryGetJsonValue((JValue)jobject["context"]["friends_who_like"]["summary"]["total_count"]);
+
+			var categoryObject = JArray.FromObject (jobject["category_list"]);
+
+			var categoryList = new List<string> ();
+			foreach (var category in categoryObject) {
+				var catName = TryGetJsonValue((JValue)category["name"]);
+				if (!string.IsNullOrEmpty (catName)) {
+					categoryList.Add (catName);
+				}
+
+			}
+
+			CLLocationCoordinate2D location;
+			if (latitude != null && longitude != null) {
+				location = new CLLocationCoordinate2D (Double.Parse (latitude), Double.Parse (longitude));
+			} else {
+				location = new CLLocationCoordinate2D ();
+			}
+
+			return new FacebookImportedPage (id, name, location, about, cover, picture, phone, categoryList, Int32.Parse(friendLikes));
+		}
+
+		private static string TryGetJsonValue(JValue jvalue){
+			try{
+				return jvalue.ToString();
+			}catch{
+				return string.Empty;
+			}
 		}
 
 		// first parameter must be primary key

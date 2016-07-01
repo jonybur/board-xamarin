@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Board.Schema;
+using Clubby.Schema;
 using CoreGraphics;
 
-namespace Board.Screens.Controls
+namespace Clubby.Screens.Controls
 {	
 	public class UITimelineContentDisplay : UIContentDisplay {
 
@@ -18,18 +18,18 @@ namespace Board.Screens.Controls
 			}
 		}
 
-		public UITimelineContentDisplay(List<Board.Schema.Board> boardList, List<Content> timelineContent) {
+		public UITimelineContentDisplay(List<Venue> boardList, List<Content> timelineContent) {
 			
 			float yposition = UIMagazineBannerPage.Height + UIMenuBanner.Height + 30;
 			TimelineWidgets = new Dictionary<string, UITimelineWidget> ();
 
 			foreach (var content in timelineContent){
 
-				if (!(/*content is BoardEvent*/ content is Announcement || content is Picture)) {
+				if (!(content is Picture)) {
 					continue;
 				}
 
-				var board = boardList.FirstOrDefault (x => x.Id == content.boardId);
+				var board = boardList.FirstOrDefault (x => x.InstagramId == content.InstagramId);
 
 				if (board == null) {
 					continue;

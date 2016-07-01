@@ -7,7 +7,7 @@
 	<key>MinimumOSVersion</key>
 	<string>9.3</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This will allow Board to display nearby venues</string>
+	<string>This will allow Clubby to display nearby venues</string>
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>1</integer>
@@ -71,8 +71,6 @@
 		<string>fonts/Narwhal.ttf</string>
 		<string>fonts/Narwhal_bold.ttf</string>
 	</array>
-	<key>CFBundleDisplayName</key>
-	<string>Board</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -80,13 +78,12 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb761616930611025</string>
-				<string>fbauth2</string>
+				<string>fb1614192198892777</string>
 			</array>
 		</dict>
 	</array>
 	<key>FacebookAppID</key>
-	<string>793699580736093</string>
+	<string>1614192198892777</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
@@ -97,18 +94,15 @@
 		<string>waze</string>
 		<string>instagram</string>
 		<string>comgooglemaps</string>
-		<string>fb-messenger</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>com.boardinc.Board</string>
-	<key>CFBundleName</key>
-	<string>Board</string>
+	<string>com.boardinc.Nightly</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>CFBundleShortVersionString</key>
-	<string>0.5.13</string>
+	<string>0.1.00</string>
 	<key>CFBundleVersion</key>
-	<string>0.5.13</string>
+	<string>0.1.00</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
@@ -133,30 +127,24 @@
 			</dict>
 			<key>akamaihd.net</key>
 			<dict>
-				<key>NSThirdPartyExceptionMinimumTLSVersion</key>
-				<string>TLSv1.0</string>
-				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
-				<false/>
 				<key>NSIncludesSubdomains</key>
 				<true/>
+				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+				<false/>
 			</dict>
 			<key>facebook.com</key>
 			<dict>
-				<key>NSThirdPartyExceptionMinimumTLSVersion</key>
-				<string>TLSv1.0</string>
-				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
-				<false/>
 				<key>NSIncludesSubdomains</key>
 				<true/>
+				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+				<false/>
 			</dict>
 			<key>fbcdn.net</key>
 			<dict>
-				<key>NSThirdPartyExceptionMinimumTLSVersion</key>
-				<string>TLSv1.0</string>
-				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
-				<false/>
 				<key>NSIncludesSubdomains</key>
 				<true/>
+				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+				<false/>
 			</dict>
 		</dict>
 	</dict>
@@ -172,5 +160,9 @@
 	</dict>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
+	<key>CFBundleName</key>
+	<string>Clubby</string>
 </dict>
 </plist>

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
 
-namespace Board.Facebook
+namespace Clubby.Facebook
 {
 	public class FacebookPhoto : FacebookElement
 	{

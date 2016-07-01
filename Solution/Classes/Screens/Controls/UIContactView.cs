@@ -4,7 +4,7 @@ using Plugin.Share;
 using MessageUI;
 using Haneke;
 
-namespace Board.Screens
+namespace Clubby.Screens
 {
 	public class UIContactView : UIView
 	{
@@ -56,7 +56,7 @@ namespace Board.Screens
 			TitleLabel = new UILabel ();
 			TitleLabel.Text = titleString;
 			TitleLabel.AdjustsFontSizeToFitWidth = true;
-			TitleLabel.TextColor = AppDelegate.BoardOrange;
+			TitleLabel.TextColor = AppDelegate.ClubbyYellow;
 			TitleLabel.TextAlignment = UITextAlignment.Center;
 			TitleLabel.Font = AppDelegate.Narwhal24;
 			var size = TitleLabel.Text.StringSize (TitleLabel.Font);

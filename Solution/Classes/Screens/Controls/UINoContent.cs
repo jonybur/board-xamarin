@@ -4,7 +4,7 @@ using Haneke;
 using UIKit;
 using Foundation;
 
-namespace Board.Screens
+namespace Clubby.Screens
 {
 	public class UINoContent : UIView
 	{
@@ -20,9 +20,9 @@ namespace Board.Screens
 
 			imageURL = "./screens/nocontent/noapp.png";
 			if (preset == Presets.NotInArea) {
-				descriptionText = "Board is not yet available in your area.\nPlease come back later!";
+				descriptionText = "Clubby is not yet available in your area.\nPlease come back later!";
 			} else if (preset == Presets.LocationDisabled) {
-				descriptionText = "Location services are disabled.\nPlease enable them to enjoy Board.";
+				descriptionText = "Location services are disabled.\nPlease enable them to enjoy Clubby.";
 			}
 
 			ImageView = new UIImageView ();
@@ -53,7 +53,6 @@ namespace Board.Screens
 			nantucketButton.ClipsToBounds = true;
 			nantucketButton.Layer.MasksToBounds = true;
 			nantucketButton.Layer.CornerRadius = 10;
-			
 
 			nantucketButton.TouchUpInside += (sender, e) => {
 				CATransaction.Begin ();
@@ -63,7 +62,7 @@ namespace Board.Screens
 
 				CATransaction.Commit();
 
-				CATransaction.CompletionBlock = LoadNantucket;
+				//CATransaction.CompletionBlock = LoadNantucket;
 			};
 
 			AddSubviews (ImageView, DescriptionView, nantucketButton);
@@ -85,18 +84,6 @@ namespace Board.Screens
 				BigTed.BTProgressHUD.Show ("Setting up Board\nfor first time use...");
 			} else { 
 				BigTed.BTProgressHUD.Show("Loading Nantucket...");
-			}
-		}
-
-
-		void LoadNantucket(){
-			if (!LoadingNantucket){
-				LoadingNantucket = true;
-
-				var containerScreen = (ContainerScreen)AppDelegate.NavigationController.TopViewController;
-				var mainMenuScreen = (MainMenuScreen)containerScreen.CurrentScreenViewController;
-
-				mainMenuScreen.SimulateNantucket();
 			}
 		}
 	}

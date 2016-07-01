@@ -1,10 +1,10 @@
 ﻿using System;
 using CoreGraphics;
 using UIKit;
-using Board.Utilities;
-using Board.Screens.Controls;
+using Clubby.Utilities;
+using Clubby.Screens.Controls;
 
-namespace Board.Screens
+namespace Clubby.Screens
 {
 	public class LicenseScreen : UIViewController
 	{

@@ -1,4 +1,4 @@
-﻿namespace Board.Facebook
+﻿namespace Clubby.Facebook
 {
 	public class FacebookElement
 	{

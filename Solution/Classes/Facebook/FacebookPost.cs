@@ -1,7 +1,7 @@
 ﻿using System;
-using Board.Utilities;
+using Clubby.Utilities;
 
-namespace Board.Facebook
+namespace Clubby.Facebook
 {
 	public class FacebookPost : FacebookElement
 	{

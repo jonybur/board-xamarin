@@ -1,15 +1,14 @@
 ﻿using UIKit;
 using CoreGraphics;
-using Board.Schema;
-using Board.Utilities;
-using Board.Infrastructure;
+using Clubby.Schema;
+using Clubby.Utilities;
 using CoreAnimation;
 using Foundation;
 using Haneke;
 
-namespace Board.Screens.Controls
+namespace Clubby.Screens.Controls
 {
-	public class UITimelineWidget : UIView{
+	public sealed class UITimelineWidget : UIView{
 		// includes logo, name, distance and time
 		UIView headerView;
 
@@ -25,21 +24,39 @@ namespace Board.Screens.Controls
 		// content being displayed in widget
 		Content content;
 
-		bool isLiked;
-		int likes;
 		UIImageView heartView;
 		public UILabel LikeLabel;
+		int likes;
+		bool isLiked;
 
-		const string emptyHeartImageUrl = "./boardinterface/infobox/emptylike.png";
+		const string emptyHeartImageUrl = "./boardinterface/infobox/emptylike_white.png";
 		const string fullHeartImageUrl = "./boardinterface/infobox/fulllike.png";
-
 		const int XMargin = 10;
 
-		public UITimelineWidget(Board.Schema.Board board, Content _content){
+		bool hasBeenActivated = false;
+
+		public void ActivateImage(){
+			if (hasBeenActivated) {
+				return;
+			}
+
+			System.Console.WriteLine ("draws image");
+
+			if (timelineWidget is UITimelinePicture) {
+				var timelinePicture = ((UITimelinePicture)timelineWidget);
+				timelinePicture.SetPictureImage ();
+			}
+			logoView.SetImage (new NSUrl(venueLogoUrl));
+
+			hasBeenActivated = true;
+		}
+
+
+		public UITimelineWidget(Venue venue, Content _content){
 			// makes the variable global
 			content = _content;
 
-			GenerateHeaderView(board);
+			GenerateHeaderView(venue);
 
 			float lastBottom = 0;
 
@@ -53,24 +70,14 @@ namespace Board.Screens.Controls
 				GenerateLikeView();
 				likeButton.Center = new CGPoint(likeButton.Center.X, timelineWidget.Frame.Bottom + likeButton.Frame.Height / 2);
 
-				if (!string.IsNullOrEmpty(picture.Description)){
-					GenerateDescriptionView(board.Name, picture.Description);
-					AddSubview(descriptionView);
+				if (!string.IsNullOrEmpty (picture.Description)) {
+					GenerateDescriptionView (venue.Name, picture.Description);
+					AddSubview (descriptionView);
+					lastBottom = (float)descriptionView.Frame.Bottom;
+				} else {
+					lastBottom = (float)likeButton.Frame.Bottom;
 				}
 
-				lastBottom = (float)descriptionView.Frame.Bottom;
-
-			} else if (content is Announcement) {
-				Announcement announcement = (Announcement)content;
-
-				timelineWidget = new UITimelineAnnouncement(announcement.Text);
-				timelineWidget.Center = new CGPoint(AppDelegate.ScreenWidth / 2,
-					headerView.Frame.Bottom + timelineWidget.Frame.Height / 2 + 20);
-
-				GenerateLikeView();
-				likeButton.Center = new CGPoint(likeButton.Center.X, timelineWidget.Frame.Bottom + 10 + likeButton.Frame.Height / 2);
-
-				lastBottom = (float)likeButton.Frame.Bottom;
 			}
 
 			var doubleTapToLike = SetNewDoubleTapGestureRecognizer();
@@ -82,8 +89,11 @@ namespace Board.Screens.Controls
 			Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, lastBottom);
 		}
 
-		private void GenerateHeaderView(Board.Schema.Board board){
+		UIImageView logoView;
+		string venueLogoUrl;
 
+		private void GenerateHeaderView(Venue venue){
+			venueLogoUrl = venue.LogoUrl;
 			int headerHeight = 40;
 
 			headerView = new UIView ();
@@ -101,33 +111,32 @@ namespace Board.Screens.Controls
 				CATransaction.Commit();
 
 				CATransaction.CompletionBlock = delegate {
-					AppDelegate.OpenBoard(board);
+					AppDelegate.OpenBoard(venue);
 				};
 			};
 
 			boardButton.Frame = new CGRect (0, 0, headerView.Frame.Width * .7f, headerHeight);
 
-			var logoView = new UIImageView ();
+			logoView = new UIImageView ();
 			logoView.Frame = new CGRect (0, 0, headerHeight, headerHeight);
 			logoView.ContentMode = UIViewContentMode.ScaleAspectFit;
-			logoView.SetImage (new NSUrl(board.LogoUrl));
 			logoView.Layer.CornerRadius = logoView.Frame.Width / 2;
 			logoView.ClipsToBounds = true;
 
 			var nameView = new UILabel ();
 			nameView.Frame = new CGRect (logoView.Frame.Right + 10, 3, boardButton.Frame.Width, 20);
-			nameView.Text =  CommonUtils.FirstLetterOfEveryWordToUpper (board.Name);
-			nameView.Font = UIFont.SystemFontOfSize (16, UIFontWeight.Medium);//AppDelegate.Narwhal16;
-			nameView.TextColor = AppDelegate.BoardOrange;
+			nameView.Text =  CommonUtils.FirstLetterOfEveryWordToUpper (venue.Name);
+			nameView.Font = UIFont.SystemFontOfSize (16, UIFontWeight.Medium);
+			nameView.TextColor = AppDelegate.ClubbyYellow;
 			nameView.AdjustsFontSizeToFitWidth = true;
 
 			var distanceView = new UILabel ();
 			distanceView.Frame = new CGRect (nameView.Frame.X, nameView.Frame.Bottom, boardButton.Frame.Width, 20);
-			var distance = CommonUtils.GetDistanceFromUserToBoard (board);
+			var distance = CommonUtils.GetDistanceFromUserToBoard (venue);
 			var formattedDistance = CommonUtils.GetFormattedDistance (distance);
 			distanceView.Text = formattedDistance;
-			distanceView.Font = UIFont.SystemFontOfSize (12, UIFontWeight.Light);//AppDelegate.Narwhal12;
-			distanceView.TextColor = UIColor.Black;
+			distanceView.Font = UIFont.SystemFontOfSize (12, UIFontWeight.Light);
+			distanceView.TextColor = UIColor.White;
 			distanceView.AdjustsFontSizeToFitWidth = true;
 
 			boardButton.AddSubviews (logoView, nameView, distanceView);
@@ -135,7 +144,7 @@ namespace Board.Screens.Controls
 			var timeView = new UILabel();
 			string timeAgo = CommonUtils.GetFormattedTimeDifference (content.CreationDate);
 			timeView.Font = UIFont.SystemFontOfSize (14, UIFontWeight.Light);
-			timeView.TextColor = UIColor.FromRGBA(0,0,0,200);
+			timeView.TextColor = UIColor.FromRGBA(255,255,255,200);
 			timeView.Text = timeAgo;
 			var timeViewSize = timeView.Text.StringSize (timeView.Font);
 			timeView.Frame = new CGRect(0, 0, timeViewSize.Width, timeViewSize.Height);
@@ -154,18 +163,18 @@ namespace Board.Screens.Controls
 			heartView = new UIImageView ();
 			heartView.Frame = new CGRect (0, 0, heartSize, heartSize);
 
-			isLiked = UIMagazine.UserLikes[content.Id];
+			isLiked = false;
 			var firstImage = isLiked ? fullHeartImageUrl : emptyHeartImageUrl;
 			heartView.SetImage (firstImage);
 
 			heartView.Center = new CGPoint (heartView.Frame.Width / 2, likeButton.Frame.Height / 2 - 5);
 
-			LikeLabel = new UILabel ();
 			LikeLabel = new UILabel();
 			LikeLabel.Font = UIFont.SystemFontOfSize(18, UIFontWeight.Light);
 
-			likes = UIMagazine.ContentLikes[content.Id];
+			likes = content.Likes;
 			LikeLabel.Text = likes.ToString();
+			LikeLabel.TextColor = UIColor.White;
 
 			var sizeLikeLabel = LikeLabel.Text.StringSize (LikeLabel.Font);
 			LikeLabel.Frame = new CGRect(0, 0, sizeLikeLabel.Width * 2, sizeLikeLabel.Height);
@@ -186,20 +195,16 @@ namespace Board.Screens.Controls
 		private void Like(){
 			if (!isLiked){
 				
-				CloudController.SendLike(content.Id);
 				likes++;
-
-				UIMagazine.AddLikeToContent (content.Id);
 				heartView.SetImage(fullHeartImageUrl);
 
 			} else {
 				
-				CloudController.SendDislike(content.Id);
 				likes--;
-
-				UIMagazine.RemoveLikeToContent (content.Id);
 				heartView.SetImage(emptyHeartImageUrl);
+
 			}
+
 			LikeLabel.Text = likes.ToString();
 			isLiked = !isLiked;
 		}
@@ -207,7 +212,7 @@ namespace Board.Screens.Controls
 		private void GenerateDescriptionView(string boardName, string description){
 			var lineView = new UIImageView ();
 			lineView.Frame = new CGRect (0, 0, AppDelegate.ScreenWidth - XMargin * 4, 1);
-			lineView.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 40);
+			lineView.BackgroundColor = UIColor.FromRGBA (255, 255, 255, 200);
 
 			descriptionView = new UITextView ();
 			descriptionView.Frame = new CGRect (XMargin * 2, likeButton.Frame.Bottom - 10, AppDelegate.ScreenWidth - XMargin * 4, 14);
@@ -233,6 +238,8 @@ namespace Board.Screens.Controls
 
 			var size = descriptionView.SizeThatFits (descriptionView.Frame.Size);
 			descriptionView.Frame = new CGRect (descriptionView.Frame.X, descriptionView.Frame.Y, descriptionView.Frame.Width, size.Height);
+			descriptionView.TextColor = UIColor.White;
+			descriptionView.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 
 			descriptionView.AddSubview (lineView);
 		}
@@ -250,14 +257,16 @@ namespace Board.Screens.Controls
 
 		sealed class UITimelinePicture : UIImageView {
 
-			public UITimelinePicture(string url) {
+			string Url;
+
+			public UITimelinePicture(string _url) {
+				Url = _url;
 				this.Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenWidth);
 				this.ContentMode = UIViewContentMode.ScaleAspectFit;
-				if (!string.IsNullOrEmpty(url)){
-					this.SetImage(new NSUrl(url));
-				}else{
-					this.BackgroundColor = UIColor.Red;
-				}
+			}
+
+			public void SetPictureImage(){
+				this.SetImage(new NSUrl(Url));
 			}
 		}
 

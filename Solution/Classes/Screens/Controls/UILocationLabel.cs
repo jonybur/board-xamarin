@@ -1,9 +1,9 @@
 ﻿using System;
 using UIKit;
 using CoreGraphics;
-using Board.Utilities;
+using Clubby.Utilities;
 
-namespace Board.Screens
+namespace Clubby.Screens
 {
 	public class UILocationLabel : UILabel{
 
@@ -25,7 +25,7 @@ namespace Board.Screens
 
 		private void SetProperties(string text, UITextAlignment alignment){
 			Font = UIFont.SystemFontOfSize (16, UIFontWeight.Medium);//AppDelegate.Narwhal18;
-			TextColor = AppDelegate.BoardBlack;//AppDelegate.BoardOrange;
+			TextColor = UIColor.White;
 			AdjustsFontSizeToFitWidth = true;
 			Text = CommonUtils.FirstLetterOfEveryWordToUpper(text);
 			TextAlignment = alignment;

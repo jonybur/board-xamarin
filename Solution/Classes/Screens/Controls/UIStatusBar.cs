@@ -2,7 +2,7 @@
 using UIKit;
 using CoreGraphics;
 
-namespace Board.Screens
+namespace Clubby.Screens
 {
 	public class UIStatusBar : UIView
 	{
@@ -12,7 +12,7 @@ namespace Board.Screens
 		{
 			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, 20);
 			Alpha = .95f;
-			BackgroundColor = UIColor.FromRGB(249, 249, 249);
+			BackgroundColor = AppDelegate.ClubbyBlack;
 		}
 	}
 }

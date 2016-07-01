@@ -1,7 +1,7 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using CoreLocation;
 
-namespace Board.Facebook
+namespace Clubby.Facebook
 {
 	public class FacebookImportedPage : FacebookElement
 	{
@@ -11,10 +11,11 @@ namespace Board.Facebook
 		public string CoverUrl;
 		public string PictureUrl;
 		public string Phone;
-		public string Category;
+		public List<string> Category;
+		public int FriendLikes;
 
 		public FacebookImportedPage (string id, string name, CLLocationCoordinate2D location,
-			string about, string coverurl, string pictureurl, string phone, string category)
+			string about, string coverurl, string pictureurl, string phone, List<string> category, int friendLikes)
 		{
 			Id = id;
 			Name = name;
@@ -24,6 +25,7 @@ namespace Board.Facebook
 			PictureUrl = pictureurl;
 			Phone = phone;
 			Category = category;
+			FriendLikes = friendLikes;
 		}
 	}
 }

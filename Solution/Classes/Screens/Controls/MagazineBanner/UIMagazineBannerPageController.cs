@@ -2,7 +2,7 @@
 using CoreGraphics;
 using UIKit;
 
-namespace Board.Screens.Controls
+namespace Clubby.Screens.Controls
 {
 	public class UIMagazineBannerPageController : UIPageViewController
 	{

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Foundation;
 
-namespace Board.JsonResponses
+namespace Clubby.JsonResponses
 {
 	[Preserve(AllMembers = true)]
 	public class InstagramMediaResponse

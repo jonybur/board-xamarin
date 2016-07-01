@@ -1,7 +1,7 @@
 ﻿using CoreGraphics;
 using UIKit;
 
-namespace Board.Interface
+namespace Clubby.Interface
 {
 	public class UITitleLabel : UILabel
 	{

@@ -2,8 +2,9 @@
 using CoreGraphics;
 using System;
 using MGImageUtilitiesBinding;
+using Clubby.Schema;
 
-namespace Board.Screens.Controls
+namespace Clubby.Screens.Controls
 {
 	public sealed class UITrendingBlock : UIImageView
 	{
@@ -26,7 +27,7 @@ namespace Board.Screens.Controls
 			ParallaxBlock.Center = new CGPoint (ParallaxBlock.Center.X, centerY - (yoffset - offsetDelta)/10);
 		}
 
-		public UITrendingBlock(float yposition, Board.Schema.Board board)
+		public UITrendingBlock(float yposition, Venue board)
 		{
 			Frame = new CGRect (0, yposition, AppDelegate.ScreenWidth, 250);
 			BackgroundColor = UIColor.White;

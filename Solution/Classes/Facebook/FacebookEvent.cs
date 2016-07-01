@@ -1,4 +1,4 @@
-﻿namespace Board.Facebook
+﻿namespace Clubby.Facebook
 {
 	public class FacebookEvent : FacebookElement
 	{
@@ -18,7 +18,7 @@
 			}
 			if (starttime != "<null>") {
 				StartTime = starttime;
-				StartTimestamp = Board.Utilities.CommonUtils.GetUnixTimeStamp (System.DateTime.Parse (StartTime));
+				StartTimestamp = Clubby.Utilities.CommonUtils.GetUnixTimeStamp (System.DateTime.Parse (StartTime));
 			}
 		}
 	}

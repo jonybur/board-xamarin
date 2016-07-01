@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
+    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{D66F7267-6FD4-4FA9-89C0-580F47D22AD1}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Nightly</RootNamespace>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+    <TargetFrameworkIdentifier>Xamarin.iOS</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchArch>i386</MtouchArch>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchLink>None</MtouchLink>
+    <AssemblyName>Board</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <MtouchLink>None</MtouchLink>
+    <ConsolePause>false</ConsolePause>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <AssemblyName>Board</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhone\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchDebug>true</MtouchDebug>
+    <CodesignKey>iPhone Developer: Jonathan Bursztyn (VMSM2Z9BSL)</CodesignKey>
+    <IpaPackageName>
+    </IpaPackageName>
+    <MtouchArch>ARMv7, ARM64</MtouchArch>
+    <BuildIpa>true</BuildIpa>
+    <MtouchUseSGen>true</MtouchUseSGen>
+    <CodesignProvision>f6cbd3aa-c7e4-4726-8804-1a12864ace8b</CodesignProvision>
+    <MtouchProfiling>true</MtouchProfiling>
+    <MtouchFloat32>true</MtouchFloat32>
+    <AssemblyName>Nightly</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
+    <DebugType>full</DebugType>
+    <MtouchEnableBitcode>false</MtouchEnableBitcode>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <ConsolePause>false</ConsolePause>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchArch>ARMv7, ARM64</MtouchArch>
+    <MtouchFloat32>true</MtouchFloat32>
+    <IpaPackageName>
+    </IpaPackageName>
+    <AssemblyName>Nightly</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Ad-Hoc</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <BuildIpa>true</BuildIpa>
+    <CodesignProvision>Automatic:AdHoc</CodesignProvision>
+    <CodesignKey>iPhone Distribution</CodesignKey>
+    <MtouchArch>ARMv7, ARM64</MtouchArch>
+    <AssemblyName>Nightly</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\AppStore</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Distribution</CodesignKey>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <ConsolePause>false</ConsolePause>
+    <CodesignProvision>Automatic:AppStore</CodesignProvision>
+    <MtouchArch>ARMv7, ARM64</MtouchArch>
+    <AssemblyName>Nightly</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="Xamarin.iOS" />
+    <Reference Include="SQLite-net">
+      <HintPath>..\packages\sqlite-net-pcl.1.1.1\lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLite-net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="BTProgressHUD">
+      <HintPath>..\Components\btprogresshud-1.20\lib\ios-unified\BTProgressHUD.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoTouch.Dialog-1" />
+    <Reference Include="MGImageUtilitiesBinding">
+      <HintPath>..\Bindings\MGImageUtilitiesBinding.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Plugin.Share">
+      <HintPath>..\packages\Plugin.Share.4.0.0\lib\Xamarin.iOS10\Plugin.Share.dll</HintPath>
+    </Reference>
+    <Reference Include="Plugin.Share.Abstractions">
+      <HintPath>..\packages\Plugin.Share.4.0.0\lib\Xamarin.iOS10\Plugin.Share.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="PNChartBinding">
+      <HintPath>..\Bindings\PNChartBinding.dll</HintPath>
+    </Reference>
+    <Reference Include="PBJVisionBinding">
+      <HintPath>..\..\Libraries\XamarinBinding\PBJVisionBinding\PBJVisionBinding\bin\Release\PBJVisionBinding.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Primitives">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\Xamarin.iOS10\System.Net.Http.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Extensions">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\Xamarin.iOS10\System.Net.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="PCLStorage">
+      <HintPath>..\packages\PCLStorage.1.0.2\lib\portable-Xamarin.iOS+Xamarin.Mac\PCLStorage.dll</HintPath>
+    </Reference>
+    <Reference Include="PCLStorage.Abstractions">
+      <HintPath>..\packages\PCLStorage.1.0.2\lib\portable-Xamarin.iOS+Xamarin.Mac\PCLStorage.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Haneke">
+      <HintPath>..\Components\haneke-1.0.1\lib\ios-unified\Haneke.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK-1.0" />
+    <Reference Include="ModernHttpClient">
+      <HintPath>..\Components\modernhttpclient-2.4.2\lib\ios-unified\ModernHttpClient.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\portable-net45+win8+wpa81\Microsoft.Threading.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\portable-net45+win8+wpa81\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Facebook">
+      <HintPath>..\packages\Xamarin.Facebook.iOS.4.12.0\lib\Xamarin.iOS10\Facebook.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Maps">
+      <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.13.1.0\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\fonts\congress-font-medium.ttf" />
+    <BundleResource Include="Resources\fonts\roboto-medium.ttf" />
+    <BundleResource Include="Resources\fonts\roboto-regular.ttf" />
+    <BundleResource Include="Resources\fonts\roboto-bold.ttf" />
+    <BundleResource Include="Resources\fonts\Narwhal_bold.ttf" />
+    <BundleResource Include="Resources\fonts\Narwhal.ttf" />
+    <BundleResource Include="Resources\screens\create\1\content\6.jpg" />
+    <BundleResource Include="Resources\screens\create\1\content\6plus.jpg" />
+    <BundleResource Include="Resources\screens\create\2\icon.png" />
+    <BundleResource Include="Resources\screens\create\2\content\6.jpg" />
+    <BundleResource Include="Resources\screens\create\2\content\6plus.jpg" />
+    <BundleResource Include="Resources\screens\create\3\lock.png" />
+    <BundleResource Include="Resources\screens\create\3\banner\6.jpg" />
+    <BundleResource Include="Resources\screens\create\3\banner\6plus.jpg" />
+    <BundleResource Include="Resources\screens\invite\icon.png" />
+    <BundleResource Include="Resources\screens\support\icon.png" />
+    <BundleResource Include="Resources\Icon-60%402x.png" />
+    <BundleResource Include="Resources\Icon.png" />
+    <BundleResource Include="Resources\Icon%402x.png" />
+    <BundleResource Include="Resources\boardinterface\widget\closedeye.png" />
+    <BundleResource Include="Resources\boardinterface\widget\like.png" />
+    <BundleResource Include="Resources\boardinterface\widget\openeye.png" />
+    <BundleResource Include="Resources\boardinterface\widget\time.png" />
+    <BundleResource Include="Resources\boardinterface\lookup\cancel.png" />
+    <BundleResource Include="Resources\boardinterface\lookup\like.png" />
+    <BundleResource Include="Resources\boardinterface\lookup\facebook.png" />
+    <BundleResource Include="Resources\boardinterface\lookup\share.png" />
+    <BundleResource Include="Resources\boardinterface\lookup\trash.png" />
+    <BundleResource Include="Resources\boardinterface\screens\share\facebook\logo.png" />
+    <BundleResource Include="Resources\boardinterface\screens\share\instagram\logo.png" />
+    <BundleResource Include="Resources\boardinterface\screens\share\next\6.jpg" />
+    <BundleResource Include="Resources\boardinterface\screens\share\next\6plus.jpg" />
+    <BundleResource Include="Resources\boardinterface\screens\share\rss\logo.png" />
+    <BundleResource Include="Resources\boardinterface\screens\share\twitter\logo.png" />
+    <BundleResource Include="Resources\boardinterface\screens\share\link\logo.png" />
+    <BundleResource Include="Resources\boardinterface\screens\event\placeholder.png" />
+    <BundleResource Include="Resources\boardinterface\lookup\uber.png" />
+    <BundleResource Include="Resources\boardinterface\widget\radiobut2.png" />
+    <BundleResource Include="Resources\boardinterface\lookup\waze.png" />
+    <BundleResource Include="Resources\boardinterface\widget\radiobutfull.png" />
+    <BundleResource Include="Resources\screens\main\map\marker_blue.png" />
+    <BundleResource Include="Resources\screens\main\map\marker_orange.png" />
+    <BundleResource Include="Resources\boardinterface\lookup\edit.png" />
+    <BundleResource Include="Resources\screens\main\map\markercontainer.png" />
+    <BundleResource Include="Resources\boardinterface\screens\share\save\6.jpg" />
+    <BundleResource Include="Resources\boardinterface\screens\share\save\6plus.jpg" />
+    <BundleResource Include="Resources\camera\cameraback.png" />
+    <BundleResource Include="Resources\camera\camerafront.png" />
+    <BundleResource Include="Resources\camera\flipcamera.png" />
+    <BundleResource Include="Resources\camera\flipcamera90.png" />
+    <BundleResource Include="Resources\camera\flipcamera75.png" />
+    <BundleResource Include="Resources\camera\flipcamera2.png" />
+    <BundleResource Include="Resources\camera\flipcamera21.png" />
+    <BundleResource Include="Resources\camera\nextbutton.png" />
+    <BundleResource Include="Resources\camera\flash_auto.png" />
+    <BundleResource Include="Resources\camera\flash_off.png" />
+    <BundleResource Include="Resources\camera\flash_on.png" />
+    <BundleResource Include="Resources\camera\focus.png" />
+    <BundleResource Include="Resources\screens\main\map\markercontainer_black.png" />
+    <BundleResource Include="Resources\menubanner\cross_left.png" />
+    <BundleResource Include="Resources\menubanner\import_right.png" />
+    <BundleResource Include="Resources\menubanner\plus_right.png" />
+    <BundleResource Include="Resources\menubanner\arrow_left.png" />
+    <BundleResource Include="Resources\menubanner\arrow_right.png" />
+    <BundleResource Include="Resources\screens\sidemenus\6\business.png" />
+    <BundleResource Include="Resources\screens\sidemenus\6plus\business.png" />
+    <BundleResource Include="Resources\screens\sidemenus\6\invite.png" />
+    <BundleResource Include="Resources\screens\sidemenus\6plus\invite.png" />
+    <BundleResource Include="Resources\screens\sidemenus\6\main.png" />
+    <BundleResource Include="Resources\screens\sidemenus\6plus\main.png" />
+    <BundleResource Include="Resources\screens\sidemenus\6\settings.png" />
+    <BundleResource Include="Resources\screens\sidemenus\6plus\settings.png" />
+    <BundleResource Include="Resources\screens\sidemenus\6plus\support.png" />
+    <BundleResource Include="Resources\screens\sidemenus\6\support.png" />
+    <BundleResource Include="Resources\screens\sidemenus\4\business.png" />
+    <BundleResource Include="Resources\screens\sidemenus\4\invite.png" />
+    <BundleResource Include="Resources\screens\sidemenus\4\main.png" />
+    <BundleResource Include="Resources\screens\sidemenus\4\settings.png" />
+    <BundleResource Include="Resources\screens\sidemenus\4\support.png" />
+    <BundleResource Include="Resources\screens\sidemenus\5\business.png" />
+    <BundleResource Include="Resources\screens\sidemenus\5\invite.png" />
+    <BundleResource Include="Resources\screens\sidemenus\5\main.png" />
+    <BundleResource Include="Resources\screens\sidemenus\5\settings.png" />
+    <BundleResource Include="Resources\screens\sidemenus\5\support.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\openeye.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\closedeye.png" />
+    <BundleResource Include="Resources\boardinterface\widget\deletebut.png" />
+    <BundleResource Include="Resources\boardinterface\back_button3.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nuaccept.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nucamera.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nucancel.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nuback.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nusettings.png" />
+    <BundleResource Include="Resources\boardinterface\nubuttons\nucard.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\white\closedeye.png" />
+    <BundleResource Include="Resources\boardinterface\strokebuttons\white\openeye.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\call.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\message.png" />
+    <BundleResource Include="Resources\demo\magazine\nantucket.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\emptylike.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\fulllike.png" />
+    <BundleResource Include="Resources\screens\main\magazine\flagpin.png" />
+    <BundleResource Include="Resources\screens\nocontent\noapp.png" />
+    <BundleResource Include="Resources\screens\business\icon.png" />
+    <BundleResource Include="Resources\screens\settings\long_flag.png" />
+    <BundleResource Include="Resources\screens\credits\long_flag.png" />
+    <BundleResource Include="Resources\timelapse.mp4" />
+    <BundleResource Include="Resources\screens\login\logo.png" />
+    <BundleResource Include="Resources\Icon-Small.png" />
+    <BundleResource Include="Resources\Icon-Small%402x.png" />
+    <BundleResource Include="Resources\Icon-Small-40%402x.png" />
+    <BundleResource Include="Resources\DefaultUser.png" />
+    <BundleResource Include="Resources\Default-568h%402x.png" />
+    <BundleResource Include="Resources\menubanner\menu_left.png" />
+    <BundleResource Include="Resources\Default-736h%403x_bak.png" />
+    <BundleResource Include="Resources\Default-667h%402x.png" />
+    <BundleResource Include="Resources\Default.png" />
+    <BundleResource Include="Resources\Default%402x.png" />
+    <BundleResource Include="Resources\screens\main\buttons\empty_directory.png" />
+    <BundleResource Include="Resources\screens\main\buttons\empty_house.png" />
+    <BundleResource Include="Resources\screens\main\buttons\empty_map.png" />
+    <BundleResource Include="Resources\screens\main\buttons\empty_star.png" />
+    <BundleResource Include="Resources\screens\main\buttons\full_directory.png" />
+    <BundleResource Include="Resources\screens\main\buttons\full_house.png" />
+    <BundleResource Include="Resources\screens\main\buttons\full_map.png" />
+    <BundleResource Include="Resources\screens\main\buttons\full_star.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\emptylike_white.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\viewmore3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Info.plist" />
+    <None Include="Entitlements.plist" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="AppDelegate.cs" />
+    <Compile Include="Classes\Infrastructure\StorageController.cs" />
+    <Compile Include="Classes\Screens\MainMenuScreen.cs" />
+    <Compile Include="Classes\JsonResponses\BoardResponse.cs" />
+    <Compile Include="Classes\JsonResponses\GoogleGeolocatorObject.cs" />
+    <Compile Include="Classes\JsonResponses\TokenResponse.cs" />
+    <Compile Include="Classes\Utilities\PlaceholderTextView.cs" />
+    <Compile Include="Classes\Utilities\CommonUtils.cs" />
+    <Compile Include="Classes\Facebook\FacebookEvent.cs" />
+    <Compile Include="Classes\Facebook\FacebookUtils.cs" />
+    <Compile Include="Classes\Facebook\FacebookElement.cs" />
+    <Compile Include="Classes\Facebook\FacebookPost.cs" />
+    <Compile Include="Classes\Facebook\FacebookPage.cs" />
+    <Compile Include="Classes\Facebook\FacebookCover.cs" />
+    <Compile Include="Classes\Utilities\ICanCleanUpMyself.cs" />
+    <Compile Include="Classes\Screens\ContainerScreen.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Classes\Facebook\FacebookAlbum.cs" />
+    <Compile Include="Classes\Facebook\FacebookPhoto.cs" />
+    <Compile Include="Classes\Facebook\FacebookVideo.cs" />
+    <Compile Include="Classes\Infrastructure\CloudController.cs" />
+    <Compile Include="Classes\JsonResponses\UberProductResponse.cs" />
+    <Compile Include="Classes\Screens\Controls\UIGalleryScrollView.cs" />
+    <Compile Include="Classes\Screens\Controls\UILocationLabel.cs" />
+    <Compile Include="Classes\Screens\Controls\UITrendingBlock.cs" />
+    <Compile Include="Classes\Screens\Controls\MenuButton\UIOneLineMenuButton.cs" />
+    <Compile Include="Classes\Screens\Controls\MenuButton\UITwoLinesMenuButton.cs" />
+    <Compile Include="Classes\Screens\Controls\MenuButton\UIMenuButton.cs" />
+    <Compile Include="Classes\Screens\Controls\UIMenuBanner.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazineBanner.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazineBannerPage.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazineBannerPageController.cs" />
+    <Compile Include="Classes\Screens\Controls\UIActionButton.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazinePage.cs" />
+    <Compile Include="Classes\JsonResponses\AmazonS3TicketResponse.cs" />
+    <Compile Include="Classes\Schema\User.cs" />
+    <Compile Include="Classes\Screens\Controls\UIMapMarker.cs" />
+    <Compile Include="Classes\Interface\InfoBox\UIInfoBox.cs" />
+    <Compile Include="Classes\Screens\Controls\UIBoardBannerPage.cs" />
+    <Compile Include="Classes\Infrastructure\AppsController.cs" />
+    <Compile Include="Classes\Screens\Controls\UIRepeatVideo.cs" />
+    <Compile Include="Classes\Facebook\FacebookImportedPage.cs" />
+    <Compile Include="Classes\JsonResponses\InstagramMediaResponse.cs" />
+    <Compile Include="Classes\Interface\InfoBox\UIMapContainer.cs" />
+    <Compile Include="Classes\Interface\InfoBox\UIActionButtons.cs" />
+    <Compile Include="Classes\Interface\InfoBox\UITopBanner.cs" />
+    <Compile Include="Classes\Interface\InfoBox\UIAboutBox.cs" />
+    <Compile Include="Classes\Interface\InfoBox\UINameLabel.cs" />
+    <Compile Include="Classes\Interface\InfoBox\UIInstagramGallery.cs" />
+    <Compile Include="Classes\Screens\Controls\UINoContent.cs" />
+    <Compile Include="Classes\Screens\Controls\UIContactView.cs" />
+    <Compile Include="Classes\Screens\LicensesScreen.cs" />
+    <Compile Include="Classes\Screens\LicenseScreen.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UICarouselController.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentDisplay.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIThumbsContentDisplay.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UITimelineContentDisplay.cs" />
+    <Compile Include="Classes\Infrastructure\WebAPI.cs" />
+    <Compile Include="Classes\Facebook\FacebookFanCount.cs" />
+    <Compile Include="Classes\Facebook\FacebookLikes.cs" />
+    <Compile Include="Classes\Screens\Controls\UIMultiActionButtons.cs" />
+    <Compile Include="Classes\Screens\Controls\UIStatusBar.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentDisplayComponents\UIBoardThumb.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentDisplayComponents\UIContentThumb.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentDisplayComponents\UITimelineWidget.cs" />
+    <Compile Include="Classes\Schema\Venue.cs" />
+    <Compile Include="Classes\Interface\UIVenueInterface.cs" />
+    <Compile Include="Classes\JsonResponses\InstagramPageResponse.cs" />
+    <Compile Include="Classes\Schema\Content.cs" />
+    <Compile Include="Classes\Schema\Picture.cs" />
+    <Compile Include="Classes\Schema\Video.cs" />
+    <Compile Include="Classes\Screens\LoginScreen.cs" />
+    <Compile Include="Classes\Interface\SingleWidgetScreen.cs" />
+    <Compile Include="Classes\Interface\LookUp\MapLookUp.cs" />
+    <Compile Include="Classes\Interface\LookUp\PictureLookUp.cs" />
+    <Compile Include="Classes\Interface\LookUp\UILookUP.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="Board.xib" />
+    <InterfaceDefinition Include="Classes\LoginScreen.xib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Classes\" />
+    <Folder Include="Classes\Infrastructure\" />
+    <Folder Include="Classes\Schema\" />
+    <Folder Include="Resources\fonts\" />
+    <Folder Include="Classes\Screens\" />
+    <Folder Include="Resources\screens\" />
+    <Folder Include="Resources\screens\invite\" />
+    <Folder Include="Resources\screens\support\" />
+    <Folder Include="Resources\screens\create\" />
+    <Folder Include="Resources\screens\create\1\" />
+    <Folder Include="Resources\screens\create\2\" />
+    <Folder Include="Resources\screens\create\3\" />
+    <Folder Include="Resources\screens\create\3\banner\" />
+    <Folder Include="Resources\screens\create\2\content\" />
+    <Folder Include="Resources\screens\create\1\content\" />
+    <Folder Include="Resources\screens\login\" />
+    <Folder Include="Classes\Interface\" />
+    <Folder Include="Classes\JsonResponses\" />
+    <Folder Include="Classes\Utilities\" />
+    <Folder Include="Resources\boardinterface\" />
+    <Folder Include="Resources\boardinterface\lookup\" />
+    <Folder Include="Resources\demo\" />
+    <Folder Include="Resources\boardinterface\strokebuttons\" />
+    <Folder Include="Resources\boardinterface\widget\" />
+    <Folder Include="Classes\Screens\Controls\" />
+    <Folder Include="Classes\Facebook\" />
+    <Folder Include="Resources\boardinterface\screens\" />
+    <Folder Include="Resources\boardinterface\screens\event\" />
+    <Folder Include="Resources\boardinterface\screens\share\" />
+    <Folder Include="Resources\boardinterface\screens\share\link\" />
+    <Folder Include="Resources\screens\main\" />
+    <Folder Include="Resources\screens\main\map\" />
+    <Folder Include="Properties\" />
+    <Folder Include="Resources\boardinterface\screens\share\save\" />
+    <Folder Include="Resources\camera\" />
+    <Folder Include="Resources\boardinterface\infobox\" />
+    <Folder Include="Classes\Interface\InfoBox\" />
+    <Folder Include="Resources\screens\main\magazine\" />
+    <Folder Include="Classes\Screens\Controls\MenuButton\" />
+    <Folder Include="Classes\Screens\Controls\MagazineBanner\" />
+    <Folder Include="Resources\menubanner\" />
+    <Folder Include="Resources\screens\sidemenus\" />
+    <Folder Include="Resources\screens\sidemenus\4\" />
+    <Folder Include="Resources\screens\sidemenus\5\" />
+    <Folder Include="Resources\screens\sidemenus\6\" />
+    <Folder Include="Resources\screens\sidemenus\6plus\" />
+    <Folder Include="Resources\demo\magazine\" />
+    <Folder Include="Resources\boardinterface\nubuttons\" />
+    <Folder Include="Resources\boardinterface\strokebuttons\white\" />
+    <Folder Include="Resources\screens\nocontent\" />
+    <Folder Include="Resources\screens\business\" />
+    <Folder Include="Resources\screens\settings\" />
+    <Folder Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\" />
+    <Folder Include="Resources\screens\credits\" />
+    <Folder Include="Resources\screens\main\buttons\" />
+    <Folder Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentDisplayComponents\" />
+    <Folder Include="Classes\Interface\LookUp\" />
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="sqlite-net">
+      <Version>1.0.11</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="btprogresshud">
+      <Version>1.20</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="SharePlugin">
+      <Version>3.0.1</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="haneke">
+      <Version>1.0.1</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="modernhttpclient">
+      <Version>2.4.2</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="facebookios">
+      <Version>4.12.0.0</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="googleiosmaps">
+      <Version>1.13.1.0</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
+  <Import Project="..\packages\SQLitePCL.raw.0.8.6\build\Xamarin.iOS10\SQLitePCL.raw.targets" Condition="Exists('..\packages\SQLitePCL.raw.0.8.6\build\Xamarin.iOS10\SQLitePCL.raw.targets')" />
+  <Import Project="..\packages\Xamarin.Build.Download.0.2.1\build\Xamarin.Build.Download.targets" Condition="Exists('..\packages\Xamarin.Build.Download.0.2.1\build\Xamarin.Build.Download.targets')" />
+  <Import Project="..\packages\Xamarin.Build.Download.0.2.1\build\Xamarin.Build.Download.props" Condition="Exists('..\packages\Xamarin.Build.Download.0.2.1\build\Xamarin.Build.Download.props')" />
+  <Import Project="..\packages\Xamarin.Google.iOS.Maps.1.13.1.0\build\Xamarin.Google.iOS.Maps.targets" Condition="Exists('..\packages\Xamarin.Google.iOS.Maps.1.13.1.0\build\Xamarin.Google.iOS.Maps.targets')" />
+  <ItemGroup>
+    <ITunesArtwork Include="iTunesArtwork.png" />
+    <ITunesArtwork Include="iTunesArtwork%402x.png" />
+  </ItemGroup>
+</Project>

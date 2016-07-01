@@ -1,12 +1,13 @@
 ﻿using UIKit;
 using System;
+using Clubby.Schema;
 
-namespace Board.Screens.Controls
+namespace Clubby.Screens.Controls
 {
 	public class UIContentThumb : UIButton
 	{
 		public EventHandler TouchEvent;
-		public Board.Schema.Board Board;
+		public Venue Board;
 
 		public void SuscribeToEvent()
 		{

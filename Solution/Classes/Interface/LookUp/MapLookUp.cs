@@ -1,16 +1,16 @@
-﻿using Board.Schema;
+﻿using Clubby.Schema;
 using System;
-using Board.Screens.Controls;
+using Clubby.Screens.Controls;
 using Foundation;
-using Board.Infrastructure;
+using Clubby.Infrastructure;
 using Google.Maps;
-using Board.Utilities;
-using Board.JsonResponses;
+using Clubby.Utilities;
+using Clubby.JsonResponses;
 using CoreLocation;
 using CoreGraphics;
 using UIKit;
 
-namespace Board.Interface.LookUp
+namespace Clubby.Interface.LookUp
 {
 	public class MapLookUp : UILookUp
 	{
@@ -24,7 +24,6 @@ namespace Board.Interface.LookUp
 
 		public MapLookUp(GoogleGeolocatorObject geolocatorObject)
 		{	
-			content = new Map ();
 
 			GeolocatorObject = geolocatorObject;
 
@@ -82,7 +81,7 @@ namespace Board.Interface.LookUp
 
 		private void CreateMarker()
 		{
-			mapMarker = new UIMapMarker (UIBoardInterface.board, mapView, UIMapMarker.SizeMode.Normal);
+			mapMarker = new UIMapMarker (UIVenueInterface.venue, mapView, UIMapMarker.SizeMode.Normal);
 		}
 			
 		private void CreateUberButton(){
@@ -97,8 +96,8 @@ namespace Board.Interface.LookUp
 
 				if (AppsController.CanOpenUber()) {
 
-					var location = new CLLocationCoordinate2D(UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lat,
-						UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lng);
+					var location = new CLLocationCoordinate2D(UIVenueInterface.venue.GeolocatorObject.results [0].geometry.location.lat,
+						UIVenueInterface.venue.GeolocatorObject.results [0].geometry.location.lng);
 
 					var listproducts = CloudController.GetUberProducts(location);
 
@@ -133,8 +132,8 @@ namespace Board.Interface.LookUp
 
 			directionsTap = new UITapGestureRecognizer (tg => {
 
-				var location = new CLLocationCoordinate2D(UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lat,
-					UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lng);
+				var location = new CLLocationCoordinate2D(UIVenueInterface.venue.GeolocatorObject.results [0].geometry.location.lat,
+					UIVenueInterface.venue.GeolocatorObject.results [0].geometry.location.lng);
 
 				UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
 
