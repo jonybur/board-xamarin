@@ -20,7 +20,7 @@ namespace Clubby.Screens.Controls
 
 		public UITimelineContentDisplay(List<Venue> boardList, List<Content> timelineContent) {
 			
-			float yposition = UIMagazineBannerPage.Height + UIMenuBanner.Height + 30;
+			float yposition = UIMenuBanner.Height + 30;
 			TimelineWidgets = new Dictionary<string, UITimelineWidget> ();
 
 			foreach (var content in timelineContent){

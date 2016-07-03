@@ -91,6 +91,7 @@ namespace Clubby.Interface
 				likes += fanCount.Count;
 			}
 			likeLabel.Text = likes.ToString ();
+			likeLabel.TextColor = UIColor.White;
 			var sizeLikeLabel = likeLabel.Text.StringSize (likeLabel.Font);
 			likeLabel.Frame = new CGRect (likeLabel.Frame.X, likeLabel.Frame.Y, sizeLikeLabel.Width + 20, sizeLikeLabel.Height);
 		}

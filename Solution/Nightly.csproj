@@ -169,10 +169,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\fonts\congress-font-medium.ttf" />
-    <BundleResource Include="Resources\fonts\roboto-medium.ttf" />
-    <BundleResource Include="Resources\fonts\roboto-regular.ttf" />
-    <BundleResource Include="Resources\fonts\roboto-bold.ttf" />
     <BundleResource Include="Resources\fonts\Narwhal_bold.ttf" />
     <BundleResource Include="Resources\fonts\Narwhal.ttf" />
     <BundleResource Include="Resources\screens\create\1\content\6.jpg" />
@@ -188,45 +184,11 @@
     <BundleResource Include="Resources\Icon-60%402x.png" />
     <BundleResource Include="Resources\Icon.png" />
     <BundleResource Include="Resources\Icon%402x.png" />
-    <BundleResource Include="Resources\boardinterface\widget\closedeye.png" />
-    <BundleResource Include="Resources\boardinterface\widget\like.png" />
-    <BundleResource Include="Resources\boardinterface\widget\openeye.png" />
-    <BundleResource Include="Resources\boardinterface\widget\time.png" />
     <BundleResource Include="Resources\boardinterface\lookup\cancel.png" />
     <BundleResource Include="Resources\boardinterface\lookup\like.png" />
-    <BundleResource Include="Resources\boardinterface\lookup\facebook.png" />
-    <BundleResource Include="Resources\boardinterface\lookup\share.png" />
-    <BundleResource Include="Resources\boardinterface\lookup\trash.png" />
-    <BundleResource Include="Resources\boardinterface\screens\share\facebook\logo.png" />
-    <BundleResource Include="Resources\boardinterface\screens\share\instagram\logo.png" />
-    <BundleResource Include="Resources\boardinterface\screens\share\next\6.jpg" />
-    <BundleResource Include="Resources\boardinterface\screens\share\next\6plus.jpg" />
-    <BundleResource Include="Resources\boardinterface\screens\share\rss\logo.png" />
-    <BundleResource Include="Resources\boardinterface\screens\share\twitter\logo.png" />
-    <BundleResource Include="Resources\boardinterface\screens\share\link\logo.png" />
-    <BundleResource Include="Resources\boardinterface\screens\event\placeholder.png" />
-    <BundleResource Include="Resources\boardinterface\lookup\uber.png" />
-    <BundleResource Include="Resources\boardinterface\widget\radiobut2.png" />
-    <BundleResource Include="Resources\boardinterface\lookup\waze.png" />
-    <BundleResource Include="Resources\boardinterface\widget\radiobutfull.png" />
     <BundleResource Include="Resources\screens\main\map\marker_blue.png" />
     <BundleResource Include="Resources\screens\main\map\marker_orange.png" />
-    <BundleResource Include="Resources\boardinterface\lookup\edit.png" />
     <BundleResource Include="Resources\screens\main\map\markercontainer.png" />
-    <BundleResource Include="Resources\boardinterface\screens\share\save\6.jpg" />
-    <BundleResource Include="Resources\boardinterface\screens\share\save\6plus.jpg" />
-    <BundleResource Include="Resources\camera\cameraback.png" />
-    <BundleResource Include="Resources\camera\camerafront.png" />
-    <BundleResource Include="Resources\camera\flipcamera.png" />
-    <BundleResource Include="Resources\camera\flipcamera90.png" />
-    <BundleResource Include="Resources\camera\flipcamera75.png" />
-    <BundleResource Include="Resources\camera\flipcamera2.png" />
-    <BundleResource Include="Resources\camera\flipcamera21.png" />
-    <BundleResource Include="Resources\camera\nextbutton.png" />
-    <BundleResource Include="Resources\camera\flash_auto.png" />
-    <BundleResource Include="Resources\camera\flash_off.png" />
-    <BundleResource Include="Resources\camera\flash_on.png" />
-    <BundleResource Include="Resources\camera\focus.png" />
     <BundleResource Include="Resources\screens\main\map\markercontainer_black.png" />
     <BundleResource Include="Resources\menubanner\cross_left.png" />
     <BundleResource Include="Resources\menubanner\import_right.png" />
@@ -253,22 +215,7 @@
     <BundleResource Include="Resources\screens\sidemenus\5\main.png" />
     <BundleResource Include="Resources\screens\sidemenus\5\settings.png" />
     <BundleResource Include="Resources\screens\sidemenus\5\support.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\openeye.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\closedeye.png" />
-    <BundleResource Include="Resources\boardinterface\widget\deletebut.png" />
     <BundleResource Include="Resources\boardinterface\back_button3.png" />
-    <BundleResource Include="Resources\boardinterface\nubuttons\nuaccept.png" />
-    <BundleResource Include="Resources\boardinterface\nubuttons\nucamera.png" />
-    <BundleResource Include="Resources\boardinterface\nubuttons\nucancel.png" />
-    <BundleResource Include="Resources\boardinterface\nubuttons\nuback.png" />
-    <BundleResource Include="Resources\boardinterface\nubuttons\nusettings.png" />
-    <BundleResource Include="Resources\boardinterface\nubuttons\nucard.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\white\closedeye.png" />
-    <BundleResource Include="Resources\boardinterface\strokebuttons\white\openeye.png" />
-    <BundleResource Include="Resources\boardinterface\infobox\call.png" />
-    <BundleResource Include="Resources\boardinterface\infobox\message.png" />
-    <BundleResource Include="Resources\demo\magazine\nantucket.png" />
-    <BundleResource Include="Resources\boardinterface\infobox\emptylike.png" />
     <BundleResource Include="Resources\boardinterface\infobox\fulllike.png" />
     <BundleResource Include="Resources\screens\main\magazine\flagpin.png" />
     <BundleResource Include="Resources\screens\nocontent\noapp.png" />
@@ -296,6 +243,9 @@
     <BundleResource Include="Resources\screens\main\buttons\full_map.png" />
     <BundleResource Include="Resources\screens\main\buttons\full_star.png" />
     <BundleResource Include="Resources\boardinterface\infobox\emptylike_white.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\call.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\emptylike.png" />
+    <BundleResource Include="Resources\boardinterface\infobox\message.png" />
     <BundleResource Include="Resources\boardinterface\infobox\viewmore3.png" />
   </ItemGroup>
   <ItemGroup>
@@ -334,16 +284,11 @@
     <Compile Include="Classes\Screens\Controls\MenuButton\UITwoLinesMenuButton.cs" />
     <Compile Include="Classes\Screens\Controls\MenuButton\UIMenuButton.cs" />
     <Compile Include="Classes\Screens\Controls\UIMenuBanner.cs" />
-    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazineBanner.cs" />
-    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazineBannerPage.cs" />
-    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazineBannerPageController.cs" />
     <Compile Include="Classes\Screens\Controls\UIActionButton.cs" />
-    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazinePage.cs" />
     <Compile Include="Classes\JsonResponses\AmazonS3TicketResponse.cs" />
     <Compile Include="Classes\Schema\User.cs" />
     <Compile Include="Classes\Screens\Controls\UIMapMarker.cs" />
     <Compile Include="Classes\Interface\InfoBox\UIInfoBox.cs" />
-    <Compile Include="Classes\Screens\Controls\UIBoardBannerPage.cs" />
     <Compile Include="Classes\Infrastructure\AppsController.cs" />
     <Compile Include="Classes\Screens\Controls\UIRepeatVideo.cs" />
     <Compile Include="Classes\Facebook\FacebookImportedPage.cs" />
@@ -377,10 +322,10 @@
     <Compile Include="Classes\Schema\Picture.cs" />
     <Compile Include="Classes\Schema\Video.cs" />
     <Compile Include="Classes\Screens\LoginScreen.cs" />
-    <Compile Include="Classes\Interface\SingleWidgetScreen.cs" />
     <Compile Include="Classes\Interface\LookUp\MapLookUp.cs" />
     <Compile Include="Classes\Interface\LookUp\PictureLookUp.cs" />
     <Compile Include="Classes\Interface\LookUp\UILookUP.cs" />
+    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazine.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -408,20 +353,11 @@
     <Folder Include="Classes\Utilities\" />
     <Folder Include="Resources\boardinterface\" />
     <Folder Include="Resources\boardinterface\lookup\" />
-    <Folder Include="Resources\demo\" />
-    <Folder Include="Resources\boardinterface\strokebuttons\" />
-    <Folder Include="Resources\boardinterface\widget\" />
     <Folder Include="Classes\Screens\Controls\" />
     <Folder Include="Classes\Facebook\" />
-    <Folder Include="Resources\boardinterface\screens\" />
-    <Folder Include="Resources\boardinterface\screens\event\" />
-    <Folder Include="Resources\boardinterface\screens\share\" />
-    <Folder Include="Resources\boardinterface\screens\share\link\" />
     <Folder Include="Resources\screens\main\" />
     <Folder Include="Resources\screens\main\map\" />
     <Folder Include="Properties\" />
-    <Folder Include="Resources\boardinterface\screens\share\save\" />
-    <Folder Include="Resources\camera\" />
     <Folder Include="Resources\boardinterface\infobox\" />
     <Folder Include="Classes\Interface\InfoBox\" />
     <Folder Include="Resources\screens\main\magazine\" />
@@ -433,9 +369,6 @@
     <Folder Include="Resources\screens\sidemenus\5\" />
     <Folder Include="Resources\screens\sidemenus\6\" />
     <Folder Include="Resources\screens\sidemenus\6plus\" />
-    <Folder Include="Resources\demo\magazine\" />
-    <Folder Include="Resources\boardinterface\nubuttons\" />
-    <Folder Include="Resources\boardinterface\strokebuttons\white\" />
     <Folder Include="Resources\screens\nocontent\" />
     <Folder Include="Resources\screens\business\" />
     <Folder Include="Resources\screens\settings\" />

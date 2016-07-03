@@ -27,7 +27,7 @@ namespace Clubby.Screens
 			Font = UIFont.SystemFontOfSize (16, UIFontWeight.Medium);//AppDelegate.Narwhal18;
 			TextColor = UIColor.White;
 			AdjustsFontSizeToFitWidth = true;
-			Text = CommonUtils.FirstLetterOfEveryWordToUpper(text);
+			Text = text;
 			TextAlignment = alignment;
 		}
 	}

@@ -21,12 +21,9 @@ namespace Clubby.Interface
 
 		public static CancellationTokenSource DownloadCancellation;
 
-		bool firstLoad;
-
 		public UIVenueInterface (Venue _venue){
 			venue = _venue;
 			DownloadCancellation = new CancellationTokenSource();
-			firstLoad = true;
 		}
 
 		public override void DidReceiveMemoryWarning  ()
@@ -38,15 +35,10 @@ namespace Clubby.Interface
 		{
 			AppEvents.LogEvent ("entersBoard");
 
-			//var json = JsonUtilty.GenerateDeleteAllJson ();
-			//CloudController.UpdateBoard (board.Id, json);
-
 			// if it reaches this section, user has been logged in and authorized
 			base.ViewDidLoad ();
 
 			AutomaticallyAdjustsScrollViewInsets = false;
-
-			BTProgressHUD.Show();
 
 			InitializeInterface ();
 
@@ -60,7 +52,6 @@ namespace Clubby.Interface
 			View.BackgroundColor = AppDelegate.ClubbyBlack;
 
 			// generate the scrollview and the zoomingscrollview
-
 			var statusBarView = new UIView (new CGRect (0, 0, AppDelegate.ScreenWidth, 20));
 			statusBarView.Alpha = .6f;
 			statusBarView.BackgroundColor = AppDelegate.ClubbyBlack;
@@ -76,23 +67,15 @@ namespace Clubby.Interface
 
 		public override void ViewDidAppear(bool animated)
 		{
-			if (firstLoad) {
-				
-				firstLoad = false;
-
-				BTProgressHUD.Dismiss ();
-			}
-		}
-
-		public void ExitBoard()
-		{
-			View.BackgroundColor = UIColor.Black;  
-			MemoryUtility.ReleaseUIViewWithChildren (View);
+			NavigationController.InteractivePopGestureRecognizer.Enabled = true;
+			NavigationController.InteractivePopGestureRecognizer.Delegate = null;
 		}
 	}
 
 
 	sealed class UIBackButton : UIButton {
+		bool blockButton;
+
 		public UIBackButton(){
 			Frame = new CGRect(0, 0, 70, 60);
 
@@ -108,17 +91,12 @@ namespace Clubby.Interface
 			TouchUpInside += TouchButton;
 		}
 
-		bool blockButton = false;
-
 		private void TouchButton(object obj, EventArgs args){
 			if (!blockButton){
 				UIVenueInterface.DownloadCancellation.Cancel ();
 
-				var containerScreen = AppDelegate.NavigationController.ViewControllers[AppDelegate.NavigationController.ViewControllers.Length - 2] as ContainerScreen;
-				if (containerScreen != null) {
-					containerScreen.LoadLastScreen();
-				}
-				AppDelegate.PopViewControllerWithCallback(AppDelegate.ExitBoardInterface);
+				AppDelegate.NavigationController.PopViewController (true);
+
 				blockButton = true;
 			}
 		}

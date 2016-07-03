@@ -22,11 +22,12 @@ namespace Clubby.Schema
 		public InstagramPageResponse InstagramPage;
 
 		// gets from facebook
+		public List<string> CategoryList;
 		public string CoverImageUrl;
 		public string Name;
-		public List<string> CategoryList;
 		public string About;
 		public string Phone;
+		public int FriendLikes;
 
 		// lat+long from facebook, object from google
 		public GoogleGeolocatorObject GeolocatorObject;
@@ -123,6 +124,7 @@ namespace Clubby.Schema
 			CategoryList = importedVenue.Category;
 			LogoUrl = importedVenue.PictureUrl;
 			CoverImageUrl = importedVenue.CoverUrl;
+			FriendLikes = importedVenue.FriendLikes;
 
 			GeolocatorObject = await CloudController.LoadGeolocatorObject (importedVenue.Location);
 		}

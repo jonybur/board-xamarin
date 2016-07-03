@@ -36,7 +36,7 @@ namespace Clubby.Interface
 
 		private void CreateUberButton(){
 			uberButton = new UIButton ();
-			uberButton.Frame = new CGRect (0, Map.Frame.Height - ButtonHeight, Map.Frame.Width / 2 - 1, ButtonHeight);
+			uberButton.Frame = new CGRect (0, Map.Frame.Height - ButtonHeight, Map.Frame.Width / 2, ButtonHeight);
 			uberButton.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 200);
 			uberButton.SetTitle ("UBER", UIControlState.Normal);
 
@@ -72,7 +72,7 @@ namespace Clubby.Interface
 
 		private void CreateDirectionsButton(){
 			directionsButton = new UIButton ();
-			directionsButton.Frame = new CGRect (Map.Frame.Width / 2 + 1, Map.Frame.Height - ButtonHeight, Map.Frame.Width / 2 - 2, ButtonHeight);
+			directionsButton.Frame = new CGRect (Map.Frame.Width / 2 + 1, Map.Frame.Height - ButtonHeight, Map.Frame.Width / 2 - 1, ButtonHeight);
 			directionsButton.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 200);
 			directionsButton.SetTitle ("DIRECTIONS", UIControlState.Normal);
 
@@ -112,7 +112,7 @@ namespace Clubby.Interface
 
 		private void CreateMap(float width) {
 			var camera = CameraPosition.FromCamera (40, -100, -2);
-			Map = new UIButton (new CGRect (20, 0, width-40, 160));
+			Map = new UIButton (new CGRect (/*UIInfoBox.XContentMargin*/0, 0, width /*- UIInfoBox.XContentMargin * 2*/, 170));
 			mapView = MapView.FromCamera (new CGRect (0, 0, Map.Frame.Width, Map.Frame.Height), camera);
 			mapView.UserInteractionEnabled = false;
 			mapView.Layer.AllowsEdgeAntialiasing = true;
@@ -122,11 +122,11 @@ namespace Clubby.Interface
 
 			var edgeInsets = new UIEdgeInsets (0, 0, ButtonHeight, 0);
 			mapView.Padding = edgeInsets;
-
+			/*
 			Map.Layer.CornerRadius = 10;
 			mapView.Layer.CornerRadius = 10;
 			View.Layer.CornerRadius = 10;
-
+			*/
 			Map.AddSubview (mapView);
 		}
 

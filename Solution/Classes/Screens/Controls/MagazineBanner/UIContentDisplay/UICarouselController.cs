@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Clubby.Infrastructure;
 using Clubby.Schema;
-using Clubby.JsonResponses;
+using System.Linq;
 using Clubby.Utilities;
 using CoreAnimation;
 using CoreGraphics;
@@ -16,22 +16,28 @@ namespace Clubby.Screens.Controls
 
 		const float SeparationBetweenCarousels = 30;
 
-		public UICarouselContentDisplay(){
+		public UICarouselContentDisplay(List<Venue> venueList){
 			ListThumbs = new List<UIContentThumb> ();
 
 			var magazineDictionary = new Dictionary<string, List<Venue>> ();
-			var magazineList = new List<Venue> ();
 
-			string section = string.Empty;
+			var friendLikes = venueList.Select (x => x.FriendLikes).OrderByDescending(x=>x);
+			var unique_likes = new HashSet<int> (friendLikes);
+
+			foreach (var like in unique_likes) {
+				if (like == 0) {
+					continue;
+				}
+				magazineDictionary.Add ("Liked by " + like + " of your friends", venueList.FindAll (x => x.FriendLikes == like));
+			}
 
 			var testCarousels = new List<UICarouselController> ();
-
 			int i = 0;
 			foreach (var entry in magazineDictionary){
 				var carousel = new UICarouselController (entry.Value, entry.Key);
 
 				carousel.View.Center = new CGPoint (AppDelegate.ScreenWidth / 2,
-					UIMagazineBannerPage.Height + UIMenuBanner.Height + SeparationBetweenCarousels +
+					UIMenuBanner.Height + SeparationBetweenCarousels +
 					carousel.View.Frame.Height / 2 + (carousel.View.Frame.Height + SeparationBetweenCarousels) * i);
 				testCarousels.Add (carousel);
 
@@ -55,10 +61,6 @@ namespace Clubby.Screens.Controls
 		public const int ItemSeparation = 20;
 
 		public UICarouselController(List<Venue> boardList, string titleText){
-			if (Char.IsNumber (titleText [0])) {
-				titleText = titleText.Substring (1, titleText.Length - 1);
-			}
-				
 			TitleLabel = new UILocationLabel (titleText, ItemSeparation);
 			ListThumbs = new List<UIContentThumb> ();
 
@@ -102,21 +104,20 @@ namespace Clubby.Screens.Controls
 			backgroundImageView.ClipsToBounds = true;
 			backgroundImageView.Layer.CornerRadius = 10;
 
-			var logoImageView = new UIImageView ();
-			logoImageView.Frame = new CGRect (0, 0, Height / 2, Height / 2);
-			logoImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
-			logoImageView.SetImage (new NSUrl (board.LogoUrl));
-			logoImageView.Layer.CornerRadius = logoImageView.Frame.Width / 2;
-			logoImageView.ClipsToBounds = true;
-
 			var backgroundLogoImageView = new UIImageView ();
 			backgroundLogoImageView.Frame = new CGRect (0, 0, Height / 2 + 6, Height / 2 + 6);
+			backgroundLogoImageView.Center = new CGPoint (Frame.Width / 2, Frame.Height / 2);
 			backgroundLogoImageView.BackgroundColor = UIColor.White;
 			backgroundLogoImageView.Layer.CornerRadius = backgroundLogoImageView.Frame.Width / 2;
 			backgroundLogoImageView.ClipsToBounds = true;
 
+			var logoImageView = new UIImageView ();
+			logoImageView.Frame = new CGRect (0, 0, Height / 2, Height / 2);
 			logoImageView.Center = new CGPoint (Frame.Width / 2, Frame.Height / 2);
-			backgroundLogoImageView.Center = logoImageView.Center;
+			logoImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
+			logoImageView.SetImage (new NSUrl (board.LogoUrl));
+			logoImageView.ClipsToBounds = true;
+			logoImageView.Layer.CornerRadius = logoImageView.Frame.Width / 2;
 
 			var nameLabel = new UILabel ();
 			if (board.GeolocatorObject.Coordinate.Latitude == 0 && board.GeolocatorObject.Coordinate.Longitude == 0) {
@@ -129,20 +130,17 @@ namespace Clubby.Screens.Controls
 			AddSubviews (backgroundImageView, backgroundLogoImageView, logoImageView, nameLabel);
 
 			TouchEvent = (sender, e) => {
+				
+				CATransaction.Begin ();
 
-				if (AppDelegate.VenueInterface == null)
-				{
-					CATransaction.Begin ();
+				Alpha = 0.75f;
 
-					BigTed.BTProgressHUD.Show();
-					Alpha = 0.75f;
+				CATransaction.Commit();
 
-					CATransaction.Commit();
-
-					CATransaction.CompletionBlock = delegate {
-						AppDelegate.OpenBoard(board);
-					};
-				}
+				CATransaction.CompletionBlock = delegate {
+					AppDelegate.OpenBoard(board);
+					Alpha = 1f;
+				};
 			};
 		}
 		private UILabel CreateNameLabel (string nameString, float width)
@@ -158,7 +156,7 @@ namespace Clubby.Screens.Controls
 
 			var nameAttributes = new UIStringAttributes {
 				Font = UIFont.SystemFontOfSize (14),
-				ForegroundColor = UIColor.Black
+				ForegroundColor = UIColor.White
 			};
 
 			var attributedString = new NSMutableAttributedString (compositeString);
@@ -192,12 +190,12 @@ namespace Clubby.Screens.Controls
 
 			var nameAttributes = new UIStringAttributes {
 				Font = UIFont.SystemFontOfSize (14),
-				ForegroundColor = UIColor.Black
+				ForegroundColor = UIColor.White
 			};
 
 			var distanceAttributes = new UIStringAttributes {
 				Font = UIFont.SystemFontOfSize (14),
-				ForegroundColor = UIColor.FromRGB (100, 100, 100)
+				ForegroundColor = UIColor.FromRGBA(255,255,255,200)
 			};
 
 			var attributedString = new NSMutableAttributedString (compositeString);

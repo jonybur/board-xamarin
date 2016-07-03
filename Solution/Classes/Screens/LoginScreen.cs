@@ -69,8 +69,8 @@ namespace Clubby.Screens
 				}
 
 				if (AccessToken.CurrentAccessToken != null){
-					AppDelegate.containerScreen = new ContainerScreen ();
-					AppDelegate.NavigationController.PushViewController(AppDelegate.containerScreen, true);	
+					//AppDelegate.containerScreen = new MainMenuScreen ();
+					AppDelegate.NavigationController.PushViewController(new MainMenuScreen(), true);	
 				}
 			};
 

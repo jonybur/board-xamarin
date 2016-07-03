@@ -36,11 +36,6 @@ namespace Clubby.Screens.Controls
 				} else if (view.Superview != null) {
 
 					// if its not on a screenheight * 2 range and has been drawn, dissolve it
-
-					if (view is UITimelineWidget || view is UIBoardThumbComponent) {
-						System.Console.WriteLine ("a widget gets dissolved");
-					}
-
 					view.RemoveFromSuperview ();
 
 				}

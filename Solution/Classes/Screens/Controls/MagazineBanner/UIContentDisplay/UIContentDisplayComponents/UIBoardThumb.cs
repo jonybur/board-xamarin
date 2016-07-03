@@ -133,15 +133,8 @@ namespace Clubby.Screens.Controls
 
 			TouchEvent = delegate {
 
-				CATransaction.Begin ();
+				AppDelegate.OpenBoard(board);
 
-				BigTed.BTProgressHUD.Show();
-
-				CATransaction.Commit();
-
-				CATransaction.CompletionBlock = delegate {
-					AppDelegate.OpenBoard(board);
-				};
 			};
 
 			UserInteractionEnabled = true;

@@ -40,8 +40,6 @@ namespace Clubby.Screens.Controls
 				return;
 			}
 
-			System.Console.WriteLine ("draws image");
-
 			if (timelineWidget is UITimelinePicture) {
 				var timelinePicture = ((UITimelinePicture)timelineWidget);
 				timelinePicture.SetPictureImage ();
@@ -105,13 +103,14 @@ namespace Clubby.Screens.Controls
 			
 				CATransaction.Begin ();
 
-				BigTed.BTProgressHUD.Show();
 				boardButton.Alpha = 0.75f;
 
 				CATransaction.Commit();
 
 				CATransaction.CompletionBlock = delegate {
 					AppDelegate.OpenBoard(venue);
+					boardButton.Alpha = 1f;
+
 				};
 			};
 

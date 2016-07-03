@@ -91,7 +91,7 @@ namespace Clubby.Screens.Controls
 
 				UnselectAllButtons();
 				directoryButton.SetFullImage();
-				SwitchScreen(1, "Directory", UIFont.SystemFontOfSize(20, UIFontWeight.Medium), UIColor.White);
+				SwitchScreen(2, "Directory", UIFont.SystemFontOfSize(20, UIFontWeight.Medium), UIColor.White);
 			};
 
 			ListButtons.Add (directoryButton);
@@ -109,8 +109,7 @@ namespace Clubby.Screens.Controls
 				UnselectAllButtons();
 				mapButton.SetFullImage();
 
-				var containerScreen = AppDelegate.NavigationController.TopViewController as ContainerScreen;
-				var mainMenuScreen = containerScreen.CurrentScreenViewController as MainMenuScreen;
+				var mainMenuScreen = AppDelegate.NavigationController.TopViewController as MainMenuScreen;
 				mainMenuScreen.ShowMap();
 			};
 
@@ -124,10 +123,8 @@ namespace Clubby.Screens.Controls
 		}
 
 		private void SwitchScreen(int indexOfCurrentViewController, string screenName, UIFont newFont, UIColor newColor){
-			var containerScreen = AppDelegate.NavigationController.TopViewController as ContainerScreen;
-			var mainMenuScreen = containerScreen.CurrentScreenViewController as MainMenuScreen;
-
-			mainMenuScreen.PlaceNewScreen (UIMagazineServices.Pages[indexOfCurrentViewController].ContentDisplay, screenName, newFont, newColor);
+			var mainMenuScreen = AppDelegate.NavigationController.TopViewController as MainMenuScreen;
+			mainMenuScreen.PlaceNewScreen (UIMagazine.Pages[indexOfCurrentViewController], screenName, newFont, newColor);
 		}
 
 		private void SwitchScreen(int indexOfCurrentViewController, string screenName, UIFont newFont){
@@ -135,9 +132,7 @@ namespace Clubby.Screens.Controls
 		}
 
 		private void ScrollsUp(){
-			var containerScreen = AppDelegate.NavigationController.TopViewController as ContainerScreen;
-			var mainMenuScreen = containerScreen.CurrentScreenViewController as MainMenuScreen;
-
+			var mainMenuScreen = AppDelegate.NavigationController.TopViewController as MainMenuScreen;
 			mainMenuScreen.ScrollsUp ();
 		}
 	}

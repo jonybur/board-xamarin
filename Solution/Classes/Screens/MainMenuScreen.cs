@@ -22,9 +22,7 @@ namespace Clubby.Screens
 		UIScrollView ScrollView;
 		List<UIMapMarker> ListMapMarkers;
 
-		UIMagazine Magazine;
 		UIMultiActionButtons LowerButtons;
-		EventHandler MapButtonEvent;
 		UIContentDisplay ContentDisplay;
 
 		enum ScrollViewDirection { Up, Down };
@@ -70,6 +68,10 @@ namespace Clubby.Screens
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
+
+			View.BackgroundColor = AppDelegate.ClubbyBlack;
+
+			NavigationController.SetNavigationBarHidden (true, false);
 
 			ScrollView = new UIScrollView(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
 			ScrollView.ScrollsToTop = true;
@@ -129,12 +131,10 @@ namespace Clubby.Screens
 		{
 			if (CLLocationManager.Status != CLAuthorizationStatus.NotDetermined) {
 				if (AppDelegate.UserLocation.Latitude != 0 &&
-					AppDelegate.UserLocation.Longitude != 0 &&
-					!hasLoaded) {
+					AppDelegate.UserLocation.Longitude != 0) {
 
 					LoadContent ();
 					ContentDisplaySuscribeToEvents (ContentDisplay);
-					hasLoaded = true;
 
 					BigTed.BTProgressHUD.Dismiss ();
 				}
@@ -143,20 +143,30 @@ namespace Clubby.Screens
 				map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
 				mapInfoTapped = false;
 				Banner.SuscribeToEvents ();
+
+				NavigationController.InteractivePopGestureRecognizer.Enabled = false;
+				NavigationController.InteractivePopGestureRecognizer.Delegate = null;
 			}
 		}
 
 		public override void ViewDidDisappear(bool animated)
 		{
 			// unsuscribe from observers, gesture recgonizers, events
-			map.RemoveObserver (this, new NSString ("myLocation"));
+			try{
+				map.RemoveObserver (this, new NSString ("myLocation"));
+			}catch{
+				
+			}
 
 			if (ContentDisplay != null) {
 				ContentDisplay.UnsuscribeToEvents ();
 			}
 
-			foreach (Marker mark in ListMapMarkers) {
-				mark.Dispose ();
+			/*
+			if (ListMapMarkers != null) {
+				foreach (Marker mark in ListMapMarkers) {
+					mark.Dispose ();
+				}
 			}
 
 			MemoryUtility.ReleaseUIViewWithChildren (map);
@@ -165,6 +175,7 @@ namespace Clubby.Screens
 
 			MemoryUtility.ReleaseUIViewWithChildren (View);
 			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
+			*/
 		}
 
 		private void ShowFirstTimeUseMessage(){
@@ -219,27 +230,32 @@ namespace Clubby.Screens
 			if (FetchedVenues.VenueList == null || FetchedVenues.VenueList.Count == 0 || CommonUtils.DistanceBetweenCoordinates (FetchedVenues.Location, AppDelegate.UserLocation) > 1) {
 				Console.WriteLine ("Updates venues list");
 				await FetchedVenues.Update ();
+				UIMagazine.GeneratePages (FetchedVenues.VenueList);
 			}
 
 			if (FetchedVenues.VenueList.Count > 0) {
 				
-				Magazine = new UIMagazine (FetchedVenues.VenueList);
 				ScrollView.SetContentOffset (LastScreenStatus.ContentOffset, false);
 
 				switch (LastScreenStatus.CurrentScreen) {
 				case SubScreens.Timeline:
 					LowerButtons.ListButtons [0].SetFullImage ();
-					ContentDisplay = Magazine.Pages [0].ContentDisplay;
+					ContentDisplay = UIMagazine.Pages [0];
+					ContentDisplay.SelectiveRendering (ScrollView.ContentOffset);
+					break;
+				case SubScreens.Featured:
+					LowerButtons.ListButtons [1].SetFullImage ();
+					ContentDisplay = UIMagazine.Pages [1];
 					ContentDisplay.SelectiveRendering (ScrollView.ContentOffset);
 					break;
 				case SubScreens.Directory:
-					LowerButtons.ListButtons [1].SetFullImage ();
-					ContentDisplay = Magazine.Pages [1].ContentDisplay;
+					LowerButtons.ListButtons [2].SetFullImage ();
+					ContentDisplay = UIMagazine.Pages [2];
 					((UIThumbsContentDisplay)ContentDisplay).SelectiveThumbsRendering (ScrollView.ContentOffset);
 					break;
 				case SubScreens.Map:
 					LowerButtons.ListButtons [2].SetFullImage ();
-					ContentDisplay = Magazine.Pages [0].ContentDisplay;
+					ContentDisplay = UIMagazine.Pages [0];
 					ShowMap ();
 					break;
 				}
@@ -336,8 +352,8 @@ namespace Clubby.Screens
 			map.InfoTapped += (sender, e) => {
 				if (!mapInfoTapped) {
 					var board = FetchedVenues.VenueList.Find(t => t.Id == ((NSString)e.Marker.UserData).ToString());
-					AppDelegate.VenueInterface = new UIVenueInterface (board);
-					AppDelegate.NavigationController.PushViewController (AppDelegate.VenueInterface, true);
+					var venueInterface = new UIVenueInterface (board);
+					AppDelegate.NavigationController.PushViewController (venueInterface, true);
 					mapInfoTapped = true;
 				}
 			};

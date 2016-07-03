@@ -22,9 +22,8 @@ namespace Clubby.Interface.LookUp
 		UITapGestureRecognizer uberTap, directionsTap;
 		const int ButtonHeight = 50;
 
-		public MapLookUp(GoogleGeolocatorObject geolocatorObject)
+		public MapLookUp (GoogleGeolocatorObject geolocatorObject)
 		{	
-
 			GeolocatorObject = geolocatorObject;
 
 			UIColor backColor = UIColor.Black;

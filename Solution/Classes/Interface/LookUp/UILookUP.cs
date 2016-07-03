@@ -1,6 +1,4 @@
-﻿using Clubby.Infrastructure;
-using Clubby.Utilities;
-using CoreGraphics;
+﻿using CoreGraphics;
 using UIKit;
 using System;
 using Clubby.Schema;
@@ -13,12 +11,11 @@ namespace Clubby.Interface.LookUp
 		public Content content;
 
 		protected UIScrollView ScrollView;
+		protected UIImageView BackButton;
+		protected UIImageView LikeButton;
 
 		UITapGestureRecognizer backTap;
 		UITapGestureRecognizer likeTap;
-
-		protected UIImageView BackButton;
-		protected UIImageView LikeButton;
 
 		UIWindow window;
 
@@ -31,19 +28,26 @@ namespace Clubby.Interface.LookUp
 		public void CreateButtons(UIColor buttonColor)
 		{
 			CreateBackButton (buttonColor);
-			CreateLikeButton (buttonColor);
+
+			if (content != null) {
+				CreateLikeButton (buttonColor);
+			}
 		}
 
 		public override void ViewDidAppear(bool animated)
 		{
 			BackButton.AddGestureRecognizer (backTap);
-			LikeButton.AddGestureRecognizer (likeTap);
+			if (LikeButton != null) {
+				LikeButton.AddGestureRecognizer (likeTap);
+			}
 		}
 
 		public override void ViewDidDisappear(bool animated)
 		{
 			BackButton.RemoveGestureRecognizer (backTap);
-			LikeButton.RemoveGestureRecognizer (likeTap);
+			if (LikeButton != null) {
+				LikeButton.RemoveGestureRecognizer (likeTap);
+			}
 		}
 
 		protected void CreateBackButton(UIColor buttonColor)

@@ -51,8 +51,6 @@ namespace Clubby
 
 		public static User BoardUser;
 		public static CLLocationCoordinate2D UserLocation;
-		public static UIVenueInterface VenueInterface;
-
 
 		public enum PhoneVersions { iPhone4, iPhone5, iPhone6, iPhone6Plus };
 		public static PhoneVersions PhoneVersion;
@@ -62,7 +60,6 @@ namespace Clubby
 		public const string FacebookAppId = "1614192198892777";
 		public const string FacebookDisplayName = "Clubby";
 
-		//public const string MapsApiKey = "AIzaSyCDZ9asTW293TTiaYkMrlLNtlBdzBD_FQw";
 		public const string GoogleMapsAPIKey = "AIzaSyCDZ9asTW293TTiaYkMrlLNtlBdzBD_FQw";
 		public const string UberServerToken = "X0Vn_KDBicJ_U-wJzS3at6SoirGqWhSydSftTHpm";
 
@@ -70,8 +67,6 @@ namespace Clubby
 		public static AmazonS3TicketResponse AmazonS3Ticket;
 		public static string EncodedBoardToken;
 	
-		public static ContainerScreen containerScreen;
-
 		// This method is invoked when the application hqas loaded and is ready to run. In this
 		// method you should instantiate the window, load the UI into it and then make the window
 		// visible.
@@ -144,8 +139,7 @@ namespace Clubby
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
 
 			if (AccessToken.CurrentAccessToken != null) {
-				containerScreen = new ContainerScreen ();
-				screen = containerScreen;
+				screen = new MainMenuScreen ();
 			} else {
 				screen = new LoginScreen ();
 			}
@@ -168,35 +162,26 @@ namespace Clubby
 			return ApplicationDelegate.SharedInstance.OpenUrl (application, url, sourceApplication, annotation);
 		}
 
-		public static void ExitBoardInterface()
-		{
-			VenueInterface.ExitBoard ();
-			VenueInterface.Dispose ();
-			VenueInterface = null;
-
-			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
-		}
-
 		public static void PopViewControllerWithCallback(Action callback)
 		{
 			CATransaction.Begin ();
 
-			CATransaction.CompletionBlock = callback;
-
 			AppDelegate.NavigationController.PopViewController (true);
 
-			CATransaction.Begin ();
+			CATransaction.Commit();
+
+			CATransaction.CompletionBlock = callback;
 		}
 
 		public static void PopToViewControllerWithCallback(UIViewController viewController, Action callback)
 		{
 			CATransaction.Begin ();
 
-			CATransaction.CompletionBlock = callback;
-
 			AppDelegate.NavigationController.PopToViewController(viewController, true);
 
-			CATransaction.Begin ();
+			CATransaction.Commit ();
+
+			CATransaction.CompletionBlock = callback;
 		}
 
 		public static void PushViewLikePresentView(UIViewController screen)
@@ -263,11 +248,8 @@ namespace Clubby
 		}
 
 		public static void OpenBoard(Venue board){
-			if (VenueInterface == null)
-			{
-				VenueInterface = new UIVenueInterface (board);
-				NavigationController.PushViewController (VenueInterface, true);
-			}
+			var venueInterface = new UIVenueInterface (board);
+			AppDelegate.NavigationController.PushViewController (venueInterface, true);
 		}
 
 		public override void RegisteredForRemoteNotifications (

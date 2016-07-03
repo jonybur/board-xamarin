@@ -15,7 +15,7 @@ namespace Clubby.Interface
 
 		public UIInstagramGallery (float width, float yposition, List<Content> contents){
 			ScrollEnabled = false;
-			ButtonSize = width / 3 - 10;
+			ButtonSize = width / 3 - 1;
 			Frame = new CGRect (0, 0, width, ButtonSize * 2);
 
 			InstagramPhotos = new List<UIButton> ();
@@ -39,9 +39,8 @@ namespace Clubby.Interface
 			var pictureButton = new UIButton(new CGRect (0, 0, ButtonSize, ButtonSize));
 			var imageView = new UIImageView (pictureButton.Frame);
 			imageView.SetImage ("./boardinterface/infobox/viewmore3.png");
-			pictureButton.Alpha = .5f;
+			pictureButton.Alpha = .6f;
 			pictureButton.AddSubview(imageView);
-			pictureButton.Layer.CornerRadius = 10;
 			pictureButton.ClipsToBounds = true;
 			pictureButton.TouchUpInside += (sender, e) => {
 				// opens instagram
@@ -57,10 +56,12 @@ namespace Clubby.Interface
 
 		private void SetImage (Picture picture){
 			var pictureButton = new UIButton(new CGRect (0, 0, ButtonSize, ButtonSize));
+
 			var imageView = new UIImageView (pictureButton.Frame);
 			imageView.SetImage (new NSUrl(picture.ThumbnailImageUrl));
+			imageView.ContentMode = UIViewContentMode.ScaleAspectFill;
+
 			pictureButton.AddSubview(imageView);
-			pictureButton.Layer.CornerRadius = 10;
 			pictureButton.ClipsToBounds = true;
 			pictureButton.TouchUpInside += (sender, e) => {
 				var lookUp = new PictureLookUp(picture);
@@ -71,15 +72,15 @@ namespace Clubby.Interface
 		}
 
 		private void Fill (){
-			int x = 3; float y = 1;
+			int x = 1; float y = 1;
 			float lastBottom = 0;
 			foreach (var button in InstagramPhotos) {
-				button.Center = new CGPoint ((Frame.Width / 16) * x, (ButtonSize + 5) * y - ButtonSize / 2);
+				button.Center = new CGPoint ((Frame.Width / 6) * x, (ButtonSize + 1) * y - ButtonSize / 2);
 
-				x += 5;
+				x += 2;
 
-				if (x >= 16) {
-					x = 3;
+				if (x >= 6) {
+					x = 1;
 					y ++;
 				}
 
