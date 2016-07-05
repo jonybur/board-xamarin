@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Clubby.Infrastructure;
 using Clubby.Schema;
 using System.Linq;
 using Clubby.Utilities;
@@ -39,11 +38,13 @@ namespace Clubby.Screens.Controls
 				carousel.View.Center = new CGPoint (AppDelegate.ScreenWidth / 2,
 					UIMenuBanner.Height + SeparationBetweenCarousels +
 					carousel.View.Frame.Height / 2 + (carousel.View.Frame.Height + SeparationBetweenCarousels) * i);
+				
 				testCarousels.Add (carousel);
 
 				ListViews.Add (carousel.View);
 
 				ListThumbs.AddRange (carousel.ListThumbs);
+
 				i++;
 			}
 			var size = new CGSize (AppDelegate.ScreenWidth, (float)testCarousels[testCarousels.Count - 1].View.Frame.Bottom + UIActionButton.Height * 2 + SeparationBetweenCarousels);
@@ -73,7 +74,13 @@ namespace Clubby.Screens.Controls
 				carouselLargeItem.Center = new CGPoint (ItemSeparation + carouselLargeItem.Frame.Width / 2 + (carouselLargeItem.Frame.Width + ItemSeparation) * i,
 														carouselLargeItem.Frame.Height / 2);
 				ListThumbs.Add (carouselLargeItem);
-				ScrollView.AddSubview (carouselLargeItem);
+
+				if (carouselLargeItem.Frame.Left < (AppDelegate.ScreenWidth + ScrollView.ContentOffset.X) &&
+					carouselLargeItem.Frame.Right > (ScrollView.ContentOffset.X)){
+					ScrollView.AddSubview(carouselLargeItem);
+				}
+
+				ScrollView.ContentSize = new CGSize (ScrollView.ContentSize.Width, 1000);
 			}
 			ScrollView.ContentSize = new CGSize (ItemSeparation + boardList.Count * (UICarouselLargeItem.Width + ItemSeparation),
 				UICarouselLargeItem.Height);
@@ -84,6 +91,17 @@ namespace Clubby.Screens.Controls
 			Add (ScrollView);
 
 			View.Frame = new CGRect(0,0, AppDelegate.ScreenWidth, ScrollView.Frame.Bottom);
+
+			ScrollView.Scrolled += (object sender, EventArgs e) => {
+				foreach (var thumb in ListThumbs){
+					if (thumb.Frame.Left < (AppDelegate.ScreenWidth + ScrollView.ContentOffset.X) &&
+						thumb.Frame.Right > (ScrollView.ContentOffset.X)){
+						ScrollView.AddSubview(thumb);
+					}else{
+						thumb.RemoveFromSuperview();
+					}
+				}
+			};
 		}
 	}
 

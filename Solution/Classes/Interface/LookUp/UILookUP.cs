@@ -3,6 +3,7 @@ using UIKit;
 using System;
 using Clubby.Schema;
 using Plugin.Share;
+using Haneke;
 
 namespace Clubby.Interface.LookUp
 {
@@ -27,7 +28,7 @@ namespace Clubby.Interface.LookUp
 
 		public void CreateButtons(UIColor buttonColor)
 		{
-			CreateBackButton (buttonColor);
+			CreateBackButton ();
 
 			if (content != null) {
 				CreateLikeButton (buttonColor);
@@ -50,26 +51,23 @@ namespace Clubby.Interface.LookUp
 			}
 		}
 
-		protected void CreateBackButton(UIColor buttonColor)
+		protected void CreateBackButton()
 		{
-			using (UIImage img = UIImage.FromFile ("./boardinterface/lookup/cancel.png")) {
-				BackButton = new UIImageView(new CGRect(0,0,img.Size.Width * 2,img.Size.Height * 2));
+			BackButton = new UIImageView ();
+			BackButton.Frame = new CGRect (0, 0, 50, 50);
 
-				UIImageView subView = new UIImageView (new CGRect (0, 0, img.Size.Width / 2, img.Size.Height / 2));
-				subView.Image = img.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-				subView.Center = new CGPoint (BackButton.Frame.Width / 2, BackButton.Frame.Height / 2);
-				subView.TintColor = buttonColor;
+			var subView = new UIImageView ();
+			subView.Frame = new CGRect (0, 0, 17, 17);
+			subView.SetImage ("./boardinterface/lookup/cancel.png");
 
-				BackButton.AddSubview (subView);
-				BackButton.Center = new CGPoint (img.Size.Width / 2 + 10, 35);
-			}
-			 
+			BackButton.AddSubview (subView);
+			subView.Center = new CGPoint (BackButton.Frame.Width / 2 - 3, BackButton.Frame.Height / 2 + 7);
+
+			BackButton.Center = new CGPoint (BackButton.Frame.Width / 2 + 10, 35);
 			BackButton.UserInteractionEnabled = true;
 
-			backTap = new UITapGestureRecognizer (tg => {
-				// user tapped on "Done" button
-				AppDelegate.PopViewControllerLikeDismissView();
-			});
+			backTap = new UITapGestureRecognizer (tg => AppDelegate.PopViewControllerLikeDismissView ());
+			BackButton.AddGestureRecognizer (backTap);
 		}
 
 		protected void CreateLikeButton(UIColor buttonColor)

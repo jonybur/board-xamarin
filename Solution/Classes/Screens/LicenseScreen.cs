@@ -18,17 +18,24 @@ namespace Clubby.Screens
 
 		public override void ViewDidLoad ()
 		{
-			View.BackgroundColor = UIColor.White;
+			View.BackgroundColor = AppDelegate.ClubbyBlack;
 			LoadBanner (CurrentLicense.ProductName);
 
 			DescriptionView = new UITextView ();
 			DescriptionView.Frame = new CGRect (5, Banner.Frame.Bottom + 5, AppDelegate.ScreenWidth - 10, AppDelegate.ScreenHeight - 5 - UIMenuBanner.Height);
 			DescriptionView.Font = UIFont.SystemFontOfSize (14, UIFontWeight.Light);
 			DescriptionView.Editable = false;
+			DescriptionView.TextColor = UIColor.White;
+			DescriptionView.BackgroundColor = AppDelegate.ClubbyBlack;
 			DescriptionView.DataDetectorTypes = UIDataDetectorType.Link;
 			DescriptionView.Text = CurrentLicense.Description;
 
 			View.AddSubviews (Banner, DescriptionView);
+		}
+
+		public override void ViewDidAppear(bool animated){
+			NavigationController.InteractivePopGestureRecognizer.Enabled = true;
+			NavigationController.InteractivePopGestureRecognizer.Delegate = null;
 		}
 
 		public override void ViewDidDisappear(bool animated)
@@ -39,7 +46,7 @@ namespace Clubby.Screens
 
 		private void LoadBanner(string name)
 		{
-			Banner = new UIMenuBanner (name.ToUpper(), "arrow_left");
+			Banner = new UIMenuBanner (name, "arrow_left");
 
 			UITapGestureRecognizer tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){

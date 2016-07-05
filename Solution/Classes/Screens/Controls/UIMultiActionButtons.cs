@@ -55,7 +55,7 @@ namespace Clubby.Screens.Controls
 
 				UnselectAllButtons();
 				timelineButton.SetFullImage();
-				SwitchScreen(0, "Clubby", AppDelegate.Narwhal26, UIColor.White);
+				SwitchScreen(0);
 			};
 
 			ListButtons.Add (timelineButton);	
@@ -120,6 +120,11 @@ namespace Clubby.Screens.Controls
 			foreach (var button in ListButtons){
 				button.SetEmptyImage();
 			}
+		}
+
+		private void SwitchScreen(int indexOfCurrentViewController){
+			var mainMenuScreen = AppDelegate.NavigationController.TopViewController as MainMenuScreen;
+			mainMenuScreen.PlaceNewScreen (UIMagazine.Pages[indexOfCurrentViewController]);
 		}
 
 		private void SwitchScreen(int indexOfCurrentViewController, string screenName, UIFont newFont, UIColor newColor){

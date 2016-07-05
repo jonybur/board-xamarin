@@ -19,6 +19,8 @@ namespace Clubby.Screens
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
+			View.BackgroundColor = AppDelegate.ClubbyBlack;
+
 			this.AutomaticallyAdjustsScrollViewInsets = false;
 
 			NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
@@ -44,8 +46,6 @@ namespace Clubby.Screens
 
 		private void LoadBackground()
 		{
-			var repeaterVideo = new UIRepeatVideo (new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight), NSUrl.FromFilename ("./timelapse.mp4"));
-
 			var logoView = new UIImageView ();
 			using (var logo = UIImage.FromFile ("./screens/login/logo.png")) {
 				logoView.Image = logo;
@@ -53,12 +53,12 @@ namespace Clubby.Screens
 			}
 			logoView.Center = new PointF (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight * 0.35f);
 
-			View.AddSubviews (repeaterVideo.View, logoView);
+			View.AddSubviews (logoView);
 		}
 
 		private void LoadFBButton()
 		{
-			logInButton = new LoginButton (new CGRect (40, AppDelegate.ScreenHeight - 100, AppDelegate.ScreenWidth - 80, 50)) {
+			logInButton = new LoginButton (new CGRect (40, AppDelegate.ScreenHeight - 110, AppDelegate.ScreenWidth - 80, 50)) {
 				LoginBehavior = LoginBehavior.Native,
 				ReadPermissions = new [] { "public_profile", "user_friends" }
 			};

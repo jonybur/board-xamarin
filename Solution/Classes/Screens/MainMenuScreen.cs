@@ -254,8 +254,7 @@ namespace Clubby.Screens
 					((UIThumbsContentDisplay)ContentDisplay).SelectiveThumbsRendering (ScrollView.ContentOffset);
 					break;
 				case SubScreens.Map:
-					LowerButtons.ListButtons [2].SetFullImage ();
-					ContentDisplay = UIMagazine.Pages [0];
+					LowerButtons.ListButtons [3].SetFullImage ();
 					ShowMap ();
 					break;
 				}
@@ -263,12 +262,6 @@ namespace Clubby.Screens
 				ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, ContentDisplay.Frame.Bottom);
 
 				ScrollView.AddSubview (ContentDisplay);
-
-			} else {
-
-				var noContent = new UINoContent (UINoContent.Presets.NotInArea);
-				ScrollView.AddSubview (noContent);
-				LowerButtons.Alpha = 0f;
 
 			}
 
@@ -316,11 +309,7 @@ namespace Clubby.Screens
 						}
 					}
 
-					if (previousOffset < ScrollView.ContentOffset.Y) { 
-						direction = ScrollViewDirection.Down;
-					}else{
-						direction = ScrollViewDirection.Up;
-					}
+					direction = previousOffset < ScrollView.ContentOffset.Y ? ScrollViewDirection.Down : ScrollViewDirection.Up;
 
 					previousOffset = (float)ScrollView.ContentOffset.Y;
 
@@ -331,8 +320,12 @@ namespace Clubby.Screens
 
 		private void LoadBanner()
 		{
-			Banner = new UIMenuBanner ("");
-			Banner.ChangeTitle ("Clubby", AppDelegate.Narwhal26);
+			Banner = new UIMenuBanner ("", null, "empty_user");
+			Banner.SetMainTitle ();
+
+			Banner.AddRightTap (delegate {
+				AppDelegate.PushViewLikePresentView(new UserScreen());
+			});
 		}
 
 		private void LoadMap()
@@ -370,6 +363,47 @@ namespace Clubby.Screens
 				}
 				generatedMarkers |= FetchedVenues.VenueList.Count > 0;
 			}
+		}
+
+		public void PlaceNewScreen(UIContentDisplay newDisplay){
+			map.Alpha = 0f;
+
+			ContentDisplay.UnsuscribeToEvents ();
+			ContentDisplay.RemoveFromSuperview ();
+
+			// this updates distance to thumbs everytime user switches screen
+			if (newDisplay is UIThumbsContentDisplay) {
+				((UIThumbsContentDisplay)newDisplay).GenerateList ();
+
+				var listThumbs = ((UIThumbsContentDisplay)newDisplay).ListThumbComponents;
+				if (listThumbs != null) {
+					foreach (var thumb in listThumbs) {
+						thumb.UpdateDistanceLabel ();
+					}
+				}
+
+				((UIThumbsContentDisplay)newDisplay).SelectiveThumbsRendering (ScrollView.ContentOffset);
+				LastScreenStatus.CurrentScreen = SubScreens.Directory;
+			} else if (newDisplay is UICarouselContentDisplay) {
+				LastScreenStatus.CurrentScreen = SubScreens.Featured;
+				newDisplay.SelectiveRendering (ScrollView.ContentOffset);
+			} else if (newDisplay is UITimelineContentDisplay) {
+				LastScreenStatus.CurrentScreen = SubScreens.Timeline;
+				newDisplay.SelectiveRendering (ScrollView.ContentOffset);
+			}
+			ContentDisplay = newDisplay;
+
+			ScrollView.AddSubview (ContentDisplay);
+			ScrollView.SendSubviewToBack (ContentDisplay);
+			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, newDisplay.Frame.Height);
+			ContentDisplaySuscribeToEvents (ContentDisplay);
+			// animates banner to be shown
+
+			ScrollView.SetContentOffset (new CGPoint (0, 0), false);
+
+			Banner.SetMainTitle ();
+
+			Banner.AnimateShow();
 		}
 
 		public void PlaceNewScreen(UIContentDisplay newDisplay, string screenName, UIFont newFont){
@@ -424,7 +458,6 @@ namespace Clubby.Screens
 
 		// map button
 		public void ShowMap(){
-
 			LastScreenStatus.CurrentScreen = SubScreens.Map;
 
 			map.Alpha = 1f;

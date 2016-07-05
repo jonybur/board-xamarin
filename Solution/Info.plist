@@ -97,9 +97,9 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>CFBundleShortVersionString</key>
-	<string>0.1.00</string>
+	<string>0.1.01</string>
 	<key>CFBundleVersion</key>
-	<string>0.1.00</string>
+	<string>0.1.01</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>

@@ -1,6 +1,7 @@
-﻿using UIKit;
-using CoreGraphics;
+﻿using System;
 using System.Collections.Generic;
+using CoreGraphics;
+using UIKit;
 
 namespace Clubby.Screens.Controls
 {
@@ -29,7 +30,6 @@ namespace Clubby.Screens.Controls
 					// if its on a screenheight range
 					if (view.Frame.Y > (contentOffset.Y - view.Frame.Height) &&
 					    view.Frame.Y < (contentOffset.Y + AppDelegate.ScreenHeight)) {
-
 						AddSubview (view);
 					}
 

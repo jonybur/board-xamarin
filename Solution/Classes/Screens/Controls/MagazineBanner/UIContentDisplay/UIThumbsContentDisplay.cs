@@ -24,11 +24,11 @@ namespace Clubby.Screens.Controls
 
 			public int Compare (Venue x, Venue y)
 			{
-				return String.Compare(x.Name[0].ToString().ToLower(), y.Name[0].ToString().ToLower());
+				return String.Compare(x.Name[0].ToString().ToUpper(), y.Name[0].ToString().ToUpper() );
 			}
 
 			public string GetComparisonPropertyDescription(Venue target) {
-				return target.Name [0].ToString ().ToLower();
+				return target.Name [0].ToString ().ToUpper();
 			}
 		}
 

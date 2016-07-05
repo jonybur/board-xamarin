@@ -55,6 +55,19 @@ namespace Clubby.Infrastructure
 			venueList.Add (await CreateVenue("nikkibeach", "nikkibeachmiami"));
 			venueList.Add (await CreateVenue("blackbirdordinary", "blackbirdordinary"));
 			venueList.Add (await CreateVenue("heartnightclub", "heartnightclub"));
+			venueList.Add (await CreateVenue("storymiami", "storymiami"));
+			venueList.Add (await CreateVenue("mokaimiami", "mokaiofficial"));
+			venueList.Add (await CreateVenue("bardotmiami", "bardot_miami"));
+			venueList.Add (await CreateVenue("BasementMiami", "basementmiami"));
+			venueList.Add (await CreateVenue("setmiami", "setmiami"));
+			venueList.Add (await CreateVenue("studio23miami", "studio23miami"));
+			venueList.Add (await CreateVenue("coyotacowynwood", "coyotaco"));
+			venueList.Add (await CreateVenue("MyntLoungeUSA", "myntloungeusa"));
+			venueList.Add (await CreateVenue("SpazioNightclub", "blumenightclub"));
+			venueList.Add (await CreateVenue("fdrsobe", "fdratdelano"));
+			venueList.Add (await CreateVenue("RecRoomies", "RECROOMOFFICIAL"));
+			venueList.Add (await CreateVenue("334543100240", "purdylounge"));
+			venueList.Add (await CreateVenue("killyouridolmiami", "kyimiami"));
 
 			return venueList;
 		}

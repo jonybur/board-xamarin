@@ -2,37 +2,27 @@
 using UIKit;
 using System.Collections.Generic;
 using CoreAnimation;
+using Haneke;
 using Foundation;
+using System;
 
 namespace Clubby.Screens.Controls
 {
 	public sealed class UIMenuBanner : UIImageView
 	{
 		List<UITapGestureRecognizer> taps;
+		List<UIImageView> ListButtons;
+		Action LeftTap;
+		Action RightTap;
 		UILabel TitleLabel;
-
+		private const float buttonAlpha = .8f;
 		public const int Height = 66;
-
-		public void ChangeTitle(string newTitle){
-			TitleLabel.Text = newTitle;	
-			TitleLabel.SizeToFit ();
-			TitleLabel.Center = new CGPoint (AppDelegate.ScreenWidth / 2, Height / 2 + UIStatusBar.Height / 2);
-		}
-
-		public void ChangeTitle(string newTitle, UIFont newFont){
-			TitleLabel.Font = newFont;
-			ChangeTitle (newTitle);
-		}
-
-		public void ChangeTitle(string newTitle, UIFont newFont, UIColor newColor){
-			TitleLabel.Font = newFont;
-			TitleLabel.TextColor = newColor;
-			ChangeTitle (newTitle);
-		}
+		bool TappingEnabled;
 
 		public UIMenuBanner (string title, string left_button = null, string right_button = null, int steps_number = 0, int current_step = 0)
 		{
 			taps = new List<UITapGestureRecognizer> ();
+			ListButtons = new List<UIImageView> ();
 
 			var backgroundView = GenerateBackground ();
 			Frame = backgroundView.Frame;
@@ -47,11 +37,13 @@ namespace Clubby.Screens.Controls
 			AddSubview (backgroundView);
 
 			if (left_button != null) {
-				var leftButton = GenerateButton (left_button, true);	
+				var leftButton = GenerateButton (left_button, true);
+				ListButtons.Add (leftButton);
 				AddSubview (leftButton);
 			}
 			if (right_button != null) {
 				var rightButton = GenerateButton (right_button, false);
+				ListButtons.Add (rightButton);
 				AddSubview (rightButton);
 			}
 
@@ -72,13 +64,39 @@ namespace Clubby.Screens.Controls
 			AddSubview (bottomLineView);
 
 			UserInteractionEnabled = true;
+
+			TappingEnabled = true;
+
+			var tapGesture = new UITapGestureRecognizer (delegate(UITapGestureRecognizer obj) {
+				if (!TappingEnabled){
+					return;
+				}
+
+				if (obj.LocationInView(this).X > AppDelegate.ScreenWidth * .75) {
+					if (RightTap!=null){
+						RightTap();
+					}
+				} else if (obj.LocationInView(this).X < AppDelegate.ScreenWidth * .25) {
+					if (LeftTap !=null){
+						LeftTap();
+					}
+				}
+			});
+
+			AddGestureRecognizer (tapGesture);
+		}
+
+		public void AddLeftTap(Action action){
+			LeftTap = action;
+		}
+
+		public void AddRightTap(Action action){
+			RightTap = action;
 		}
 
 		private UIImageView GenerateStepsBackground(){
 			var background = new UIImageView (new CGRect (0, Height + 1, AppDelegate.ScreenWidth, Height / 2));
 			background.BackgroundColor = UIColor.FromRGB(16, 16, 16);
-			//background.Alpha = .95f;
-
 			return background;
 		}
 
@@ -91,7 +109,7 @@ namespace Clubby.Screens.Controls
 
 				label.Font = AppDelegate.Narwhal20;
 				label.Text = labelText.ToString();
-				label.TextColor = AppDelegate.ClubbyBlack;//UIColor.White;
+				label.TextColor = AppDelegate.ClubbyBlack;
 
 				if (labelText != current_step) {
 					label.Alpha = .5f;
@@ -137,15 +155,16 @@ namespace Clubby.Screens.Controls
 		private UIImageView GenerateButton(string filename, bool ontheleft){
 
 			var buttonView = new UIImageView ();
+			float buttonSize = (Height / 2) * 0.65f;
+			buttonView = new UIImageView (new CGRect(0, UIStatusBar.Height * (.4f) - 1 + (UIMenuBanner.Height - buttonSize) / 2, buttonSize, buttonSize));
+			buttonView.ContentMode = UIViewContentMode.ScaleAspectFit;
+			buttonView.SetImage ("./menubanner/" + filename + ".png");
+			buttonView.Alpha = buttonAlpha;
 
-			using (var img = UIImage.FromFile ("./menubanner/"+filename+".png")) {
-				float imgw = (float)img.Size.Width / 2, imgh = (float)img.Size.Height / 2;
-				float xposition = ontheleft ? 0 : (float)Frame.Width - imgw;
-
-				buttonView.Image = img.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
-				buttonView.Frame = new CGRect (xposition, 0, imgw, imgh);
-				buttonView.TintColor = AppDelegate.ClubbyBlack;
-				buttonView.Alpha = .75f;
+			if (ontheleft) {
+				buttonView.Center = new CGPoint(buttonView.Frame.Width / 2 + 10, buttonView.Center.Y);
+			} else {
+				buttonView.Center = new CGPoint(Frame.Width - buttonView.Frame.Width / 2 - 10, buttonView.Center.Y); 
 			}
 
 			return buttonView;
@@ -171,6 +190,41 @@ namespace Clubby.Screens.Controls
 
 			label.Center = new CGPoint (Center.X, Height / 2 + UIStatusBar.Height / 2);
 			return label;
+		}
+
+		public void ChangeTitle(string newTitle){
+			TitleLabel.Text = newTitle;	
+			TitleLabel.SizeToFit ();
+			TitleLabel.Center = new CGPoint (AppDelegate.ScreenWidth / 2, Height / 2 + UIStatusBar.Height / 2);
+
+			foreach (var button in ListButtons) {
+				button.Alpha = 0f;
+			}
+
+			TappingEnabled = false;
+		}
+
+		public void ChangeTitle(string newTitle, UIFont newFont){
+			TitleLabel.Font = newFont;
+			ChangeTitle (newTitle);
+		}
+
+		public void ChangeTitle(string newTitle, UIFont newFont, UIColor newColor){
+			TitleLabel.Font = newFont;
+			TitleLabel.TextColor = newColor;
+			ChangeTitle (newTitle);
+		}
+
+		public void SetMainTitle(){
+			TitleLabel.Font = AppDelegate.Narwhal26;
+			TitleLabel.TextColor = UIColor.White;
+			TitleLabel.Text = "Clubby";
+			TitleLabel.SizeToFit ();
+			TitleLabel.Center = new CGPoint (AppDelegate.ScreenWidth / 2, Height / 2 + UIStatusBar.Height / 2);
+			TappingEnabled = true;
+			foreach (var button in ListButtons) {
+				button.Alpha = buttonAlpha;
+			}
 		}
 
 		public void AddTap(UITapGestureRecognizer tap)

@@ -171,20 +171,9 @@
   <ItemGroup>
     <BundleResource Include="Resources\fonts\Narwhal_bold.ttf" />
     <BundleResource Include="Resources\fonts\Narwhal.ttf" />
-    <BundleResource Include="Resources\screens\create\1\content\6.jpg" />
-    <BundleResource Include="Resources\screens\create\1\content\6plus.jpg" />
-    <BundleResource Include="Resources\screens\create\2\icon.png" />
-    <BundleResource Include="Resources\screens\create\2\content\6.jpg" />
-    <BundleResource Include="Resources\screens\create\2\content\6plus.jpg" />
-    <BundleResource Include="Resources\screens\create\3\lock.png" />
-    <BundleResource Include="Resources\screens\create\3\banner\6.jpg" />
-    <BundleResource Include="Resources\screens\create\3\banner\6plus.jpg" />
-    <BundleResource Include="Resources\screens\invite\icon.png" />
-    <BundleResource Include="Resources\screens\support\icon.png" />
     <BundleResource Include="Resources\Icon-60%402x.png" />
     <BundleResource Include="Resources\Icon.png" />
     <BundleResource Include="Resources\Icon%402x.png" />
-    <BundleResource Include="Resources\boardinterface\lookup\cancel.png" />
     <BundleResource Include="Resources\boardinterface\lookup\like.png" />
     <BundleResource Include="Resources\screens\main\map\marker_blue.png" />
     <BundleResource Include="Resources\screens\main\map\marker_orange.png" />
@@ -195,34 +184,8 @@
     <BundleResource Include="Resources\menubanner\plus_right.png" />
     <BundleResource Include="Resources\menubanner\arrow_left.png" />
     <BundleResource Include="Resources\menubanner\arrow_right.png" />
-    <BundleResource Include="Resources\screens\sidemenus\6\business.png" />
-    <BundleResource Include="Resources\screens\sidemenus\6plus\business.png" />
-    <BundleResource Include="Resources\screens\sidemenus\6\invite.png" />
-    <BundleResource Include="Resources\screens\sidemenus\6plus\invite.png" />
-    <BundleResource Include="Resources\screens\sidemenus\6\main.png" />
-    <BundleResource Include="Resources\screens\sidemenus\6plus\main.png" />
-    <BundleResource Include="Resources\screens\sidemenus\6\settings.png" />
-    <BundleResource Include="Resources\screens\sidemenus\6plus\settings.png" />
-    <BundleResource Include="Resources\screens\sidemenus\6plus\support.png" />
-    <BundleResource Include="Resources\screens\sidemenus\6\support.png" />
-    <BundleResource Include="Resources\screens\sidemenus\4\business.png" />
-    <BundleResource Include="Resources\screens\sidemenus\4\invite.png" />
-    <BundleResource Include="Resources\screens\sidemenus\4\main.png" />
-    <BundleResource Include="Resources\screens\sidemenus\4\settings.png" />
-    <BundleResource Include="Resources\screens\sidemenus\4\support.png" />
-    <BundleResource Include="Resources\screens\sidemenus\5\business.png" />
-    <BundleResource Include="Resources\screens\sidemenus\5\invite.png" />
-    <BundleResource Include="Resources\screens\sidemenus\5\main.png" />
-    <BundleResource Include="Resources\screens\sidemenus\5\settings.png" />
-    <BundleResource Include="Resources\screens\sidemenus\5\support.png" />
     <BundleResource Include="Resources\boardinterface\back_button3.png" />
     <BundleResource Include="Resources\boardinterface\infobox\fulllike.png" />
-    <BundleResource Include="Resources\screens\main\magazine\flagpin.png" />
-    <BundleResource Include="Resources\screens\nocontent\noapp.png" />
-    <BundleResource Include="Resources\screens\business\icon.png" />
-    <BundleResource Include="Resources\screens\settings\long_flag.png" />
-    <BundleResource Include="Resources\screens\credits\long_flag.png" />
-    <BundleResource Include="Resources\timelapse.mp4" />
     <BundleResource Include="Resources\screens\login\logo.png" />
     <BundleResource Include="Resources\Icon-Small.png" />
     <BundleResource Include="Resources\Icon-Small%402x.png" />
@@ -247,6 +210,9 @@
     <BundleResource Include="Resources\boardinterface\infobox\emptylike.png" />
     <BundleResource Include="Resources\boardinterface\infobox\message.png" />
     <BundleResource Include="Resources\boardinterface\infobox\viewmore3.png" />
+    <BundleResource Include="Resources\menubanner\empty_user.png" />
+    <BundleResource Include="Resources\menubanner\full_user.png" />
+    <BundleResource Include="Resources\boardinterface\lookup\cancel.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -326,6 +292,7 @@
     <Compile Include="Classes\Interface\LookUp\PictureLookUp.cs" />
     <Compile Include="Classes\Interface\LookUp\UILookUP.cs" />
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazine.cs" />
+    <Compile Include="Classes\Screens\UserScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -338,15 +305,6 @@
     <Folder Include="Resources\fonts\" />
     <Folder Include="Classes\Screens\" />
     <Folder Include="Resources\screens\" />
-    <Folder Include="Resources\screens\invite\" />
-    <Folder Include="Resources\screens\support\" />
-    <Folder Include="Resources\screens\create\" />
-    <Folder Include="Resources\screens\create\1\" />
-    <Folder Include="Resources\screens\create\2\" />
-    <Folder Include="Resources\screens\create\3\" />
-    <Folder Include="Resources\screens\create\3\banner\" />
-    <Folder Include="Resources\screens\create\2\content\" />
-    <Folder Include="Resources\screens\create\1\content\" />
     <Folder Include="Resources\screens\login\" />
     <Folder Include="Classes\Interface\" />
     <Folder Include="Classes\JsonResponses\" />
@@ -360,20 +318,10 @@
     <Folder Include="Properties\" />
     <Folder Include="Resources\boardinterface\infobox\" />
     <Folder Include="Classes\Interface\InfoBox\" />
-    <Folder Include="Resources\screens\main\magazine\" />
     <Folder Include="Classes\Screens\Controls\MenuButton\" />
     <Folder Include="Classes\Screens\Controls\MagazineBanner\" />
     <Folder Include="Resources\menubanner\" />
-    <Folder Include="Resources\screens\sidemenus\" />
-    <Folder Include="Resources\screens\sidemenus\4\" />
-    <Folder Include="Resources\screens\sidemenus\5\" />
-    <Folder Include="Resources\screens\sidemenus\6\" />
-    <Folder Include="Resources\screens\sidemenus\6plus\" />
-    <Folder Include="Resources\screens\nocontent\" />
-    <Folder Include="Resources\screens\business\" />
-    <Folder Include="Resources\screens\settings\" />
     <Folder Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\" />
-    <Folder Include="Resources\screens\credits\" />
     <Folder Include="Resources\screens\main\buttons\" />
     <Folder Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentDisplayComponents\" />
     <Folder Include="Classes\Interface\LookUp\" />

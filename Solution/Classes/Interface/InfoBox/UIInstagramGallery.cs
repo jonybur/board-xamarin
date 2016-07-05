@@ -46,9 +46,12 @@ namespace Clubby.Interface
 				// opens instagram
 				if (AppsController.CanOpenInstagram()){
 					AppsController.OpenInstagram(UIVenueInterface.venue.InstagramId);
+				} else {
+					var alert = UIAlertController.Create("Instagram is not installed", "To use this function please install Instagram", UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+					AppDelegate.NavigationController.PresentViewController (alert, true, null);
 				}
 
-				//location?id=LOCATION_ID
 			};
 
 			InstagramPhotos.Add(pictureButton);
