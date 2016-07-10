@@ -175,15 +175,7 @@
     <BundleResource Include="Resources\Icon.png" />
     <BundleResource Include="Resources\Icon%402x.png" />
     <BundleResource Include="Resources\boardinterface\lookup\like.png" />
-    <BundleResource Include="Resources\screens\main\map\marker_blue.png" />
-    <BundleResource Include="Resources\screens\main\map\marker_orange.png" />
-    <BundleResource Include="Resources\screens\main\map\markercontainer.png" />
     <BundleResource Include="Resources\screens\main\map\markercontainer_black.png" />
-    <BundleResource Include="Resources\menubanner\cross_left.png" />
-    <BundleResource Include="Resources\menubanner\import_right.png" />
-    <BundleResource Include="Resources\menubanner\plus_right.png" />
-    <BundleResource Include="Resources\menubanner\arrow_left.png" />
-    <BundleResource Include="Resources\menubanner\arrow_right.png" />
     <BundleResource Include="Resources\boardinterface\back_button3.png" />
     <BundleResource Include="Resources\boardinterface\infobox\fulllike.png" />
     <BundleResource Include="Resources\screens\login\logo.png" />
@@ -192,7 +184,6 @@
     <BundleResource Include="Resources\Icon-Small-40%402x.png" />
     <BundleResource Include="Resources\DefaultUser.png" />
     <BundleResource Include="Resources\Default-568h%402x.png" />
-    <BundleResource Include="Resources\menubanner\menu_left.png" />
     <BundleResource Include="Resources\Default-736h%403x_bak.png" />
     <BundleResource Include="Resources\Default-667h%402x.png" />
     <BundleResource Include="Resources\Default.png" />
@@ -213,6 +204,7 @@
     <BundleResource Include="Resources\menubanner\empty_user.png" />
     <BundleResource Include="Resources\menubanner\full_user.png" />
     <BundleResource Include="Resources\boardinterface\lookup\cancel.png" />
+    <BundleResource Include="Resources\menubanner\arrow_left.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

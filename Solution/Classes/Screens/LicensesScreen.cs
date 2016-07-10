@@ -44,7 +44,7 @@ namespace Clubby.Screens
 			foreach (var license in LicenseList) {
 				
 				var licenseButton = new UIOneLineMenuButton(yposition + 1);
-				licenseButton.SetLabel(license.ProductName + " >");
+				licenseButton.SetLabel(license.ProductName);
 				licenseButton.SetTapEvent (delegate {
 					var licenseScreen = new LicenseScreen(license);
 					AppDelegate.NavigationController.PushViewController(licenseScreen, true);
@@ -59,7 +59,7 @@ namespace Clubby.Screens
 			ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, LicenseList.Count * UIOneLineMenuButton.Height + UIActionButton.Height * 2);
 
 			View.AddSubviews (ScrollView, Banner);
-			View.BackgroundColor = UIColor.White;
+			View.BackgroundColor = AppDelegate.ClubbyBlack;
 		}
 
 		public override void ViewDidAppear(bool animated){

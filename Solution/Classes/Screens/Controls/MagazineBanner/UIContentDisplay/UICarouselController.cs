@@ -15,7 +15,7 @@ namespace Clubby.Screens.Controls
 
 		const float SeparationBetweenCarousels = 30;
 
-		public UICarouselContentDisplay(List<Venue> venueList){
+		public UICarouselContentDisplay(List<Venue> venueList) {
 			ListThumbs = new List<UIContentThumb> ();
 
 			var magazineDictionary = new Dictionary<string, List<Venue>> ();
@@ -35,25 +35,25 @@ namespace Clubby.Screens.Controls
 			foreach (var entry in magazineDictionary){
 				var carousel = new UICarouselController (entry.Value, entry.Key);
 
-				carousel.View.Center = new CGPoint (AppDelegate.ScreenWidth / 2,
+				carousel.Center = new CGPoint (AppDelegate.ScreenWidth / 2,
 					UIMenuBanner.Height + SeparationBetweenCarousels +
-					carousel.View.Frame.Height / 2 + (carousel.View.Frame.Height + SeparationBetweenCarousels) * i);
+					carousel.Frame.Height / 2 + (carousel.Frame.Height + SeparationBetweenCarousels) * i);
 				
 				testCarousels.Add (carousel);
 
-				ListViews.Add (carousel.View);
+				ListViews.Add (carousel);
 
 				ListThumbs.AddRange (carousel.ListThumbs);
 
 				i++;
 			}
-			var size = new CGSize (AppDelegate.ScreenWidth, (float)testCarousels[testCarousels.Count - 1].View.Frame.Bottom + UIActionButton.Height * 2 + SeparationBetweenCarousels);
+			var size = new CGSize (AppDelegate.ScreenWidth, (float)testCarousels[testCarousels.Count - 1].Frame.Bottom + UIActionButton.Height * 2 + SeparationBetweenCarousels);
 			Frame = new CGRect (0, 0, size.Width, size.Height);
 			UserInteractionEnabled = true;
 		}
 	}
 
-	public class UICarouselController : UIViewController
+	public class UICarouselController : UIView
 	{
 		UILocationLabel TitleLabel;
 		UIScrollView ScrollView;
@@ -90,9 +90,9 @@ namespace Clubby.Screens.Controls
 			Add (TitleLabel);
 			Add (ScrollView);
 
-			View.Frame = new CGRect(0,0, AppDelegate.ScreenWidth, ScrollView.Frame.Bottom);
+			Frame = new CGRect(0,0, AppDelegate.ScreenWidth, ScrollView.Frame.Bottom);
 
-			ScrollView.Scrolled += (object sender, EventArgs e) => {
+			ScrollView.Scrolled += (sender, e) => {
 				foreach (var thumb in ListThumbs){
 					if (thumb.Frame.Left < (AppDelegate.ScreenWidth + ScrollView.ContentOffset.X) &&
 						thumb.Frame.Right > (ScrollView.ContentOffset.X)){
@@ -103,6 +103,20 @@ namespace Clubby.Screens.Controls
 				}
 			};
 		}
+
+		bool hasBeenActivated = false;
+
+		public void ActivateImage(){
+			if (hasBeenActivated) {
+				return;
+			}
+
+			foreach (UICarouselLargeItem thumb in ListThumbs) {
+				thumb.SetPictureImage ();
+			}
+
+			hasBeenActivated = true;
+		}
 	}
 
 	public class UICarouselLargeItem : UIContentThumb {
@@ -111,14 +125,22 @@ namespace Clubby.Screens.Controls
 		public const int Height = 100;
 		public const int TextSpace = 60;
 
+		public void SetPictureImage(){
+			backgroundImageView.SetImage (new NSUrl (coverUrl));
+			logoImageView.SetImage (new NSUrl (logoUrl));
+		}
+
+		UIImageView backgroundImageView, logoImageView;
+		string coverUrl, logoUrl;
+
 		public UICarouselLargeItem (Venue board) {
 			Frame = new CGRect (0, 0, Width, Height);
 
-			var backgroundImageView = new UIImageView ();
+			backgroundImageView = new UIImageView ();
 			backgroundImageView.Frame = Frame;
 			backgroundImageView.BackgroundColor = UIColor.FromRGB(250,250,250);
 			backgroundImageView.ContentMode = UIViewContentMode.ScaleAspectFill;
-			backgroundImageView.SetImage (new NSUrl (board.CoverImageUrl));
+			coverUrl = board.CoverImageUrl;
 			backgroundImageView.ClipsToBounds = true;
 			backgroundImageView.Layer.CornerRadius = 10;
 
@@ -129,11 +151,11 @@ namespace Clubby.Screens.Controls
 			backgroundLogoImageView.Layer.CornerRadius = backgroundLogoImageView.Frame.Width / 2;
 			backgroundLogoImageView.ClipsToBounds = true;
 
-			var logoImageView = new UIImageView ();
+			logoImageView = new UIImageView ();
 			logoImageView.Frame = new CGRect (0, 0, Height / 2, Height / 2);
 			logoImageView.Center = new CGPoint (Frame.Width / 2, Frame.Height / 2);
 			logoImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
-			logoImageView.SetImage (new NSUrl (board.LogoUrl));
+			logoUrl = board.LogoUrl;
 			logoImageView.ClipsToBounds = true;
 			logoImageView.Layer.CornerRadius = logoImageView.Frame.Width / 2;
 

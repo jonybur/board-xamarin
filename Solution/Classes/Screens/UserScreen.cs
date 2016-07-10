@@ -72,7 +72,7 @@ namespace Clubby.Screens
 			flagView.Alpha = .95f;
 
 			var boardVersionLabel = new UILabel();
-			boardVersionLabel.Frame = new CGRect(10, flagView.Frame.Bottom + 20, AppDelegate.ScreenWidth - 20, 30);
+			boardVersionLabel.Frame = new CGRect(10, flagView.Frame.Bottom + 20, AppDelegate.ScreenWidth - 20, 32);
 			var ver = NSBundle.MainBundle.InfoDictionary["CFBundleShortVersionString"];
 			boardVersionLabel.Text = "Clubby " + ver.ToString();
 			boardVersionLabel.Font = UIFont.SystemFontOfSize(30, UIFontWeight.Regular);
@@ -86,21 +86,21 @@ namespace Clubby.Screens
 			legalLabel.TextColor = UIColor.White;
 
 			var privacyButton = new UIOneLineMenuButton((float)legalLabel.Frame.Bottom + 5);
-			privacyButton.SetLabel("Privacy Policy >");
+			privacyButton.SetLabel("Privacy Policy");
 			privacyButton.SetTapEvent (delegate {
 				AppsController.OpenWebsite("http://getonboard.us/legal/privacy.pdf");
 			});
 			privacyButton.SuscribeToEvent();
 
 			var termsButton = new UIOneLineMenuButton((float)privacyButton.Frame.Bottom + 1);
-			termsButton.SetLabel("Terms of Service >");
+			termsButton.SetLabel("Terms of Service");
 			termsButton.SetTapEvent (delegate {
 				AppsController.OpenWebsite("http://getonboard.us/legal/terms.pdf");
 			});
 			termsButton.SuscribeToEvent();
 
 			var licensesButton = new UIOneLineMenuButton((float)termsButton.Frame.Bottom + 1);
-			licensesButton.SetLabel("Licenses >");
+			licensesButton.SetLabel("Licenses");
 			licensesButton.SetTapEvent (delegate {
 				var licensesScreen = new LicensesScreen();
 				AppDelegate.NavigationController.PushViewController(licensesScreen, true);

@@ -59,6 +59,15 @@ namespace Clubby.Screens.Controls
 			InfoWindowAnchor = new CGPoint (.5, .5);
 			Tappable = true;
 			UserData = new NSString(board.Id);
+
+			/*
+			var fetcher = new HNKNetworkFetcher (new NSUrl(venue.LogoUrl));
+			fetcher.FetchImage (delegate(UIImage image) {
+				Icon = CreateMarkerImage (image);
+			}, delegate(NSError obj) {
+				
+			});
+			*/
 		}
 
 		private UIImage CreateMarkerImage(UIImage logo)

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Clubby.Infrastructure;
 using Clubby.Interface;
+using Haneke;
 using Clubby.Schema;
 using Clubby.Screens.Controls;
 using Clubby.Utilities;
@@ -162,20 +163,9 @@ namespace Clubby.Screens
 				ContentDisplay.UnsuscribeToEvents ();
 			}
 
-			/*
-			if (ListMapMarkers != null) {
-				foreach (Marker mark in ListMapMarkers) {
-					mark.Dispose ();
-				}
-			}
-
-			MemoryUtility.ReleaseUIViewWithChildren (map);
-			ListMapMarkers = null;
 			Banner.UnsuscribeToEvents ();
 
-			MemoryUtility.ReleaseUIViewWithChildren (View);
 			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
-			*/
 		}
 
 		private void ShowFirstTimeUseMessage(){
@@ -320,10 +310,10 @@ namespace Clubby.Screens
 
 		private void LoadBanner()
 		{
-			Banner = new UIMenuBanner ("", null, "empty_user");
+			Banner = new UIMenuBanner ("", "empty_user");
 			Banner.SetMainTitle ();
 
-			Banner.AddRightTap (delegate {
+			Banner.AddLeftTap (delegate {
 				AppDelegate.PushViewLikePresentView(new UserScreen());
 			});
 		}
@@ -362,6 +352,7 @@ namespace Clubby.Screens
 					ListMapMarkers.Add (marker);
 				}
 				generatedMarkers |= FetchedVenues.VenueList.Count > 0;
+
 			}
 		}
 

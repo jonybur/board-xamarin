@@ -1,4 +1,5 @@
 ﻿using System;
+using CoreGraphics;
 using System.Collections.Generic;
 using UIKit;
 
@@ -46,17 +47,17 @@ namespace Clubby.Screens.Controls
 
 		protected void SetPressedColors()
 		{
-			BackgroundColor = AppDelegate.BoardLightBlue;
+			BackgroundColor = AppDelegate.ClubbyYellow;
 			foreach (UILabel Label in ListLabels) {
-				Label.TextColor = UIColor.White;
+				Label.TextColor = AppDelegate.ClubbyBlack;
 			}
 		}
 
 		protected void SetUnpressedColors()
 		{
-			BackgroundColor = UIColor.FromRGB (250, 250, 250);	
+			BackgroundColor = AppDelegate.ClubbyBlack;	
  			foreach (UILabel Label in ListLabels) {
-				Label.TextColor = AppDelegate.BoardBlue;
+				Label.TextColor = UIColor.White;
 			}
 		}
 	}

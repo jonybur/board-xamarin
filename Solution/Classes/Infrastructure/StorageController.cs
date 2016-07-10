@@ -9,33 +9,22 @@ namespace Clubby.Infrastructure
 	[Preserve(AllMembers = true)]
 	public static class StorageController
 	{	
-		[Preserve(AllMembers = true)]
-		[Table("SeenContents")]
-		private class SeenContent {
-			[PrimaryKey, Column("id")]
-			public string Id { get; set; }
-
-			public SeenContent(string id){
-				Id = id;
-			}
-
-			public SeenContent(){}
-		}
 
 		// caches google's geolocator json
 		[Preserve(AllMembers = true)]
-		[Table("Boards")]
-		private class BoardL {
+		[Table("Venues")]
+		private class StoredFacebookPage {
+			
 			[PrimaryKey, Column("id")]
-			public string Id { get; set; }
+			public string FbId { get; set; }
 
 			[Column("geolocatorJson")]
 			public string GeolocatorJson { get; set; }
 
-			public BoardL(){}
+			public StoredFacebookPage(){}
 
-			public BoardL(string id, string geolocatorJson){
-				Id = id;
+			public StoredFacebookPage(string fbid, string geolocatorJson){
+				FbId = fbid;
 				GeolocatorJson = geolocatorJson;
 			}
 		}
@@ -55,8 +44,7 @@ namespace Clubby.Infrastructure
 			//File.Delete(dbPath);
 
 			database = new SQLiteConnection (dbPath);
-			database.CreateTable<BoardL> ();
-			database.CreateTable<SeenContent> ();
+			database.CreateTable<StoredFacebookPage> ();
 		}
 
 		/*public static NSUrl StoreVideoInCache(NSData data, string id){
@@ -68,38 +56,20 @@ namespace Clubby.Infrastructure
 			return NSUrl.FromFilename (path);
 		}*/
 
-		public static bool WasContentSeen(string id){
-			var seenContent = database.Query<SeenContent> ("SELECT * FROM SeenContents WHERE id = ?", id);
+		public static GoogleGeolocatorObject TryGettingGeolocatorObject(string fbid){
+			var venueL = database.Query<StoredFacebookPage> ("SELECT * FROM Venues WHERE id = ?", fbid);
 
-			if (seenContent.Count > 0) {
+			if (venueL.Count > 0) {
 				// gets image and location from storage
-				return true;
-			}
-
-			return false;
-		}
-
-		public static void SetContentAsSeen(string id){
-			var seenContent = new SeenContent(id);
-			database.Insert(seenContent);
-		}
-
-		public static Venue BoardIsStored(string id){
-			var boardL = database.Query<BoardL> ("SELECT * FROM Boards WHERE id = ?", id);
-
-			if (boardL.Count > 0) {
-				// gets image and location from storage
-				var board = new Venue (id);
-				board.GeolocatorObject = JsonHandler.DeserializeObject (boardL [0].GeolocatorJson);
-				return board;
+				return JsonHandler.DeserializeObject (venueL [0].GeolocatorJson);
 			}
 
 			return null;
 		}
 
-		public static void StoreBoard(Venue board, string geolocationJson){
-			var boardL = new BoardL (board.Id, geolocationJson);
-			database.Insert (boardL);
+		public static void StoreGeolocation(string fbId, string geolocationJson){
+			var storedFBPage = new StoredFacebookPage (fbId, geolocationJson);
+			database.Insert (storedFBPage);
 		}
 
 		public static string GetImagePath(string id){

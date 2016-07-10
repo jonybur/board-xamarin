@@ -91,12 +91,12 @@ namespace Clubby.Infrastructure
 			return jsonobj;
 		}
 
-		public static async System.Threading.Tasks.Task<GoogleGeolocatorObject> LoadGeolocatorObject(CLLocationCoordinate2D location){
+		public static async System.Threading.Tasks.Task<string> GetGeolocatorJson(CLLocationCoordinate2D location){
 			string url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
 			             location.Latitude.ToString (CultureInfo.InvariantCulture) + "," + location.Longitude.ToString (CultureInfo.InvariantCulture) + "&key=" + AppDelegate.GoogleMapsAPIKey;
 			string jsonobj = await WebAPI.GetJsonAsync (url);
 			
-			return JsonHandler.DeserializeObject (jsonobj);
+			return jsonobj;
 		}
 
 		public static async System.Threading.Tasks.Task<InstagramPageResponse> GetInstagramPage(string instagramId){

@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
-using CoreLocation;
 using Clubby.Facebook;
 using Clubby.Infrastructure;
 using Clubby.JsonResponses;
+using CoreGraphics;
+using Haneke;
+using Foundation;
 using Clubby.Utilities;
 using UIKit;
 
@@ -90,10 +92,15 @@ namespace Clubby.Schema
 		private void GenerateContentList(){
 			ContentList = new List<Content> ();
 
-			var allItems = new List<Clubby.JsonResponses.InstagramPageResponse.Item>();
+			var allItems = new List<InstagramPageResponse.Item>();
 			allItems.AddRange (InstagramPage.items);
 
 			foreach (var item in allItems) {
+				if (item.videos != null) {
+					Console.WriteLine ("Skips video");
+					continue;
+				}
+
 				var picture = new Picture ();
 				picture.InstagramId = item.user.username;
 				if (item.caption != null) {
@@ -126,7 +133,13 @@ namespace Clubby.Schema
 			CoverImageUrl = importedVenue.CoverUrl;
 			FriendLikes = importedVenue.FriendLikes;
 
-			GeolocatorObject = await CloudController.LoadGeolocatorObject (importedVenue.Location);
+			GeolocatorObject = StorageController.TryGettingGeolocatorObject (FacebookId);
+
+			if (GeolocatorObject == null) {
+				string jsonObj = await CloudController.GetGeolocatorJson (importedVenue.Location);
+				StorageController.StoreGeolocation (FacebookId, jsonObj);
+				GeolocatorObject = JsonHandler.DeserializeObject (jsonObj);
+			}
 		}
 
 		public Venue(string id){

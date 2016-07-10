@@ -59,7 +59,7 @@ namespace Clubby.Interface
 			//Line1.BackgroundColor = UIColor.FromRGBA (255, 255, 255, 100);
 
 			//InstagramLabel = new UITitleLabel ((float)Line1.Frame.Bottom + 20, (float)Frame.Width,
-			//	UIFont.SystemFontOfSize(14, UIFontWeight.Medium), "Latest Photos");
+			//UIFont.SystemFontOfSize(14, UIFontWeight.Medium), "Latest Photos");
 
 			var contentList = UIVenueInterface.venue.ContentList;
 			int maxImages = contentList.Count < 11 ? contentList.Count : 11;
@@ -164,9 +164,9 @@ namespace Clubby.Interface
 				var	startDate = DateTime.Parse (startStringDate);
 				var	endDate = DateTime.Parse (endStringDate);
 
-				var startTotalMinutes = startDate.TimeOfDay.TotalMinutes;
-				var endTotalMinutes = endDate.TimeOfDay.TotalMinutes;
-				var currentTotalMinutes = DateTime.Now.TimeOfDay.TotalMinutes;
+				var startTotalMinutes = startDate.TimeOfDay.TotalMinutes; 		 // 1380
+				var endTotalMinutes = endDate.TimeOfDay.TotalMinutes;     		 // 300 + 1440 = 1740
+				var currentTotalMinutes = DateTime.Now.TimeOfDay.TotalMinutes;   // 122.68
 
 				if (endTotalMinutes < startTotalMinutes) {
 					endTotalMinutes += 1440;

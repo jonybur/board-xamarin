@@ -215,8 +215,8 @@ namespace Clubby.Screens.Controls
 		public void SelectiveThumbsRendering(CGPoint contentOffset){
 			foreach (var thumb in ListThumbComponents) {
 
-				if (thumb.Frame.Y > (contentOffset.Y - thumb.Frame.Height) &&
-					thumb.Frame.Y < (contentOffset.Y + AppDelegate.ScreenHeight)) {
+				if (thumb.Frame.Y > contentOffset.Y - thumb.Frame.Height &&
+					thumb.Frame.Y < contentOffset.Y + AppDelegate.ScreenHeight) {
 
 					AddSubview (thumb);
 

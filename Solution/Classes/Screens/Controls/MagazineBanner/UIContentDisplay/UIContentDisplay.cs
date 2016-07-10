@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
 using CoreGraphics;
 using UIKit;
@@ -14,24 +14,39 @@ namespace Clubby.Screens.Controls
 			ListViews = new List<UIView>();
 		}
 
+		bool even;
+
 		public void SelectiveRendering(CGPoint contentOffset){
+			if (even) {
+				even = false;
+				return;
+			}
+			even = true;
 
 			foreach (var view in ListViews) {
 				
 				// if its on a screenheight * 2 range...
-				if (view.Frame.Y > (contentOffset.Y - view.Frame.Height) &&
-				    view.Frame.Y < (contentOffset.Y + AppDelegate.ScreenHeight * 2)) {
+				if (view.Frame.Y > contentOffset.Y - view.Frame.Height &&
+					view.Frame.Y < contentOffset.Y + AppDelegate.ScreenHeight) {
 
 					if (view is UITimelineWidget) {
-						var timelineWidget = (UITimelineWidget)view;
-						timelineWidget.ActivateImage ();
+						if (view.Frame.Y < contentOffset.Y + AppDelegate.ScreenHeight * 3) {
+
+							var timelineWidget = (UITimelineWidget)view;
+							timelineWidget.ActivateImage ();
+
+						}
+					} else if (view is UICarouselController) {
+						if (view.Frame.Y < contentOffset.Y + AppDelegate.ScreenHeight * 2) {
+							
+							var carouselController = (UICarouselController)view;
+							carouselController.ActivateImage ();
+
+						}
 					}
 
 					// if its on a screenheight range
-					if (view.Frame.Y > (contentOffset.Y - view.Frame.Height) &&
-					    view.Frame.Y < (contentOffset.Y + AppDelegate.ScreenHeight)) {
-						AddSubview (view);
-					}
+					AddSubview (view);
 
 				} else if (view.Superview != null) {
 
