@@ -68,10 +68,33 @@ namespace Clubby.Interface
 			likeLabel = new UILabel ();
 			likeLabel.Font = UIFont.SystemFontOfSize (20, UIFontWeight.Light);
 
-			likes = 0;
 			likeLabel.Text = string.Empty;
 
-			var likeButton = new UIActionButton (emptyHeart, delegate {});
+			bool liked = StorageController.GetLike (UIVenueInterface.venue.FacebookId);
+
+			var likeButton = new UIActionButton(emptyHeart, delegate{});
+
+			if (liked) {
+				likes = 1;
+				likeButton.ChangeImage (fullHeart);
+			} else {
+				likes = 0;
+				likeButton.ChangeImage (emptyHeart);
+			}
+
+			likeButton.TouchUpInside += (sender, e) => {
+				if (liked){
+					likes--;
+					likeButton.ChangeImage(emptyHeart);
+				}else{
+					likes++;
+					likeButton.ChangeImage(fullHeart);
+				}
+
+				likeLabel.Text = likes.ToString ();
+				liked = !liked;
+				StorageController.ActionLike(UIVenueInterface.venue.FacebookId);
+			};
 
 			var sizeLikeLabel = likeLabel.Text.StringSize (likeLabel.Font);
 			likeLabel.Frame = new CGRect (0, 0, sizeLikeLabel.Width + 20, sizeLikeLabel.Height);

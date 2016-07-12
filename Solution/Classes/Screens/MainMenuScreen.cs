@@ -436,7 +436,9 @@ namespace Clubby.Screens
 			ContentDisplaySuscribeToEvents (ContentDisplay);
 			// animates banner to be shown
 
-			ScrollView.SetContentOffset (new CGPoint (0, 0), false);
+			var zeroPoint = new CGPoint (0, 0);
+			ScrollView.SetContentOffset (zeroPoint, false);
+			ContentDisplay.SelectiveRendering (zeroPoint);
 
 			Banner.ChangeTitle (screenName, newFont, newColor);
 

@@ -122,7 +122,7 @@ namespace Clubby.Screens.Controls
 	public class UICarouselLargeItem : UIContentThumb {
 
 		public const int Width = 200;
-		public const int Height = 100;
+		public const int Height = 140;
 		public const int TextSpace = 60;
 
 		public void SetPictureImage(){

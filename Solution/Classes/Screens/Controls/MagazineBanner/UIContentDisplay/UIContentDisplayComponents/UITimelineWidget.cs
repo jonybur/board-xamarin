@@ -2,6 +2,7 @@
 using CoreGraphics;
 using Clubby.Schema;
 using Clubby.Utilities;
+using Clubby.Infrastructure;
 using CoreAnimation;
 using Foundation;
 using Haneke;
@@ -162,7 +163,7 @@ namespace Clubby.Screens.Controls
 			heartView = new UIImageView ();
 			heartView.Frame = new CGRect (0, 0, heartSize, heartSize);
 
-			isLiked = false;
+			isLiked = StorageController.GetLike (content.Id);
 			var firstImage = isLiked ? fullHeartImageUrl : emptyHeartImageUrl;
 			heartView.SetImage (firstImage);
 
@@ -203,6 +204,8 @@ namespace Clubby.Screens.Controls
 				heartView.SetImage(emptyHeartImageUrl);
 
 			}
+
+			StorageController.ActionLike (content.Id);
 
 			LikeLabel.Text = likes.ToString();
 			isLiked = !isLiked;

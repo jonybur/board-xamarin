@@ -101,7 +101,7 @@ namespace Clubby.Schema
 					continue;
 				}
 
-				var picture = new Picture ();
+				var picture = new Picture (item.id);
 				picture.InstagramId = item.user.username;
 				if (item.caption != null) {
 					picture.Description = item.caption.text;

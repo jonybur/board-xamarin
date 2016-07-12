@@ -2,8 +2,10 @@
 using Haneke;
 using Foundation;
 using Clubby.Screens;
+using Facebook.CoreKit;
 using Clubby.Screens.Controls;
 using Clubby.Infrastructure;
+using Newtonsoft.Json.Linq;
 using Facebook.LoginKit;
 using CoreGraphics;
 using UIKit;
@@ -15,15 +17,14 @@ namespace Clubby.Screens
 		protected UIImageView BackButton;
 		UITapGestureRecognizer backTap;
 
-		public UserScreen ()
-		{
-		}
+		public UserScreen () {}
 
 		public override void ViewDidLoad ()
 		{
 			View.BackgroundColor = AppDelegate.ClubbyBlack;
 
 			var settingsView = new SettingsView ();
+			settingsView.LoadFacebookContent ();
 
 			CreateBackButton ();
 
@@ -59,28 +60,60 @@ namespace Clubby.Screens
 	class SettingsView : UIScrollView{
 		LoginButton LogOutButton;
 
+		UIImageView profileView;
+		UILabel nameLabel;
+
+		public void LoadFacebookContent(){
+			LoadName ();
+			LoadPicture ();
+		}
+
+		private async void LoadPicture(){
+			string json = await CloudController.AsyncGraphAPIRequest ("me", "?fields=picture.type(large)");
+
+			if (json == "400" || json == "404") {
+				Console.WriteLine("failed");
+				return;
+			}
+
+			var jobject = JObject.Parse (json);
+			string picture = jobject ["picture"]["data"]["url"].ToString();
+
+			profileView.SetImage(new NSUrl(picture));
+			profileView.Layer.CornerRadius = profileView.Frame.Width / 2;
+
+			AddSubview (profileView);
+		}
+
+		private async void LoadName(){
+			string json = await CloudController.AsyncGraphAPIRequest ("me", "?fields=name");
+
+			var jobject = JObject.Parse (json);
+
+			string name = jobject ["name"].ToString();
+			nameLabel.Text = name;
+
+			AddSubview (nameLabel);
+		}
+
 		public SettingsView(){
 			Frame = new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
 
-			var flagView = new UIImageView();
-			flagView.Frame = new CGRect(0, 0, 150, 100);
-			flagView.Center = new CGPoint(AppDelegate.ScreenWidth / 2, flagView.Frame.Height);
-			flagView.ContentMode = UIViewContentMode.ScaleAspectFit;
-			flagView.SetImage("./screens/settings/long_flag.png");
-			flagView.Layer.CornerRadius = 10;
-			flagView.ClipsToBounds = true;
-			flagView.Alpha = .95f;
+			profileView = new UIImageView ();
+			profileView.Frame = new CGRect(0, 0, 160, 160);
+			profileView.Center = new CGPoint(AppDelegate.ScreenWidth / 2, profileView.Frame.Height / 2 + 40);
+			profileView.ContentMode = UIViewContentMode.ScaleAspectFit;
+			profileView.ClipsToBounds = true;
 
-			var boardVersionLabel = new UILabel();
-			boardVersionLabel.Frame = new CGRect(10, flagView.Frame.Bottom + 20, AppDelegate.ScreenWidth - 20, 32);
-			var ver = NSBundle.MainBundle.InfoDictionary["CFBundleShortVersionString"];
-			boardVersionLabel.Text = "Clubby " + ver.ToString();
-			boardVersionLabel.Font = UIFont.SystemFontOfSize(30, UIFontWeight.Regular);
-			boardVersionLabel.TextColor = AppDelegate.ClubbyYellow;
-			boardVersionLabel.TextAlignment = UITextAlignment.Center;
+			nameLabel = new UILabel();
+			nameLabel.Frame = new CGRect(10, profileView.Frame.Bottom + 20, AppDelegate.ScreenWidth - 20, 32);
+			nameLabel.Font = UIFont.SystemFontOfSize(30, UIFontWeight.Light);
+			nameLabel.TextColor = UIColor.White;
+			nameLabel.AdjustsFontSizeToFitWidth = true;
+			nameLabel.TextAlignment = UITextAlignment.Center;
 
 			var legalLabel = new UILabel();
-			legalLabel.Frame = new CGRect(15, boardVersionLabel.Frame.Bottom + 50, AppDelegate.ScreenWidth - 20, 14);
+			legalLabel.Frame = new CGRect(15, nameLabel.Frame.Bottom + 50, AppDelegate.ScreenWidth - 20, 14);
 			legalLabel.Text = "LEGAL";
 			legalLabel.Font = UIFont.SystemFontOfSize(14, UIFontWeight.Light);
 			legalLabel.TextColor = UIColor.White;
@@ -107,7 +140,24 @@ namespace Clubby.Screens
 			});
 			licensesButton.SuscribeToEvent();
 
-			LoadFBButton ((float)licensesButton.Frame.Bottom + 50);
+			var flagView = new UIImageView();
+			flagView.Frame = new CGRect(0, licensesButton.Frame.Bottom + 40, 150, 100);
+			flagView.Center = new CGPoint(AppDelegate.ScreenWidth / 2, flagView.Center.Y);
+			flagView.ContentMode = UIViewContentMode.ScaleAspectFit;
+			flagView.SetImage("./screens/settings/long_flag.png");
+			flagView.Layer.CornerRadius = 10;
+			flagView.ClipsToBounds = true;
+			flagView.Alpha = .95f;
+
+			var boardVersionLabel = new UILabel();
+			boardVersionLabel.Frame = new CGRect(10, flagView.Frame.Bottom + 10, AppDelegate.ScreenWidth - 20, 32);
+			var ver = NSBundle.MainBundle.InfoDictionary["CFBundleShortVersionString"];
+			boardVersionLabel.Text = "Clubby " + ver.ToString();
+			boardVersionLabel.Font = UIFont.SystemFontOfSize(24, UIFontWeight.Light);
+			boardVersionLabel.TextColor = AppDelegate.ClubbyYellow;
+			boardVersionLabel.TextAlignment = UITextAlignment.Center;
+
+			LoadFBButton ((float)boardVersionLabel.Frame.Bottom + 40);
 
 			AddSubviews(flagView, boardVersionLabel, legalLabel, privacyButton, termsButton, licensesButton, LogOutButton);
 

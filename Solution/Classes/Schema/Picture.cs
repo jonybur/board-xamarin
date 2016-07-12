@@ -8,8 +8,9 @@ namespace Clubby.Schema
 		public string Description;
 		public string Name;
 
-		public Picture ()
+		public Picture (string id)
 		{
+			Id = id;
 		}
 	}
 }

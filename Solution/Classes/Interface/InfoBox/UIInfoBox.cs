@@ -164,12 +164,16 @@ namespace Clubby.Interface
 				var	startDate = DateTime.Parse (startStringDate);
 				var	endDate = DateTime.Parse (endStringDate);
 
-				var startTotalMinutes = startDate.TimeOfDay.TotalMinutes; 		 // 1380
-				var endTotalMinutes = endDate.TimeOfDay.TotalMinutes;     		 // 300 + 1440 = 1740
-				var currentTotalMinutes = DateTime.Now.TimeOfDay.TotalMinutes;   // 122.68
+				var startTotalMinutes = startDate.TimeOfDay.TotalMinutes;
+				var endTotalMinutes = endDate.TimeOfDay.TotalMinutes; 		 
+				var currentTotalMinutes = DateTime.Now.TimeOfDay.TotalMinutes;
 
 				if (endTotalMinutes < startTotalMinutes) {
 					endTotalMinutes += 1440;
+
+					if (currentTotalMinutes - startTotalMinutes < 0) {
+						currentTotalMinutes += 1440;
+					}
 				}
 
 				if (startTotalMinutes <= currentTotalMinutes && currentTotalMinutes <= endTotalMinutes) {

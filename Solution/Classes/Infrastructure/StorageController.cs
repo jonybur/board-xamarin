@@ -29,6 +29,19 @@ namespace Clubby.Infrastructure
 			}
 		}
 
+		private class LikeL{
+
+			[PrimaryKey, Column("id")]
+			public string Id { get; set; }
+
+			public LikeL(){}
+
+			public LikeL(string id){
+				Id = id;
+			}
+
+		}
+
 		private static string dbPath;
 		private static string docsPathLibrary;
 		private static SQLiteConnection database;
@@ -45,16 +58,33 @@ namespace Clubby.Infrastructure
 
 			database = new SQLiteConnection (dbPath);
 			database.CreateTable<StoredFacebookPage> ();
+			database.CreateTable<LikeL> ();
 		}
 
-		/*public static NSUrl StoreVideoInCache(NSData data, string id){
-			string path = Path.Combine (docsPathCaches, id, ".mp4");
+		public static void ActionLike(string id){
+			if (GetLike (id)) {
+				RemoveLike (id);
+			} else {
+				StoreLike (id);
+			}
+		}
 
-			NSError error;
-			data.Save (path, NSDataWritingOptions.Atomic, out error);
+		public static bool GetLike(string id){
+			var likeL = database.Query<LikeL> ("SELECT * FROM LikeL WHERE id = ?", id);
 
-			return NSUrl.FromFilename (path);
-		}*/
+			if (likeL.Count > 0) {
+				return true;
+			}
+			return false;
+		}
+
+		private static void StoreLike(string id){
+			database.Insert (new LikeL(id));
+		}
+
+		private static void RemoveLike(string id){
+			database.Delete <LikeL>(id);
+		}
 
 		public static GoogleGeolocatorObject TryGettingGeolocatorObject(string fbid){
 			var venueL = database.Query<StoredFacebookPage> ("SELECT * FROM Venues WHERE id = ?", fbid);

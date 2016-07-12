@@ -10,8 +10,6 @@ using Newtonsoft.Json;
 
 namespace Clubby.Infrastructure
 {
-	// https://api.instagram.com/v1/locations/search?lat=-34.5885886&lng=-58.426003&access_token=2292871863.37fcdb1.cdc6ab03abfa4a8db4a2da022ec5d3c2
-
 	public static class CloudController
 	{
 
@@ -26,7 +24,6 @@ namespace Clubby.Infrastructure
 			} else {
 				userName = AppDelegate.BoardUser.FirstName + " " + AppDelegate.BoardUser.LastName;
 			}
-
 
 			string json = "{\"latitude\": \"" + AppDelegate.UserLocation.Latitude.ToString(CultureInfo.InvariantCulture) + "\", " +
 				"\"longitude\": \"" + AppDelegate.UserLocation.Longitude.ToString(CultureInfo.InvariantCulture) + "\", " + 
@@ -72,7 +69,6 @@ namespace Clubby.Infrastructure
 			return venueList;
 		}
 
-
 		private static async System.Threading.Tasks.Task<Venue> CreateVenue(string fbID, string instaID)
 		{	
 			Console.WriteLine("- Starts creating " +fbID);
@@ -81,14 +77,11 @@ namespace Clubby.Infrastructure
 			return newVenue;
 		}
 
-
 		public static async System.Threading.Tasks.Task<string> AsyncGraphAPIRequest(string pageId, string element){
 
 			string token = FacebookUtils.GetFacebookAccessToken ();
 			string url = "https://graph.facebook.com/v2.6/" + pageId + "/" + element + "&access_token=" + token + "&format=json&include_headers=false&sdk=ios";
-			string jsonobj = await WebAPI.GetJsonAsync (url);
-
-			return jsonobj;
+			return await WebAPI.GetJsonAsync (url);;
 		}
 
 		public static async System.Threading.Tasks.Task<string> GetGeolocatorJson(CLLocationCoordinate2D location){
