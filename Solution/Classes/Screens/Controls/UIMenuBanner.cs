@@ -12,8 +12,7 @@ namespace Clubby.Screens.Controls
 	{
 		List<UITapGestureRecognizer> taps;
 		List<UIImageView> ListButtons;
-		Action LeftTap;
-		Action RightTap;
+		Action LeftTap, RightTap;
 		UILabel TitleLabel;
 		private const float buttonAlpha = .8f;
 		public const int Height = 66;
@@ -30,7 +29,7 @@ namespace Clubby.Screens.Controls
 			var bottomLineView = new UIImageView ();
 			bottomLineView.Frame = new CGRect (0, backgroundView.Frame.Bottom - 1, backgroundView.Frame.Width, 1);
 			bottomLineView.BackgroundColor = AppDelegate.ClubbyYellow;
-			bottomLineView.Alpha = .75f;
+			bottomLineView.Alpha = 1f;
 
 			TitleLabel = GenerateTitle (title);
 
@@ -201,6 +200,9 @@ namespace Clubby.Screens.Controls
 				button.Alpha = 0f;
 			}
 
+			ClubbyLogo.Alpha = 0f;
+			TitleLabel.Alpha = 1f;
+
 			TappingEnabled = false;
 		}
 
@@ -215,20 +217,27 @@ namespace Clubby.Screens.Controls
 			ChangeTitle (newTitle);
 		}
 
+		UIImageView ClubbyLogo;
+
 		public void SetMainTitle(){
-			TitleLabel.Font = AppDelegate.Narwhal26;
-			TitleLabel.TextColor = UIColor.White;
-			TitleLabel.Text = "Clubby";
-			TitleLabel.SizeToFit ();
-			TitleLabel.Center = new CGPoint (AppDelegate.ScreenWidth / 2, Height / 2 + UIStatusBar.Height / 2);
+
+			ClubbyLogo = new UIImageView ();
+			ClubbyLogo.Frame = new CGRect (0, 0, 40, 40);
+			//ClubbyLogo.Frame = new CGRect (0, 0, 283 * .4f, 56 * .4f);
+			ClubbyLogo.Center = new CGPoint (AppDelegate.ScreenWidth / 2, Height / 2 + UIStatusBar.Height / 2);
+			//ClubbyLogo.SetImage ("./menubanner/logo.png");
+			ClubbyLogo.SetImage ("./Icon-60@2x.png");
+			ClubbyLogo.ContentMode = UIViewContentMode.ScaleAspectFill;
+			TitleLabel.Alpha = 0f;
+			AddSubview (ClubbyLogo);
+
 			TappingEnabled = true;
 			foreach (var button in ListButtons) {
 				button.Alpha = buttonAlpha;
 			}
 		}
 
-		public void AddTap(UITapGestureRecognizer tap)
-		{
+		public void AddTap(UITapGestureRecognizer tap) {
 			taps.Add (tap);
 		}
 

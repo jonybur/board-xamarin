@@ -11,7 +11,7 @@ namespace Clubby.Screens.Controls
 		// contains (content display)
 		public static List<UIContentDisplay> Pages;
 
-		static class TimelineContent{
+		public static class TimelineContent{
 			public static List<Content> ContentList;
 			public static DateTime UpdatedTime;
 
@@ -22,6 +22,8 @@ namespace Clubby.Screens.Controls
 			}
 		}
 
+		public static bool TheresMagazine, TheresTimeline;
+
 		// generates the magazine headers
 		public static void GeneratePages(List<Venue> boardList){
 
@@ -31,15 +33,15 @@ namespace Clubby.Screens.Controls
 				TimelineContent.Update ();
 			}
 
-			bool theresTimeline = TimelineContent.ContentList.Count > 0;
+			TheresTimeline = TimelineContent.ContentList.Count > 0;
 
-			if (theresTimeline) {
+			if (TheresTimeline) {
 				Pages.Add (new UITimelineContentDisplay (boardList, TimelineContent.ContentList));
 			}
 
-			bool theresMagazine = boardList.Count (x => x.FriendLikes > 0) > 0;
+			TheresMagazine = boardList.Count (x => x.FriendLikes > 0) > 0;
 
-			if (theresMagazine) {
+			if (TheresMagazine) {
 				Pages.Add (new UICarouselContentDisplay (boardList));
 			}
 

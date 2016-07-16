@@ -5,9 +5,52 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using ModernHttpClient;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Clubby.Infrastructure
 {
+	public class GraphAPIClient 
+	{
+		private string _userToken;
+		private const string _apiEndpoint = "https://graph.facebook.com";
+
+		public GraphAPIClient(string userToken) {
+			this._userToken = userToken;
+		}
+
+		public async Task<Dictionary<string, dynamic>> GetPages(IEnumerable<string> pageNames) {
+			var httpClient = new HttpClient();
+
+			var fields = new [] {
+				"name", "location", "about", "cover", "phone",
+				"category_list", "picture.type(large)", "context"
+			};
+
+			string query;
+			using(var content = new FormUrlEncodedContent(new KeyValuePair<string, string>[]{
+				new KeyValuePair<string, string>("ids", string.Join(",", pageNames)),
+				new KeyValuePair<string, string>("fields", string.Join(",", fields)),
+				new KeyValuePair<string, string>("access_token", this._userToken),
+			})) {
+				query = content.ReadAsStringAsync().Result;
+			}
+
+			var response = await httpClient.GetAsync(GraphAPIClient._apiEndpoint + "?" + query);
+
+			using (var bodyStream = await response.Content.ReadAsStreamAsync()) {
+				using (var bodyStreamReader = new StreamReader(bodyStream)) {
+					using (var jsonReader = new JsonTextReader(bodyStreamReader)) {
+						dynamic responseObject = new JsonSerializer().Deserialize<Dictionary<string, dynamic>>(jsonReader);
+						return responseObject; 
+					}
+				}
+			}
+
+		}
+	}
+
 	public static class WebAPI
 	{
 		public static async System.Threading.Tasks.Task<string> GetJsonAsync(string uri, CancellationToken ct){

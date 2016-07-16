@@ -16,6 +16,11 @@ namespace Clubby.Screens.Controls
 
 		bool even;
 
+		public void ForceSelectiveRendering(CGPoint contentOffset){
+			even = false;
+			SelectiveRendering (contentOffset);
+		}
+
 		public void SelectiveRendering(CGPoint contentOffset){
 			if (even) {
 				even = false;

@@ -4,6 +4,7 @@ using Clubby.Schema;
 using Clubby.Utilities;
 using Clubby.Infrastructure;
 using CoreAnimation;
+using Facebook.CoreKit;
 using Foundation;
 using Haneke;
 
@@ -127,7 +128,7 @@ namespace Clubby.Screens.Controls
 			nameView.Frame = new CGRect (logoView.Frame.Right + 10, 3, boardButton.Frame.Width, 20);
 			nameView.Text =  CommonUtils.FirstLetterOfEveryWordToUpper (venue.Name);
 			nameView.Font = UIFont.SystemFontOfSize (16, UIFontWeight.Medium);
-			nameView.TextColor = AppDelegate.ClubbyYellow;
+			nameView.TextColor = UIColor.White;
 			nameView.AdjustsFontSizeToFitWidth = true;
 
 			var distanceView = new UILabel ();
@@ -206,6 +207,7 @@ namespace Clubby.Screens.Controls
 			}
 
 			StorageController.ActionLike (content.Id);
+			AppEvents.LogEvent ("likesTimelineWidget");
 
 			LikeLabel.Text = likes.ToString();
 			isLiked = !isLiked;

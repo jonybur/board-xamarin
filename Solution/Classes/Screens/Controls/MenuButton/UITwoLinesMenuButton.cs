@@ -15,11 +15,13 @@ namespace Clubby.Screens.Controls
 			UIFont nameFont = AppDelegate.SystemFontOfSize18;
 			UILabel Label = new UILabel (new CGRect (40, 22, AppDelegate.ScreenWidth - 50, 18));
 			Label.Font = nameFont;
+			Label.TextColor = UIColor.White;
 			Label.AdjustsFontSizeToFitWidth = true;
 
 			UIFont categoryFont = UIFont.SystemFontOfSize(12);
 			UILabel SubtitleLabel = new UILabel (new CGRect (40, Label.Frame.Bottom + 5, AppDelegate.ScreenWidth - 50, 14));
 			SubtitleLabel.Font = categoryFont;
+			SubtitleLabel.TextColor = UIColor.White;
 			SubtitleLabel.AdjustsFontSizeToFitWidth = true;
 
 			ListLabels.Add (Label);

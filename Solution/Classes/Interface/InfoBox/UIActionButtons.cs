@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Clubby.Facebook;
 using Clubby.Infrastructure;
 using Clubby.Schema;
 using CoreGraphics;
+using Facebook.CoreKit;
 using Haneke;
-using Clubby.Facebook;
 using UIKit;
 
 namespace Clubby.Interface
@@ -93,6 +94,8 @@ namespace Clubby.Interface
 
 				likeLabel.Text = likes.ToString ();
 				liked = !liked;
+				AppEvents.LogEvent ("likesVenue");
+
 				StorageController.ActionLike(UIVenueInterface.venue.FacebookId);
 			};
 

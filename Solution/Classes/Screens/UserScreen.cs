@@ -5,9 +5,11 @@ using Clubby.Screens;
 using Facebook.CoreKit;
 using Clubby.Screens.Controls;
 using Clubby.Infrastructure;
+using Plugin.Share;
 using Newtonsoft.Json.Linq;
 using Facebook.LoginKit;
 using CoreGraphics;
+using MessageUI;
 using UIKit;
 
 namespace Clubby.Screens
@@ -60,6 +62,7 @@ namespace Clubby.Screens
 	class SettingsView : UIScrollView{
 		LoginButton LogOutButton;
 
+		UIWindow window;
 		UIImageView profileView;
 		UILabel nameLabel;
 
@@ -115,20 +118,20 @@ namespace Clubby.Screens
 			var legalLabel = new UILabel();
 			legalLabel.Frame = new CGRect(15, nameLabel.Frame.Bottom + 50, AppDelegate.ScreenWidth - 20, 14);
 			legalLabel.Text = "LEGAL";
-			legalLabel.Font = UIFont.SystemFontOfSize(14, UIFontWeight.Light);
+			legalLabel.Font = UIFont.SystemFontOfSize(14, UIFontWeight.Medium);
 			legalLabel.TextColor = UIColor.White;
 
 			var privacyButton = new UIOneLineMenuButton((float)legalLabel.Frame.Bottom + 5);
 			privacyButton.SetLabel("Privacy Policy");
 			privacyButton.SetTapEvent (delegate {
-				AppsController.OpenWebsite("http://getonboard.us/legal/privacy.pdf");
+				AppsController.OpenWebsite("http://getonboard.us/legal/clubbyprivacy.pdf");
 			});
 			privacyButton.SuscribeToEvent();
 
 			var termsButton = new UIOneLineMenuButton((float)privacyButton.Frame.Bottom + 1);
 			termsButton.SetLabel("Terms of Service");
 			termsButton.SetTapEvent (delegate {
-				AppsController.OpenWebsite("http://getonboard.us/legal/terms.pdf");
+				AppsController.OpenWebsite("http://getonboard.us/legal/clubbyterms.pdf");
 			});
 			termsButton.SuscribeToEvent();
 
@@ -140,28 +143,65 @@ namespace Clubby.Screens
 			});
 			licensesButton.SuscribeToEvent();
 
+			var shareButton = new UIOneLineMenuButton((float)licensesButton.Frame.Bottom + 35, true);
+			shareButton.SetLabel("Share Clubby");
+			shareButton.SetTapEvent (async delegate {
+				await ShareImplementation.Init ();
+				var shareImplementation = new ShareImplementation ();
+
+				// TODO: add clubby app link
+				await shareImplementation.Share("Check out Clubby... it shows you where the party is at!\nDownload now: ", UIActivityType.Mail);
+			});
+			shareButton.SuscribeToEvent();
+
 			var flagView = new UIImageView();
-			flagView.Frame = new CGRect(0, licensesButton.Frame.Bottom + 40, 150, 100);
+			flagView.Frame = new CGRect(0, shareButton.Frame.Bottom + 20, 100, 100);
 			flagView.Center = new CGPoint(AppDelegate.ScreenWidth / 2, flagView.Center.Y);
 			flagView.ContentMode = UIViewContentMode.ScaleAspectFit;
-			flagView.SetImage("./screens/settings/long_flag.png");
-			flagView.Layer.CornerRadius = 10;
-			flagView.ClipsToBounds = true;
-			flagView.Alpha = .95f;
+			flagView.SetImage("./screens/settings/300.png");
 
 			var boardVersionLabel = new UILabel();
-			boardVersionLabel.Frame = new CGRect(10, flagView.Frame.Bottom + 10, AppDelegate.ScreenWidth - 20, 32);
+			boardVersionLabel.Frame = new CGRect(10, flagView.Frame.Bottom, AppDelegate.ScreenWidth - 20, 32);
 			var ver = NSBundle.MainBundle.InfoDictionary["CFBundleShortVersionString"];
-			boardVersionLabel.Text = "Clubby " + ver.ToString();
-			boardVersionLabel.Font = UIFont.SystemFontOfSize(24, UIFontWeight.Light);
+			boardVersionLabel.Text = "Version " + ver.ToString();
+			boardVersionLabel.Font = UIFont.SystemFontOfSize(20, UIFontWeight.Light);
 			boardVersionLabel.TextColor = AppDelegate.ClubbyYellow;
 			boardVersionLabel.TextAlignment = UITextAlignment.Center;
 
-			LoadFBButton ((float)boardVersionLabel.Frame.Bottom + 40);
+			var contactLabel = new UILabel();
+			contactLabel.Frame = new CGRect(15, boardVersionLabel.Frame.Bottom + 30, AppDelegate.ScreenWidth - 20, 14);
+			contactLabel.Text = "CONTACT US";
+			contactLabel.Font = UIFont.SystemFontOfSize(14, UIFontWeight.Medium);
+			contactLabel.TextColor = UIColor.White;
 
-			AddSubviews(flagView, boardVersionLabel, legalLabel, privacyButton, termsButton, licensesButton, LogOutButton);
+			var helpButton = new UIOneLineMenuButton((float)contactLabel.Frame.Bottom + 5, true);
+			helpButton.SetLabel("Help & Support");
+			helpButton.SetTapEvent (delegate {
+				if (MFMailComposeViewController.CanSendMail) {
+					MFMailComposeViewController mailController = new MFMailComposeViewController ();
+
+					mailController.SetToRecipients(new [] {"support@getonboard.us"} );
+					mailController.SetMessageBody ("", false);
+					mailController.Finished += (s, args) => args.Controller.DismissViewController (true, HideWindow);
+					window = new UIWindow(new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenHeight));
+					window.RootViewController = new UIViewController();
+					window.MakeKeyAndVisible();
+					window.RootViewController.PresentViewController(mailController, true, null);
+				}
+			});
+			helpButton.SuscribeToEvent();
+
+			LoadFBButton ((float)helpButton.Frame.Bottom + 40);
+
+			AddSubviews(flagView, boardVersionLabel, legalLabel, privacyButton, termsButton, licensesButton, shareButton, LogOutButton, contactLabel, helpButton);
 
 			ContentSize = new CGSize(AppDelegate.ScreenWidth, LogOutButton.Frame.Bottom + UIActionButton.Height * 2);
+		}
+
+		private void HideWindow()
+		{
+			window.Hidden = true;
+			window.Dispose();
 		}
 
 		private void LoadFBButton(float yposition)

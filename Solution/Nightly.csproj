@@ -114,9 +114,6 @@
       <HintPath>..\packages\sqlite-net-pcl.1.1.1\lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLite-net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="BTProgressHUD">
-      <HintPath>..\Components\btprogresshud-1.20\lib\ios-unified\BTProgressHUD.dll</HintPath>
-    </Reference>
     <Reference Include="MonoTouch.Dialog-1" />
     <Reference Include="MGImageUtilitiesBinding">
       <HintPath>..\Bindings\MGImageUtilitiesBinding.dll</HintPath>
@@ -167,6 +164,9 @@
     <Reference Include="Google.Maps">
       <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.13.1.0\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
     </Reference>
+    <Reference Include="DACircularProgress">
+      <HintPath>..\packages\DACircularProgress.2.3.1.0\lib\Xamarin.iOS\DACircularProgress.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\fonts\Narwhal_bold.ttf" />
@@ -178,14 +178,10 @@
     <BundleResource Include="Resources\screens\main\map\markercontainer_black.png" />
     <BundleResource Include="Resources\boardinterface\back_button3.png" />
     <BundleResource Include="Resources\boardinterface\infobox\fulllike.png" />
-    <BundleResource Include="Resources\screens\login\logo.png" />
     <BundleResource Include="Resources\Icon-Small.png" />
     <BundleResource Include="Resources\Icon-Small%402x.png" />
     <BundleResource Include="Resources\Icon-Small-40%402x.png" />
-    <BundleResource Include="Resources\DefaultUser.png" />
     <BundleResource Include="Resources\Default-568h%402x.png" />
-    <BundleResource Include="Resources\Default-736h%403x_bak.png" />
-    <BundleResource Include="Resources\Default-667h%402x.png" />
     <BundleResource Include="Resources\Default.png" />
     <BundleResource Include="Resources\Default%402x.png" />
     <BundleResource Include="Resources\screens\main\buttons\empty_directory.png" />
@@ -205,6 +201,13 @@
     <BundleResource Include="Resources\menubanner\full_user.png" />
     <BundleResource Include="Resources\boardinterface\lookup\cancel.png" />
     <BundleResource Include="Resources\menubanner\arrow_left.png" />
+    <BundleResource Include="Resources\menubanner\logo.png" />
+    <BundleResource Include="Resources\screens\settings\300.png" />
+    <BundleResource Include="Resources\Default-667h%402x.png" />
+    <BundleResource Include="Resources\Default-736h%403x.png" />
+    <BundleResource Include="Resources\screens\login\logo_2.png" />
+    <BundleResource Include="Resources\screens\login\video.mp4" />
+    <BundleResource Include="Resources\screens\nocontent\noapp.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -317,14 +320,12 @@
     <Folder Include="Resources\screens\main\buttons\" />
     <Folder Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentDisplayComponents\" />
     <Folder Include="Classes\Interface\LookUp\" />
+    <Folder Include="Resources\screens\settings\" />
+    <Folder Include="Resources\screens\nocontent\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="sqlite-net">
       <Version>1.0.11</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
-    <XamarinComponentReference Include="btprogresshud">
-      <Version>1.20</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
     <XamarinComponentReference Include="SharePlugin">
@@ -345,6 +346,10 @@
     </XamarinComponentReference>
     <XamarinComponentReference Include="googleiosmaps">
       <Version>1.13.1.0</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="DACircularProgress">
+      <Version>2.3.1.0</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

@@ -235,7 +235,7 @@ namespace Clubby.Screens.Controls
 			public UIFilterSelector(float yposition, string text, UITapGestureRecognizer tap){
 				Frame = new CGRect(20, yposition, AppDelegate.ScreenWidth - 40, 50);
 				Font = UIFont.SystemFontOfSize (16, UIFontWeight.Medium);
-				TextColor = AppDelegate.ClubbyYellow;
+				TextColor = UIColor.White;
 				AdjustsFontSizeToFitWidth = true;
 				Text = "Sorted by " + text;
 				TextAlignment = UITextAlignment.Center;

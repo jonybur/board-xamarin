@@ -49,7 +49,7 @@ namespace Clubby
 		public static UIFont SystemFontOfSize20;
 		public static bool HasLoggedSession;
 
-		public static User BoardUser;
+		//public static User BoardUser;
 		public static CLLocationCoordinate2D UserLocation;
 
 		public enum PhoneVersions { iPhone4, iPhone5, iPhone6, iPhone6Plus };
@@ -90,8 +90,7 @@ namespace Clubby
 			BoardBlue = UIColor.FromRGB (38, 106, 154);
 			ClubbyOrange = UIColor.FromRGB (244, 108, 85);
 			ClubbyBlack = UIColor.FromRGB (16, 16, 16);
-			ClubbyYellow = UIColor.FromRGB (252, 183, 0);
-
+			ClubbyYellow = UIColor.FromRGB (0, 157, 255);//(0, 167, 255);
 
 			Narwhal12 = UIFont.FromName ("narwhal-bold", 12);
 			Narwhal14 = UIFont.FromName ("narwhal-bold", 14);

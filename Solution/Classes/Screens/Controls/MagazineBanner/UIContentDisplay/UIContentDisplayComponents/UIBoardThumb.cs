@@ -1,11 +1,10 @@
 ﻿using System;
+using Clubby.Schema;
 using Clubby.Utilities;
 using CoreGraphics;
 using Foundation;
-using Clubby.Schema;
 using Haneke;
 using UIKit;
-using CoreAnimation;
 
 namespace Clubby.Screens.Controls
 {

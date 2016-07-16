@@ -1,15 +1,17 @@
 using System.IO;
-using Clubby.Schema;
 using Clubby.JsonResponses;
+using System;
+using Newtonsoft.Json.Linq;
 using Foundation;
+using System.Collections.Generic;
 using SQLite;
+using Clubby.Utilities;
 
 namespace Clubby.Infrastructure
 {
 	[Preserve(AllMembers = true)]
 	public static class StorageController
 	{	
-
 		// caches google's geolocator json
 		[Preserve(AllMembers = true)]
 		[Table("Venues")]
@@ -42,6 +44,25 @@ namespace Clubby.Infrastructure
 
 		}
 
+		private class FacebookPages{
+
+			[PrimaryKey, Column("id")]
+			public string Id { get; set; }
+
+			public string Json { get; set; }
+
+			public int Timestamp { get; set;}
+
+			public FacebookPages(){}
+
+			public FacebookPages(string id, string json, int timestamp){
+				Id = id;
+				Json = json;
+				Timestamp = timestamp;
+			}
+
+		}
+
 		private static string dbPath;
 		private static string docsPathLibrary;
 		private static SQLiteConnection database;
@@ -59,6 +80,37 @@ namespace Clubby.Infrastructure
 			database = new SQLiteConnection (dbPath);
 			database.CreateTable<StoredFacebookPage> ();
 			database.CreateTable<LikeL> ();
+			database.CreateTable<FacebookPages> ();
+		}
+
+		public static Dictionary<string, dynamic> GetFacebookPage(string facebookId){
+			var facePages = database.Query<FacebookPages> ("SELECT * FROM FacebookPages WHERE id = ?", facebookId);
+
+			if (facePages.Count > 0) {
+
+				var facePage = facePages [0];
+
+				var storedDateTime = CommonUtils.UnixTimeStampToDateTime (facePage.Timestamp);
+
+				if ((storedDateTime - DateTime.Now).TotalMinutes < 10080) {
+					
+					var dic = new Dictionary<string, dynamic> ();
+					dic.Add (facePage.Id, JObject.Parse (facePage.Json));
+					return dic;
+
+				} else {
+
+					Console.WriteLine ("deletes");
+					database.Delete (facePage);
+					return null;
+
+				}
+			}
+			return null;
+		}
+
+		public static void StoreFacebookPage(string facebookId, string json){
+			database.Insert (new FacebookPages (facebookId, json, CommonUtils.GetUnixTimeStamp ()));
 		}
 
 		public static void ActionLike(string id){

@@ -46,14 +46,17 @@ namespace Clubby.Screens
 
 		private void LoadBackground()
 		{
+			var repeatVideo = new UIRepeatVideo(new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenHeight),
+												NSUrl.FromFilename("./screens/login/video.mp4"));
+
 			var logoView = new UIImageView ();
-			using (var logo = UIImage.FromFile ("./screens/login/logo.png")) {
+			using (var logo = UIImage.FromFile ("./screens/login/logo_2.png")) {
 				logoView.Image = logo;
 				logoView.Frame = new RectangleF (0, 0, (float)(logo.Size.Width/2), (float)(logo.Size.Height/2));
 			}
 			logoView.Center = new PointF (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight * 0.35f);
 
-			View.AddSubviews (logoView);
+			View.AddSubviews (repeatVideo.View, logoView);
 		}
 
 		private void LoadFBButton()

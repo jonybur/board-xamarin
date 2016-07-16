@@ -27,8 +27,8 @@ namespace Clubby.Interface
 					SetImage (picture);
 				}
 
-				SetInstagramThumb ();
 			}
+			SetInstagramThumb ();
 
 			Fill ();
 

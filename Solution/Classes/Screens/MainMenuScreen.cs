@@ -4,14 +4,16 @@ using System.Linq;
 using System.Threading;
 using Clubby.Infrastructure;
 using Clubby.Interface;
-using Haneke;
+using Clubby.JsonResponses;
 using Clubby.Schema;
 using Clubby.Screens.Controls;
 using Clubby.Utilities;
 using CoreGraphics;
 using CoreLocation;
+using DACircularProgress;
 using Foundation;
 using Google.Maps;
+using Newtonsoft.Json.Linq;
 using UIKit;
 
 namespace Clubby.Screens
@@ -44,13 +46,21 @@ namespace Clubby.Screens
 			public static List<Content> GetTimeline(){
 				Console.Write ("Getting timeline... ");
 
-				var timelineContent = new List<Content>();
-				foreach (var venue in VenueList) {
-					if (venue.InstagramPage != null) {
-						timelineContent.AddRange (venue.ContentList);
+				string local_hernan_intagramTimeline = CloudController.InstagramTimeline;
+				var instagramObject = JObject.Parse (local_hernan_intagramTimeline);
+
+				var timelineContent = new List<Content> ();
+
+				foreach (var publication in instagramObject["rows"].Select(x=>x["value"])) {
+					
+					var item = publication.ToObject<InstagramPageResponse.Item> ();
+
+					var content = Venue.GenerateContent (item);
+					if (content != null) {
+						timelineContent.Add (content);
 					}
+					
 				}
-				timelineContent = timelineContent.OrderByDescending (x => x.CreationDate).ToList();
 
 				return timelineContent;
 			}
@@ -66,6 +76,67 @@ namespace Clubby.Screens
 			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 		}
 
+		public static CircularProgressView progressView;
+		public static UITextView firstTimeLabel;
+
+		public static void StopCircularProgress(){
+			progressView.RemoveFromSuperview();
+			firstTimeLabel.RemoveFromSuperview();
+		}
+
+		private void CheckForNotifications(){
+			if (UIDevice.CurrentDevice.CheckSystemVersion (8, 0)) {
+				var pushSettings = UIUserNotificationSettings.GetSettingsForTypes (
+					UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound,
+					new NSSet ());
+
+				UIApplication.SharedApplication.RegisterUserNotificationSettings (pushSettings);
+				UIApplication.SharedApplication.RegisterForRemoteNotifications ();
+			} else {
+				UIRemoteNotificationType notificationTypes = UIRemoteNotificationType.Alert | UIRemoteNotificationType.Badge | UIRemoteNotificationType.Sound;
+				UIApplication.SharedApplication.RegisterForRemoteNotificationTypes (notificationTypes);
+			}
+		}
+
+		private void LoadCircularProgress(){
+			progressView = new CircularProgressView ();
+			progressView.Progress = 0.35f;
+			progressView.IndeterminateDuration = 1.0f;
+			progressView.Indeterminate = true;
+			progressView.Frame = new CGRect (0, 0, 60, 60);
+			progressView.Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight / 2);
+
+			firstTimeLabel = new UITextView ();
+
+			var defaults = NSUserDefaults.StandardUserDefaults;
+			const string key = "FirstTimeUse";
+			if (!defaults.BoolForKey (key)) {
+				// First launch
+				NSUserDefaults.StandardUserDefaults.SetBool (true, key);
+				defaults.Synchronize ();
+
+				firstTimeLabel.Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, 0);
+				firstTimeLabel.Text = "Welcome to Clubby \ud83c\udf89\nSetting up the app for first time use\nThis might take a moment";
+				firstTimeLabel.Font = UIFont.SystemFontOfSize (16, UIFontWeight.Light);
+				firstTimeLabel.TextAlignment = UITextAlignment.Center;
+				firstTimeLabel.Editable = false;
+				firstTimeLabel.Selectable = false;
+				firstTimeLabel.ScrollEnabled = false;
+				firstTimeLabel.TextColor = UIColor.White;
+				firstTimeLabel.BackgroundColor = UIColor.Clear;
+
+				var size = firstTimeLabel.SizeThatFits (firstTimeLabel.Frame.Size);
+
+				firstTimeLabel.Frame = new CGRect (firstTimeLabel.Frame.X, progressView.Frame.Bottom + 16, size.Width, size.Height);
+				firstTimeLabel.Center = new CGPoint (AppDelegate.ScreenWidth / 2, firstTimeLabel.Center.Y);
+
+			} else { 
+				firstTimeLabel.Alpha = 0f;
+			}
+
+			View.AddSubviews (progressView, firstTimeLabel);
+		}
+
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
@@ -78,14 +149,15 @@ namespace Clubby.Screens
 			ScrollView.ScrollsToTop = true;
 
 			ListMapMarkers = new List<UIMapMarker> ();
-			LowerButtons = new UIMultiActionButtons ();
 
 			LoadBanner ();
 			LoadMap ();
 
 			var statusBarView = new UIStatusBar ();
 
-			View.AddSubviews (ScrollView, map, Banner, LowerButtons, statusBarView);
+			View.AddSubviews (ScrollView, map, Banner, statusBarView);
+
+			CheckForNotifications ();
 
 			if (CLLocationManager.Status == CLAuthorizationStatus.NotDetermined) {
 				
@@ -96,6 +168,27 @@ namespace Clubby.Screens
 
 				CheckLocationServices ();
 
+			}
+		}
+
+		public override void ViewDidAppear(bool animated)
+		{
+			if (CLLocationManager.Status != CLAuthorizationStatus.NotDetermined) {
+				if (AppDelegate.UserLocation.Latitude != 0 &&
+					AppDelegate.UserLocation.Longitude != 0) {
+
+					LoadContent ();
+					ContentDisplaySuscribeToEvents (ContentDisplay);
+
+				}
+
+				// suscribe to observers, gesture recgonizers, events 
+				map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
+				mapInfoTapped = false;
+				Banner.SuscribeToEvents ();
+
+				NavigationController.InteractivePopGestureRecognizer.Enabled = false;
+				NavigationController.InteractivePopGestureRecognizer.Delegate = null;
 			}
 		}
 
@@ -116,37 +209,14 @@ namespace Clubby.Screens
 		private void CheckLocationServices(){
 
 			if (!CLLocationManager.LocationServicesEnabled ||
-				CLLocationManager.Status == CLAuthorizationStatus.Denied ||
-				CLLocationManager.Status == CLAuthorizationStatus.Restricted) {
+			    CLLocationManager.Status == CLAuthorizationStatus.Denied ||
+			    CLLocationManager.Status == CLAuthorizationStatus.Restricted) {
 
 				var noContent = new UINoContent (UINoContent.Presets.LocationDisabled);
 				ScrollView.AddSubview (noContent);
-				LowerButtons.Alpha = 0f;
 
-				BigTed.BTProgressHUD.Dismiss ();
-
-			}
-		}
-
-		public override void ViewDidAppear(bool animated)
-		{
-			if (CLLocationManager.Status != CLAuthorizationStatus.NotDetermined) {
-				if (AppDelegate.UserLocation.Latitude != 0 &&
-					AppDelegate.UserLocation.Longitude != 0) {
-
-					LoadContent ();
-					ContentDisplaySuscribeToEvents (ContentDisplay);
-
-					BigTed.BTProgressHUD.Dismiss ();
-				}
-
-				// suscribe to observers, gesture recgonizers, events 
-				map.AddObserver (this, new NSString ("myLocation"), NSKeyValueObservingOptions.New, IntPtr.Zero);
-				mapInfoTapped = false;
-				Banner.SuscribeToEvents ();
-
-				NavigationController.InteractivePopGestureRecognizer.Enabled = false;
-				NavigationController.InteractivePopGestureRecognizer.Delegate = null;
+			} else {
+				LoadCircularProgress ();
 			}
 		}
 
@@ -168,24 +238,9 @@ namespace Clubby.Screens
 			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 		}
 
-		private void ShowFirstTimeUseMessage(){
-			var defaults = NSUserDefaults.StandardUserDefaults;
-			const string key = "FirstTimeUse";
-			if (!defaults.BoolForKey (key)) {
-				// First launch
-				NSUserDefaults.StandardUserDefaults.SetBool (true, key);
-				defaults.Synchronize ();
-				BigTed.BTProgressHUD.Show ("Setting up Clubby\nfor first time use...");
-			} else { 
-				BigTed.BTProgressHUD.Show ();
-			}
-		}
-
 		public override void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
 		{	
 			if (!firstLocationUpdate) {
-
-				ShowFirstTimeUseMessage ();
 
 				firstLocationUpdate = true;
 				var location = change.ObjectForKey (NSObject.ChangeNewKey) as CLLocation;
@@ -203,7 +258,6 @@ namespace Clubby.Screens
 					hasLoaded = true;
 				}
 
-				BigTed.BTProgressHUD.Dismiss ();
 			}
 		}
 
@@ -218,9 +272,19 @@ namespace Clubby.Screens
 			ScrollView.BackgroundColor = AppDelegate.ClubbyBlack;
 
 			if (FetchedVenues.VenueList == null || FetchedVenues.VenueList.Count == 0 || CommonUtils.DistanceBetweenCoordinates (FetchedVenues.Location, AppDelegate.UserLocation) > 1) {
+				
 				Console.WriteLine ("Updates venues list");
+
 				await FetchedVenues.Update ();
+
 				UIMagazine.GeneratePages (FetchedVenues.VenueList);
+			}
+
+			StopCircularProgress ();
+
+			if (LowerButtons == null) {
+				LowerButtons = new UIMultiActionButtons ();
+				View.AddSubview (LowerButtons);
 			}
 
 			if (FetchedVenues.VenueList.Count > 0) {
@@ -252,7 +316,6 @@ namespace Clubby.Screens
 				ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, ContentDisplay.Frame.Bottom);
 
 				ScrollView.AddSubview (ContentDisplay);
-
 			}
 
 			ScrollView.ScrollEnabled = true;
@@ -310,7 +373,7 @@ namespace Clubby.Screens
 
 		private void LoadBanner()
 		{
-			Banner = new UIMenuBanner ("", "empty_user");
+			Banner = new UIMenuBanner ("", "full_user");
 			Banner.SetMainTitle ();
 
 			Banner.AddLeftTap (delegate {
@@ -438,7 +501,7 @@ namespace Clubby.Screens
 
 			var zeroPoint = new CGPoint (0, 0);
 			ScrollView.SetContentOffset (zeroPoint, false);
-			ContentDisplay.SelectiveRendering (zeroPoint);
+			ContentDisplay.ForceSelectiveRendering (zeroPoint);
 
 			Banner.ChangeTitle (screenName, newFont, newColor);
 

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using Clubby.Facebook;
 using Clubby.Schema;
+using Clubby.Screens.Controls;
 using Clubby.Utilities;
+using System.Linq;
 using CoreGraphics;
 using UIKit;
 
@@ -19,7 +21,6 @@ namespace Clubby.Interface
 		UITextView AboutBox;
 		UIActionButtons ActionButtons;
 		UIInstagramGallery InstagramGallery;
-		UIImageView Line2;//, Line1
 		List<UIView> ListSubviews;
 
 		public UIInfoBox(Venue venue){
@@ -55,18 +56,12 @@ namespace Clubby.Interface
 				lastBottom = (float)Container.Map.Frame.Bottom;
 			}
 
-			//Line1 = new UIImageView (new CGRect (0, Container.Map.Frame.Bottom + 25, Frame.Width, 1));
-			//Line1.BackgroundColor = UIColor.FromRGBA (255, 255, 255, 100);
-
-			//InstagramLabel = new UITitleLabel ((float)Line1.Frame.Bottom + 20, (float)Frame.Width,
-			//UIFont.SystemFontOfSize(14, UIFontWeight.Medium), "Latest Photos");
-
-			var contentList = UIVenueInterface.venue.ContentList;
+			var contentList = UIMagazine.TimelineContent.ContentList.Where(x=>x.InstagramId == UIVenueInterface.venue.InstagramId).ToList();
 			int maxImages = contentList.Count < 11 ? contentList.Count : 11;
 
 			var images = contentList.GetRange(0, maxImages);
 
-			InstagramGallery = new UIInstagramGallery ((float)Frame.Width, (float)lastBottom /*+ 20*/, images);
+			InstagramGallery = new UIInstagramGallery ((float)Frame.Width, (float)lastBottom, images);
 			lastBottom = (float)InstagramGallery.Frame.Bottom;
 
 			ListSubviews = new List<UIView> ();

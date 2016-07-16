@@ -23,8 +23,14 @@ namespace Clubby.Screens.Controls
 			ListButtons = new List<UIMultiActionButton> ();
 			UserInteractionEnabled = true;
 
-			CreateTimelineButton ();
-			CreateFeaturedButton ();
+			if (UIMagazine.TheresTimeline) {
+				CreateTimelineButton ();
+			}
+
+			if (UIMagazine.TheresMagazine) {
+				CreateFeaturedButton ();
+			}
+
 			CreateDirectoryButton ();
 			CreateMapButton ();
 
@@ -32,10 +38,17 @@ namespace Clubby.Screens.Controls
 				AddSubview (button);
 			}
 
-			float xposition = AppDelegate.ScreenWidth / 8;
+			if (ListButtons.Count == 3) {
+				float xposition = AppDelegate.ScreenWidth / 4;
 
-			if (ListButtons.Count == 4) {
-				//ListButtons [0].SetFullImage ();
+				ListButtons [0].Center = new CGPoint (xposition * 1, ListButtons [0].Center.Y);
+				ListButtons [1].Center = new CGPoint (xposition * 2, ListButtons [1].Center.Y);
+				ListButtons [2].Center = new CGPoint (xposition * 3, ListButtons [2].Center.Y);
+			}
+
+			else if (ListButtons.Count == 4) {
+				float xposition = AppDelegate.ScreenWidth / 8;
+
 				ListButtons [0].Center = new CGPoint (xposition * 1, ListButtons [0].Center.Y);
 				ListButtons [1].Center = new CGPoint (xposition * 3, ListButtons [1].Center.Y);
 				ListButtons [2].Center = new CGPoint (xposition * 5, ListButtons [2].Center.Y);
@@ -91,7 +104,13 @@ namespace Clubby.Screens.Controls
 
 				UnselectAllButtons();
 				directoryButton.SetFullImage();
-				SwitchScreen(2, "Directory", UIFont.SystemFontOfSize(20, UIFontWeight.Medium), UIColor.White);
+
+				int screenNumber = 2;
+				if (!UIMagazine.TheresMagazine)
+				{
+					screenNumber = 1;
+				}
+				SwitchScreen(screenNumber, "Directory", UIFont.SystemFontOfSize(20, UIFontWeight.Medium), UIColor.White);
 			};
 
 			ListButtons.Add (directoryButton);

@@ -48,17 +48,11 @@ namespace Clubby.Screens.Controls
 		protected void SetPressedColors()
 		{
 			BackgroundColor = AppDelegate.ClubbyYellow;
-			foreach (UILabel Label in ListLabels) {
-				Label.TextColor = AppDelegate.ClubbyBlack;
-			}
 		}
 
 		protected void SetUnpressedColors()
 		{
-			BackgroundColor = AppDelegate.ClubbyBlack;	
- 			foreach (UILabel Label in ListLabels) {
-				Label.TextColor = UIColor.White;
-			}
+			BackgroundColor = UIColor.Black;
 		}
 	}
 }

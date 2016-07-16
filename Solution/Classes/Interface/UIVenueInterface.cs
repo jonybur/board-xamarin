@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using BigTed;
 using Clubby.Schema;
 using Clubby.Screens;
 using Clubby.Utilities;

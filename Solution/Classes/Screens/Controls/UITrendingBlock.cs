@@ -1,8 +1,8 @@
-﻿using UIKit;
-using CoreGraphics;
-using System;
-using MGImageUtilitiesBinding;
+﻿using System;
 using Clubby.Schema;
+using CoreGraphics;
+using MGImageUtilitiesBinding;
+using UIKit;
 
 namespace Clubby.Screens.Controls
 {
@@ -58,7 +58,7 @@ namespace Clubby.Screens.Controls
 
 			AddSubview (ParallaxBlock);
 
-			UILabel trendingLabel = new UILabel (new CGRect (15, 15, 300, 30));
+			var trendingLabel = new UILabel (new CGRect (15, 15, 300, 30));
 			trendingLabel.Text = "TRENDING";
 			trendingLabel.TextColor = UIColor.White;
 			trendingLabel.Font = AppDelegate.Narwhal20;

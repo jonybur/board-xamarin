@@ -3,27 +3,32 @@ using System.Collections.Generic;
 using System.Globalization;
 using Clubby.JsonResponses;
 using Clubby.Facebook;
+using Newtonsoft.Json.Linq;
 using Clubby.Schema;
 using Clubby.Utilities;
 using CoreLocation;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace Clubby.Infrastructure
 {
 	public static class CloudController
 	{
+		private static async Task<string> LoadName(){
+			string json = await CloudController.AsyncGraphAPIRequest ("me", "?fields=name");
 
-		public static void LogSession(){
+			var jobject = JObject.Parse (json);
+
+			return jobject ["name"].ToString();
+		}
+
+		public static async void LogSession(){
 			if (AppDelegate.HasLoggedSession){
 				return;
 			}
 
 			string userName = string.Empty;
-			if (AppDelegate.BoardUser == null) {
-				userName = "EmailUser";
-			} else {
-				userName = AppDelegate.BoardUser.FirstName + " " + AppDelegate.BoardUser.LastName;
-			}
+			userName = await LoadName ();
 
 			string json = "{\"latitude\": \"" + AppDelegate.UserLocation.Latitude.ToString(CultureInfo.InvariantCulture) + "\", " +
 				"\"longitude\": \"" + AppDelegate.UserLocation.Longitude.ToString(CultureInfo.InvariantCulture) + "\", " + 
@@ -34,41 +39,110 @@ namespace Clubby.Infrastructure
 			AppDelegate.HasLoggedSession = true;
 		}
 
+		private static string TryGetJsonValue(JValue jvalue){
+			try{
+				return jvalue.ToString();
+			}catch{
+				return string.Empty;
+			}
+		}
+
+		class FacebookPagesResponse{
+
+			public class FetchedVenue
+			{
+				public string id { get; set; }
+				public string facebookPage { get; set; }
+				public string instagramPage { get; set; }
+			}
+
+			public class Value
+			{
+				public List<FetchedVenue> venues { get; set; }
+			}
+
+			public class Row
+			{
+				public string id { get; set; }
+				public string key { get; set; }
+				public Value value { get; set; }
+			}
+
+			public int total_rows { get; set; }
+			public List<Row> rows { get; set; }
+		}
+
+		public static string InstagramTimeline;
+
 		public static async System.Threading.Tasks.Task<List<Venue>> GetNearbyVenues(CLLocationCoordinate2D location, int meterRadius){
 			var venueList = new List<Venue> ();
 
-			venueList.Add (await CreateVenue("ClubSpace", "clubspacemiami"));
-			venueList.Add (await CreateVenue("109273159180982", "tavernaopabrickell"));
-			venueList.Add (await CreateVenue("woodtavern", "woodtavern"));
-			venueList.Add (await CreateVenue("BROKENSHAKERMIAMI", "brokenshakemiami"));
-			venueList.Add (await CreateVenue("323.Treehouse.Miami", "treehousemiami"));
-			venueList.Add (await CreateVenue("LIVMiami", "livmiami"));
-			venueList.Add (await CreateVenue("11Miami", "11miami"));
-			venueList.Add (await CreateVenue("iconsobe", "icon.miami"));
-			venueList.Add (await CreateVenue("SHOTSMiami", "shotsmiami"));
-			venueList.Add (await CreateVenue("grampsmiami", "grampswynwood"));
-			venueList.Add (await CreateVenue("Brickmia", "brickmia"));
-			venueList.Add (await CreateVenue("electricpicklemiami", "picklemiami"));
-			venueList.Add (await CreateVenue("nikkibeach", "nikkibeachmiami"));
-			venueList.Add (await CreateVenue("blackbirdordinary", "blackbirdordinary"));
-			venueList.Add (await CreateVenue("heartnightclub", "heartnightclub"));
-			venueList.Add (await CreateVenue("storymiami", "storymiami"));
-			venueList.Add (await CreateVenue("mokaimiami", "mokaiofficial"));
-			venueList.Add (await CreateVenue("bardotmiami", "bardot_miami"));
-			venueList.Add (await CreateVenue("BasementMiami", "basementmiami"));
-			venueList.Add (await CreateVenue("setmiami", "setmiami"));
-			venueList.Add (await CreateVenue("studio23miami", "studio23miami"));
-			venueList.Add (await CreateVenue("coyotacowynwood", "coyotaco"));
-			venueList.Add (await CreateVenue("MyntLoungeUSA", "myntloungeusa"));
-			venueList.Add (await CreateVenue("SpazioNightclub", "blumenightclub"));
-			venueList.Add (await CreateVenue("fdrsobe", "fdratdelano"));
-			venueList.Add (await CreateVenue("RecRoomies", "RECROOMOFFICIAL"));
-			venueList.Add (await CreateVenue("334543100240", "purdylounge"));
-			venueList.Add (await CreateVenue("killyouridolmiami", "kyimiami"));
+			Console.Write ("Getting facebook pages...");
+			var facebookPagesJson = await WebAPI.GetJsonAsync ("http://162.243.12.12:8092/pages/_design/pages/_view/pages?connection_timeout=60000");
+			var facebookPages = JsonConvert.DeserializeObject<FacebookPagesResponse> (facebookPagesJson);
+
+			if (facebookPages.rows != null && facebookPages.rows.Count > 0) {
+				var rows = facebookPages.rows [0];
+				if (rows.value.venues != null && rows.value.venues.Count > 0) {
+					foreach (var fetchedVenue in rows.value.venues) {
+						var venue = new Venue(fetchedVenue.facebookPage, fetchedVenue.instagramPage, fetchedVenue.id);
+						venueList.Add (venue);
+					}
+				}
+			}
+			Console.WriteLine (" done");
+
+			string userToken = FacebookUtils.GetFacebookAccessToken ();
+			var graphApiClient = new GraphAPIClient (userToken);
+
+			var facebookPagesToFetch = new List<string> ();
+			var allFacebookPages = new Dictionary<string, dynamic> ();
+
+			foreach (var venue in venueList) {
+				var fbpage = StorageController.GetFacebookPage (venue.FacebookId);
+
+				if (fbpage == null) {
+					// has to fetch this facebook page!
+					facebookPagesToFetch.Add (venue.FacebookId);
+				} else {
+					foreach (var x in fbpage) {
+						allFacebookPages.Add (x.Key, x.Value);
+					}
+				}
+			}
+
+			// gets facebook pages from da cloud
+			if (facebookPagesToFetch.Count > 0) {
+				Console.Write ("Fetching new facebook pages...");
+				var fetchedPages = await graphApiClient.GetPages (facebookPagesToFetch);
+				foreach (var page in fetchedPages) {
+					// stores page
+					StorageController.StoreFacebookPage (page.Key, page.Value.ToString ());
+					allFacebookPages.Add (page.Key, page.Value);
+				}
+				Console.WriteLine (" done");
+			}
+
+			Console.Write ("Getting instagram timeline...");
+			InstagramTimeline = await WebAPI.GetJsonAsync ("http://162.243.12.12:8092/default/_design/instagram/_view/timeline?connection_timeout=60000&descending=true&inclusive_end=true&skip=0&stale=false&limit=200");
+			Console.WriteLine (" done");
+
+			Console.Write ("Loading pages...");
+			foreach (var page in allFacebookPages) {
+				var pageContent = page.Value;
+				var facebookImportedPage = FacebookUtils.ReadFacebookResponse(pageContent);
+
+				var venue = venueList.Find (x => x.FacebookId == page.Key);
+				if (venue != null) {
+					await venue.LoadFacebookDatum (facebookImportedPage);
+				}
+			}
+			Console.WriteLine (" done");
 
 			return venueList;
 		}
 
+		/*
 		private static async System.Threading.Tasks.Task<Venue> CreateVenue(string fbID, string instaID)
 		{	
 			Console.WriteLine("- Starts creating " +fbID);
@@ -76,6 +150,7 @@ namespace Clubby.Infrastructure
 			await newVenue.Initialize ();
 			return newVenue;
 		}
+		*/
 
 		public static async System.Threading.Tasks.Task<string> AsyncGraphAPIRequest(string pageId, string element){
 
@@ -118,10 +193,8 @@ namespace Clubby.Infrastructure
 		public static void LogOut(){
 			AppDelegate.BoardToken = null;
 			AppDelegate.EncodedBoardToken = null;
-			AppDelegate.BoardUser = null;
 		}
 
 
 	}
 }
-

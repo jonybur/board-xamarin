@@ -160,8 +160,8 @@ namespace Clubby.Facebook
 			});
 		}
 
-		public static FacebookImportedPage ReadFacebookResponse(string json){
-			var jobject = JObject.Parse (json);
+		public static FacebookImportedPage ReadFacebookResponse(JObject jobject){
+			//var jobject = JObject.Parse (json);
 
 			//"id", "name", "location.latitude", "location.longitude", "about", "cover.source", "picture.data.url", "phone", "category_list.name"
 

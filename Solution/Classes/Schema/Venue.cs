@@ -36,8 +36,7 @@ namespace Clubby.Schema
 
 		public List<Content> ContentList;
 
-		public Venue(string facebookId, string instagramId) {
-			Id = CommonUtils.GenerateGuid ();
+		private void InitFromIds(string facebookId, string instagramId){
 
 			InstagramId = instagramId;
 			FacebookId = facebookId;
@@ -50,6 +49,17 @@ namespace Clubby.Schema
 			CoverImageUrl = string.Empty;
 			About = string.Empty;
 			Phone = string.Empty;
+			GeolocatorObject = new GoogleGeolocatorObject ();
+		}
+
+		public Venue(string facebookId, string instagramId) {
+			Id = CommonUtils.GenerateGuid ();
+			InitFromIds (facebookId, instagramId);
+		}
+
+		public Venue(string facebookId, string instagramId, string id) {
+			Id = id;
+			InitFromIds (facebookId, instagramId);
 		}
 
 		public string GetAllCategories(){
@@ -64,29 +74,30 @@ namespace Clubby.Schema
 			return allCategories;
 		}
 
-		public async System.Threading.Tasks.Task Initialize(){
-			
-			Console.Write ("Goes to Facebook ... ");
-			string json = await CloudController.AsyncGraphAPIRequest (FacebookId, "?fields=name,location,about,cover,phone,category_list,picture.type(large),context");
-
-			if (json == "400" || json == "404") {
-				Console.WriteLine("failed");
-				return;
+		public static Picture GenerateContent(InstagramPageResponse.Item item){
+			if (item.videos != null) {
+				// TODO: add video support
+				return null;
 			}
-			Console.WriteLine("done");
 
-			Console.Write ("Reads json response ... ");
-			var facebookElements = FacebookUtils.ReadFacebookResponse (json);
-		 	await LoadFacebookDatum (facebookElements);
-			Console.WriteLine("done");
+			var picture = new Picture (item.id);
+			picture.InstagramId = item.user.username;
+			if (item.caption != null) {
+				picture.Description = item.caption.text;
+			}
+			picture.CreationDate = CommonUtils.UnixTimeStampToDateTime(Int32.Parse(item.created_time));
+			picture.Likes = item.likes.count;
 
-			Console.Write ("Goes to Instagram ... ");
-			InstagramPage = await CloudController.GetInstagramPage (InstagramId);
-			Console.WriteLine ("done");
+			var imageurl = item.images.standard_resolution.url;
+			int indexOf = imageurl.IndexOf ('?');
+			if (indexOf != -1) {
+				picture.ImageUrl = imageurl.Substring (0, indexOf);
+			} else {
+				picture.ImageUrl = imageurl;
+			}
+			picture.ThumbnailImageUrl = item.images.low_resolution.url;
 
-			GenerateContentList ();
-
-			BigTed.BTProgressHUD.Dismiss ();
+			return picture;
 		}
 
 		private void GenerateContentList(){
@@ -96,35 +107,13 @@ namespace Clubby.Schema
 			allItems.AddRange (InstagramPage.items);
 
 			foreach (var item in allItems) {
-				if (item.videos != null) {
-					Console.WriteLine ("Skips video");
-					continue;
-				}
-
-				var picture = new Picture (item.id);
-				picture.InstagramId = item.user.username;
-				if (item.caption != null) {
-					picture.Description = item.caption.text;
-				}
-				picture.CreationDate = CommonUtils.UnixTimeStampToDateTime(Int32.Parse(item.created_time));
-				picture.Likes = item.likes.count;
-
-				var imageurl = item.images.standard_resolution.url;
-				int indexOf = imageurl.IndexOf ('?');
-				if (indexOf != -1) {
-					picture.ImageUrl = imageurl.Substring (0, indexOf);
-				} else {
-					picture.ImageUrl = imageurl;
-				}
-				picture.ThumbnailImageUrl = item.images.low_resolution.url;
+				var picture = GenerateContent (item);
 				ContentList.Add (picture);
 			}
 
 		}
 
-		private async System.Threading.Tasks.Task LoadFacebookDatum(FacebookImportedPage importedVenue){
-			BigTed.BTProgressHUD.Show ("Getting " + importedVenue.Name + "...");
-
+		public async System.Threading.Tasks.Task LoadFacebookDatum(FacebookImportedPage importedVenue){
 			Name = importedVenue.Name;
 			About = importedVenue.About;
 			Phone = importedVenue.Phone;

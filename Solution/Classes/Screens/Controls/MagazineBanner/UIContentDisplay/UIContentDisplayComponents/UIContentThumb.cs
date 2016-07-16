@@ -9,14 +9,22 @@ namespace Clubby.Screens.Controls
 		public EventHandler TouchEvent;
 		public Venue Board;
 
+		bool suscribed = false;
+
 		public void SuscribeToEvent()
 		{
-			TouchUpInside += TouchEvent;	
+			if (!suscribed) {
+				TouchUpInside += TouchEvent;	
+				suscribed = true;
+			}
 		}
 
 		public void UnsuscribeToEvent()
 		{
-			TouchUpInside -= TouchEvent;
+			if (suscribed) {
+				TouchUpInside -= TouchEvent;
+				suscribed = false;
+			}
 		}	
 	}
 }

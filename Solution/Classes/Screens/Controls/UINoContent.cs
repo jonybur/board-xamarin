@@ -22,21 +22,21 @@ namespace Clubby.Screens
 			}
 
 			ImageView = new UIImageView ();
-			ImageView.Frame = new CGRect (0,0, AppDelegate.ScreenWidth / 2, AppDelegate.ScreenWidth / 2);
+			ImageView.Frame = new CGRect (0, 0, 140, 140);
 			ImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
 			ImageView.SetImage (imageURL);
 			ImageView.Alpha = .75f;
 
 			DescriptionView = new UITextView ();
-			DescriptionView.Frame = new CGRect (0, ImageView.Frame.Bottom + 10, AppDelegate.ScreenWidth * .9f, 10);
+			DescriptionView.Frame = new CGRect (0, ImageView.Frame.Bottom + 40, AppDelegate.ScreenWidth * .9f, 10);
 			DescriptionView.Font = UIFont.SystemFontOfSize (16, UIFontWeight.Light);
 			DescriptionView.Text = descriptionText;
 			DescriptionView.ScrollEnabled = false;
 			DescriptionView.Editable = false;
 			DescriptionView.Selectable = false;
 			DescriptionView.TextAlignment = UITextAlignment.Center;
-			DescriptionView.TextColor = UIColor.Black;
-			DescriptionView.Alpha = .75f;
+			DescriptionView.TextColor = UIColor.White;
+			DescriptionView.BackgroundColor = UIColor.Clear;
 			var size = DescriptionView.SizeThatFits (DescriptionView.Frame.Size);
 			DescriptionView.Frame = new CGRect (DescriptionView.Frame.X, DescriptionView.Frame.Y, DescriptionView.Frame.Width, size.Height);
 
@@ -46,7 +46,7 @@ namespace Clubby.Screens
 
 			ImageView.Center = new CGPoint (Frame.Width / 2, ImageView.Center.Y);
 
-			Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight / 2);
+			Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight / 2 - ImageView.Frame.Height + 30);
 		}
 
 	}
