@@ -54,14 +54,14 @@ namespace Clubby.Screens
 				logoView.Image = logo;
 				logoView.Frame = new RectangleF (0, 0, (float)(logo.Size.Width/2), (float)(logo.Size.Height/2));
 			}
-			logoView.Center = new PointF (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight * 0.35f);
+			logoView.Center = new PointF (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight / 2);
 
 			View.AddSubviews (repeatVideo.View, logoView);
 		}
 
 		private void LoadFBButton()
 		{
-			logInButton = new LoginButton (new CGRect (40, AppDelegate.ScreenHeight - 110, AppDelegate.ScreenWidth - 80, 50)) {
+			logInButton = new LoginButton (new CGRect (40, AppDelegate.ScreenHeight - 100, AppDelegate.ScreenWidth - 80, 50)) {
 				LoginBehavior = LoginBehavior.Native,
 				ReadPermissions = new [] { "public_profile", "user_friends" }
 			};

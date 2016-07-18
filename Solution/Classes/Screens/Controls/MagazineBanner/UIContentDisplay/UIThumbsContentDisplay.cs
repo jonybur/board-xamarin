@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using Clubby.Utilities;
 using Clubby.Schema;
 using CoreGraphics;
@@ -95,6 +96,9 @@ namespace Clubby.Screens.Controls
 		public UIThumbsContentDisplay (List<Venue> boardList, OrderMode mode,
 			float extraTopMargin = 0, float extraLowMargin = 0)
 		{
+			var sw = new Stopwatch();
+			sw.Start();
+
 			BoardList = boardList;
 
 			if (boardList.Count == 0) {
@@ -118,7 +122,11 @@ namespace Clubby.Screens.Controls
 			GenerateList (mode, extraTopMargin, extraLowMargin);
 
 			UserInteractionEnabled = true;
+
+			sw.Stop();
+			Console.WriteLine("D) Pantalla 3 (Directory): {0}",sw.Elapsed);
 		}
+
 		bool didHaveFirstLoad = false;
 		public void GenerateList(){
 			if (!didHaveFirstLoad) {

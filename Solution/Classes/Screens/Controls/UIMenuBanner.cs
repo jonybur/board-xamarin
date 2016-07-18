@@ -217,21 +217,39 @@ namespace Clubby.Screens.Controls
 			ChangeTitle (newTitle);
 		}
 
-		UIImageView ClubbyLogo;
+		sealed class UIClubbyLogo : UIButton{
+			public UIClubbyLogo(){
+				
+				Frame = new CGRect (0, 0, 40, 40);
+				Center = new CGPoint (AppDelegate.ScreenWidth / 2, Height / 2 + UIStatusBar.Height / 2);
+				SetImage (UIImage.FromFile("./Icon-60@2x.png"), UIControlState.Normal);
+				ContentMode = UIViewContentMode.ScaleAspectFill;
+
+				bool hetero = true;
+
+				this.TouchUpInside += (sender, e) => {
+					if (hetero){
+						SetImage (UIImage.FromFile("./LGBTQ.png"), UIControlState.Normal);
+					}else{
+						SetImage (UIImage.FromFile("./Icon-60@2x.png"), UIControlState.Normal);
+					}
+					hetero = !hetero;
+					
+				};
+
+			}
+		}
+
+		UIClubbyLogo ClubbyLogo;
 
 		public void SetMainTitle(){
 
-			ClubbyLogo = new UIImageView ();
-			ClubbyLogo.Frame = new CGRect (0, 0, 40, 40);
-			//ClubbyLogo.Frame = new CGRect (0, 0, 283 * .4f, 56 * .4f);
-			ClubbyLogo.Center = new CGPoint (AppDelegate.ScreenWidth / 2, Height / 2 + UIStatusBar.Height / 2);
-			//ClubbyLogo.SetImage ("./menubanner/logo.png");
-			ClubbyLogo.SetImage ("./Icon-60@2x.png");
-			ClubbyLogo.ContentMode = UIViewContentMode.ScaleAspectFill;
-			TitleLabel.Alpha = 0f;
+			ClubbyLogo = new UIClubbyLogo ();
 			AddSubview (ClubbyLogo);
 
+			TitleLabel.Alpha = 0f;
 			TappingEnabled = true;
+
 			foreach (var button in ListButtons) {
 				button.Alpha = buttonAlpha;
 			}

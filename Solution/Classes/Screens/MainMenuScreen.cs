@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Threading;
 using Clubby.Infrastructure;
 using Clubby.Interface;
-using Clubby.JsonResponses;
 using Clubby.Schema;
 using Clubby.Screens.Controls;
 using Clubby.Utilities;
@@ -13,7 +12,6 @@ using CoreLocation;
 using DACircularProgress;
 using Foundation;
 using Google.Maps;
-using Newtonsoft.Json.Linq;
 using UIKit;
 
 namespace Clubby.Screens
@@ -43,36 +41,13 @@ namespace Clubby.Screens
 			public static List<Venue> VenueList;
 			public static CLLocationCoordinate2D Location;
 
-			public static List<Content> GetTimeline(){
-				Console.Write ("Getting timeline... ");
-
-				string local_hernan_intagramTimeline = CloudController.InstagramTimeline;
-				var instagramObject = JObject.Parse (local_hernan_intagramTimeline);
-
-				var timelineContent = new List<Content> ();
-
-				foreach (var publication in instagramObject["rows"].Select(x=>x["value"])) {
-					
-					var item = publication.ToObject<InstagramPageResponse.Item> ();
-
-					var content = Venue.GenerateContent (item);
-					if (content != null) {
-						timelineContent.Add (content);
-					}
-					
-				}
-
-				return timelineContent;
-			}
-
 			public static async System.Threading.Tasks.Task Update(){
 				FetchedVenues.VenueList = await CloudController.GetNearbyVenues (AppDelegate.UserLocation, 10000);
 				FetchedVenues.Location = AppDelegate.UserLocation;
 			}
 		}
 
-		public override void DidReceiveMemoryWarning ()
-		{
+		public override void DidReceiveMemoryWarning () {
 			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 		}
 
@@ -141,6 +116,9 @@ namespace Clubby.Screens
 		{
 			base.ViewDidLoad ();
 
+			var sw = new Stopwatch();
+			sw.Start();
+
 			View.BackgroundColor = AppDelegate.ClubbyBlack;
 
 			NavigationController.SetNavigationBarHidden (true, false);
@@ -169,10 +147,17 @@ namespace Clubby.Screens
 				CheckLocationServices ();
 
 			}
+
+			sw.Stop();
+			Console.WriteLine("ViewDidLoad: {0}",sw.Elapsed);
+
 		}
 
 		public override void ViewDidAppear(bool animated)
 		{
+			var sw = new Stopwatch();
+			sw.Start();
+
 			if (CLLocationManager.Status != CLAuthorizationStatus.NotDetermined) {
 				if (AppDelegate.UserLocation.Latitude != 0 &&
 					AppDelegate.UserLocation.Longitude != 0) {
@@ -190,6 +175,9 @@ namespace Clubby.Screens
 				NavigationController.InteractivePopGestureRecognizer.Enabled = false;
 				NavigationController.InteractivePopGestureRecognizer.Delegate = null;
 			}
+
+			sw.Stop();
+			Console.WriteLine("ViewDidAppear: {0}",sw.Elapsed);
 		}
 
 		private void ListensToUndeterminedLocationService(){
@@ -239,7 +227,10 @@ namespace Clubby.Screens
 		}
 
 		public override void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
-		{	
+		{				
+			var sw = new Stopwatch();
+			sw.Start();
+
 			if (!firstLocationUpdate) {
 
 				firstLocationUpdate = true;
@@ -259,6 +250,9 @@ namespace Clubby.Screens
 				}
 
 			}
+
+			sw.Stop();
+			Console.WriteLine("ObserveValue: {0}",sw.Elapsed);
 		}
 
 		private void ContentDisplaySuscribeToEvents(UIContentDisplay contentDisplay){
@@ -275,9 +269,11 @@ namespace Clubby.Screens
 				
 				Console.WriteLine ("Updates venues list");
 
+				// gets venues from FB
 				await FetchedVenues.Update ();
 
-				UIMagazine.GeneratePages (FetchedVenues.VenueList);
+				// generates pages
+				await UIMagazine.GeneratePages (FetchedVenues.VenueList);
 			}
 
 			StopCircularProgress ();
@@ -508,8 +504,8 @@ namespace Clubby.Screens
 			Banner.AnimateShow();
 		} 
 
-		public void ScrollsUp(){
-			ScrollView.SetContentOffset (new CGPoint (0, 0), true);
+		public void ScrollsUp(bool animated){
+			ScrollView.SetContentOffset (new CGPoint (0, 0), animated);
 		}
 
 		// map button

@@ -66,6 +66,7 @@ namespace Clubby.Infrastructure
 		private static string dbPath;
 		private static string docsPathLibrary;
 		private static SQLiteConnection database;
+		private static string timelinePath;
 
 		public static void Initialize () {
 			
@@ -74,7 +75,7 @@ namespace Clubby.Infrastructure
 				NSSearchPathDomain.User) [0]).Path;
 			
 			dbPath = Path.Combine (docsPathLibrary, "localdb.db3");
-			 
+			timelinePath = Path.Combine (docsPathLibrary, "timeline.txt");
 			//File.Delete(dbPath);
 
 			database = new SQLiteConnection (dbPath);
@@ -92,7 +93,7 @@ namespace Clubby.Infrastructure
 
 				var storedDateTime = CommonUtils.UnixTimeStampToDateTime (facePage.Timestamp);
 
-				if ((storedDateTime - DateTime.Now).TotalMinutes < 10080) {
+				if ((DateTime.Now - storedDateTime).TotalMinutes < 10080) {
 					
 					var dic = new Dictionary<string, dynamic> ();
 					dic.Add (facePage.Id, JObject.Parse (facePage.Json));
@@ -147,6 +148,22 @@ namespace Clubby.Infrastructure
 			}
 
 			return null;
+		}
+
+		public static DateTime GetTimelineLastWriteTime(){
+			return File.GetLastWriteTime (timelinePath);
+		}
+
+		public static string GetInstagramTimeline(){
+			try {
+				return File.ReadAllText(timelinePath);
+			}catch{
+				return string.Empty;
+			}
+		}
+
+		public static void StoreInstagramTimeline(string instagramJson){
+			File.WriteAllText(timelinePath, instagramJson);
 		}
 
 		public static void StoreGeolocation(string fbId, string geolocationJson){

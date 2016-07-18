@@ -181,9 +181,6 @@
     <BundleResource Include="Resources\Icon-Small.png" />
     <BundleResource Include="Resources\Icon-Small%402x.png" />
     <BundleResource Include="Resources\Icon-Small-40%402x.png" />
-    <BundleResource Include="Resources\Default-568h%402x.png" />
-    <BundleResource Include="Resources\Default.png" />
-    <BundleResource Include="Resources\Default%402x.png" />
     <BundleResource Include="Resources\screens\main\buttons\empty_directory.png" />
     <BundleResource Include="Resources\screens\main\buttons\empty_house.png" />
     <BundleResource Include="Resources\screens\main\buttons\empty_map.png" />
@@ -201,13 +198,16 @@
     <BundleResource Include="Resources\menubanner\full_user.png" />
     <BundleResource Include="Resources\boardinterface\lookup\cancel.png" />
     <BundleResource Include="Resources\menubanner\arrow_left.png" />
-    <BundleResource Include="Resources\menubanner\logo.png" />
-    <BundleResource Include="Resources\screens\settings\300.png" />
-    <BundleResource Include="Resources\Default-667h%402x.png" />
-    <BundleResource Include="Resources\Default-736h%403x.png" />
-    <BundleResource Include="Resources\screens\login\logo_2.png" />
     <BundleResource Include="Resources\screens\login\video.mp4" />
     <BundleResource Include="Resources\screens\nocontent\noapp.png" />
+    <BundleResource Include="Resources\screens\settings\300.png" />
+    <BundleResource Include="Resources\LGBTQ.png" />
+    <BundleResource Include="Resources\screens\login\logo_2.png" />
+    <BundleResource Include="Resources\Default-568h%402x.png" />
+    <BundleResource Include="Resources\Default-667h%402x.png" />
+    <BundleResource Include="Resources\Default-736h%403x.png" />
+    <BundleResource Include="Resources\Default.png" />
+    <BundleResource Include="Resources\Default%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

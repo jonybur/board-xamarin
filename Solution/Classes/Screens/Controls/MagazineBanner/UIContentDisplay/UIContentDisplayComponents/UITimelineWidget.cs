@@ -37,6 +37,11 @@ namespace Clubby.Screens.Controls
 
 		bool hasBeenActivated = false;
 
+		public void MoveDown(){
+			
+			Center = new CGPoint (Center.X, Center.Y + 50);
+		}
+
 		public void ActivateImage(){
 			if (hasBeenActivated) {
 				return;

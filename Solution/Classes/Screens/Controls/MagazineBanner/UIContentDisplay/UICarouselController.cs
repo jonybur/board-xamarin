@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Clubby.Schema;
+using System.Diagnostics;
 using System.Linq;
+using Clubby.Schema;
 using Clubby.Utilities;
 using CoreAnimation;
 using CoreGraphics;
@@ -16,6 +17,9 @@ namespace Clubby.Screens.Controls
 		const float SeparationBetweenCarousels = 30;
 
 		public UICarouselContentDisplay(List<Venue> venueList) {
+			var sw = new Stopwatch();
+			sw.Start();
+
 			ListThumbs = new List<UIContentThumb> ();
 
 			var magazineDictionary = new Dictionary<string, List<Venue>> ();
@@ -50,6 +54,9 @@ namespace Clubby.Screens.Controls
 			var size = new CGSize (AppDelegate.ScreenWidth, (float)testCarousels[testCarousels.Count - 1].Frame.Bottom + UIActionButton.Height * 2 + SeparationBetweenCarousels);
 			Frame = new CGRect (0, 0, size.Width, size.Height);
 			UserInteractionEnabled = true;
+
+			sw.Stop();
+			Console.WriteLine("C) Pantalla 2 (Friends Favorites): {0}",sw.Elapsed);
 		}
 	}
 

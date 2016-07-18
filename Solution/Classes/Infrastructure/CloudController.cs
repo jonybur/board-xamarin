@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
-using Clubby.JsonResponses;
+using System.Threading.Tasks;
 using Clubby.Facebook;
-using Newtonsoft.Json.Linq;
+using Clubby.JsonResponses;
 using Clubby.Schema;
 using Clubby.Utilities;
 using CoreLocation;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Clubby.Infrastructure
 {
@@ -72,10 +73,19 @@ namespace Clubby.Infrastructure
 			public List<Row> rows { get; set; }
 		}
 
-		public static string InstagramTimeline;
+		public static async Task<string> GetInstagramTimeline(){
 
-		public static async System.Threading.Tasks.Task<List<Venue>> GetNearbyVenues(CLLocationCoordinate2D location, int meterRadius){
+			string instagramTimeline = await WebAPI.GetJsonAsync ("http://162.243.12.12:8092/default/_design/instagram/_view/timeline?connection_timeout=60000&descending=true&inclusive_end=true&skip=0&stale=false&limit=200");
+
+			return instagramTimeline;
+		}
+
+		public static async Task<List<Venue>> GetNearbyVenues(CLLocationCoordinate2D location, int meterRadius){
+			var sw = new Stopwatch();
+			sw.Start();
+
 			var venueList = new List<Venue> ();
+
 
 			Console.Write ("Getting facebook pages...");
 			var facebookPagesJson = await WebAPI.GetJsonAsync ("http://162.243.12.12:8092/pages/_design/pages/_view/pages?connection_timeout=60000");
@@ -90,7 +100,7 @@ namespace Clubby.Infrastructure
 					}
 				}
 			}
-			Console.WriteLine (" done");
+			Console.WriteLine (" done: {0}",sw.Elapsed);
 
 			string userToken = FacebookUtils.GetFacebookAccessToken ();
 			var graphApiClient = new GraphAPIClient (userToken);
@@ -99,12 +109,14 @@ namespace Clubby.Infrastructure
 			var allFacebookPages = new Dictionary<string, dynamic> ();
 
 			foreach (var venue in venueList) {
+				// returns null or Dictionary w one key,value
 				var fbpage = StorageController.GetFacebookPage (venue.FacebookId);
 
 				if (fbpage == null) {
 					// has to fetch this facebook page!
 					facebookPagesToFetch.Add (venue.FacebookId);
 				} else {
+					// it is really only 1 page...
 					foreach (var x in fbpage) {
 						allFacebookPages.Add (x.Key, x.Value);
 					}
@@ -120,12 +132,8 @@ namespace Clubby.Infrastructure
 					StorageController.StoreFacebookPage (page.Key, page.Value.ToString ());
 					allFacebookPages.Add (page.Key, page.Value);
 				}
-				Console.WriteLine (" done");
+				Console.WriteLine (" done: {0}",sw.Elapsed);
 			}
-
-			Console.Write ("Getting instagram timeline...");
-			InstagramTimeline = await WebAPI.GetJsonAsync ("http://162.243.12.12:8092/default/_design/instagram/_view/timeline?connection_timeout=60000&descending=true&inclusive_end=true&skip=0&stale=false&limit=200");
-			Console.WriteLine (" done");
 
 			Console.Write ("Loading pages...");
 			foreach (var page in allFacebookPages) {
@@ -137,29 +145,22 @@ namespace Clubby.Infrastructure
 					await venue.LoadFacebookDatum (facebookImportedPage);
 				}
 			}
-			Console.WriteLine (" done");
+			Console.WriteLine (" done: {0}", sw.Elapsed);
+
+			sw.Stop();
+			Console.WriteLine("Levantar venues de Facebook toma: {0}",sw.Elapsed);
 
 			return venueList;
 		}
 
-		/*
-		private static async System.Threading.Tasks.Task<Venue> CreateVenue(string fbID, string instaID)
-		{	
-			Console.WriteLine("- Starts creating " +fbID);
-			var newVenue = new Venue (fbID, instaID);
-			await newVenue.Initialize ();
-			return newVenue;
-		}
-		*/
-
-		public static async System.Threading.Tasks.Task<string> AsyncGraphAPIRequest(string pageId, string element){
+		public static async Task<string> AsyncGraphAPIRequest(string pageId, string element){
 
 			string token = FacebookUtils.GetFacebookAccessToken ();
 			string url = "https://graph.facebook.com/v2.6/" + pageId + "/" + element + "&access_token=" + token + "&format=json&include_headers=false&sdk=ios";
 			return await WebAPI.GetJsonAsync (url);;
 		}
 
-		public static async System.Threading.Tasks.Task<string> GetGeolocatorJson(CLLocationCoordinate2D location){
+		public static async Task<string> GetGeolocatorJson(CLLocationCoordinate2D location){
 			string url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
 			             location.Latitude.ToString (CultureInfo.InvariantCulture) + "," + location.Longitude.ToString (CultureInfo.InvariantCulture) + "&key=" + AppDelegate.GoogleMapsAPIKey;
 			string jsonobj = await WebAPI.GetJsonAsync (url);
@@ -167,7 +168,7 @@ namespace Clubby.Infrastructure
 			return jsonobj;
 		}
 
-		public static async System.Threading.Tasks.Task<InstagramPageResponse> GetInstagramPage(string instagramId){
+		public static async Task<InstagramPageResponse> GetInstagramPage(string instagramId){
 			string result = await WebAPI.GetJsonAsync("https://www.instagram.com/"+instagramId+"/media/");
 
 			return JsonConvert.DeserializeObject<InstagramPageResponse> (result);

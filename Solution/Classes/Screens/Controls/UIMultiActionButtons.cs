@@ -157,7 +157,7 @@ namespace Clubby.Screens.Controls
 
 		private void ScrollsUp(){
 			var mainMenuScreen = AppDelegate.NavigationController.TopViewController as MainMenuScreen;
-			mainMenuScreen.ScrollsUp ();
+			mainMenuScreen.ScrollsUp (true);
 		}
 	}
 
