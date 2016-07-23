@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using Clubby.Facebook;
 using Clubby.Infrastructure;
 using Clubby.JsonResponses;
-using CoreGraphics;
-using Haneke;
-using Foundation;
 using Clubby.Utilities;
-using UIKit;
 
 namespace Clubby.Schema
 {
@@ -74,30 +70,45 @@ namespace Clubby.Schema
 			return allCategories;
 		}
 
-		public static Picture GenerateContent(InstagramPageResponse.Item item){
+		public static Content GenerateContent(InstagramPageResponse.Item item){
+			
+			var content = new Content ();
+
 			if (item.videos != null) {
-				// TODO: add video support
-				return null;
-			}
 
-			var picture = new Picture (item.id);
-			picture.InstagramId = item.user.username;
-			if (item.caption != null) {
-				picture.Description = item.caption.text;
-			}
-			picture.CreationDate = CommonUtils.UnixTimeStampToDateTime(Int32.Parse(item.created_time));
-			picture.Likes = item.likes.count;
+				content = new Video (item.id);
 
-			var imageurl = item.images.standard_resolution.url;
-			int indexOf = imageurl.IndexOf ('?');
-			if (indexOf != -1) {
-				picture.ImageUrl = imageurl.Substring (0, indexOf);
+				((Video)content).VideoUrl = item.videos.standard_resolution.url;
+				((Video)content).ImageUrl = RemoveParametersFromURL(item.images.standard_resolution.url);
+
 			} else {
-				picture.ImageUrl = imageurl;
-			}
-			picture.ThumbnailImageUrl = item.images.low_resolution.url;
 
-			return picture;
+				content = new Picture (item.id);
+
+				((Picture)content).ThumbnailImageUrl = item.images.low_resolution.url;
+				((Picture)content).ImageUrl = RemoveParametersFromURL(item.images.standard_resolution.url);
+
+			}
+
+			content.Likes = item.likes.count;
+			content.InstagramId = item.user.username;
+			content.CreationDate = CommonUtils.UnixTimeStampToDateTime (Int32.Parse (item.created_time));
+			if (item.caption != null) {
+				content.Description = item.caption.text;
+			}
+
+			return content;
+		}
+
+		private static string RemoveParametersFromURL(string url){
+			
+			int indexOf = url.IndexOf ('?');
+			if (indexOf != -1) {
+				return url.Substring (0, indexOf);
+			} else {
+				return url;
+			}
+
 		}
 
 		private void GenerateContentList(){

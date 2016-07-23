@@ -23,8 +23,11 @@ namespace Clubby.Interface
 			int imagesCount = (contents.Count > 11) ? 11 : contents.Count;
 
 			if (imagesCount != 0) {
-				foreach (Picture picture in contents) {
-					SetImage (picture);
+				foreach (var content in contents) {
+					if (!(content is Picture)) {
+						continue;
+					}
+					SetImage ((Picture)content);
 				}
 
 			}

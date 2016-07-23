@@ -158,7 +158,31 @@ namespace Clubby
 		public override bool OpenUrl (UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
 		{
 			// We need to handle URLs by passing them to their own OpenUrl in order to make the SSO authentication works.
-			return ApplicationDelegate.SharedInstance.OpenUrl (application, url, sourceApplication, annotation);
+
+			if (url.AbsoluteString.StartsWith ("fb1614192198892777://", StringComparison.Ordinal)) {
+				return ApplicationDelegate.SharedInstance.OpenUrl (application, url, sourceApplication, annotation);
+			}
+
+			var rurl = new Rivets.AppLinkUrl (url.ToString ());
+			var id = string.Empty;
+
+			if (rurl.InputQueryParameters.ContainsKey ("id")) {
+				id = rurl.InputQueryParameters ["id"];
+			}
+			if (string.IsNullOrEmpty (id)) {
+				return true;
+			}
+
+			switch (rurl.InputUrl.Host) {
+			case "user":
+				Console.WriteLine ("user");
+				break;
+			case "hashtag":
+				Console.WriteLine ("hashtag");
+				break;
+			}
+
+			return true;
 		}
 
 		public static void PopViewControllerWithCallback(Action callback)

@@ -1,12 +1,12 @@
-﻿using System;
-
-namespace Clubby.Schema
+﻿namespace Clubby.Schema
 {
 	public class Video : Content
 	{
-		public Video ()
+		public string VideoUrl, ImageUrl;
+
+		public Video (string id)
 		{
+			Id = id;
 		}
 	}
 }
-

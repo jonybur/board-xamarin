@@ -1,10 +1,10 @@
-﻿using CoreGraphics;
-using UIKit;
+﻿using System;
 using System.Collections.Generic;
 using CoreAnimation;
-using Haneke;
+using CoreGraphics;
 using Foundation;
-using System;
+using Haneke;
+using UIKit;
 
 namespace Clubby.Screens.Controls
 {
@@ -13,6 +13,7 @@ namespace Clubby.Screens.Controls
 		List<UITapGestureRecognizer> taps;
 		List<UIImageView> ListButtons;
 		Action LeftTap, RightTap;
+		UIClubbyLogo ClubbyLogo;
 		UILabel TitleLabel;
 		private const float buttonAlpha = .8f;
 		public const int Height = 66;
@@ -217,30 +218,28 @@ namespace Clubby.Screens.Controls
 			ChangeTitle (newTitle);
 		}
 
-		sealed class UIClubbyLogo : UIButton{
+		sealed class UIClubbyLogo : UIImageView{
 			public UIClubbyLogo(){
 				
 				Frame = new CGRect (0, 0, 40, 40);
 				Center = new CGPoint (AppDelegate.ScreenWidth / 2, Height / 2 + UIStatusBar.Height / 2);
-				SetImage (UIImage.FromFile("./Icon-60@2x.png"), UIControlState.Normal);
+				this.SetImage ("./Icon-60@2x.png");
 				ContentMode = UIViewContentMode.ScaleAspectFill;
 
 				bool hetero = true;
 
-				this.TouchUpInside += (sender, e) => {
+				var tap = new UITapGestureRecognizer(obj => {
 					if (hetero){
-						SetImage (UIImage.FromFile("./LGBTQ.png"), UIControlState.Normal);
+						this.SetImage ("./LGBTQ.png");
 					}else{
-						SetImage (UIImage.FromFile("./Icon-60@2x.png"), UIControlState.Normal);
+						this.SetImage ("./Icon-60@2x.png");
 					}
 					hetero = !hetero;
-					
-				};
+				});
 
+				this.AddGestureRecognizer(tap);
 			}
 		}
-
-		UIClubbyLogo ClubbyLogo;
 
 		public void SetMainTitle(){
 

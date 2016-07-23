@@ -52,6 +52,7 @@ namespace Clubby.Screens.Controls
 			foreach (var widget in TimelineWidgets) {
 				widget.Value.RemoveFromSuperview ();
 			}
+
 			ListViews = new List<UIView> ();
 			TimelineWidgets = new Dictionary<string, UITimelineWidget> ();
 
@@ -85,15 +86,10 @@ namespace Clubby.Screens.Controls
 
 			Console.Write ("Filling timeline... ");
 
-			int timelineToLoad = timelineContent.Count < 50 ? timelineContent.Count : 50;
+			int timelineToLoad = timelineContent.Count < 20 ? timelineContent.Count : 20;
 
-			//foreach (var content in timelineContent){
 			for (int i = 0; i < timelineToLoad; i++) {
 				var content = timelineContent [i];
-
-				if (!(content is Picture)) {
-					continue;
-				}
 
 				var board = boardList.FirstOrDefault (x => x.InstagramId == content.InstagramId);
 

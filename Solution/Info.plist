@@ -77,6 +77,16 @@
 				<string>fb1614192198892777</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.example.store</string>
+			<key>CFBundleURLTypes</key>
+			<string>Viewer</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>clubby</string>
+        </array>
+    </dict>
 	</array>
 	<key>FacebookAppID</key>
 	<string>1614192198892777</string>
@@ -97,9 +107,9 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>CFBundleShortVersionString</key>
-	<string>0.1.04</string>
+	<string>0.1.06</string>
 	<key>CFBundleVersion</key>
-	<string>0.1.04</string>
+	<string>0.1.06</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>

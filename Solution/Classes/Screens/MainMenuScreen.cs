@@ -213,9 +213,7 @@ namespace Clubby.Screens
 			// unsuscribe from observers, gesture recgonizers, events
 			try{
 				map.RemoveObserver (this, new NSString ("myLocation"));
-			}catch{
-				
-			}
+			}catch{ }
 
 			if (ContentDisplay != null) {
 				ContentDisplay.UnsuscribeToEvents ();
@@ -228,9 +226,6 @@ namespace Clubby.Screens
 
 		public override void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
 		{				
-			var sw = new Stopwatch();
-			sw.Start();
-
 			if (!firstLocationUpdate) {
 
 				firstLocationUpdate = true;
@@ -250,9 +245,6 @@ namespace Clubby.Screens
 				}
 
 			}
-
-			sw.Stop();
-			Console.WriteLine("ObserveValue: {0}",sw.Elapsed);
 		}
 
 		private void ContentDisplaySuscribeToEvents(UIContentDisplay contentDisplay){
@@ -262,7 +254,10 @@ namespace Clubby.Screens
 		}
 
 		private async void LoadContent()
-		{
+		{			
+			var sw = new Stopwatch();
+			sw.Start();
+
 			ScrollView.BackgroundColor = AppDelegate.ClubbyBlack;
 
 			if (FetchedVenues.VenueList == null || FetchedVenues.VenueList.Count == 0 || CommonUtils.DistanceBetweenCoordinates (FetchedVenues.Location, AppDelegate.UserLocation) > 1) {
@@ -275,6 +270,9 @@ namespace Clubby.Screens
 				// generates pages
 				await UIMagazine.GeneratePages (FetchedVenues.VenueList);
 			}
+
+			Console.WriteLine("LoadContent 1: {0}",sw.Elapsed);
+			sw.Restart ();
 
 			StopCircularProgress ();
 
@@ -365,6 +363,8 @@ namespace Clubby.Screens
 				};
 
 			}
+			Console.WriteLine("LoadContent 2: {0}",sw.Elapsed);
+			sw.Restart ();
 		}
 
 		private void LoadBanner()

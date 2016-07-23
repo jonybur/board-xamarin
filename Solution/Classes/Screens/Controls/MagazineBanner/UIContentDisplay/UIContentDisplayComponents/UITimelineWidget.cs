@@ -1,12 +1,13 @@
-﻿using UIKit;
-using CoreGraphics;
+﻿using Clubby.Infrastructure;
 using Clubby.Schema;
 using Clubby.Utilities;
-using Clubby.Infrastructure;
 using CoreAnimation;
+using CoreGraphics;
+using System.Text.RegularExpressions;
 using Facebook.CoreKit;
 using Foundation;
 using Haneke;
+using UIKit;
 
 namespace Clubby.Screens.Controls
 {
@@ -28,14 +29,13 @@ namespace Clubby.Screens.Controls
 
 		UIImageView heartView;
 		public UILabel LikeLabel;
+
+		bool isLiked, hasBeenActivated;
 		int likes;
-		bool isLiked;
 
 		const string emptyHeartImageUrl = "./boardinterface/infobox/emptylike_white.png";
 		const string fullHeartImageUrl = "./boardinterface/infobox/fulllike.png";
 		const int XMargin = 10;
-
-		bool hasBeenActivated = false;
 
 		public void MoveDown(){
 			
@@ -63,26 +63,44 @@ namespace Clubby.Screens.Controls
 
 			GenerateHeaderView(venue);
 
-			float lastBottom = 0;
+			float lastBottom = 0, widgetBottom = 0;
 
-			if (content is Picture){
+			if (content is Picture) {
+				
 				Picture picture = (Picture)content;
 
-				timelineWidget = new UITimelinePicture(picture.ImageUrl);
-				timelineWidget.Center = new CGPoint(AppDelegate.ScreenWidth / 2,
+				timelineWidget = new UITimelinePicture (picture.ImageUrl);
+
+				timelineWidget.Center = new CGPoint (AppDelegate.ScreenWidth / 2,
 					headerView.Frame.Bottom + timelineWidget.Frame.Height / 2 + 10);
 
-				GenerateLikeView();
-				likeButton.Center = new CGPoint(likeButton.Center.X, timelineWidget.Frame.Bottom + likeButton.Frame.Height / 2);
+				widgetBottom = (float)timelineWidget.Frame.Bottom;
 
-				if (!string.IsNullOrEmpty (picture.Description)) {
-					GenerateDescriptionView (venue.Name, picture.Description);
-					AddSubview (descriptionView);
-					lastBottom = (float)descriptionView.Frame.Bottom;
-				} else {
-					lastBottom = (float)likeButton.Frame.Bottom;
-				}
+			} else if (content is Video) {
 
+				Video video = (Video)content;
+
+				var timelineVideo = new UITimelineVideo (video.VideoUrl, video.ImageUrl);
+
+				timelineWidget = timelineVideo.View;
+
+				timelineWidget.Center = new CGPoint (timelineWidget.Frame.Width / 2,
+					headerView.Frame.Bottom + timelineWidget.Frame.Height / 2 + 10);
+
+				timelineWidget.BackgroundColor = UIColor.Clear;
+
+				widgetBottom = (float)timelineWidget.Frame.Y + AppDelegate.ScreenWidth;
+			}
+
+			GenerateLikeView ();
+			likeButton.Center = new CGPoint (likeButton.Center.X, widgetBottom + likeButton.Frame.Height / 2);
+
+			if (!string.IsNullOrEmpty (_content.Description)) {
+				GenerateDescriptionView (venue.Name, _content.Description);
+				AddSubview (descriptionView);
+				lastBottom = (float)descriptionView.Frame.Bottom;
+			} else {
+				lastBottom = (float)likeButton.Frame.Bottom;
 			}
 
 			var doubleTapToLike = SetNewDoubleTapGestureRecognizer();
@@ -228,20 +246,44 @@ namespace Clubby.Screens.Controls
 			descriptionView.ScrollEnabled = false;
 			descriptionView.Editable = false;
 			descriptionView.DataDetectorTypes = UIDataDetectorType.Link;
+			//descriptionView.TintColor = UIColor.White;
 
 			boardName = boardName.ToUpper ();
 
 			var boardNameAttributes = new UIStringAttributes {
-				Font = UIFont.SystemFontOfSize(14, UIFontWeight.Bold)
+				Font = UIFont.SystemFontOfSize(14, UIFontWeight.Bold),
+				ForegroundColor = UIColor.White,
+				Link = NSUrl.FromString("clubby://venue?id=" + content.Id)
 			};
 
 			var descriptionNameAttributes = new UIStringAttributes {
 				Font = UIFont.SystemFontOfSize (14, UIFontWeight.Regular)
 			};
 
-			var attributedString = new NSMutableAttributedString(boardName + " " + description);
-			attributedString.SetAttributes(boardNameAttributes, new NSRange(0, boardName.Length));
-			attributedString.SetAttributes(descriptionNameAttributes, new NSRange(boardName.Length, description.Length+1));
+			var linkAttributes = new UIStringAttributes {
+				Font = UIFont.SystemFontOfSize(14, UIFontWeight.Regular)
+			};
+
+			var attributedString = new NSMutableAttributedString(/*boardName + " " + */description);
+			//attributedString.SetAttributes(boardNameAttributes, new NSRange(0, boardName.Length));
+			attributedString.SetAttributes(descriptionNameAttributes, new NSRange(0/*boardName.Length*/, description.Length/* + 1*/));
+			
+			// ATS
+			var regex = new Regex(@"(?<=@)\w+");
+			var matches = regex.Matches(description);
+			foreach(Match m in matches) {
+				var match = m.ToString ();
+				var index = description.IndexOf (match, System.StringComparison.Ordinal) - 1;
+				linkAttributes.Link = NSUrl.FromString ("clubby://user?id=" + match);
+
+				if (index - 1 > 0) {
+					if (description [index - 1] == ' ') {
+						attributedString.SetAttributes (linkAttributes, new NSRange (/*boardName.Length + */index, match.Length + 1));
+					}
+				} else {
+					attributedString.SetAttributes (linkAttributes, new NSRange (/*boardName.Length + */index, match.Length + 1));
+				}
+			}
 
 			descriptionView.AttributedText = attributedString;
 
@@ -254,14 +296,22 @@ namespace Clubby.Screens.Controls
 		}
 
 		private UITapGestureRecognizer SetNewDoubleTapGestureRecognizer(){
-			var doubletap = new UITapGestureRecognizer (tg => {
-				Like();
-			});
+			var doubletap = new UITapGestureRecognizer (tg => Like ());
 
 			doubletap.NumberOfTapsRequired = 2;
 			doubletap.DelaysTouchesBegan = true;
 
 			return doubletap;
+		}
+
+
+		sealed class UITimelineVideo : UIRepeatVideo {
+
+
+			public UITimelineVideo(string _url, string imageUrl) {
+				this.Initialize(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenWidth), new NSUrl(_url));
+			}
+
 		}
 
 		sealed class UITimelinePicture : UIImageView {

@@ -167,6 +167,9 @@
     <Reference Include="DACircularProgress">
       <HintPath>..\packages\DACircularProgress.2.3.1.0\lib\Xamarin.iOS\DACircularProgress.dll</HintPath>
     </Reference>
+    <Reference Include="Rivets">
+      <HintPath>..\Components\rivets-1.0.5.1\lib\ios-unified\Rivets.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\fonts\Narwhal_bold.ttf" />
@@ -350,6 +353,10 @@
     </XamarinComponentReference>
     <XamarinComponentReference Include="DACircularProgress">
       <Version>2.3.1.0</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="rivets">
+      <Version>1.0.5.1</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>
