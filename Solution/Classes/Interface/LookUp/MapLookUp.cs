@@ -1,13 +1,13 @@
-﻿using Clubby.Schema;
-using System;
-using Clubby.Screens.Controls;
-using Foundation;
+﻿using System;
 using Clubby.Infrastructure;
-using Google.Maps;
-using Clubby.Utilities;
+using Clubby.Interface.VenueInterface;
 using Clubby.JsonResponses;
-using CoreLocation;
+using Clubby.Screens.Controls;
+using Clubby.Utilities;
 using CoreGraphics;
+using CoreLocation;
+using Foundation;
+using Google.Maps;
 using UIKit;
 
 namespace Clubby.Interface.LookUp

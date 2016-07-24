@@ -14,6 +14,38 @@ namespace Clubby.Screens.Controls
 		const float SeparationBetweenObjects = 30;
 		public static Dictionary<string, UITimelineWidget> TimelineWidgets;
 		CircularProgressView progressView;
+		List<Venue> boardList; List<Content> timelineContent; public static List<string> VideosToMute;
+		float yposition;
+
+		public UITimelineContentDisplay(List<Venue> _boardList, List<Content> _timelineContent) {
+
+			var sw = new Stopwatch();
+			sw.Start();
+
+			VideosToMute = new List<string> ();
+			TimelineWidgets = new Dictionary<string, UITimelineWidget> ();
+
+			boardList = _boardList;
+			timelineContent = _timelineContent;
+
+			FillTimeline ();
+
+			sw.Stop();
+			Console.WriteLine("B) Pantalla 1 (Timeline): {0}",sw.Elapsed);
+		}
+
+		public void MuteVideos(float scrollOffsetY){
+
+			var widgets = TimelineWidgets.Where (x => VideosToMute.Contains (x.Key));
+			var toMute = widgets.Where (x => x.Value.Frame.Bottom < scrollOffsetY || 
+											x.Value.Frame.Top > scrollOffsetY + AppDelegate.ScreenHeight);
+
+			foreach (var m in toMute) {
+				((UITimelineWidget)m.Value).timelineVideo.playerLayer.Player.Muted = true;
+				VideosToMute.Remove (m.Key);
+			}
+
+		}
 
 		public static void UpdateWidgetLikeCount(string contentId, int likeCount){
 			if (TimelineWidgets != null) {
@@ -42,13 +74,10 @@ namespace Clubby.Screens.Controls
 			progressView.RemoveFromSuperview ();
 		}
 
-		public void UpdateTimeline(List<Venue> boardList, List<Content> updatedTimelineContent){
-			
-			//var result = updatedTimelineContent.Where(p => TimelineWidgets.ContainsKey(p.Id)).ToList();
-			//FillTimeline (boardList, result);
+		public void UpdateTimeline(List<Content> updatedTimelineContent){
+			timelineContent = updatedTimelineContent;
 
 			// refreshes all timeline
-
 			foreach (var widget in TimelineWidgets) {
 				widget.Value.RemoveFromSuperview ();
 			}
@@ -61,32 +90,53 @@ namespace Clubby.Screens.Controls
 
 			ForceSelectiveRendering (new CGPoint (0, 0));
 
-			FillTimeline (boardList, updatedTimelineContent);
+			FillTimeline ();
 
 			DismissProgressView ();
 
 			ForceSelectiveRendering (new CGPoint (0, 0));
+		}
+
+		public void FillMoreTimeline(){
+
+			// cuantos widgets hay?
+			int widgetCount = TimelineWidgets.Count;
+
+			if (TimelineWidgets.ContainsKey(timelineContent[widgetCount].Id)){
+				widgetCount++;
+			}
+
+			// bueno, de i = widget count a 15, agarrar los proximos 15 widgets
+			for (int i = widgetCount; i < widgetCount + 15; i++) {
+				
+				var content = timelineContent [i];
+
+				var board = boardList.FirstOrDefault (x => x.InstagramId == content.InstagramId);
+
+				if (board == null) {
+					continue;
+				}
+
+				var timelineWidget = new UITimelineWidget (board, content);
+				timelineWidget.Center = new CGPoint (AppDelegate.ScreenWidth / 2, yposition + timelineWidget.Frame.Height / 2);
+
+				ListViews.Add (timelineWidget);
+				TimelineWidgets.Add (content.Id, timelineWidget);
+
+				yposition += (float)timelineWidget.Frame.Height + SeparationBetweenObjects;
+			}
+
+			var size = new CGSize (AppDelegate.ScreenWidth, yposition + UIActionButton.Height * 2);
+			Frame = new CGRect (0, 0, size.Width, size.Height);
 
 		}
 
-		public UITimelineContentDisplay(List<Venue> boardList, List<Content> timelineContent) {
-
-			var sw = new Stopwatch();
-			sw.Start();
-
-			TimelineWidgets = new Dictionary<string, UITimelineWidget> ();
-			FillTimeline (boardList, timelineContent);
-
-			sw.Stop();
-			Console.WriteLine("B) Pantalla 1 (Timeline): {0}",sw.Elapsed);
-		}
-
-		private void FillTimeline(List<Venue> boardList, List<Content> timelineContent){
-			float yposition = UIMenuBanner.Height + 30;
+		private void FillTimeline(){
+			yposition = UIMenuBanner.Height + 30;
 
 			Console.Write ("Filling timeline... ");
 
-			int timelineToLoad = timelineContent.Count < 20 ? timelineContent.Count : 20;
+			int timelineToLoad = timelineContent.Count < 10 ? timelineContent.Count : 10;
 
 			for (int i = 0; i < timelineToLoad; i++) {
 				var content = timelineContent [i];

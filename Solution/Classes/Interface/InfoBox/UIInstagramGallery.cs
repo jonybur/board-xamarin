@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Clubby.Infrastructure;
+using Clubby.Interface.VenueInterface;
 using Clubby.Schema;
 using CoreGraphics;
 using Clubby.Interface.LookUp;
@@ -13,7 +14,7 @@ namespace Clubby.Interface
 		public static float ButtonSize;
 		List<UIButton> InstagramPhotos;
 
-		public UIInstagramGallery (float width, float yposition, List<Content> contents){
+		public UIInstagramGallery (float width, float yposition, List<Content> contents, string instagramId){
 			ScrollEnabled = false;
 			ButtonSize = width / 3 - 1;
 			Frame = new CGRect (0, 0, width, ButtonSize * 2);
@@ -31,14 +32,14 @@ namespace Clubby.Interface
 				}
 
 			}
-			SetInstagramThumb ();
+			SetInstagramThumb (instagramId);
 
 			Fill ();
 
 			Center = new CGPoint (Center.X, yposition + Frame.Height/2);
 		}
 
-		private void SetInstagramThumb(){
+		private void SetInstagramThumb(string instagramId){
 			var pictureButton = new UIButton(new CGRect (0, 0, ButtonSize, ButtonSize));
 			var imageView = new UIImageView (pictureButton.Frame);
 			imageView.SetImage ("./boardinterface/infobox/viewmore3.png");
@@ -48,7 +49,7 @@ namespace Clubby.Interface
 			pictureButton.TouchUpInside += (sender, e) => {
 				// opens instagram
 				if (AppsController.CanOpenInstagram()){
-					AppsController.OpenInstagram(UIVenueInterface.venue.InstagramId);
+					AppsController.OpenInstagram(instagramId);
 				} else {
 					var alert = UIAlertController.Create("Instagram is not installed", "To use this function please install Instagram", UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));

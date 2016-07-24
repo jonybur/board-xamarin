@@ -47,7 +47,7 @@ namespace Clubby.Screens.Controls
 
 		protected void SetPressedColors()
 		{
-			BackgroundColor = AppDelegate.ClubbyYellow;
+			BackgroundColor = AppDelegate.ClubbyBlue;
 		}
 
 		protected void SetUnpressedColors()

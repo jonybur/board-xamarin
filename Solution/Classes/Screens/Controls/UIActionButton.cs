@@ -51,7 +51,7 @@ namespace Clubby.Screens.Controls
 		private UILabel GenerateTitle(string title){
 			var label = new UILabel ();
 			label.Font = AppDelegate.Narwhal24;
-			label.TextColor = AppDelegate.ClubbyYellow;
+			label.TextColor = AppDelegate.ClubbyBlue;
 			label.Text = title;
 			label.TextAlignment = UITextAlignment.Center;
 			label.Frame = new CGRect (0, 0, AppDelegate.ScreenWidth, title.StringSize(label.Font).Height);

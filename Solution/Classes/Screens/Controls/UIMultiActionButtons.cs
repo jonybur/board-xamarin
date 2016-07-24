@@ -86,7 +86,7 @@ namespace Clubby.Screens.Controls
 
 				UnselectAllButtons();
 				featuredButton.SetFullImage();
-				SwitchScreen(1, "Friends Favorites", UIFont.SystemFontOfSize(20, UIFontWeight.Medium), UIColor.White);
+				SwitchScreen(1, "Featured", UIFont.SystemFontOfSize(20, UIFontWeight.Medium), UIColor.White);
 			};
 
 			ListButtons.Add (featuredButton);
@@ -201,9 +201,9 @@ namespace Clubby.Screens.Controls
 		public void SetFullImage(){
 			imageView.SetImage("./screens/main/buttons/"+FullImage+".png");
 			lowerLine.Alpha = 1f;
-			imageView.TintColor = AppDelegate.ClubbyYellow;
-			this.TintColor = AppDelegate.ClubbyYellow;
-			lowerLine.BackgroundColor = AppDelegate.ClubbyYellow;
+			imageView.TintColor = AppDelegate.ClubbyBlue;
+			this.TintColor = AppDelegate.ClubbyBlue;
+			lowerLine.BackgroundColor = AppDelegate.ClubbyBlue;
 			isOn = true;
 		}
 	}

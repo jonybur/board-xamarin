@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Clubby.Facebook;
+using Clubby.Interface.VenueInterface;
 using Clubby.Infrastructure;
 using Clubby.Schema;
 using CoreGraphics;

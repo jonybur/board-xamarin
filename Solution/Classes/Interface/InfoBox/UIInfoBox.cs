@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using Clubby.Facebook;
 using Clubby.Schema;
+using Clubby.JsonResponses;
 using Clubby.Screens.Controls;
+using Clubby.Interface.VenueInterface;
 using Clubby.Utilities;
 using System.Linq;
+using DACircularProgress;
 using CoreGraphics;
 using UIKit;
 
@@ -16,12 +19,75 @@ namespace Clubby.Interface
 		public const int XContentMargin = 10;
 
 		UIMapContainer Container;
-		UILabel NameLabel, AddressLabel, CategoryLabel, OpenLabel;//, InstagramLabel
+		UILabel NameLabel, AddressLabel, CategoryLabel, OpenLabel;
 		UITopBanner Banner;
 		UITextView AboutBox;
 		UIActionButtons ActionButtons;
 		UIInstagramGallery InstagramGallery;
 		List<UIView> ListSubviews;
+
+		CircularProgressView progressView;
+
+		public UIInfoBox(string instagramId){
+			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth - XMargin * 2, AppDelegate.ScreenHeight);
+			Center = new CGPoint (XMargin + Frame.Width / 2, AppDelegate.ScreenHeight / 2);
+			BackgroundColor = AppDelegate.ClubbyBlack;
+			ClipsToBounds = true;
+
+			LoadCircularProgress ();
+
+			GetInstagramPage (instagramId);
+		}
+
+		private void LoadCircularProgress(){
+			progressView = new CircularProgressView ();
+			progressView.Progress = 0.35f;
+			progressView.IndeterminateDuration = 1.0f;
+			progressView.Indeterminate = true;
+			progressView.Frame = new CGRect (0, 0, 60, 60);
+			progressView.Center = new CGPoint (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight / 2);
+			AddSubview (progressView);
+		}
+
+		public void StopCircularProgress(){
+			progressView.RemoveFromSuperview();
+		}
+
+		private async void GetInstagramPage(string instagramId){
+			ListSubviews = new List<UIView> ();
+
+			var page = await Infrastructure.CloudController.GetInstagramPage (instagramId);
+
+			var contentList = InstagramPageResponse.GenerateContentList (page.items);
+
+			UILogoImage logo;
+			float yposition = 80;
+
+			if (page.items.Count > 0) {
+				logo = new UILogoImage (page.items [0].user.profile_picture);
+				ListSubviews.Add (logo);
+				yposition = (float)logo.Frame.Bottom + 30;
+			}
+
+			NameLabel = new UITitleLabel (yposition, (float)Frame.Width,
+				UIFont.SystemFontOfSize (26, UIFontWeight.Regular), instagramId, UIColor.White);
+			
+			var images = contentList.GetRange (0, contentList.Count);
+
+			InstagramGallery = new UIInstagramGallery ((float)Frame.Width, (float)NameLabel.Frame.Bottom + 30, images, instagramId);
+			float lastBottom = (float)InstagramGallery.Frame.Bottom;
+
+			ListSubviews.Add (NameLabel);
+			ListSubviews.Add (InstagramGallery);
+
+			if (Container != null) {
+				ListSubviews.Add (Container.Map);
+			}
+
+			SetDefaults (lastBottom);
+
+			StopCircularProgress ();
+		}
 
 		public UIInfoBox(Venue venue){
 			Frame = new CGRect (0, 0, AppDelegate.ScreenWidth - XMargin * 2, AppDelegate.ScreenHeight);
@@ -31,12 +97,12 @@ namespace Clubby.Interface
 			 
 			Banner = new UITopBanner ((float)Frame.Width);
 			NameLabel = new UITitleLabel (Banner.Bottom + 80, (float)Frame.Width,
-				UIFont.SystemFontOfSize(26, UIFontWeight.Regular), CommonUtils.FirstLetterOfEveryWordToUpper(UIVenueInterface.venue.Name), AppDelegate.ClubbyYellow);
+				UIFont.SystemFontOfSize (26, UIFontWeight.Regular), CommonUtils.FirstLetterOfEveryWordToUpper (UIVenueInterface.venue.Name), UIColor.White);
 			
 			CategoryLabel = new UITitleLabel ((float)NameLabel.Frame.Bottom + 6, (float)Frame.Width,
-				UIFont.SystemFontOfSize(14, UIFontWeight.Regular), venue.GetAllCategories().ToUpper());
+				UIFont.SystemFontOfSize (14, UIFontWeight.Regular), venue.GetAllCategories ().ToUpper ());
 
-			OpenLabel = new UITitleLabel ((float)CategoryLabel.Frame.Bottom + 6, (float)Frame.Width, UIFont.SystemFontOfSize(14, UIFontWeight.Regular), string.Empty);
+			OpenLabel = new UITitleLabel ((float)CategoryLabel.Frame.Bottom + 6, (float)Frame.Width, UIFont.SystemFontOfSize (14, UIFontWeight.Regular), string.Empty);
 			OpenLabel.Text = "CHECKING...";
 
 			FacebookUtils.MakeGraphRequest (venue.FacebookId, "?fields=hours", CheckIfOpen);
@@ -49,24 +115,24 @@ namespace Clubby.Interface
 			if (venue.GeolocatorObject.Coordinate.Latitude != 0 && venue.GeolocatorObject.Coordinate.Longitude != 0) {
 				
 				AddressLabel = new UITitleLabel ((float)AboutBox.Frame.Bottom + 30, (float)Frame.Width,
-					UIFont.SystemFontOfSize(14, UIFontWeight.Regular), venue.GeolocatorObject.AddressWithNeighborhood);
+					UIFont.SystemFontOfSize (14, UIFontWeight.Regular), venue.GeolocatorObject.AddressWithNeighborhood);
 				AddressLabel.TextAlignment = UITextAlignment.Left;
 				
 				Container = new UIMapContainer (Frame, (float)AddressLabel.Frame.Bottom + 15);
 				lastBottom = (float)Container.Map.Frame.Bottom;
 			}
 
-			var contentList = UIMagazine.TimelineContent.ContentList.Where(x=>x.InstagramId == UIVenueInterface.venue.InstagramId).ToList();
+			var contentList = UIMagazine.TimelineContent.ContentList.Where (x => x.InstagramId == UIVenueInterface.venue.InstagramId).ToList ();
 			int maxImages = contentList.Count < 11 ? contentList.Count : 11;
 
-			var images = contentList.GetRange(0, maxImages);
+			var images = contentList.GetRange (0, maxImages);
 
-			InstagramGallery = new UIInstagramGallery ((float)Frame.Width, (float)lastBottom, images);
+			InstagramGallery = new UIInstagramGallery ((float)Frame.Width, (float)lastBottom, images, UIVenueInterface.venue.InstagramId);
 			lastBottom = (float)InstagramGallery.Frame.Bottom;
 
 			ListSubviews = new List<UIView> ();
 
-			AddSubview(Banner);
+			AddSubview (Banner);
 
 			ListSubviews.Add (CategoryLabel);
 			ListSubviews.Add (NameLabel);
@@ -83,13 +149,21 @@ namespace Clubby.Interface
 				ListSubviews.Add (button);
 			}
 
+			SetDefaults (lastBottom);
+		}
+
+
+		private void SetDefaults(float lastBottom){
+			
 			ContentSize = new CGSize (Frame.Width, lastBottom);
 
 			SelectiveRendering (new CGPoint(0,0));
 
 			Scrolled += (sender, e) => {
 				if (ContentOffset.Y < 0){
-					Banner.Center = new CGPoint(Banner.Center.X, Banner.Frame.Height / 2 + ContentOffset.Y);
+					if (Banner != null){
+						Banner.Center = new CGPoint(Banner.Center.X, Banner.Frame.Height / 2 + ContentOffset.Y);
+					}
 				}
 
 				SelectiveRendering(ContentOffset);
@@ -146,8 +220,7 @@ namespace Clubby.Interface
 				var indexEnd = fbhour.Hours.IndexOf (dayOfWeek + "_1_close", StringComparison.Ordinal);
 
 				if (indexStart == -1 || indexEnd == -1) {
-					OpenLabel.Text = "NOW CLOSED";
-					//OpenLabel.TextColor = UIColor.FromRGB (82, 6, 11);
+					OpenLabel.Text = string.Empty;
 					return;
 				}
 				indexStart += 15;
@@ -173,10 +246,8 @@ namespace Clubby.Interface
 
 				if (startTotalMinutes <= currentTotalMinutes && currentTotalMinutes <= endTotalMinutes) {
 					OpenLabel.Text = "NOW OPEN";
-					//OpenLabel.TextColor = UIColor.FromRGB (28, 57, 16);
 				} else {
-					OpenLabel.Text = "NOW CLOSED";
-					//OpenLabel.TextColor = UIColor.FromRGB (82, 6, 11);
+					OpenLabel.Text = "OPENS AT " + startDate.ToString ("h:mm tt");
 				}
 			}
 		}

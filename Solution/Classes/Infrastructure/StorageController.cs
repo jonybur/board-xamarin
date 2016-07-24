@@ -1,11 +1,12 @@
-using System.IO;
-using Clubby.JsonResponses;
 using System;
-using Newtonsoft.Json.Linq;
-using Foundation;
 using System.Collections.Generic;
-using SQLite;
+using System.IO;
+using System.Linq;
+using Clubby.JsonResponses;
 using Clubby.Utilities;
+using Foundation;
+using Newtonsoft.Json.Linq;
+using SQLite;
 
 namespace Clubby.Infrastructure
 {
@@ -82,6 +83,10 @@ namespace Clubby.Infrastructure
 			database.CreateTable<StoredFacebookPage> ();
 			database.CreateTable<LikeL> ();
 			database.CreateTable<FacebookPages> ();
+		}
+
+		public static List<string> GetUserLikes(){
+			return database.Query<LikeL> ("SELECT * FROM LikeL").Select(x=>x.Id).ToList();
 		}
 
 		public static Dictionary<string, dynamic> GetFacebookPage(string facebookId){

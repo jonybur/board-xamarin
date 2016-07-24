@@ -9,6 +9,7 @@ namespace Clubby.Interface
 			Text = about;
 			TextColor = UIColor.White;
 			Font = UIFont.SystemFontOfSize (14);
+			TintColor = AppDelegate.ClubbyBlue;
 			BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 
 			Editable = false;

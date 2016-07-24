@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Net;
 using Clubby.Infrastructure;
-using Clubby.Interface;
+using Clubby.Interface.VenueInterface;
 using Clubby.JsonResponses;
+using Clubby.Interface.UserInterface;
 using Facebook.CoreKit;
 using Clubby.Schema;
 using Clubby.Screens;
@@ -30,7 +31,7 @@ namespace Clubby
 		public static float ScreenWidth;
 		public static float ScreenHeight;
 
-		public static UIColor ClubbyYellow;
+		public static UIColor ClubbyBlue;
 		public static UIColor ClubbyBlack;
 		public static UIColor BoardBlue;
 		public static UIColor BoardLightBlue;
@@ -90,7 +91,7 @@ namespace Clubby
 			BoardBlue = UIColor.FromRGB (38, 106, 154);
 			ClubbyOrange = UIColor.FromRGB (244, 108, 85);
 			ClubbyBlack = UIColor.FromRGB (16, 16, 16);
-			ClubbyYellow = UIColor.FromRGB (0, 157, 255);//(0, 167, 255);
+			ClubbyBlue = UIColor.FromRGB (0, 157, 255);//(0, 167, 255);
 
 			Narwhal12 = UIFont.FromName ("narwhal-bold", 12);
 			Narwhal14 = UIFont.FromName ("narwhal-bold", 14);
@@ -158,7 +159,6 @@ namespace Clubby
 		public override bool OpenUrl (UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
 		{
 			// We need to handle URLs by passing them to their own OpenUrl in order to make the SSO authentication works.
-
 			if (url.AbsoluteString.StartsWith ("fb1614192198892777://", StringComparison.Ordinal)) {
 				return ApplicationDelegate.SharedInstance.OpenUrl (application, url, sourceApplication, annotation);
 			}
@@ -175,11 +175,24 @@ namespace Clubby
 
 			switch (rurl.InputUrl.Host) {
 			case "user":
-				Console.WriteLine ("user");
+
+				var venue = FetchedVenues.VenueList.Find (t => t.InstagramId.ToLower() == id.ToLower());
+				UIViewController screen;
+				if (venue != null) {
+					screen = new UIVenueInterface (venue);
+				} else {
+					screen = new UIUserInterface (id);
+				}
+				AppDelegate.NavigationController.PushViewController (screen, true);
+
 				break;
+
 			case "hashtag":
-				Console.WriteLine ("hashtag");
+				
+				Console.WriteLine (url.ToString ());
+
 				break;
+
 			}
 
 			return true;

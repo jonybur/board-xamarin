@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
-using Clubby.JsonResponses;
-using System.Linq;
-using Newtonsoft.Json;
 using System.Diagnostics;
-using Clubby.Schema;
+using System.Linq;
 using Clubby.Infrastructure;
+using Clubby.JsonResponses;
+using Clubby.Schema;
+using Newtonsoft.Json.Linq;
 
 namespace Clubby.Screens.Controls
 {
-	public static class UIMagazine{
+	public static class UIMagazine {
 		
 		// contains (content display)
 		public static List<UIContentDisplay> Pages;
+		public static bool TheresMagazine, TheresTimeline;
 
 		public static class TimelineContent{
 			public static List<Content> ContentList;
@@ -49,7 +49,7 @@ namespace Clubby.Screens.Controls
 
 					var item = publication.ToObject<InstagramPageResponse.Item> ();
 
-					var content = Venue.GenerateContent (item);
+					var content = InstagramPageResponse.GenerateContent (item);
 					if (content != null) {
 						timelineContent.Add (content);
 					}
@@ -87,14 +87,12 @@ namespace Clubby.Screens.Controls
 					UpdatedTime = DateTime.Now;
 
 					// should update timeline
-					timelineContent.UpdateTimeline(boardList, ContentList);
+					timelineContent.UpdateTimeline(ContentList);
 				}
 
 
 			}
 		}
-
-		public static bool TheresMagazine, TheresTimeline;
 
 		// generates the magazine headers
 		public static async System.Threading.Tasks.Task GeneratePages(List<Venue> boardList){

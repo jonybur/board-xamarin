@@ -29,7 +29,7 @@ namespace Clubby.Screens.Controls
 
 			var bottomLineView = new UIImageView ();
 			bottomLineView.Frame = new CGRect (0, backgroundView.Frame.Bottom - 1, backgroundView.Frame.Width, 1);
-			bottomLineView.BackgroundColor = AppDelegate.ClubbyYellow;
+			bottomLineView.BackgroundColor = AppDelegate.ClubbyBlue;
 			bottomLineView.Alpha = 1f;
 
 			TitleLabel = GenerateTitle (title);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using Clubby.Infrastructure;
-using Clubby.Interface;
+using Clubby.Interface.VenueInterface;
 using Clubby.Schema;
 using Clubby.Screens.Controls;
 using Clubby.Utilities;
@@ -16,6 +16,16 @@ using UIKit;
 
 namespace Clubby.Screens
 {
+	public static class FetchedVenues{
+		public static List<Venue> VenueList;
+		public static CLLocationCoordinate2D Location;
+
+		public static async System.Threading.Tasks.Task Update(){
+			FetchedVenues.VenueList = await CloudController.GetNearbyVenues (AppDelegate.UserLocation, 10000);
+			FetchedVenues.Location = AppDelegate.UserLocation;
+		}
+	}
+
 	public class MainMenuScreen : UIViewController
 	{
 		public MapView map;
@@ -35,16 +45,6 @@ namespace Clubby.Screens
 		static class LastScreenStatus{
 			public static SubScreens CurrentScreen = SubScreens.Timeline;
 			public static CGPoint ContentOffset = new CGPoint(0, 0);
-		}
-
-		public static class FetchedVenues{
-			public static List<Venue> VenueList;
-			public static CLLocationCoordinate2D Location;
-
-			public static async System.Threading.Tasks.Task Update(){
-				FetchedVenues.VenueList = await CloudController.GetNearbyVenues (AppDelegate.UserLocation, 10000);
-				FetchedVenues.Location = AppDelegate.UserLocation;
-			}
 		}
 
 		public override void DidReceiveMemoryWarning () {
@@ -354,6 +354,19 @@ namespace Clubby.Screens
 						} else {
 							Banner.Frame = new CGRect(Banner.Frame.X, Banner.Frame.Y + diff, Banner.Frame.Width, Banner.Frame.Height);
 						}
+
+					}
+
+					if (ContentDisplay is UITimelineContentDisplay){
+						
+						if ((ScrollView.ContentOffset.Y + AppDelegate.ScreenHeight) >= ScrollView.ContentSize.Height){
+							
+							((UITimelineContentDisplay)ContentDisplay).FillMoreTimeline();
+							ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, ContentDisplay.Frame.Bottom);
+
+						}
+
+						((UITimelineContentDisplay)ContentDisplay).MuteVideos((float)ScrollView.ContentOffset.Y);
 					}
 
 					direction = previousOffset < ScrollView.ContentOffset.Y ? ScrollViewDirection.Down : ScrollViewDirection.Up;

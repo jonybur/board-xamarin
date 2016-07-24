@@ -70,60 +70,6 @@ namespace Clubby.Schema
 			return allCategories;
 		}
 
-		public static Content GenerateContent(InstagramPageResponse.Item item){
-			
-			var content = new Content ();
-
-			if (item.videos != null) {
-
-				content = new Video (item.id);
-
-				((Video)content).VideoUrl = item.videos.standard_resolution.url;
-				((Video)content).ImageUrl = RemoveParametersFromURL(item.images.standard_resolution.url);
-
-			} else {
-
-				content = new Picture (item.id);
-
-				((Picture)content).ThumbnailImageUrl = item.images.low_resolution.url;
-				((Picture)content).ImageUrl = RemoveParametersFromURL(item.images.standard_resolution.url);
-
-			}
-
-			content.Likes = item.likes.count;
-			content.InstagramId = item.user.username;
-			content.CreationDate = CommonUtils.UnixTimeStampToDateTime (Int32.Parse (item.created_time));
-			if (item.caption != null) {
-				content.Description = item.caption.text;
-			}
-
-			return content;
-		}
-
-		private static string RemoveParametersFromURL(string url){
-			
-			int indexOf = url.IndexOf ('?');
-			if (indexOf != -1) {
-				return url.Substring (0, indexOf);
-			} else {
-				return url;
-			}
-
-		}
-
-		private void GenerateContentList(){
-			ContentList = new List<Content> ();
-
-			var allItems = new List<InstagramPageResponse.Item>();
-			allItems.AddRange (InstagramPage.items);
-
-			foreach (var item in allItems) {
-				var picture = GenerateContent (item);
-				ContentList.Add (picture);
-			}
-
-		}
-
 		public async System.Threading.Tasks.Task LoadFacebookDatum(FacebookImportedPage importedVenue){
 			Name = importedVenue.Name;
 			About = importedVenue.About;

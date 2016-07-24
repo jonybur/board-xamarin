@@ -27,7 +27,9 @@ namespace Clubby.Screens.Controls
 		// content being displayed in widget
 		Content content;
 
-		UIImageView heartView;
+		UIImageView heartView, logoView;
+
+		string venueLogoUrl;
 		public UILabel LikeLabel;
 
 		bool isLiked, hasBeenActivated;
@@ -56,6 +58,8 @@ namespace Clubby.Screens.Controls
 			hasBeenActivated = true;
 		}
 
+		// if null, no video
+		public UITimelineVideo timelineVideo;
 
 		public UITimelineWidget(Venue venue, Content _content){
 			// makes the variable global
@@ -80,7 +84,7 @@ namespace Clubby.Screens.Controls
 
 				Video video = (Video)content;
 
-				var timelineVideo = new UITimelineVideo (video.VideoUrl, video.ImageUrl);
+				timelineVideo = new UITimelineVideo (video.VideoUrl, video.ImageUrl, content.Id);
 
 				timelineWidget = timelineVideo.View;
 
@@ -111,9 +115,6 @@ namespace Clubby.Screens.Controls
 
 			Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, lastBottom);
 		}
-
-		UIImageView logoView;
-		string venueLogoUrl;
 
 		private void GenerateHeaderView(Venue venue){
 			venueLogoUrl = venue.LogoUrl;
@@ -245,45 +246,21 @@ namespace Clubby.Screens.Controls
 			descriptionView.Frame = new CGRect (XMargin * 2, likeButton.Frame.Bottom - 10, AppDelegate.ScreenWidth - XMargin * 4, 14);
 			descriptionView.ScrollEnabled = false;
 			descriptionView.Editable = false;
+			//descriptionView.Selectable = false;
 			descriptionView.DataDetectorTypes = UIDataDetectorType.Link;
-			//descriptionView.TintColor = UIColor.White;
+			descriptionView.TintColor = AppDelegate.ClubbyBlue;
 
 			boardName = boardName.ToUpper ();
-
-			var boardNameAttributes = new UIStringAttributes {
-				Font = UIFont.SystemFontOfSize(14, UIFontWeight.Bold),
-				ForegroundColor = UIColor.White,
-				Link = NSUrl.FromString("clubby://venue?id=" + content.Id)
-			};
 
 			var descriptionNameAttributes = new UIStringAttributes {
 				Font = UIFont.SystemFontOfSize (14, UIFontWeight.Regular)
 			};
 
-			var linkAttributes = new UIStringAttributes {
-				Font = UIFont.SystemFontOfSize(14, UIFontWeight.Regular)
-			};
-
-			var attributedString = new NSMutableAttributedString(/*boardName + " " + */description);
-			//attributedString.SetAttributes(boardNameAttributes, new NSRange(0, boardName.Length));
-			attributedString.SetAttributes(descriptionNameAttributes, new NSRange(0/*boardName.Length*/, description.Length/* + 1*/));
+			var attributedString = new NSMutableAttributedString(description);
+			attributedString.SetAttributes(descriptionNameAttributes, new NSRange(0, description.Length));
 			
-			// ATS
-			var regex = new Regex(@"(?<=@)\w+");
-			var matches = regex.Matches(description);
-			foreach(Match m in matches) {
-				var match = m.ToString ();
-				var index = description.IndexOf (match, System.StringComparison.Ordinal) - 1;
-				linkAttributes.Link = NSUrl.FromString ("clubby://user?id=" + match);
-
-				if (index - 1 > 0) {
-					if (description [index - 1] == ' ') {
-						attributedString.SetAttributes (linkAttributes, new NSRange (/*boardName.Length + */index, match.Length + 1));
-					}
-				} else {
-					attributedString.SetAttributes (linkAttributes, new NSRange (/*boardName.Length + */index, match.Length + 1));
-				}
-			}
+			SetRecognizers (ref attributedString, '@', "user");
+			//SetRecognizers (ref attributedString, '#', "hashtag");
 
 			descriptionView.AttributedText = attributedString;
 
@@ -293,6 +270,29 @@ namespace Clubby.Screens.Controls
 			descriptionView.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 
 			descriptionView.AddSubview (lineView);
+		}
+
+		private void SetRecognizers(ref NSMutableAttributedString attributedString, char characterKey, string deepLinkKey){
+			var linkAttributes = new UIStringAttributes {
+				Font = UIFont.SystemFontOfSize(14, UIFontWeight.Regular)
+			};
+
+			// ATS
+			var regex = new Regex(@"(?<="+characterKey+@")\w+");
+			var matches = regex.Matches(attributedString.Value);
+			foreach(Match m in matches) {
+				var match = m.ToString ();
+				var index = attributedString.Value.IndexOf (match, System.StringComparison.Ordinal) - 1;
+				linkAttributes.Link = NSUrl.FromString ("clubby://"+ deepLinkKey +"?id=" + match);
+
+				if (index - 1 > 0) {
+					if (attributedString.Value [index - 1] == ' ') {
+						attributedString.SetAttributes (linkAttributes, new NSRange (index, match.Length + 1));
+					}
+				} else {
+					attributedString.SetAttributes (linkAttributes, new NSRange (index, match.Length + 1));
+				}
+			}
 		}
 
 		private UITapGestureRecognizer SetNewDoubleTapGestureRecognizer(){
@@ -305,11 +305,34 @@ namespace Clubby.Screens.Controls
 		}
 
 
-		sealed class UITimelineVideo : UIRepeatVideo {
+		public sealed class UITimelineVideo : UIRepeatVideo {
 
+			UIImageView topButton;
+			public string Id;
 
-			public UITimelineVideo(string _url, string imageUrl) {
-				this.Initialize(new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenWidth), new NSUrl(_url));
+			public UITimelineVideo(string _url, string imageUrl, string contentId) {
+				Id = contentId;
+				var frame = new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenWidth);
+				this.Initialize(frame, new NSUrl(_url));
+
+				topButton = new UIImageView(frame);
+
+				var tap = new UITapGestureRecognizer (obj => {
+
+					this.playerLayer.Player.Muted = !this.playerLayer.Player.Muted;
+
+					if (this.playerLayer.Player.Muted){
+						UITimelineContentDisplay.VideosToMute.Remove(Id);
+					}else{
+						UITimelineContentDisplay.VideosToMute.Add(Id);
+					}
+
+				});
+
+				topButton.UserInteractionEnabled = true;
+				topButton.AddGestureRecognizer(tap);
+
+				this.Add(topButton);
 			}
 
 		}
@@ -342,6 +365,7 @@ namespace Clubby.Screens.Controls
 				var size = this.SizeThatFits(this.Frame.Size);
 				this.Frame = new CGRect(this.Frame.X, this.Frame.Y, this.Frame.Width, size.Height);
 			}
+
 		}
 
 	}

@@ -1,4 +1,5 @@
 ﻿using Clubby.Infrastructure;
+using Clubby.Interface.VenueInterface;
 using Clubby.Screens.Controls;
 using Clubby.Interface.LookUp;
 using Clubby.Utilities;

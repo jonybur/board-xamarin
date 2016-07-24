@@ -1,25 +1,19 @@
-using System;
-using System.Threading;
-using Clubby.Schema;
+﻿using System;
 using CoreGraphics;
 using Facebook.CoreKit;
 using UIKit;
 
-namespace Clubby.Interface.VenueInterface
+namespace Clubby.Interface.UserInterface
 {
 	// user interface - connects to the board controller
 	// also called BoardView
-	public class UIVenueInterface : UIViewController
+	public class UIUserInterface : UIViewController
 	{
 		public const int BannerHeight = 66;
+		string userId;
 
-		public static Venue venue;
-
-		public static CancellationTokenSource DownloadCancellation;
-
-		public UIVenueInterface (Venue _venue){
-			venue = _venue;
-			DownloadCancellation = new CancellationTokenSource();
+		public UIUserInterface (string _userId){
+			userId = _userId;
 		}
 
 		public override void DidReceiveMemoryWarning  ()
@@ -29,7 +23,7 @@ namespace Clubby.Interface.VenueInterface
 
 		public override void ViewDidLoad ()
 		{
-			AppEvents.LogEvent ("entersBoard");
+			AppEvents.LogEvent ("entersUser");
 
 			// if it reaches this section, user has been logged in and authorized
 			base.ViewDidLoad ();
@@ -54,7 +48,7 @@ namespace Clubby.Interface.VenueInterface
 
 			View.AddSubview (statusBarView);
 
-			var infoBox = new UIInfoBox (venue);
+			var infoBox = new UIInfoBox (userId);
 			View.AddSubview (infoBox);
 
 			var backButton = new UIBackButton ();
@@ -89,8 +83,6 @@ namespace Clubby.Interface.VenueInterface
 
 		private void TouchButton(object obj, EventArgs args){
 			if (!blockButton){
-				UIVenueInterface.DownloadCancellation.Cancel ();
-
 				AppDelegate.NavigationController.PopViewController (true);
 
 				blockButton = true;

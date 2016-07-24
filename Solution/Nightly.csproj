@@ -203,14 +203,14 @@
     <BundleResource Include="Resources\menubanner\arrow_left.png" />
     <BundleResource Include="Resources\screens\login\video.mp4" />
     <BundleResource Include="Resources\screens\nocontent\noapp.png" />
-    <BundleResource Include="Resources\screens\settings\300.png" />
     <BundleResource Include="Resources\LGBTQ.png" />
     <BundleResource Include="Resources\screens\login\logo_2.png" />
     <BundleResource Include="Resources\Default-568h%402x.png" />
+    <BundleResource Include="Resources\Default%402x.png" />
+    <BundleResource Include="Resources\Default.png" />
     <BundleResource Include="Resources\Default-667h%402x.png" />
     <BundleResource Include="Resources\Default-736h%403x.png" />
-    <BundleResource Include="Resources\Default.png" />
-    <BundleResource Include="Resources\Default%402x.png" />
+    <BundleResource Include="Resources\screens\settings\300.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -291,6 +291,7 @@
     <Compile Include="Classes\Interface\LookUp\UILookUP.cs" />
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazine.cs" />
     <Compile Include="Classes\Screens\UserScreen.cs" />
+    <Compile Include="Classes\Interface\UIUserInterface.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />

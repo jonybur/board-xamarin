@@ -1,6 +1,6 @@
-﻿using Clubby.Screens.Controls;
-using CoreGraphics;
+﻿using CoreGraphics;
 using Foundation;
+using Clubby.Interface.VenueInterface;
 using Haneke;
 using UIKit;
 
@@ -21,7 +21,7 @@ namespace Clubby.Interface
 
 			CoverImage.ClipsToBounds = true;
 
-			var logo = GenerateLogo ();
+			var logo = new UILogoImage (CoverImage.Frame.Size, UIVenueInterface.venue.LogoUrl);
 
 			LoadCoverImage();
 
@@ -39,27 +39,46 @@ namespace Clubby.Interface
 
 			CoverImage.AddSubview (scaledImageView);
 		}
+	}
 
-		private UIImageView GenerateLogo(){
-			var flagLogoBackground = new UIImageView ();
-			flagLogoBackground.Frame = new CGRect (0, 0, 125, 125);
-			flagLogoBackground.BackgroundColor = UIColor.White;
-			flagLogoBackground.Center = new CGPoint(CoverImage.Frame.Width / 2, CoverImage.Frame.Height);
-			flagLogoBackground.Layer.CornerRadius = flagLogoBackground.Frame.Width / 2;
-			flagLogoBackground.ClipsToBounds = true;
+	public class UILogoImage : UIImageView{
+
+		public UILogoImage(string logoUrl){
+			Frame = new CGRect (0, 0, 125, 125);
+			BackgroundColor = UIColor.White;
+			Center = new CGPoint(AppDelegate.ScreenWidth / 2, 115);
+			Layer.CornerRadius = Frame.Width / 2;
+			ClipsToBounds = true;
 
 			var flagLogo = new UIImageView ();
 			flagLogo.Frame = new CGRect (0, 0, 120, 120);
 			flagLogo.BackgroundColor = UIColor.White;
 			flagLogo.ContentMode = UIViewContentMode.ScaleAspectFit;
-			flagLogo.SetImage (new NSUrl(UIVenueInterface.venue.LogoUrl));
-			flagLogo.Center = new CGPoint(flagLogoBackground.Frame.Width / 2, flagLogoBackground.Frame.Height / 2);
+			flagLogo.SetImage (new NSUrl(logoUrl));
+			flagLogo.Center = new CGPoint(Frame.Width / 2, Frame.Height / 2);
 			flagLogo.Layer.CornerRadius = flagLogo.Frame.Width / 2;
 			flagLogo.ClipsToBounds = true;
 
-			flagLogoBackground.AddSubview (flagLogo);
+			AddSubview (flagLogo);
+		}
 
-			return flagLogoBackground;
+		public UILogoImage(CGSize bannerSize, string logoUrl){
+			Frame = new CGRect (0, 0, 125, 125);
+			BackgroundColor = UIColor.White;
+			Center = new CGPoint(bannerSize.Width / 2, bannerSize.Height);
+			Layer.CornerRadius = Frame.Width / 2;
+			ClipsToBounds = true;
+
+			var flagLogo = new UIImageView ();
+			flagLogo.Frame = new CGRect (0, 0, 120, 120);
+			flagLogo.BackgroundColor = UIColor.White;
+			flagLogo.ContentMode = UIViewContentMode.ScaleAspectFit;
+			flagLogo.SetImage (new NSUrl(logoUrl));
+			flagLogo.Center = new CGPoint(Frame.Width / 2, Frame.Height / 2);
+			flagLogo.Layer.CornerRadius = flagLogo.Frame.Width / 2;
+			flagLogo.ClipsToBounds = true;
+
+			AddSubview (flagLogo);
 		}
 	}
 }

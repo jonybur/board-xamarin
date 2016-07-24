@@ -165,7 +165,7 @@ namespace Clubby.Screens
 			var ver = NSBundle.MainBundle.InfoDictionary["CFBundleShortVersionString"];
 			boardVersionLabel.Text = "Version " + ver.ToString();
 			boardVersionLabel.Font = UIFont.SystemFontOfSize(20, UIFontWeight.Light);
-			boardVersionLabel.TextColor = AppDelegate.ClubbyYellow;
+			boardVersionLabel.TextColor = AppDelegate.ClubbyBlue;
 			boardVersionLabel.TextAlignment = UITextAlignment.Center;
 
 			var contactLabel = new UILabel();

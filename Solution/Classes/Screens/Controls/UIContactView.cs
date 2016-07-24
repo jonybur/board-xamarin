@@ -56,7 +56,7 @@ namespace Clubby.Screens
 			TitleLabel = new UILabel ();
 			TitleLabel.Text = titleString;
 			TitleLabel.AdjustsFontSizeToFitWidth = true;
-			TitleLabel.TextColor = AppDelegate.ClubbyYellow;
+			TitleLabel.TextColor = AppDelegate.ClubbyBlue;
 			TitleLabel.TextAlignment = UITextAlignment.Center;
 			TitleLabel.Font = AppDelegate.Narwhal24;
 			var size = TitleLabel.Text.StringSize (TitleLabel.Font);

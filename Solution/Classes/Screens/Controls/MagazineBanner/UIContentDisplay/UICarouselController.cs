@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Clubby.Schema;
+using System.Text.RegularExpressions;
+using Clubby.Infrastructure;
 using Clubby.Utilities;
 using CoreAnimation;
 using CoreGraphics;
@@ -23,6 +25,16 @@ namespace Clubby.Screens.Controls
 			ListThumbs = new List<UIContentThumb> ();
 
 			var magazineDictionary = new Dictionary<string, List<Venue>> ();
+
+			var likedStuff = StorageController.GetUserLikes ();
+
+			if (likedStuff != null && likedStuff.Count > 0) {
+				var likedVenues = venueList.Where (x => likedStuff.Contains(x.FacebookId)).ToList();
+
+				if (likedVenues != null && likedVenues.Count > 0) {
+					magazineDictionary.Add ("Liked by you", likedVenues);
+				}
+			}
 
 			var friendLikes = venueList.Select (x => x.FriendLikes).OrderByDescending(x=>x);
 			var unique_likes = new HashSet<int> (friendLikes);
@@ -56,7 +68,7 @@ namespace Clubby.Screens.Controls
 			UserInteractionEnabled = true;
 
 			sw.Stop();
-			Console.WriteLine("C) Pantalla 2 (Friends Favorites): {0}",sw.Elapsed);
+			Console.WriteLine("C) Pantalla 2 (Featured): {0}",sw.Elapsed);
 		}
 	}
 

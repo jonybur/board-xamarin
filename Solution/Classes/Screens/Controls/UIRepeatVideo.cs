@@ -16,7 +16,7 @@ namespace Clubby.Screens.Controls
 			Initialize (frame, url);
 		}
 
-		AVPlayerLayer playerLayer;
+		public AVPlayerLayer playerLayer;
 		public void Initialize(CGRect frame, NSUrl url){
 
 			var playerAsset = AVAsset.FromUrl (url);
@@ -35,9 +35,6 @@ namespace Clubby.Screens.Controls
 
 			SuscribeToObserver ();
 			ShowsPlaybackControls = false;
-
-			/*Player.Play ();
-			Player.Muted = true;*/
 		}
 
 		public override void ViewDidUnload () {
