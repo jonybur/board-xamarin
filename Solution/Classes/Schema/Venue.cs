@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using Clubby.Facebook;
 using Clubby.Infrastructure;
@@ -71,6 +72,9 @@ namespace Clubby.Schema
 		}
 
 		public async System.Threading.Tasks.Task LoadFacebookDatum(FacebookImportedPage importedVenue){
+			var sw = new Stopwatch();
+			sw.Start();
+
 			Name = importedVenue.Name;
 			About = importedVenue.About;
 			Phone = importedVenue.Phone;
@@ -86,6 +90,10 @@ namespace Clubby.Schema
 				StorageController.StoreGeolocation (FacebookId, jsonObj);
 				GeolocatorObject = JsonHandler.DeserializeObject (jsonObj);
 			}
+
+
+			sw.Stop();
+			Console.WriteLine("Crear un venue toma: {0}",sw.Elapsed);
 		}
 
 		public Venue(string id){

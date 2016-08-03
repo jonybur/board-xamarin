@@ -69,23 +69,27 @@ namespace Clubby.Infrastructure
 			return response;
 		}
 
-		public static async System.Threading.Tasks.Task<string> GetJsonAsync(string uri){
+		public static async Task<string> GetJsonAsync(string uri){
 			string response;
 
-			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
-				var getTask = await httpClient.GetAsync (uri);
+			try{
+				using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
+					var getTask = await httpClient.GetAsync (uri);
 
-				if (!getTask.IsSuccessStatusCode) {
-					return ((int)getTask.StatusCode).ToString ();
+					if (!getTask.IsSuccessStatusCode) {
+						return ((int)getTask.StatusCode).ToString ();
+					}
+
+					response = await getTask.Content.ReadAsStringAsync();
 				}
 
-				response = await getTask.Content.ReadAsStringAsync();
+				return response;
+			}catch{
+				return string.Empty;
 			}
-
-			return response;
 		}
 
-		public static async System.Threading.Tasks.Task<string> PostJsonAsync(string uri, string json){
+		public static async Task<string> PostJsonAsync(string uri, string json){
 			string response;
 
 			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {
@@ -97,7 +101,7 @@ namespace Clubby.Infrastructure
 			return response;
 		}
 
-		public static async System.Threading.Tasks.Task<string> PutJsonAsync(string uri, string json = ""){
+		public static async Task<string> PutJsonAsync(string uri, string json = ""){
 			string response;
 
 			using (var httpClient = new HttpClient (new NativeMessageHandler ())) {

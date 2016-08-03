@@ -7,6 +7,7 @@ using Clubby.Interface.VenueInterface;
 using Clubby.Schema;
 using Clubby.Screens.Controls;
 using Clubby.Utilities;
+using Connectivity.Plugin;
 using CoreGraphics;
 using CoreLocation;
 using DACircularProgress;
@@ -150,7 +151,6 @@ namespace Clubby.Screens
 
 			sw.Stop();
 			Console.WriteLine("ViewDidLoad: {0}",sw.Elapsed);
-
 		}
 
 		public override void ViewDidAppear(bool animated)
@@ -254,7 +254,7 @@ namespace Clubby.Screens
 		}
 
 		private async void LoadContent()
-		{			
+		{	
 			var sw = new Stopwatch();
 			sw.Start();
 

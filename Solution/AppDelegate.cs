@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Net;
 using Clubby.Infrastructure;
+using Clubby.Interface.UserInterface;
 using Clubby.Interface.VenueInterface;
 using Clubby.JsonResponses;
-using Clubby.Interface.UserInterface;
-using Facebook.CoreKit;
 using Clubby.Schema;
 using Clubby.Screens;
+using Connectivity.Plugin;
 using CoreAnimation;
 using CoreLocation;
+using Facebook.CoreKit;
 using Foundation;
 using Google.Maps;
 using UIKit;
@@ -138,7 +139,7 @@ namespace Clubby
 			// create a new window instance based on the screen size
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
 
-			if (AccessToken.CurrentAccessToken != null) {
+			if (AccessToken.CurrentAccessToken != null && CrossConnectivity.Current.IsConnected) {
 				screen = new MainMenuScreen ();
 			} else {
 				screen = new LoginScreen ();

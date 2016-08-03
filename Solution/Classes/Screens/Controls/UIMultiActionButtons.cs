@@ -38,7 +38,15 @@ namespace Clubby.Screens.Controls
 				AddSubview (button);
 			}
 
-			if (ListButtons.Count == 3) {
+
+			if (ListButtons.Count == 2) {
+				float xposition = AppDelegate.ScreenWidth / 3;
+
+				ListButtons [0].Alpha = 0f;
+				ListButtons [1].Alpha = 0f;
+			}
+
+			else if (ListButtons.Count == 3) {
 				float xposition = AppDelegate.ScreenWidth / 4;
 
 				ListButtons [0].Center = new CGPoint (xposition * 1, ListButtons [0].Center.Y);

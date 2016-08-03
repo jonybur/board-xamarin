@@ -18,6 +18,10 @@ namespace Clubby.Infrastructure
 		private static async Task<string> LoadName(){
 			string json = await CloudController.AsyncGraphAPIRequest ("me", "?fields=name");
 
+			if (string.IsNullOrEmpty (json)) {
+				return string.Empty;
+			}
+
 			var jobject = JObject.Parse (json);
 
 			return jobject ["name"].ToString();
@@ -75,7 +79,7 @@ namespace Clubby.Infrastructure
 
 		public static async Task<string> GetInstagramTimeline(){
 
-			string instagramTimeline = await WebAPI.GetJsonAsync ("http://162.243.12.12:8092/default/_design/instagram/_view/timeline?connection_timeout=60000&descending=true&inclusive_end=true&skip=0&stale=false&limit=200");
+			string instagramTimeline = await WebAPI.GetJsonAsync ("http://api.goclubby.com:8092/default/_design/instagram/_view/timeline?connection_timeout=60000&descending=true&inclusive_end=true&skip=0&stale=false&limit=200");
 
 			return instagramTimeline;
 		}
@@ -88,7 +92,11 @@ namespace Clubby.Infrastructure
 
 
 			Console.Write ("Getting facebook pages...");
-			var facebookPagesJson = await WebAPI.GetJsonAsync ("http://162.243.12.12:8092/pages/_design/pages/_view/pages?connection_timeout=60000");
+			var facebookPagesJson = await WebAPI.GetJsonAsync ("http://api.goclubby.com:8092/pages/_design/pages/_view/pages?connection_timeout=60000");
+			if (string.IsNullOrEmpty (facebookPagesJson)) {
+				return new List<Venue> ();
+			}
+
 			var facebookPages = JsonConvert.DeserializeObject<FacebookPagesResponse> (facebookPagesJson);
 
 			if (facebookPages.rows != null && facebookPages.rows.Count > 0) {

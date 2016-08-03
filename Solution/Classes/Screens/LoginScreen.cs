@@ -52,7 +52,7 @@ namespace Clubby.Screens
 			var logoView = new UIImageView ();
 			using (var logo = UIImage.FromFile ("./screens/login/logo_2.png")) {
 				logoView.Image = logo;
-				logoView.Frame = new RectangleF (0, 0, (float)(logo.Size.Width/2), (float)(logo.Size.Height/2));
+				logoView.Frame = new RectangleF (0, 0, (float)(logo.Size.Width * .4), (float)(logo.Size.Height * .4f));
 			}
 			logoView.Center = new PointF (AppDelegate.ScreenWidth / 2, AppDelegate.ScreenHeight / 2);
 

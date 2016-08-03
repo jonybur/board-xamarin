@@ -130,9 +130,6 @@
     <Reference Include="PNChartBinding">
       <HintPath>..\Bindings\PNChartBinding.dll</HintPath>
     </Reference>
-    <Reference Include="PBJVisionBinding">
-      <HintPath>..\..\Libraries\XamarinBinding\PBJVisionBinding\PBJVisionBinding\bin\Release\PBJVisionBinding.dll</HintPath>
-    </Reference>
     <Reference Include="System.Net.Http.Primitives">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\Xamarin.iOS10\System.Net.Http.Primitives.dll</HintPath>
     </Reference>
@@ -170,6 +167,12 @@
     <Reference Include="Rivets">
       <HintPath>..\Components\rivets-1.0.5.1\lib\ios-unified\Rivets.dll</HintPath>
     </Reference>
+    <Reference Include="Connectivity.Plugin">
+      <HintPath>..\packages\Xam.Plugin.Connectivity.1.0.3\lib\Xamarin.iOS10\Connectivity.Plugin.dll</HintPath>
+    </Reference>
+    <Reference Include="Connectivity.Plugin.Abstractions">
+      <HintPath>..\packages\Xam.Plugin.Connectivity.1.0.3\lib\Xamarin.iOS10\Connectivity.Plugin.Abstractions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\fonts\Narwhal_bold.ttf" />
@@ -204,18 +207,19 @@
     <BundleResource Include="Resources\screens\login\video.mp4" />
     <BundleResource Include="Resources\screens\nocontent\noapp.png" />
     <BundleResource Include="Resources\LGBTQ.png" />
-    <BundleResource Include="Resources\screens\login\logo_2.png" />
     <BundleResource Include="Resources\Default-568h%402x.png" />
     <BundleResource Include="Resources\Default%402x.png" />
     <BundleResource Include="Resources\Default.png" />
     <BundleResource Include="Resources\Default-667h%402x.png" />
     <BundleResource Include="Resources\Default-736h%403x.png" />
     <BundleResource Include="Resources\screens\settings\300.png" />
+    <BundleResource Include="Resources\screens\login\logo_2.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
     <None Include="packages.config" />
+    <None Include="PluginsHelp\ConnectivityReadme.txt" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -358,6 +362,10 @@
     </XamarinComponentReference>
     <XamarinComponentReference Include="rivets">
       <Version>1.0.5.1</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="ConnectivityPlugin">
+      <Version>1.0.3</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

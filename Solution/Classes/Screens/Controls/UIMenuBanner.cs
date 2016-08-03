@@ -232,7 +232,7 @@ namespace Clubby.Screens.Controls
 					if (hetero){
 						this.SetImage ("./LGBTQ.png");
 					}else{
-						this.SetImage ("./Icon-60@2x.png");
+						this.SetImage (UIImage.FromFile("./Icon-60@2x.png"), "bannerLogo");
 					}
 					hetero = !hetero;
 				});

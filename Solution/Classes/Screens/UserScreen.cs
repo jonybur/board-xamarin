@@ -74,8 +74,7 @@ namespace Clubby.Screens
 		private async void LoadPicture(){
 			string json = await CloudController.AsyncGraphAPIRequest ("me", "?fields=picture.type(large)");
 
-			if (json == "400" || json == "404") {
-				Console.WriteLine("failed");
+			if (json == "400" || json == "404" || string.IsNullOrEmpty(json)) {
 				return;
 			}
 
@@ -90,6 +89,10 @@ namespace Clubby.Screens
 
 		private async void LoadName(){
 			string json = await CloudController.AsyncGraphAPIRequest ("me", "?fields=name");
+
+			if (string.IsNullOrEmpty (json)) {
+				return;
+			}
 
 			var jobject = JObject.Parse (json);
 
