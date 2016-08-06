@@ -164,14 +164,14 @@
     <Reference Include="DACircularProgress">
       <HintPath>..\packages\DACircularProgress.2.3.1.0\lib\Xamarin.iOS\DACircularProgress.dll</HintPath>
     </Reference>
-    <Reference Include="Rivets">
-      <HintPath>..\Components\rivets-1.0.5.1\lib\ios-unified\Rivets.dll</HintPath>
-    </Reference>
     <Reference Include="Connectivity.Plugin">
       <HintPath>..\packages\Xam.Plugin.Connectivity.1.0.3\lib\Xamarin.iOS10\Connectivity.Plugin.dll</HintPath>
     </Reference>
     <Reference Include="Connectivity.Plugin.Abstractions">
       <HintPath>..\packages\Xam.Plugin.Connectivity.1.0.3\lib\Xamarin.iOS10\Connectivity.Plugin.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Rivets">
+      <HintPath>..\Components\rivets-1.0.5.1\lib\ios-unified\Rivets.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -212,8 +212,8 @@
     <BundleResource Include="Resources\Default.png" />
     <BundleResource Include="Resources\Default-667h%402x.png" />
     <BundleResource Include="Resources\Default-736h%403x.png" />
-    <BundleResource Include="Resources\screens\settings\300.png" />
     <BundleResource Include="Resources\screens\login\logo_2.png" />
+    <BundleResource Include="Resources\screens\settings\300.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

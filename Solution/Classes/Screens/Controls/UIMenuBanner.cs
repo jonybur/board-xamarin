@@ -223,7 +223,7 @@ namespace Clubby.Screens.Controls
 				
 				Frame = new CGRect (0, 0, 40, 40);
 				Center = new CGPoint (AppDelegate.ScreenWidth / 2, Height / 2 + UIStatusBar.Height / 2);
-				this.SetImage ("./Icon-60@2x.png");
+				this.SetImage (UIImage.FromFile("./Icon-60@2x.png"), "topimage");
 				ContentMode = UIViewContentMode.ScaleAspectFill;
 
 				bool hetero = true;

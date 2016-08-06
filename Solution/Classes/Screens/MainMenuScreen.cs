@@ -297,8 +297,13 @@ namespace Clubby.Screens
 					ContentDisplay.SelectiveRendering (ScrollView.ContentOffset);
 					break;
 				case SubScreens.Directory:
-					LowerButtons.ListButtons [2].SetFullImage ();
-					ContentDisplay = UIMagazine.Pages [2];
+					if (UIMagazine.Pages.Count <= 2) {
+						LowerButtons.ListButtons [1].SetFullImage ();
+						ContentDisplay = UIMagazine.Pages [1];
+					} else {
+						LowerButtons.ListButtons [2].SetFullImage ();
+						ContentDisplay = UIMagazine.Pages [2];
+					}
 					((UIThumbsContentDisplay)ContentDisplay).SelectiveThumbsRendering (ScrollView.ContentOffset);
 					break;
 				case SubScreens.Map:

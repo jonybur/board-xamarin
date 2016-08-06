@@ -46,8 +46,16 @@ namespace Clubby.Screens
 
 		private void LoadBackground()
 		{
-			var repeatVideo = new UIRepeatVideo(new CGRect(0,0,AppDelegate.ScreenWidth, AppDelegate.ScreenHeight),
-												NSUrl.FromFilename("./screens/login/video.mp4"));
+
+			var videoRect = new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
+
+			if (AppDelegate.PhoneVersion == AppDelegate.PhoneVersions.iPhone4) {
+				videoRect = new CGRect (-50, -50, AppDelegate.ScreenWidth * 1.5f, AppDelegate.ScreenHeight * 1.5f);
+			} else {
+				videoRect = new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
+			}
+			var repeatVideo = new UIRepeatVideo(videoRect, NSUrl.FromFilename("./screens/login/video.mp4"));
+				
 
 			var logoView = new UIImageView ();
 			using (var logo = UIImage.FromFile ("./screens/login/logo_2.png")) {
