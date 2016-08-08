@@ -174,6 +174,10 @@ namespace Clubby.Interface
 
 			foreach (var view in ListSubviews) {
 
+				if (view == null) {
+					continue;
+				}
+
 				// if its on a screenheight * 2 range...
 				if (view.Frame.Y > (contentOffset.Y - view.Frame.Height) &&
 					view.Frame.Y < (contentOffset.Y + AppDelegate.ScreenHeight * 2)) {

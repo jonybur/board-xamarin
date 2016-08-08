@@ -68,6 +68,7 @@ namespace Clubby.Infrastructure
 		private static string docsPathLibrary;
 		private static SQLiteConnection database;
 		private static string timelinePath;
+		private static string userPath;
 
 		public static void Initialize () {
 			
@@ -77,6 +78,7 @@ namespace Clubby.Infrastructure
 			
 			dbPath = Path.Combine (docsPathLibrary, "localdb.db3");
 			timelinePath = Path.Combine (docsPathLibrary, "timeline.txt");
+			userPath = Path.Combine (docsPathLibrary, "user.txt");
 			//File.Delete(dbPath);
 
 			database = new SQLiteConnection (dbPath);
@@ -115,8 +117,12 @@ namespace Clubby.Infrastructure
 			return null;
 		}
 
+		public static void DeleteAllFacebookPages(){
+			database.DeleteAll<FacebookPages> ();
+		}
+
 		public static void StoreFacebookPage(string facebookId, string json){
-			database.Insert (new FacebookPages (facebookId, json, CommonUtils.GetUnixTimeStamp ()));
+			database.Insert (new FacebookPages (facebookId.ToLower(), json, CommonUtils.GetUnixTimeStamp ()));
 		}
 
 		public static void ActionLike(string id){
@@ -170,6 +176,20 @@ namespace Clubby.Infrastructure
 		public static void StoreInstagramTimeline(string instagramJson){
 			File.WriteAllText(timelinePath, instagramJson);
 		}
+
+
+		public static void StoreUserId(string userId){
+			File.WriteAllText(userPath, userId);
+		}
+
+		public static string GetCurrentUserId(){
+			try {
+				return File.ReadAllText(userPath);
+			}catch{
+				return string.Empty;
+			}
+		}
+
 
 		public static void StoreGeolocation(string fbId, string geolocationJson){
 			var storedFBPage = new StoredFacebookPage (fbId, geolocationJson);

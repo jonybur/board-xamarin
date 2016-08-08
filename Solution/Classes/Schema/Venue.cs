@@ -36,7 +36,7 @@ namespace Clubby.Schema
 		private void InitFromIds(string facebookId, string instagramId){
 
 			InstagramId = instagramId;
-			FacebookId = facebookId;
+			FacebookId = facebookId.ToLower();
 
 			//get lat and long from facebook
 
@@ -87,12 +87,17 @@ namespace Clubby.Schema
 
 			if (GeolocatorObject == null) {
 				string jsonObj = await CloudController.GetGeolocatorJson (importedVenue.Location);
-				StorageController.StoreGeolocation (FacebookId, jsonObj);
-				GeolocatorObject = JsonHandler.DeserializeObject (jsonObj);
+				if (jsonObj != "500") {
+					StorageController.StoreGeolocation (FacebookId, jsonObj);
+					GeolocatorObject = JsonHandler.DeserializeObject (jsonObj);
+				} else {
+					GeolocatorObject = new GoogleGeolocatorObject ();
+				}
 			}
 
 
 			sw.Stop();
+
 			Console.WriteLine("Crear un venue toma: {0}",sw.Elapsed);
 		}
 

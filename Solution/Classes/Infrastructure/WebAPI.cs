@@ -7,7 +7,9 @@ using System.Threading;
 using ModernHttpClient;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Facebook.CoreKit;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Clubby.Infrastructure
 {
@@ -21,8 +23,7 @@ namespace Clubby.Infrastructure
 		}
 
 		public async Task<Dictionary<string, dynamic>> GetPages(IEnumerable<string> pageNames) {
-			var httpClient = new HttpClient();
-
+			
 			var fields = new [] {
 				"name", "location", "about", "cover", "phone",
 				"category_list", "picture.type(large)", "context"
@@ -37,14 +38,21 @@ namespace Clubby.Infrastructure
 				query = content.ReadAsStringAsync().Result;
 			}
 
-			var response = await httpClient.GetAsync(GraphAPIClient._apiEndpoint + "?" + query);
+			string url;
+			string response;
+			if (Profile.CurrentProfile == null) {
+				url = "http://api.goclubby.com:8092/default/_design/profiles/_view/profiles?connection_timeout=60000&stale=false";
+				response = await WebAPI.GetJsonAsync (url);
+				response = JObject.Parse (response)["rows"][0]["value"].ToString();
+			} else {
+				url = GraphAPIClient._apiEndpoint + "?" + query;
+				response = await WebAPI.GetJsonAsync (url);
+			}
 
-			using (var bodyStream = await response.Content.ReadAsStreamAsync()) {
-				using (var bodyStreamReader = new StreamReader(bodyStream)) {
-					using (var jsonReader = new JsonTextReader(bodyStreamReader)) {
-						dynamic responseObject = new JsonSerializer().Deserialize<Dictionary<string, dynamic>>(jsonReader);
-						return responseObject; 
-					}
+			using (var bodyStreamReader = new StringReader(response)) {
+				using (var jsonReader = new JsonTextReader(bodyStreamReader)) {
+					dynamic responseObject = new JsonSerializer().Deserialize<Dictionary<string, dynamic>>(jsonReader);
+					return responseObject; 
 				}
 			}
 

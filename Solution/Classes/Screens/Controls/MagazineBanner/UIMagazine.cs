@@ -5,6 +5,7 @@ using System.Linq;
 using Clubby.Infrastructure;
 using Clubby.JsonResponses;
 using Clubby.Schema;
+using Facebook.CoreKit;
 using Newtonsoft.Json.Linq;
 
 namespace Clubby.Screens.Controls
@@ -114,7 +115,7 @@ namespace Clubby.Screens.Controls
 				TimelineContent.Update (boardList);
 			}
 
-			TheresMagazine = boardList.Count (x => x.FriendLikes > 0) > 0;
+			TheresMagazine = boardList.Count (x => x.FriendLikes > 0) > 0 && Profile.CurrentProfile != null;
 
 			if (TheresMagazine) {
 				Pages.Add (new UICarouselContentDisplay (boardList));

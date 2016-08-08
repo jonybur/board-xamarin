@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CoreAnimation;
 using CoreGraphics;
+using Facebook.CoreKit;
 using Foundation;
 using Haneke;
 using UIKit;
@@ -15,7 +16,7 @@ namespace Clubby.Screens.Controls
 		Action LeftTap, RightTap;
 		UIClubbyLogo ClubbyLogo;
 		UILabel TitleLabel;
-		private const float buttonAlpha = .8f;
+		private float buttonAlpha = .8f;
 		public const int Height = 66;
 		bool TappingEnabled;
 
@@ -248,6 +249,10 @@ namespace Clubby.Screens.Controls
 
 			TitleLabel.Alpha = 0f;
 			TappingEnabled = true;
+
+			if (Profile.CurrentProfile == null) {
+				buttonAlpha = 0f;
+			}
 
 			foreach (var button in ListButtons) {
 				button.Alpha = buttonAlpha;

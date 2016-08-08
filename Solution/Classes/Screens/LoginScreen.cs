@@ -14,6 +14,7 @@ namespace Clubby.Screens
 		const int fontSize = 18;
 
 		LoginButton logInButton;
+		UIImageView guestButton;
 		bool TapsEmailButton;
 
 		public override void ViewDidLoad ()
@@ -41,12 +42,44 @@ namespace Clubby.Screens
 			// load buttons
 			LoadFBButton ();
 
+			LoadGuestButton ();
+
 			LoadWarning ();
+		}
+
+		private void LoadGuestButton(){
+			guestButton = new UIImageView ();
+			guestButton.Frame = new CGRect (logInButton.Frame.X, logInButton.Frame.Bottom + 10, logInButton.Frame.Width, 30);
+			guestButton.BackgroundColor = UIColor.FromRGBA (0,0,0,0);
+
+			var tapEmailView = new UITapGestureRecognizer (delegate(UITapGestureRecognizer obj) {
+				if (!TapsEmailButton){
+					TapsEmailButton = true;
+					AppDelegate.NavigationController.PushViewController(new MainMenuScreen(), true);
+				}
+			});
+			guestButton.AddGestureRecognizer (tapEmailView);
+			guestButton.UserInteractionEnabled = true;
+
+			var emailLabel = new UILabel ();
+			emailLabel.Frame = new CGRect (0, 0, guestButton.Frame.Width, 0);
+			emailLabel.Font = UIFont.SystemFontOfSize (14, UIFontWeight.Light);
+			emailLabel.TextColor = UIColor.White;
+			emailLabel.Text = "or Enter as Guest";
+			emailLabel.TextAlignment = UITextAlignment.Center;
+			emailLabel.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
+
+			var size = emailLabel.SizeThatFits (emailLabel.Frame.Size);
+			emailLabel.Frame = new CGRect (emailLabel.Frame.X, emailLabel.Frame.Y, emailLabel.Frame.Width, size.Height);
+
+			emailLabel.Center = new CGPoint (guestButton.Frame.Width / 2, guestButton.Frame.Height / 2);
+
+			guestButton.AddSubview (emailLabel);
+			View.AddSubview (guestButton);
 		}
 
 		private void LoadBackground()
 		{
-
 			var videoRect = new CGRect (0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenHeight);
 
 			if (AppDelegate.PhoneVersion == AppDelegate.PhoneVersions.iPhone4) {
@@ -69,7 +102,7 @@ namespace Clubby.Screens
 
 		private void LoadFBButton()
 		{
-			logInButton = new LoginButton (new CGRect (40, AppDelegate.ScreenHeight - 100, AppDelegate.ScreenWidth - 80, 50)) {
+			logInButton = new LoginButton (new CGRect (40, AppDelegate.ScreenHeight - 130, AppDelegate.ScreenWidth - 80, 50)) {
 				LoginBehavior = LoginBehavior.Native,
 				ReadPermissions = new [] { "public_profile", "user_friends" }
 			};
@@ -80,7 +113,7 @@ namespace Clubby.Screens
 				}
 
 				if (AccessToken.CurrentAccessToken != null){
-					//AppDelegate.containerScreen = new MainMenuScreen ();
+					
 					AppDelegate.NavigationController.PushViewController(new MainMenuScreen(), true);	
 				}
 			};
@@ -93,7 +126,7 @@ namespace Clubby.Screens
 
 		private void LoadWarning (){
 			var label = new UITextView ();
-			label.Frame = new CGRect (5, logInButton.Frame.Bottom, AppDelegate.ScreenWidth - 10, 0);
+			label.Frame = new CGRect (5, guestButton.Frame.Bottom, AppDelegate.ScreenWidth - 10, 0);
 			label.Font = UIFont.SystemFontOfSize (11, UIFontWeight.Light);
 			label.TextColor = UIColor.White;
 			label.Text = "By continuing, you agree to our Terms of Service\nand Privacy Policy";

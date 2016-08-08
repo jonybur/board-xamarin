@@ -25,7 +25,11 @@ namespace Clubby.Screens.Controls
 
 			public int Compare (Venue x, Venue y)
 			{
-				return String.Compare(x.Name[0].ToString().ToUpper(), y.Name[0].ToString().ToUpper() );
+				if (!string.IsNullOrEmpty (x.Name) && !string.IsNullOrEmpty (y.Name)) {
+					return String.Compare (x.Name [0].ToString ().ToLower (), y.Name [0].ToString ().ToLower ());
+				} else {
+					return 0;
+				}
 			}
 
 			public string GetComparisonPropertyDescription(Venue target) {

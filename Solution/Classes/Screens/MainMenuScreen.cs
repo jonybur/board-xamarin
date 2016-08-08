@@ -13,6 +13,7 @@ using CoreLocation;
 using DACircularProgress;
 using Foundation;
 using Google.Maps;
+using Facebook.CoreKit;
 using UIKit;
 
 namespace Clubby.Screens
@@ -116,6 +117,17 @@ namespace Clubby.Screens
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
+
+			string currentUser = StorageController.GetCurrentUserId ();
+
+			if (Profile.CurrentProfile != null){
+				if (currentUser == "guest" || currentUser != Profile.CurrentProfile.UserID) {
+					StorageController.DeleteAllFacebookPages ();
+				}
+				StorageController.StoreUserId (Profile.CurrentProfile.UserID);
+			} else {
+				StorageController.StoreUserId ("guest");
+			}
 
 			var sw = new Stopwatch();
 			sw.Start();

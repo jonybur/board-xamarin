@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Threading.Tasks;
 using Clubby.Facebook;
+using Facebook.CoreKit;
 using Clubby.JsonResponses;
 using Clubby.Schema;
 using Clubby.Utilities;
@@ -33,7 +34,12 @@ namespace Clubby.Infrastructure
 			}
 
 			string userName = string.Empty;
-			userName = await LoadName ();
+
+			if (Profile.CurrentProfile != null) {
+				userName = await LoadName ();
+			} else {
+				userName = "Guest";
+			}
 
 			string json = "{\"latitude\": \"" + AppDelegate.UserLocation.Latitude.ToString(CultureInfo.InvariantCulture) + "\", " +
 				"\"longitude\": \"" + AppDelegate.UserLocation.Longitude.ToString(CultureInfo.InvariantCulture) + "\", " + 
@@ -78,8 +84,7 @@ namespace Clubby.Infrastructure
 		}
 
 		public static async Task<string> GetInstagramTimeline(){
-
-			string instagramTimeline = await WebAPI.GetJsonAsync ("http://api.goclubby.com:8092/default/_design/instagram/_view/timeline?connection_timeout=60000&descending=true&inclusive_end=true&skip=0&stale=false&limit=200");
+			string instagramTimeline = await WebAPI.GetJsonAsync ("http://api.goclubby.com:8092/pages/_design/instagram/_view/timeline?connection_timeout=60000&descending=true&inclusive_end=true&limit=6&skip=0&stale=false");
 
 			return instagramTimeline;
 		}
@@ -89,7 +94,6 @@ namespace Clubby.Infrastructure
 			sw.Start();
 
 			var venueList = new List<Venue> ();
-
 
 			Console.Write ("Getting facebook pages...");
 			var facebookPagesJson = await WebAPI.GetJsonAsync ("http://api.goclubby.com:8092/pages/_design/pages/_view/pages?connection_timeout=60000");
@@ -103,7 +107,7 @@ namespace Clubby.Infrastructure
 				var rows = facebookPages.rows [0];
 				if (rows.value.venues != null && rows.value.venues.Count > 0) {
 					foreach (var fetchedVenue in rows.value.venues) {
-						var venue = new Venue(fetchedVenue.facebookPage, fetchedVenue.instagramPage, fetchedVenue.id);
+						var venue = new Venue(fetchedVenue.facebookPage.ToLower(), fetchedVenue.instagramPage.ToLower(), fetchedVenue.id);
 						venueList.Add (venue);
 					}
 				}
@@ -118,7 +122,7 @@ namespace Clubby.Infrastructure
 
 			foreach (var venue in venueList) {
 				// returns null or Dictionary w one key,value
-				var fbpage = StorageController.GetFacebookPage (venue.FacebookId);
+				var fbpage = StorageController.GetFacebookPage (venue.FacebookId.ToLower());
 
 				if (fbpage == null) {
 					// has to fetch this facebook page!
@@ -135,6 +139,7 @@ namespace Clubby.Infrastructure
 			if (facebookPagesToFetch.Count > 0) {
 				Console.Write ("Fetching new facebook pages...");
 				var fetchedPages = await graphApiClient.GetPages (facebookPagesToFetch);
+
 				foreach (var page in fetchedPages) {
 					// stores page
 					StorageController.StoreFacebookPage (page.Key, page.Value.ToString ());
