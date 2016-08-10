@@ -84,7 +84,7 @@ namespace Clubby.Infrastructure
 		}
 
 		public static async Task<string> GetInstagramTimeline(){
-			string instagramTimeline = await WebAPI.GetJsonAsync ("http://api.goclubby.com:8092/pages/_design/instagram/_view/timeline?connection_timeout=60000&descending=true&inclusive_end=true&limit=6&skip=0&stale=false");
+			string instagramTimeline = await WebAPI.GetJsonAsync ("http://api.goclubby.com:8092/pages/_design/instagram/_view/timeline?connection_timeout=60000&descending=true&inclusive_end=true&limit=200&skip=0&stale=false");
 
 			return instagramTimeline;
 		}

@@ -102,6 +102,11 @@ namespace Clubby.Screens.Controls
 			// cuantos widgets hay?
 			int widgetCount = TimelineWidgets.Count;
 
+			if (timelineContent.Count <= widgetCount) {
+				return;
+			}
+
+			// timelinecontent is api's timeline
 			if (TimelineWidgets.ContainsKey(timelineContent[widgetCount].Id)){
 				widgetCount++;
 			}
