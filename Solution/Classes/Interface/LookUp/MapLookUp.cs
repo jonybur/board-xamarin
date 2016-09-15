@@ -4,6 +4,7 @@ using Board.Screens.Controls;
 using Foundation;
 using Board.Infrastructure;
 using Google.Maps;
+using Board.Interface.VenueInterface;
 using Board.Utilities;
 using Board.JsonResponses;
 using CoreLocation;
@@ -82,7 +83,7 @@ namespace Board.Interface.LookUp
 
 		private void CreateMarker()
 		{
-			mapMarker = new UIMapMarker (UIBoardInterface.board, mapView, UIMapMarker.SizeMode.Normal);
+			mapMarker = new UIMapMarker (UIVenueInterface.board, mapView, UIMapMarker.SizeMode.Normal);
 		}
 			
 		private void CreateUberButton(){
@@ -97,8 +98,8 @@ namespace Board.Interface.LookUp
 
 				if (AppsController.CanOpenUber()) {
 
-					var location = new CLLocationCoordinate2D(UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lat,
-						UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lng);
+					var location = new CLLocationCoordinate2D(UIVenueInterface.board.GeolocatorObject.results [0].geometry.location.lat,
+						UIVenueInterface.board.GeolocatorObject.results [0].geometry.location.lng);
 
 					var listproducts = CloudController.GetUberProducts(location);
 
@@ -133,8 +134,8 @@ namespace Board.Interface.LookUp
 
 			directionsTap = new UITapGestureRecognizer (tg => {
 
-				var location = new CLLocationCoordinate2D(UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lat,
-					UIBoardInterface.board.GeolocatorObject.results [0].geometry.location.lng);
+				var location = new CLLocationCoordinate2D(UIVenueInterface.board.GeolocatorObject.results [0].geometry.location.lat,
+					UIVenueInterface.board.GeolocatorObject.results [0].geometry.location.lng);
 
 				UIAlertController alert = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
 

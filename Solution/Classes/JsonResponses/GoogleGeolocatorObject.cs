@@ -105,6 +105,19 @@ namespace Board.JsonResponses
 		}
 
 		[Preserve(AllMembers = true)]
+		public string AddressWithNeighborhood{
+			get {
+				string hood = "<ERROR>";
+				try{
+					hood = Address + ", " + Neighborhood; 
+				} catch {
+					hood = "<ERROR>";
+				}
+				return hood;
+			}	
+		}
+
+		[Preserve(AllMembers = true)]
 		public string Address{
 			get {
 				string hood = "<ERROR>";

@@ -11,7 +11,9 @@ namespace Board.Schema
 	public class Content
 	{
 		public string Id;
-		public string FacebookId;
+		public string FacebookId, InstagramId;
+		public string Description;
+		public int Likes;
 
 		private double _latitude;
 		private double _longitude;

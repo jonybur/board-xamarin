@@ -13,18 +13,28 @@ namespace Board.Screens.Controls
 		}
 
 		public UIRepeatVideo (CGRect frame, NSUrl url) {
-			View.Frame = frame;
+			Initialize (frame, url);
+		}
+
+		public AVPlayerLayer playerLayer;
+		public void Initialize(CGRect frame, NSUrl url){
 
 			var playerAsset = AVAsset.FromUrl (url);
 			var playerItem = new AVPlayerItem (playerAsset);
-			Player = new AVPlayer (playerItem);
-			Player.ActionAtItemEnd = AVPlayerActionAtItemEnd.None;
+
+			var player = new AVPlayer (playerItem);
+			player.ActionAtItemEnd = AVPlayerActionAtItemEnd.None;
+			playerLayer = AVPlayerLayer.FromPlayer (player);
+			playerLayer.Frame = frame;
+			playerLayer.VideoGravity = AVLayerVideoGravity.ResizeAspect;
+			playerLayer.Player.Play ();
+			playerLayer.Player.Muted = true;
+
+			this.View.Layer.AddSublayer (playerLayer);
+			this.View.Frame = frame;
 
 			SuscribeToObserver ();
 			ShowsPlaybackControls = false;
-
-			Player.Play ();
-			Player.Muted = true;
 		}
 
 		public override void ViewDidUnload () {
@@ -43,7 +53,8 @@ namespace Board.Screens.Controls
 		}
 
 		private void SeekToBeginning(NSNotification obj){
-			Player.Seek (new CMTime (0, 1000000000));
+
+			playerLayer.Player.Seek (new CMTime (0, 1000000000));
 		}
 	}
 }

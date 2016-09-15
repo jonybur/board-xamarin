@@ -125,9 +125,6 @@
     <Reference Include="PNChartBinding">
       <HintPath>..\Bindings\PNChartBinding.dll</HintPath>
     </Reference>
-    <Reference Include="PBJVisionBinding">
-      <HintPath>..\..\Libraries\XamarinBinding\PBJVisionBinding\PBJVisionBinding\bin\Release\PBJVisionBinding.dll</HintPath>
-    </Reference>
     <Reference Include="System.Net.Http.Primitives">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\Xamarin.iOS10\System.Net.Http.Primitives.dll</HintPath>
     </Reference>
@@ -159,8 +156,14 @@
     <Reference Include="BTProgressHUD">
       <HintPath>..\Components\btprogresshud-1.20\lib\ios-unified\BTProgressHUD.dll</HintPath>
     </Reference>
+    <Reference Include="PBJVisionBinding">
+      <HintPath>..\Bindings\PBJVisionBinding.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Maps">
-      <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.13.1.0\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
+      <HintPath>..\packages\Xamarin.Google.iOS.Maps.1.13.2.1\lib\Xamarin.iOS10\Google.Maps.dll</HintPath>
+    </Reference>
+    <Reference Include="DACircularProgress">
+      <HintPath>..\packages\DACircularProgress.2.3.1.0\lib\Xamarin.iOS\DACircularProgress.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -270,19 +273,11 @@
     <BundleResource Include="Resources\screens\main\magazine\flagpin.png" />
     <BundleResource Include="Resources\screens\nocontent\noapp.png" />
     <BundleResource Include="Resources\screens\business\icon.png" />
-    <BundleResource Include="Resources\screens\settings\long_flag.png" />
     <BundleResource Include="Resources\screens\credits\long_flag.png" />
     <BundleResource Include="Resources\timelapse.mp4" />
-    <BundleResource Include="Resources\screens\login\logo.png" />
     <BundleResource Include="Resources\Icon-Small.png" />
     <BundleResource Include="Resources\Icon-Small%402x.png" />
     <BundleResource Include="Resources\Icon-Small-40%402x.png" />
-    <BundleResource Include="Resources\DefaultUser.png" />
-    <BundleResource Include="Resources\Default-667h%402x.png" />
-    <BundleResource Include="Resources\Default.png" />
-    <BundleResource Include="Resources\Default-736h%403x.png" />
-    <BundleResource Include="Resources\Default%402x.png" />
-    <BundleResource Include="Resources\Default-568h%402x.png" />
     <BundleResource Include="Resources\screens\main\buttons\empty_directory.png" />
     <BundleResource Include="Resources\screens\main\buttons\empty_house.png" />
     <BundleResource Include="Resources\screens\main\buttons\empty_map.png" />
@@ -296,6 +291,14 @@
     <BundleResource Include="Resources\screens\main\buttons\full_calendar.png" />
     <BundleResource Include="Resources\screens\main\buttons\empty_timeline.png" />
     <BundleResource Include="Resources\screens\main\buttons\full_timeline.png" />
+    <BundleResource Include="Resources\screens\login\logo.png" />
+    <BundleResource Include="Resources\Default.png" />
+    <BundleResource Include="Resources\Default%402x.png" />
+    <BundleResource Include="Resources\Default-568h%402x.png" />
+    <BundleResource Include="Resources\Default-667h%402x.png" />
+    <BundleResource Include="Resources\Default-736h%403x.png" />
+    <BundleResource Include="Resources\screens\settings\long_flag.png" />
+    <BundleResource Include="Resources\defaultuser.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -342,9 +345,6 @@
     <Compile Include="Classes\Interface\Buttons\SettingsButton.cs" />
     <Compile Include="Classes\Interface\Widgets\Widget.cs" />
     <Compile Include="Classes\Interface\LookUp\PictureLookUp.cs" />
-    <Compile Include="Classes\Interface\LookUp\VideoLookUp.cs" />
-    <Compile Include="Classes\Interface\LookUp\AnnouncementLookUp.cs" />
-    <Compile Include="Classes\Interface\LookUp\EventLookUp.cs" />
     <Compile Include="Classes\Interface\Widgets\Preview.cs" />
     <Compile Include="Classes\Interface\CreateScreens\CreateAnnouncementScreen.cs" />
     <Compile Include="Classes\Interface\SettingsScreen\PageSelectorScreen.cs" />
@@ -353,7 +353,6 @@
     <Compile Include="Classes\Interface\CreateScreens\PostToButtons.cs" />
     <Compile Include="Classes\Interface\CreateScreens\CreateEventScreen.cs" />
     <Compile Include="Classes\Interface\CreateScreens\CreatePollScreen.cs" />
-    <Compile Include="Classes\Interface\LookUp\PollLookUp.cs" />
     <Compile Include="Classes\Interface\Widgets\PollWidget.cs" />
     <Compile Include="Classes\Interface\SettingsScreen\SettingsScreen.cs" />
     <Compile Include="Classes\Interface\CreateScreens\ImportScreen.cs" />
@@ -379,7 +378,6 @@
     <Compile Include="Classes\Interface\CameraScreen\CameraPreview.cs" />
     <Compile Include="Classes\Interface\BoardScroll.cs" />
     <Compile Include="Classes\Interface\LookUp\UILookUP.cs" />
-    <Compile Include="Classes\Interface\FacebookImport\AlbumsScreen.cs" />
     <Compile Include="Classes\Facebook\FacebookAlbum.cs" />
     <Compile Include="Classes\Interface\FacebookImport\PhotosScreen.cs" />
     <Compile Include="Classes\Facebook\FacebookPhoto.cs" />
@@ -396,22 +394,17 @@
     <Compile Include="Classes\Screens\Controls\UIMenuBanner.cs" />
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazineBanner.cs" />
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazineBannerPage.cs" />
-    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazineBannerPageController.cs" />
     <Compile Include="Classes\Screens\Controls\UIActionButton.cs" />
-    <Compile Include="Classes\Screens\Controls\MagazineBanner\UIMagazinePage.cs" />
     <Compile Include="Classes\JsonResponses\AmazonS3TicketResponse.cs" />
     <Compile Include="Classes\Interface\UIBoardInterface.cs" />
     <Compile Include="Classes\Schema\User.cs" />
     <Compile Include="Classes\Screens\Controls\UIMapMarker.cs" />
-    <Compile Include="Classes\Interface\InfoBox\UIInfoBox.cs" />
     <Compile Include="Classes\Screens\Controls\UIBoardBannerPage.cs" />
     <Compile Include="Classes\Interface\UISticker.cs" />
     <Compile Include="Classes\Infrastructure\AppsController.cs" />
     <Compile Include="Classes\Screens\Controls\UIRepeatVideo.cs" />
     <Compile Include="Classes\Interface\CameraScreen\VideoPreview.cs" />
-    <Compile Include="Classes\Interface\FacebookImport\VideosScreen.cs" />
     <Compile Include="Classes\Interface\FacebookImport\PictureImportLookUp.cs" />
-    <Compile Include="Classes\Interface\FacebookImport\VideoImportLookUp.cs" />
     <Compile Include="Classes\Facebook\FacebookImportedPage.cs" />
     <Compile Include="Classes\Facebook\FacebookAutoImporter.cs" />
     <Compile Include="Classes\Interface\Widgets\Widget_Components.cs" />
@@ -453,6 +446,9 @@
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentDisplayComponents\UIBoardThumb.cs" />
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentDisplayComponents\UIContentThumb.cs" />
     <Compile Include="Classes\Screens\Controls\MagazineBanner\UIContentDisplay\UIContentDisplayComponents\UITimelineWidget.cs" />
+    <Compile Include="Classes\JsonResponses\InstagramPageResponse.cs" />
+    <Compile Include="Classes\Interface\UIVenueInterface.cs" />
+    <Compile Include="Classes\Interface\InfoBox\UIInfoBox.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Board.xib" />
@@ -551,7 +547,11 @@
       <Visible>False</Visible>
     </XamarinComponentReference>
     <XamarinComponentReference Include="googleiosmaps">
-      <Version>1.13.1.0</Version>
+      <Version>1.13.2.1</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="DACircularProgress">
+      <Version>2.3.1.0</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>
@@ -560,7 +560,7 @@
   <Import Project="..\packages\SQLitePCL.raw.0.8.6\build\Xamarin.iOS10\SQLitePCL.raw.targets" Condition="Exists('..\packages\SQLitePCL.raw.0.8.6\build\Xamarin.iOS10\SQLitePCL.raw.targets')" />
   <Import Project="..\packages\Xamarin.Build.Download.0.2.1\build\Xamarin.Build.Download.targets" Condition="Exists('..\packages\Xamarin.Build.Download.0.2.1\build\Xamarin.Build.Download.targets')" />
   <Import Project="..\packages\Xamarin.Build.Download.0.2.1\build\Xamarin.Build.Download.props" Condition="Exists('..\packages\Xamarin.Build.Download.0.2.1\build\Xamarin.Build.Download.props')" />
-  <Import Project="..\packages\Xamarin.Google.iOS.Maps.1.13.1.0\build\Xamarin.Google.iOS.Maps.targets" Condition="Exists('..\packages\Xamarin.Google.iOS.Maps.1.13.1.0\build\Xamarin.Google.iOS.Maps.targets')" />
+  <Import Project="..\packages\Xamarin.Google.iOS.Maps.1.13.2.1\build\Xamarin.Google.iOS.Maps.targets" Condition="Exists('..\packages\Xamarin.Google.iOS.Maps.1.13.2.1\build\Xamarin.Google.iOS.Maps.targets')" />
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork.png" />
     <ITunesArtwork Include="iTunesArtwork%402x.png" />

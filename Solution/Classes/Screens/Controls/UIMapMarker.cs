@@ -49,7 +49,6 @@ namespace Board.Screens.Controls
 			imageView.Frame = new CGRect (0, 0, 50, 50);
 			imageView.ContentMode = UIViewContentMode.ScaleAspectFit;
 			imageView.SetImage (new NSUrl(board.LogoUrl), new UIImage ("./demo/magazine/nantucket.png"), delegate(UIImage image) {
-				System.Console.WriteLine("Load marker");
 				Icon = CreateMarkerImage(image);
 			}, delegate(NSError obj) { });
 

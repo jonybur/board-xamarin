@@ -13,7 +13,7 @@ namespace Board.Schema
 		public double Distance;
 
 		public string Id, Name, About, Phone, Category, FacebookId, CreatorId;
-		public string LogoUrl, CoverImageUrl;
+		public string LogoUrl, CoverImageUrl, InstagramId;
 
 		public Board()
 		{

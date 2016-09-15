@@ -32,6 +32,7 @@ namespace Board.JsonResponses
 			public string logoURL { get; set; }
 			public string coverURL { get; set; }
 			public string facebookID { get; set; }
+			public string instagramID { get; set; }
 			public string phoneNumber { get; set; }
 			public string categoryName { get; set; }
 		}

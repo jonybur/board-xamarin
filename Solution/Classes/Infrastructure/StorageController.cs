@@ -1,6 +1,7 @@
 using System.IO;
 using Board.JsonResponses;
 using Foundation;
+using System;
 using SQLite;
 
 namespace Board.Infrastructure
@@ -20,6 +21,20 @@ namespace Board.Infrastructure
 
 			public SeenContent(){}
 		}
+
+		private class LikeL{
+
+			[PrimaryKey, Column("id")]
+			public string Id { get; set; }
+
+			public LikeL(){}
+
+			public LikeL(string id){
+				Id = id;
+			}
+
+		}
+
 
 		// caches google's geolocator json
 		[Preserve(AllMembers = true)]
@@ -41,6 +56,7 @@ namespace Board.Infrastructure
 
 		private static string dbPath;
 		private static string docsPathLibrary;
+		private static string timelinePath, nantucketPath;
 		private static SQLiteConnection database;
 
 		public static void Initialize () {
@@ -50,11 +66,15 @@ namespace Board.Infrastructure
 				NSSearchPathDomain.User) [0]).Path;
 			
 			dbPath = Path.Combine (docsPathLibrary, "localdb.db3");
+			timelinePath = Path.Combine (docsPathLibrary, "timeline.txt");
+			nantucketPath = Path.Combine (docsPathLibrary, "nantucket.txt");
+
 			 
 			//File.Delete(dbPath);
 
 			database = new SQLiteConnection (dbPath);
 			database.CreateTable<BoardL> ();
+			database.CreateTable<LikeL> ();
 			database.CreateTable<SeenContent> ();
 		}
 
@@ -78,6 +98,33 @@ namespace Board.Infrastructure
 			return false;
 		}
 
+		private static void StoreLike(string id){
+			database.Insert (new LikeL(id));
+		}
+
+		private static void RemoveLike(string id){
+			database.Delete <LikeL>(id);
+		}
+
+
+		public static void ActionLike(string id){
+			if (GetLike (id)) {
+				RemoveLike (id);
+			} else {
+				StoreLike (id);
+			}
+		}
+
+		public static bool GetLike(string id){
+			var likeL = database.Query<LikeL> ("SELECT * FROM LikeL WHERE id = ?", id);
+
+			if (likeL.Count > 0) {
+				return true;
+			}
+			return false;
+		}
+
+
 		public static void SetContentAsSeen(string id){
 			var seenContent = new SeenContent(id);
 			database.Insert(seenContent);
@@ -96,6 +143,30 @@ namespace Board.Infrastructure
 			return null;
 		}
 
+		public static string GetInstagramTimeline(){
+			try {
+				return File.ReadAllText(timelinePath);
+			}catch{
+				return string.Empty;
+			}
+		}
+
+		public static string GetNantucketDefault(){
+			try {
+				return File.ReadAllText(nantucketPath);
+			}catch{
+				return string.Empty;
+			}
+		}
+
+		public static void SetNantucketDefault(){
+			File.WriteAllText(nantucketPath, "YES");
+		}
+
+		public static void StoreInstagramTimeline(string instagramJson){
+			File.WriteAllText(timelinePath, instagramJson);
+		}
+
 		public static void StoreBoard(Board.Schema.Board board, string geolocationJson){
 			var boardL = new BoardL (board.Id, geolocationJson);
 			database.Insert (boardL);
@@ -103,6 +174,10 @@ namespace Board.Infrastructure
 
 		public static string GetImagePath(string id){
 			return Path.Combine (docsPathLibrary, id + ".jpg"); 
+		}
+
+		public static DateTime GetTimelineLastWriteTime(){
+			return File.GetLastWriteTime (timelinePath);
 		}
 
 		public static void DeleteLocalImage(string id){

@@ -2,6 +2,7 @@
 using System.Net;
 using Board.Infrastructure;
 using Board.Interface;
+using Board.Interface.VenueInterface;
 using Board.JsonResponses;
 using Board.Schema;
 using Board.Screens;
@@ -51,6 +52,7 @@ namespace Board
 
 		public static User BoardUser;
 		public static CLLocationCoordinate2D UserLocation;
+		public static UIVenueInterface VenueInterface;
 		public static UIBoardInterface BoardInterface;
 
 
@@ -264,10 +266,10 @@ namespace Board
 		}
 
 		public static void OpenBoard(Board.Schema.Board board){
-			if (BoardInterface == null)
+			if (VenueInterface == null)
 			{
-				BoardInterface = new UIBoardInterface (board);
-				NavigationController.PushViewController (BoardInterface, true);
+				VenueInterface = new UIVenueInterface (board);
+				AppDelegate.NavigationController.PushViewController (VenueInterface, true);
 			}
 		}
 

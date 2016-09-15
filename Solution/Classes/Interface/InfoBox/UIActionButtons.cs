@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Board.Infrastructure;
+using Board.Interface.VenueInterface;
 using CoreGraphics;
 using Haneke;
 using Board.Facebook;
@@ -88,15 +89,21 @@ namespace Board.Interface
 			
 			// asynchroniously fetches like count from DB, if user liked the board, sets the touch event on the button & gets the facebook like count
 			try{
-				var likesDictionary = await CloudController.GetLikesAsync (UIBoardInterface.DownloadCancellation.Token, UIBoardInterface.board.Id);
+				
+				var likesDictionary = await CloudController.GetLikesAsync (UIVenueInterface.DownloadCancellation.Token, UIVenueInterface.board.Id);
 
 				// gets the likes
-				likes = likesDictionary[UIBoardInterface.board.Id];
+				likes = likesDictionary[UIVenueInterface.board.Id];
 
-				var isLikedDictionary = await CloudController.GetUserLikesAsync (UIBoardInterface.DownloadCancellation.Token, UIBoardInterface.board.Id);
+				var isLikedDictionary = await CloudController.GetUserLikesAsync (UIVenueInterface.DownloadCancellation.Token, UIVenueInterface.board.Id);
 
 				// gets if user liked it
-				isLiked = isLikedDictionary[UIBoardInterface.board.Id];
+				if (isLikedDictionary.ContainsKey(UIVenueInterface.board.Id)){
+					isLiked = isLikedDictionary[UIVenueInterface.board.Id];
+				}else{
+					isLiked = false;
+				}
+
 			}catch (OperationCanceledException){
 				Console.WriteLine ("Task got cancelled");
 			}
@@ -106,11 +113,11 @@ namespace Board.Interface
 
 			likeButton.TouchUpInside += (sender, e) => {
 				if (!isLiked) {
-					CloudController.SendLike (UIBoardInterface.board.Id);
+					CloudController.SendLike (UIVenueInterface.board.Id);
 					likes++;
 					likeButton.ChangeImage (fullHeart);
 				} else {
-					CloudController.SendDislike (UIBoardInterface.board.Id);
+					CloudController.SendDislike (UIVenueInterface.board.Id);
 					likes--;
 					likeButton.ChangeImage (emptyHeart);
 				}
@@ -120,7 +127,7 @@ namespace Board.Interface
 
 
 			// gets facebook likes
-			FacebookUtils.MakeGraphRequest (UIBoardInterface.board.FacebookId, "?fields=fan_count", LoadFanCount);
+			FacebookUtils.MakeGraphRequest (UIVenueInterface.board.FacebookId, "?fields=fan_count", LoadFanCount);
 		}
 
 		private void LoadFanCount(List<FacebookElement> obj){

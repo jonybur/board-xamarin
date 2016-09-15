@@ -70,8 +70,8 @@ namespace Board.Infrastructure
 			UIApplication.SharedApplication.OpenUrl(url);
 		}
 
-		public static void OpenInstagram(string locationId){
-			NSUrl url = new NSUrl("instagram://location?id="+locationId);
+		public static void OpenInstagram(string userName){
+			NSUrl url = new NSUrl("instagram://user?username="+userName);
 			UIApplication.SharedApplication.OpenUrl (url);
 		}
 

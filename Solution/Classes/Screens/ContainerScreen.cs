@@ -103,8 +103,7 @@ namespace Board.Screens
 
 		public override void ViewDidDisappear(bool animated)
 		{
-			CurrentScreenViewController.ViewDidDisappear (animated);
-			MemoryUtility.ReleaseUIViewWithChildren (View);
+			AppDelegate.VenueInterface = null;
 		}
 
 		public void BringSideMenuUp(string fromScreen)

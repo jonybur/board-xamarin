@@ -23,9 +23,8 @@ namespace Board.Screens.Controls
 			ListButtons = new List<UIMultiActionButton> ();
 			UserInteractionEnabled = true;
 
-			CreateFeaturedButton ();
 			CreateTimelineButton ();
-			CreateCalendarButton ();
+			CreateFeaturedButton ();
 			CreateDirectoryButton ();
 			CreateMapButton ();
 
@@ -33,20 +32,19 @@ namespace Board.Screens.Controls
 				AddSubview (button);
 			}
 
-			float xposition = AppDelegate.ScreenWidth / 16;
+			float xposition = AppDelegate.ScreenWidth / 8;
 
-			if (ListButtons.Count == 5) {
-				//ListButtons [0].SetFullImage ();
-				ListButtons [0].Center = new CGPoint (xposition * 2, ListButtons [0].Center.Y);
-				ListButtons [1].Center = new CGPoint (xposition * 5, ListButtons [1].Center.Y);
-				ListButtons [2].Center = new CGPoint (xposition * 8, ListButtons [2].Center.Y);
-				ListButtons [3].Center = new CGPoint (xposition * 11, ListButtons [3].Center.Y);
-				ListButtons [4].Center = new CGPoint (xposition * 14, ListButtons [4].Center.Y);
+			if (ListButtons.Count == 4) {
+				ListButtons [0].SetFullImage ();
+				ListButtons [0].Center = new CGPoint (xposition * 1, ListButtons [0].Center.Y);
+				ListButtons [1].Center = new CGPoint (xposition * 3, ListButtons [1].Center.Y);
+				ListButtons [2].Center = new CGPoint (xposition * 5, ListButtons [2].Center.Y);
+				ListButtons [3].Center = new CGPoint (xposition * 7, ListButtons [3].Center.Y);
 			}
 		}
 
 		private void CreateTimelineButton(){
-			var timelineButton = new UIMultiActionButton ("empty_timeline", "full_timeline");
+			var timelineButton = new UIMultiActionButton ("empty_house", "full_house");
 
 			timelineButton.TouchUpInside += delegate {
 
@@ -57,7 +55,7 @@ namespace Board.Screens.Controls
 
 				UnselectAllButtons();
 				timelineButton.SetFullImage();
-				SwitchScreen(0, "Timeline", UIFont.SystemFontOfSize(20, UIFontWeight.Medium));
+				SwitchScreen(0, "Board", AppDelegate.Narwhal26);
 			};
 
 			ListButtons.Add (timelineButton);	
@@ -147,7 +145,7 @@ namespace Board.Screens.Controls
 			var containerScreen = AppDelegate.NavigationController.TopViewController as ContainerScreen;
 			var mainMenuScreen = containerScreen.CurrentScreenViewController as MainMenuScreen;
 
-			mainMenuScreen.PlaceNewScreen (UIMagazineServices.Pages[indexOfCurrentViewController].ContentDisplay, screenName, newFont, newColor);
+			mainMenuScreen.PlaceNewScreen (UIMagazine.Pages[indexOfCurrentViewController], screenName, newFont, newColor);
 		}
 
 		private void SwitchScreen(int indexOfCurrentViewController, string screenName, UIFont newFont){
@@ -158,7 +156,7 @@ namespace Board.Screens.Controls
 			var containerScreen = AppDelegate.NavigationController.TopViewController as ContainerScreen;
 			var mainMenuScreen = containerScreen.CurrentScreenViewController as MainMenuScreen;
 
-			mainMenuScreen.ScrollsUp ();
+			mainMenuScreen.ScrollsUp (true);
 		}
 	}
 

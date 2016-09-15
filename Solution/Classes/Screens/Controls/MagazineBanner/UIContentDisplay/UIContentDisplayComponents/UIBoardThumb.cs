@@ -131,16 +131,7 @@ namespace Board.Screens.Controls
 			AddSubview (imageView);
 
 			TouchEvent = delegate {
-
-				CATransaction.Begin ();
-
-				BigTed.BTProgressHUD.Show();
-
-				CATransaction.Commit();
-
-				CATransaction.CompletionBlock = delegate {
-					AppDelegate.OpenBoard(board);
-				};
+				AppDelegate.OpenBoard(board);
 			};
 
 			UserInteractionEnabled = true;

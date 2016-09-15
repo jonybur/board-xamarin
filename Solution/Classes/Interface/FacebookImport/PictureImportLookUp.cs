@@ -58,7 +58,7 @@ namespace Board.Interface.FacebookImport
 			var descriptionBox = CreateDescriptionBox (picture.Description);
 			descriptionBox.Center = new CGPoint (AppDelegate.ScreenWidth / 2, LikeButton.Frame.Top - descriptionBox.Frame.Height / 2 - 5);
 
-			View.AddSubviews (ScrollView, descriptionBox, BackButton, FacebookButton, NextButton);
+			View.AddSubviews (ScrollView, descriptionBox, BackButton, NextButton);
 		}
 
 		private UITextView CreateDescriptionBox(string description){

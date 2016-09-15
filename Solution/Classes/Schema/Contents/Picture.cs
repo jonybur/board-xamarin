@@ -32,6 +32,7 @@ namespace Board.Schema
 		}
 
 		public string ImageUrl;
+		public string ThumbnailImageUrl;
 
 		public string Type {
 			get { return "pictures"; }
@@ -90,6 +91,11 @@ namespace Board.Schema
 			longitude = boardCoordinate.Longitude;
 
 			boardId = board.Id;
+		}
+
+		public Picture (string id)
+		{
+			Id = id;
 		}
 
 		public Picture(FacebookPhoto facebookPhoto, CGPoint center, CGAffineTransform transform){

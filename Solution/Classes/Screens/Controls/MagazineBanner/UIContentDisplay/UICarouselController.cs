@@ -26,16 +26,18 @@ namespace Board.Screens.Controls
 			foreach (var entries in magazine.data.entries) {
 				var board = CloudController.GenerateBoardFromBoardResponse (entries.board);
 
+				var currentSection = entries.section.Substring (1, entries.section.Length - 1);
+
 				if (section == string.Empty) {
-					section = entries.section;
+					section = currentSection;
 					magazineList.Add (board);
 					continue;
 				}
-
-				if (section != entries.section) {
+					
+				if (section != currentSection) {
 					magazineDictionary.Add (section, magazineList);
 
-					section = entries.section;
+					section = currentSection;
 					magazineList = new List<Board.Schema.Board> ();
 				}
 				magazineList.Add (board);
@@ -48,23 +50,23 @@ namespace Board.Screens.Controls
 			foreach (var entry in magazineDictionary){
 				var carousel = new UICarouselController (entry.Value, entry.Key);
 
-				carousel.View.Center = new CGPoint (AppDelegate.ScreenWidth / 2,
+				carousel.Center = new CGPoint (AppDelegate.ScreenWidth / 2,
 					UIMagazineBannerPage.Height + UIMenuBanner.Height + SeparationBetweenCarousels +
-					carousel.View.Frame.Height / 2 + (carousel.View.Frame.Height + SeparationBetweenCarousels) * i);
+					carousel.Frame.Height / 2 + (carousel.Frame.Height + SeparationBetweenCarousels) * i);
 				testCarousels.Add (carousel);
 
-				ListViews.Add (carousel.View);
+				ListViews.Add (carousel);
 
 				ListThumbs.AddRange (carousel.ListThumbs);
 				i++;
 			}
-			var size = new CGSize (AppDelegate.ScreenWidth, (float)testCarousels[testCarousels.Count - 1].View.Frame.Bottom + UIActionButton.Height * 2 + SeparationBetweenCarousels);
+			var size = new CGSize (AppDelegate.ScreenWidth, (float)testCarousels[testCarousels.Count - 1].Frame.Bottom + UIActionButton.Height * 2 + SeparationBetweenCarousels);
 			Frame = new CGRect (0, 0, size.Width, size.Height);
 			UserInteractionEnabled = true;
 		}
 	}
 
-	public class UICarouselController : UIViewController
+	public class UICarouselController : UIView
 	{
 		UILocationLabel TitleLabel;
 		UIScrollView ScrollView;
@@ -73,10 +75,6 @@ namespace Board.Screens.Controls
 		public const int ItemSeparation = 20;
 
 		public UICarouselController(List<Board.Schema.Board> boardList, string titleText){
-			if (Char.IsNumber (titleText [0])) {
-				titleText = titleText.Substring (1, titleText.Length - 1);
-			}
-				
 			TitleLabel = new UILocationLabel (titleText, ItemSeparation);
 			ListThumbs = new List<UIContentThumb> ();
 
@@ -87,9 +85,15 @@ namespace Board.Screens.Controls
 			for (int i = 0; i < boardList.Count; i++) {
 				var carouselLargeItem = new UICarouselLargeItem (boardList[i]);
 				carouselLargeItem.Center = new CGPoint (ItemSeparation + carouselLargeItem.Frame.Width / 2 + (carouselLargeItem.Frame.Width + ItemSeparation) * i,
-														carouselLargeItem.Frame.Height / 2);
+					carouselLargeItem.Frame.Height / 2);
 				ListThumbs.Add (carouselLargeItem);
-				ScrollView.AddSubview (carouselLargeItem);
+
+				if (carouselLargeItem.Frame.Left < (AppDelegate.ScreenWidth + ScrollView.ContentOffset.X) &&
+					carouselLargeItem.Frame.Right > (ScrollView.ContentOffset.X)){
+					ScrollView.AddSubview(carouselLargeItem);
+				}
+
+				ScrollView.ContentSize = new CGSize (ScrollView.ContentSize.Width, 1000);
 			}
 			ScrollView.ContentSize = new CGSize (ItemSeparation + boardList.Count * (UICarouselLargeItem.Width + ItemSeparation),
 				UICarouselLargeItem.Height);
@@ -99,7 +103,32 @@ namespace Board.Screens.Controls
 			Add (TitleLabel);
 			Add (ScrollView);
 
-			View.Frame = new CGRect(0,0, AppDelegate.ScreenWidth, ScrollView.Frame.Bottom);
+			Frame = new CGRect(0,0, AppDelegate.ScreenWidth, ScrollView.Frame.Bottom);
+
+			ScrollView.Scrolled += (sender, e) => {
+				foreach (var thumb in ListThumbs){
+					if (thumb.Frame.Left < (AppDelegate.ScreenWidth + ScrollView.ContentOffset.X) &&
+						thumb.Frame.Right > (ScrollView.ContentOffset.X)){
+						ScrollView.AddSubview(thumb);
+					}else{
+						thumb.RemoveFromSuperview();
+					}
+				}
+			};
+		}
+
+		bool hasBeenActivated = false;
+
+		public void ActivateImage(){
+			if (hasBeenActivated) {
+				return;
+			}
+
+			foreach (UICarouselLargeItem thumb in ListThumbs) {
+				thumb.SetPictureImage ();
+			}
+
+			hasBeenActivated = true;
 		}
 	}
 
@@ -109,18 +138,28 @@ namespace Board.Screens.Controls
 		public const int Height = 100;
 		public const int TextSpace = 60;
 
+		UIImageView backgroundImageView, logoImageView;
+		string coverUrl, logoUrl;
+
+		public void SetPictureImage(){
+			backgroundImageView.SetImage (new NSUrl (coverUrl));
+			logoImageView.SetImage (new NSUrl (logoUrl));
+		}
+
 		public UICarouselLargeItem (Schema.Board board) {
 			Frame = new CGRect (0, 0, Width, Height);
 
-			var backgroundImageView = new UIImageView ();
+			backgroundImageView = new UIImageView ();
 			backgroundImageView.Frame = Frame;
 			backgroundImageView.BackgroundColor = UIColor.FromRGB(250,250,250);
 			backgroundImageView.ContentMode = UIViewContentMode.ScaleAspectFill;
 			backgroundImageView.SetImage (new NSUrl (board.CoverImageUrl));
 			backgroundImageView.ClipsToBounds = true;
 			backgroundImageView.Layer.CornerRadius = 10;
+			coverUrl = board.CoverImageUrl;
+			logoUrl = board.LogoUrl;
 
-			var logoImageView = new UIImageView ();
+			logoImageView = new UIImageView ();
 			logoImageView.Frame = new CGRect (0, 0, Height / 2, Height / 2);
 			logoImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
 			logoImageView.SetImage (new NSUrl (board.LogoUrl));
@@ -147,20 +186,17 @@ namespace Board.Screens.Controls
 			AddSubviews (backgroundImageView, backgroundLogoImageView, logoImageView, nameLabel);
 
 			TouchEvent = (sender, e) => {
+				
+				CATransaction.Begin ();
 
-				if (AppDelegate.BoardInterface == null)
-				{
-					CATransaction.Begin ();
+				Alpha = 0.75f;
 
-					BigTed.BTProgressHUD.Show();
-					Alpha = 0.75f;
+				CATransaction.Commit();
 
-					CATransaction.Commit();
-
-					CATransaction.CompletionBlock = delegate {
-						AppDelegate.OpenBoard(board);
-					};
-				}
+				CATransaction.CompletionBlock = delegate {
+					AppDelegate.OpenBoard(board);
+					Alpha = 1f;
+				};
 			};
 		}
 		private UILabel CreateNameLabel (string nameString, float width)

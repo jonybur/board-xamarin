@@ -147,7 +147,7 @@ namespace Board.Interface.Widgets
 
 					if (content is Video)
 					{
-						lookUp = new VideoLookUp((Video)content);
+						//lookUp = new VideoLookUp((Video)content);
 					} 
 					else if (content is Picture)
 					{
@@ -156,11 +156,11 @@ namespace Board.Interface.Widgets
 					else if (content is Announcement)
 					{
 						return;
-						lookUp = new AnnouncementLookUp((Announcement)content);
+						//lookUp = new AnnouncementLookUp((Announcement)content);
 					}
 					else if (content is BoardEvent)
 					{
-						lookUp = new EventLookUp((BoardEvent)content);
+						//lookUp = new EventLookUp((BoardEvent)content);
 					}
 					else if (content is Map)
 					{
@@ -175,7 +175,7 @@ namespace Board.Interface.Widgets
 						lookUp = new UILookUp();
 					}
 
-					AppDelegate.PushViewLikePresentView(lookUp);
+					//AppDelegate.PushViewLikePresentView(lookUp);
 				}
 			});
 

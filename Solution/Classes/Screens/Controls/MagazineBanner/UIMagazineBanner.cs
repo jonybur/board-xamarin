@@ -2,7 +2,6 @@
 using System.Linq;
 using Board.Infrastructure;
 using Board.Schema;
-using Board.Utilities;
 using Board.Facebook;
 using Board.JsonResponses;
 using System;
@@ -13,24 +12,9 @@ using UIKit;
 
 namespace Board.Screens.Controls
 {
-	public static class UIMagazineServices{
-		public static UIMagazinePage[] Pages;
-
-		public static UIViewController[] PageBanners{
-			get {
-				return Pages.Select(x => x.Banner).ToArray();
-			}
-		}
-	}
-
 	public class UIMagazine{
-		// contains bannercontroller, switches between pages banners
-		public UIMagazineBanner Banner;
 		// contains (page banner + content display)
-		public UIMagazinePage[] Pages{
-			get { return UIMagazineServices.Pages; }
-			set { UIMagazineServices.Pages = value; }
-		}
+		public static List<UIContentDisplay> Pages;
 
 		public UIMagazine(List<Board.Schema.Board> boardList){
 			GeneratePages (boardList);
@@ -42,40 +26,74 @@ namespace Board.Screens.Controls
 
 		static MagazineResponse magazine;
 
-		static class TimelineContent{
+		public static class TimelineContent{
 			public static List<Content> ContentList;
 			public static DateTime UpdatedTime;
 
-			public static void Update(){
-				ContentList = CloudController.GetTimeline (AppDelegate.UserLocation);
+			private static List<Content> GetStoredTimeline(){
 
-				var publicationIds = TimelineContent.ContentList.Select (x => x.Id).ToArray ();
+				string timeline = StorageController.GetInstagramTimeline ();
 
-				ContentLikes = CloudController.GetLikesSync (publicationIds);
-				UserLikes = CloudController.GetUserLikes (publicationIds);
-
-				foreach (var content in TimelineContent.ContentList) {
-					FacebookUtils.MakeGraphRequest (content.FacebookId, "?fields=likes", LoadFacebookLike);
-				}
-
-				UpdatedTime = DateTime.Now;
+				return TimelineToContentList (timeline);
 			}
 
-			private static void LoadFacebookLike(List<FacebookElement> obj){
+			private static async System.Threading.Tasks.Task<List<Content>> GetServerTimeline(){
 
-				if (obj.Count > 0) {
-					int facebookLikeCount = 0;
-					var likes = (FacebookLikes)obj [0];
+				string timeline = await CloudController.GetInstagramTimeline();
 
-					if (likes.LikesData != null) {
-						facebookLikeCount = CommonUtils.CountStringOccurrences (likes.LikesData, "id");
+				StorageController.StoreInstagramTimeline (timeline);
+
+				return TimelineToContentList (timeline);
+			}
+
+			private static List<Content> TimelineToContentList(string instagramTimeline){
+
+				if (string.IsNullOrEmpty (instagramTimeline)) {
+					return new List<Content> ();
+				}
+
+				var instagramObject = JObject.Parse (instagramTimeline);
+
+				var timelineContent = new List<Content> ();
+
+				foreach (var publication in instagramObject["rows"].Select(x=>x["value"])) {
+
+					var item = publication.ToObject<InstagramPageResponse.Item> ();
+
+					var content = InstagramPageResponse.GenerateContent (item);
+					if (content != null) {
+						timelineContent.Add (content);
 					}
 
-					var contentId = TimelineContent.ContentList.Find (x => x.FacebookId == obj [0].Id).Id;
-					ContentLikes [contentId] += facebookLikeCount;
-
-					UITimelineContentDisplay.UpdateWidgetLikeCount (contentId, ContentLikes [contentId]);
 				}
+
+				return timelineContent;
+			}
+
+			public static async System.Threading.Tasks.Task Initialize(){
+				// get from all venues
+				ContentList = GetStoredTimeline();
+
+				if (ContentList.Count == 0) {
+					ContentList = await GetServerTimeline ();
+					UpdatedTime = DateTime.Now;
+				} else {
+					UpdatedTime = StorageController.GetTimelineLastWriteTime();
+				}
+			}
+
+			public static async System.Threading.Tasks.Task Update(List<Board.Schema.Board> boardList){
+				if ((DateTime.Now - UpdatedTime).TotalMinutes > 5) {
+					var timelineContent = (UITimelineContentDisplay)UIMagazine.Pages [0];
+					timelineContent.SetProgressView ();
+
+					ContentList = await GetServerTimeline();
+					UpdatedTime = DateTime.Now;
+
+					// should update timeline
+					timelineContent.UpdateTimeline(ContentList);
+				}
+
 
 			}
 		}
@@ -90,86 +108,37 @@ namespace Board.Screens.Controls
 			UIMagazine.UserLikes [contentId] = false;
 		}
 
-		// generates the magazine headers
-		private void GeneratePages(List<Board.Schema.Board> boardList){
+		public static bool TheresMagazine, TheresTimeline;
 
-			if (magazine == null || magazine.UpdatedTime.TimeOfDay.TotalMinutes + 60 < DateTime.Now.TimeOfDay.TotalMinutes) {
-				Console.WriteLine ("Gets magazine");
+		// generates the magazine headers
+		public static async System.Threading.Tasks.Task GeneratePages(List<Board.Schema.Board> boardList){
+
+			Pages = new List<UIContentDisplay> ();
+
+			if (TimelineContent.ContentList == null || TimelineContent.UpdatedTime.TimeOfDay.TotalMinutes + 10 < DateTime.Now.TimeOfDay.TotalMinutes){
+				await TimelineContent.Initialize ();
+			}
+
+			TheresTimeline = TimelineContent.ContentList.Count > 0;
+
+			if (TheresTimeline) {
+				Pages.Add (new UITimelineContentDisplay (boardList, TimelineContent.ContentList));
+				TimelineContent.Update (boardList);
+			}
+
+			if (magazine == null || !TheresMagazine || magazine.UpdatedTime.TimeOfDay.TotalMinutes + 60 < DateTime.Now.TimeOfDay.TotalMinutes) {
+				Console.WriteLine ("Gets magazine"); 
 				magazine = CloudController.GetMagazine (AppDelegate.UserLocation);
 			}
 
-			bool theresMagazine = MagazineResponse.IsValidMagazine (magazine);
+			TheresMagazine = MagazineResponse.IsValidMagazine (magazine);
 
-			if (TimelineContent.ContentList == null || TimelineContent.UpdatedTime.TimeOfDay.TotalMinutes + 10 < DateTime.Now.TimeOfDay.TotalMinutes){
-				Console.WriteLine ("Gets timeline");
-				TimelineContent.Update ();
+			if (TheresMagazine) {
+				Pages.Add (new UICarouselContentDisplay (magazine));
 			}
 
-			bool theresTimeline = TimelineContent.ContentList.Count > 0;
+			Pages.Add (new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Distance, 0, UIActionButton.Height));
 
-			var pagesName = new List<string> ();
-
-			if (theresTimeline) {
-				pagesName.Add ("TRENDING");
-			}
-
-			if (theresMagazine) {
-				pagesName.Add("FEATURED");
-			}
-
-			pagesName.Add("DIRECTORY");
-
-			var pages = new UIMagazinePage[pagesName.Count];
-
-			for (int i = 0; i < pagesName.Count; i++) {
-				pages [i] = new UIMagazinePage ();
-
-				var banner = new UIMagazineBannerPage (pagesName [i]);
-
-				var controller = new UIViewController ();
-				controller.Add (banner);
-				controller.View.Frame = banner.Frame;
-
-				pages [i].Banner = controller;
-			}
-
-			int screenNumber = 0;
-
-			if (theresTimeline) {
-				pages [screenNumber].ContentDisplay = new UITimelineContentDisplay (boardList, TimelineContent.ContentList);
-				screenNumber++;
-			}
-
-			if (theresMagazine) {
-				pages [screenNumber].ContentDisplay = new UICarouselContentDisplay (magazine);
-				screenNumber++;
-			}
-
-			pages [screenNumber].ContentDisplay = new UIThumbsContentDisplay (boardList, UIThumbsContentDisplay.OrderMode.Distance, UIMagazineBannerPage.Height, UIActionButton.Height);
-
-			Pages = pages;
-		}
-	}
-
-	public class UIMagazineBanner : UIView
-	{
-		public readonly UIMagazineBannerPageController MagazineBannerPageController;
-
-		public UIMagazineBanner ()
-		{
-			Frame = new CGRect(0, UIMenuBanner.Height, AppDelegate.ScreenWidth, UIMagazineBannerPage.Height);
-
-			BackgroundColor = UIColor.FromRGBA(0,0,0,0);
-
-			var backgroundImage = new UIImageView (new CGRect(0,0,Frame.Width, Frame.Height));
-			using (UIImage img = UIImage.FromFile ("./demo/magazine/nantucket.png")) {
-				var scaledImage = img.ImageScaledToFitSize (Frame.Size);
-				backgroundImage.Image = scaledImage;
-
-			}
-
-			MagazineBannerPageController = new UIMagazineBannerPageController (UIPageViewControllerTransitionStyle.Scroll, UIPageViewControllerNavigationOrientation.Horizontal, Frame.Size);
-			AddSubviews (backgroundImage, MagazineBannerPageController.View);
 		}
 	}
 

@@ -21,7 +21,7 @@ namespace Board.Schema
 			ProfilePicture = new UIImageView ();
 			ProfilePicture.Frame = new CGRect (0, 0, 150, 150);
 			ProfilePicture.ContentMode = UIViewContentMode.ScaleAspectFit;
-			ProfilePicture.SetImage ("./DefaultUser.png");
+			ProfilePicture.SetImage ("./defaultuser.png");
 		}
 
 		public void SetProfilePictureFromURL(string url){

@@ -1,15 +1,17 @@
-﻿using UIKit;
-using CoreGraphics;
+﻿using Board.Infrastructure;
 using Board.Schema;
 using Board.Utilities;
-using Board.Infrastructure;
 using CoreAnimation;
+using CoreGraphics;
+using System.Text.RegularExpressions;
+using Facebook.CoreKit;
 using Foundation;
 using Haneke;
+using UIKit;
 
 namespace Board.Screens.Controls
 {
-	public class UITimelineWidget : UIView{
+	public sealed class UITimelineWidget : UIView{
 		// includes logo, name, distance and time
 		UIView headerView;
 
@@ -25,15 +27,39 @@ namespace Board.Screens.Controls
 		// content being displayed in widget
 		Content content;
 
-		bool isLiked;
-		int likes;
-		UIImageView heartView;
+		UIImageView heartView, logoView;
+
+		string venueLogoUrl;
 		public UILabel LikeLabel;
+
+		bool isLiked, hasBeenActivated;
+		int likes;
 
 		const string emptyHeartImageUrl = "./boardinterface/infobox/emptylike.png";
 		const string fullHeartImageUrl = "./boardinterface/infobox/fulllike.png";
-
 		const int XMargin = 10;
+
+		public void MoveDown(){
+
+			Center = new CGPoint (Center.X, Center.Y + 50);
+		}
+
+		public void ActivateImage(){
+			if (hasBeenActivated) {
+				return;
+			}
+
+			if (timelineWidget is UITimelinePicture) {
+				var timelinePicture = ((UITimelinePicture)timelineWidget);
+				timelinePicture.SetPictureImage ();
+			}
+			logoView.SetImage (new NSUrl(venueLogoUrl));
+
+			hasBeenActivated = true;
+		}
+
+		// if null, no video
+		public UITimelineVideo timelineVideo;
 
 		public UITimelineWidget(Board.Schema.Board board, Content _content){
 			// makes the variable global
@@ -41,35 +67,43 @@ namespace Board.Screens.Controls
 
 			GenerateHeaderView(board);
 
-			float lastBottom = 0;
+			float lastBottom = 0, widgetBottom = 0;
 
-			if (content is Picture){
+			if (content is Picture) {
+
 				Picture picture = (Picture)content;
 
-				timelineWidget = new UITimelinePicture(picture.ImageUrl);
-				timelineWidget.Center = new CGPoint(AppDelegate.ScreenWidth / 2,
+				timelineWidget = new UITimelinePicture (picture.ImageUrl);
+
+				timelineWidget.Center = new CGPoint (AppDelegate.ScreenWidth / 2,
 					headerView.Frame.Bottom + timelineWidget.Frame.Height / 2 + 10);
 
-				GenerateLikeView();
-				likeButton.Center = new CGPoint(likeButton.Center.X, timelineWidget.Frame.Bottom + likeButton.Frame.Height / 2);
+				widgetBottom = (float)timelineWidget.Frame.Bottom;
 
-				if (!string.IsNullOrEmpty(picture.Description)){
-					GenerateDescriptionView(board.Name, picture.Description);
-					AddSubview(descriptionView);
-				}
+			} else if (content is Video) {
 
+				Video video = (Video)content;
+
+				timelineVideo = new UITimelineVideo (video.VideoUrl, video.ImageUrl, content.Id);
+
+				timelineWidget = timelineVideo.View;
+
+				timelineWidget.Center = new CGPoint (timelineWidget.Frame.Width / 2,
+					headerView.Frame.Bottom + timelineWidget.Frame.Height / 2 + 10);
+
+				timelineWidget.BackgroundColor = UIColor.Clear;
+
+				widgetBottom = (float)timelineWidget.Frame.Y + AppDelegate.ScreenWidth;
+			}
+
+			GenerateLikeView ();
+			likeButton.Center = new CGPoint (likeButton.Center.X, widgetBottom + likeButton.Frame.Height / 2);
+
+			if (!string.IsNullOrEmpty (_content.Description)) {
+				GenerateDescriptionView (board.Name, _content.Description);
+				AddSubview (descriptionView);
 				lastBottom = (float)descriptionView.Frame.Bottom;
-
-			} else if (content is Announcement) {
-				Announcement announcement = (Announcement)content;
-
-				timelineWidget = new UITimelineAnnouncement(announcement.Text);
-				timelineWidget.Center = new CGPoint(AppDelegate.ScreenWidth / 2,
-					headerView.Frame.Bottom + timelineWidget.Frame.Height / 2 + 20);
-
-				GenerateLikeView();
-				likeButton.Center = new CGPoint(likeButton.Center.X, timelineWidget.Frame.Bottom + 10 + likeButton.Frame.Height / 2);
-
+			} else {
 				lastBottom = (float)likeButton.Frame.Bottom;
 			}
 
@@ -83,7 +117,7 @@ namespace Board.Screens.Controls
 		}
 
 		private void GenerateHeaderView(Board.Schema.Board board){
-
+			venueLogoUrl = board.LogoUrl;
 			int headerHeight = 40;
 
 			headerView = new UIView ();
@@ -92,33 +126,32 @@ namespace Board.Screens.Controls
 			var boardButton = new UIButton ();
 
 			boardButton.TouchUpInside += delegate {
-			
+
 				CATransaction.Begin ();
 
-				BigTed.BTProgressHUD.Show();
 				boardButton.Alpha = 0.75f;
 
 				CATransaction.Commit();
 
 				CATransaction.CompletionBlock = delegate {
 					AppDelegate.OpenBoard(board);
+					boardButton.Alpha = 1f;
 				};
 			};
 
 			boardButton.Frame = new CGRect (0, 0, headerView.Frame.Width * .7f, headerHeight);
 
-			var logoView = new UIImageView ();
+			logoView = new UIImageView ();
 			logoView.Frame = new CGRect (0, 0, headerHeight, headerHeight);
 			logoView.ContentMode = UIViewContentMode.ScaleAspectFit;
-			logoView.SetImage (new NSUrl(board.LogoUrl));
 			logoView.Layer.CornerRadius = logoView.Frame.Width / 2;
 			logoView.ClipsToBounds = true;
 
 			var nameView = new UILabel ();
 			nameView.Frame = new CGRect (logoView.Frame.Right + 10, 3, boardButton.Frame.Width, 20);
 			nameView.Text =  CommonUtils.FirstLetterOfEveryWordToUpper (board.Name);
-			nameView.Font = UIFont.SystemFontOfSize (16, UIFontWeight.Medium);//AppDelegate.Narwhal16;
-			nameView.TextColor = AppDelegate.BoardOrange;
+			nameView.Font = UIFont.SystemFontOfSize (16, UIFontWeight.Medium);
+			nameView.TextColor = AppDelegate.BoardBlack;
 			nameView.AdjustsFontSizeToFitWidth = true;
 
 			var distanceView = new UILabel ();
@@ -126,8 +159,8 @@ namespace Board.Screens.Controls
 			var distance = CommonUtils.GetDistanceFromUserToBoard (board);
 			var formattedDistance = CommonUtils.GetFormattedDistance (distance);
 			distanceView.Text = formattedDistance;
-			distanceView.Font = UIFont.SystemFontOfSize (12, UIFontWeight.Light);//AppDelegate.Narwhal12;
-			distanceView.TextColor = UIColor.Black;
+			distanceView.Font = UIFont.SystemFontOfSize (12, UIFontWeight.Light);
+			distanceView.TextColor = AppDelegate.BoardBlack;
 			distanceView.AdjustsFontSizeToFitWidth = true;
 
 			boardButton.AddSubviews (logoView, nameView, distanceView);
@@ -135,7 +168,7 @@ namespace Board.Screens.Controls
 			var timeView = new UILabel();
 			string timeAgo = CommonUtils.GetFormattedTimeDifference (content.CreationDate);
 			timeView.Font = UIFont.SystemFontOfSize (14, UIFontWeight.Light);
-			timeView.TextColor = UIColor.FromRGBA(0,0,0,200);
+			timeView.TextColor = AppDelegate.BoardBlack;
 			timeView.Text = timeAgo;
 			var timeViewSize = timeView.Text.StringSize (timeView.Font);
 			timeView.Frame = new CGRect(0, 0, timeViewSize.Width, timeViewSize.Height);
@@ -154,18 +187,18 @@ namespace Board.Screens.Controls
 			heartView = new UIImageView ();
 			heartView.Frame = new CGRect (0, 0, heartSize, heartSize);
 
-			isLiked = UIMagazine.UserLikes[content.Id];
+			isLiked = StorageController.GetLike (content.Id);
 			var firstImage = isLiked ? fullHeartImageUrl : emptyHeartImageUrl;
 			heartView.SetImage (firstImage);
 
 			heartView.Center = new CGPoint (heartView.Frame.Width / 2, likeButton.Frame.Height / 2 - 5);
 
-			LikeLabel = new UILabel ();
 			LikeLabel = new UILabel();
 			LikeLabel.Font = UIFont.SystemFontOfSize(18, UIFontWeight.Light);
 
-			likes = UIMagazine.ContentLikes[content.Id];
+			likes = content.Likes;
 			LikeLabel.Text = likes.ToString();
+			LikeLabel.TextColor = AppDelegate.BoardBlack;
 
 			var sizeLikeLabel = LikeLabel.Text.StringSize (LikeLabel.Font);
 			LikeLabel.Frame = new CGRect(0, 0, sizeLikeLabel.Width * 2, sizeLikeLabel.Height);
@@ -185,21 +218,20 @@ namespace Board.Screens.Controls
 
 		private void Like(){
 			if (!isLiked){
-				
-				CloudController.SendLike(content.Id);
-				likes++;
 
-				UIMagazine.AddLikeToContent (content.Id);
+				likes++;
 				heartView.SetImage(fullHeartImageUrl);
 
 			} else {
-				
-				CloudController.SendDislike(content.Id);
-				likes--;
 
-				UIMagazine.RemoveLikeToContent (content.Id);
+				likes--;
 				heartView.SetImage(emptyHeartImageUrl);
+
 			}
+
+			StorageController.ActionLike (content.Id);
+			AppEvents.LogEvent ("likesTimelineWidget");
+
 			LikeLabel.Text = likes.ToString();
 			isLiked = !isLiked;
 		}
@@ -207,40 +239,64 @@ namespace Board.Screens.Controls
 		private void GenerateDescriptionView(string boardName, string description){
 			var lineView = new UIImageView ();
 			lineView.Frame = new CGRect (0, 0, AppDelegate.ScreenWidth - XMargin * 4, 1);
-			lineView.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 40);
+			lineView.BackgroundColor = AppDelegate.BoardBlack;
+			lineView.Alpha = 0.7f;
 
 			descriptionView = new UITextView ();
 			descriptionView.Frame = new CGRect (XMargin * 2, likeButton.Frame.Bottom - 10, AppDelegate.ScreenWidth - XMargin * 4, 14);
 			descriptionView.ScrollEnabled = false;
 			descriptionView.Editable = false;
+			//descriptionView.Selectable = false;
 			descriptionView.DataDetectorTypes = UIDataDetectorType.Link;
+			descriptionView.TintColor = AppDelegate.BoardBlue;
 
 			boardName = boardName.ToUpper ();
-
-			var boardNameAttributes = new UIStringAttributes {
-				Font = UIFont.SystemFontOfSize(14, UIFontWeight.Bold)
-			};
 
 			var descriptionNameAttributes = new UIStringAttributes {
 				Font = UIFont.SystemFontOfSize (14, UIFontWeight.Regular)
 			};
 
-			var attributedString = new NSMutableAttributedString(boardName + " " + description);
-			attributedString.SetAttributes(boardNameAttributes, new NSRange(0, boardName.Length));
-			attributedString.SetAttributes(descriptionNameAttributes, new NSRange(boardName.Length, description.Length+1));
+			var attributedString = new NSMutableAttributedString(description);
+			attributedString.SetAttributes(descriptionNameAttributes, new NSRange(0, description.Length));
+
+			SetRecognizers (ref attributedString, '@', "user");
+			//SetRecognizers (ref attributedString, '#', "hashtag");
 
 			descriptionView.AttributedText = attributedString;
 
 			var size = descriptionView.SizeThatFits (descriptionView.Frame.Size);
 			descriptionView.Frame = new CGRect (descriptionView.Frame.X, descriptionView.Frame.Y, descriptionView.Frame.Width, size.Height);
+			descriptionView.TextColor = AppDelegate.BoardBlack;
+			descriptionView.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 
 			descriptionView.AddSubview (lineView);
 		}
 
+		private void SetRecognizers(ref NSMutableAttributedString attributedString, char characterKey, string deepLinkKey){
+			var linkAttributes = new UIStringAttributes {
+				Font = UIFont.SystemFontOfSize(14, UIFontWeight.Regular)
+			};
+
+			// ATS
+			var regex = new Regex(@"(?<="+characterKey+@")\w+");
+			var matches = regex.Matches(attributedString.Value);
+			foreach(Match m in matches) {
+				var match = m.ToString ();
+				var index = attributedString.Value.IndexOf (match, System.StringComparison.Ordinal) - 1;
+				linkAttributes.Link = NSUrl.FromString ("clubby://"+ deepLinkKey +"?id=" + match);
+
+				if (index - 1 > 0) {
+					if (attributedString.Value [index - 1] == ' ') {
+						attributedString.SetAttributes (linkAttributes, new NSRange (index, match.Length + 1));
+					}
+				} else {
+					attributedString.SetAttributes (linkAttributes, new NSRange (index, match.Length + 1));
+				}
+			}
+		}
+
 		private UITapGestureRecognizer SetNewDoubleTapGestureRecognizer(){
-			var doubletap = new UITapGestureRecognizer (tg => {
-				Like();
-			});
+			var doubletap = new UITapGestureRecognizer (tg => Like ());
 
 			doubletap.NumberOfTapsRequired = 2;
 			doubletap.DelaysTouchesBegan = true;
@@ -248,16 +304,51 @@ namespace Board.Screens.Controls
 			return doubletap;
 		}
 
+
+		public sealed class UITimelineVideo : UIRepeatVideo {
+
+			UIImageView topButton;
+			public string Id;
+
+			public UITimelineVideo(string _url, string imageUrl, string contentId) {
+				Id = contentId;
+				var frame = new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenWidth);
+				this.Initialize(frame, new NSUrl(_url));
+
+				topButton = new UIImageView(frame);
+
+				var tap = new UITapGestureRecognizer (obj => {
+
+					this.playerLayer.Player.Muted = !this.playerLayer.Player.Muted;
+
+					if (this.playerLayer.Player.Muted){
+						UITimelineContentDisplay.VideosToMute.Remove(Id);
+					}else{
+						UITimelineContentDisplay.VideosToMute.Add(Id);
+					}
+
+				});
+
+				topButton.UserInteractionEnabled = true;
+				topButton.AddGestureRecognizer(tap);
+
+				this.Add(topButton);
+			}
+
+		}
+
 		sealed class UITimelinePicture : UIImageView {
 
-			public UITimelinePicture(string url) {
+			string Url;
+
+			public UITimelinePicture(string _url) {
+				Url = _url;
 				this.Frame = new CGRect(0, 0, AppDelegate.ScreenWidth, AppDelegate.ScreenWidth);
 				this.ContentMode = UIViewContentMode.ScaleAspectFit;
-				if (!string.IsNullOrEmpty(url)){
-					this.SetImage(new NSUrl(url));
-				}else{
-					this.BackgroundColor = UIColor.Red;
-				}
+			}
+
+			public void SetPictureImage(){
+				this.SetImage(new NSUrl(Url));
 			}
 		}
 
@@ -274,8 +365,8 @@ namespace Board.Screens.Controls
 				var size = this.SizeThatFits(this.Frame.Size);
 				this.Frame = new CGRect(this.Frame.X, this.Frame.Y, this.Frame.Width, size.Height);
 			}
+
 		}
 
 	}
 }
-

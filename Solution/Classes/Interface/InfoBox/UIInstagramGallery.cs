@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
-using UIKit;
-using Board.Interface.LookUp;
-using CoreGraphics;
-using MGImageUtilitiesBinding;
 using Board.Infrastructure;
+using Board.Interface.VenueInterface;
+using Board.Schema;
+using CoreGraphics;
+using Board.Interface.LookUp;
+using Foundation;
+using Haneke;
+using UIKit;
 
 namespace Board.Interface
 {
@@ -11,78 +14,84 @@ namespace Board.Interface
 		public static float ButtonSize;
 		List<UIButton> InstagramPhotos;
 
-		public UIInstagramGallery (float width, float yposition, List<UIImage> images){
+		public UIInstagramGallery (float width, float yposition, List<Content> contents, string instagramId){
 			ScrollEnabled = false;
-			ButtonSize = width / 3 - 10;
+			ButtonSize = width / 3 - 1;
 			Frame = new CGRect (0, 0, width, ButtonSize * 2);
 
 			InstagramPhotos = new List<UIButton> ();
 
-			int imagesCount = (images.Count > 11) ? 11 : images.Count;
+			int imagesCount = (contents.Count > 11) ? 11 : contents.Count;
 
 			if (imagesCount != 0) {
-				for (int i = 0; i < imagesCount; i++) {
-					SetImage (images [i]);
+				foreach (var content in contents) {
+					if (!(content is Picture)) {
+						continue;
+					}
+					SetImage ((Picture)content);
 				}
-				SetInstagramThumb ();
+
 			}
+			SetInstagramThumb (instagramId);
 
 			Fill ();
 
 			Center = new CGPoint (Center.X, yposition + Frame.Height/2);
 		}
 
-		private void SetInstagramThumb(){
-			var image = UIImage.FromFile ("./boardinterface/infobox/viewmore2.png");
+		private void SetInstagramThumb(string instagramId){
+			if (string.IsNullOrEmpty (instagramId)) {
+				return;
+			}
+
 			var pictureButton = new UIButton(new CGRect (0, 0, ButtonSize, ButtonSize));
-			var fixedImg = image.ImageCroppedToFitSize(pictureButton.Frame.Size);
-			var imageView = new UIImageView (fixedImg);
-			pictureButton.Alpha = .75f;
+			var imageView = new UIImageView (pictureButton.Frame);
+			imageView.SetImage ("./boardinterface/infobox/viewmore2.png");
+			pictureButton.Alpha = .8f;
 			pictureButton.AddSubview(imageView);
-			pictureButton.Layer.CornerRadius = 10;
 			pictureButton.ClipsToBounds = true;
 			pictureButton.TouchUpInside += (sender, e) => {
 				// opens instagram
 				if (AppsController.CanOpenInstagram()){
-					AppsController.OpenInstagram("788029");
+					AppsController.OpenInstagram(instagramId);
+				} else {
+					var alert = UIAlertController.Create("Instagram is not installed", "To use this function please install Instagram", UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+					AppDelegate.NavigationController.PresentViewController (alert, true, null);
 				}
 
-				//location?id=LOCATION_ID
 			};
 
 			InstagramPhotos.Add(pictureButton);
 		}
 
-		private void SetImage (UIImage image){
-			if (image == null) {
-				return;
-			}
-
+		private void SetImage (Picture picture){
 			var pictureButton = new UIButton(new CGRect (0, 0, ButtonSize, ButtonSize));
-			var fixedImg = image.ImageCroppedToFitSize(pictureButton.Frame.Size);
-			var imageView = new UIImageView (fixedImg);
+
+			var imageView = new UIImageView (pictureButton.Frame);
+			imageView.SetImage (new NSUrl(picture.ThumbnailImageUrl));
+			imageView.ContentMode = UIViewContentMode.ScaleAspectFill;
+
 			pictureButton.AddSubview(imageView);
-			pictureButton.Layer.CornerRadius = 10;
 			pictureButton.ClipsToBounds = true;
 			pictureButton.TouchUpInside += (sender, e) => {
-				var picture = new Board.Schema.Picture(image, "", new CGPoint(), "", CGAffineTransform.MakeIdentity());
-				var pictureLookUp = new PictureLookUp(picture, false);
-				AppDelegate.PushViewLikePresentView(pictureLookUp);
+				var lookUp = new PictureLookUp(picture);
+				AppDelegate.PushViewLikePresentView(lookUp);
 			};
 
 			InstagramPhotos.Add(pictureButton);
 		}
 
 		private void Fill (){
-			int x = 3; float y = 1;
+			int x = 1; float y = 1;
 			float lastBottom = 0;
 			foreach (var button in InstagramPhotos) {
-				button.Center = new CGPoint ((Frame.Width / 16) * x, (ButtonSize + 5) * y - ButtonSize / 2);
+				button.Center = new CGPoint ((Frame.Width / 6) * x, (ButtonSize + 1) * y - ButtonSize / 2);
 
-				x += 5;
+				x += 2;
 
-				if (x >= 16) {
-					x = 3;
+				if (x >= 6) {
+					x = 1;
 					y ++;
 				}
 

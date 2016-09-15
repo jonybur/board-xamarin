@@ -34,7 +34,15 @@ namespace Board.Schema
 			get { return "videos"; }
 		}
 
+		public Video (string id)
+		{
+			Id = id;
+		}
+
 		public string Description;
+
+		public string VideoUrl;
+		public string ImageUrl;
 
 		public Video() {
 			CreationDate = DateTime.Now;

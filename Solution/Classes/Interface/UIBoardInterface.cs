@@ -64,7 +64,7 @@ namespace Board.Interface
 
 			AutomaticallyAdjustsScrollViewInsets = false;
 
-			BTProgressHUD.Show();
+			//BTProgressHUD.Show();
 
 			InitializeLists ();
 
@@ -116,7 +116,7 @@ namespace Board.Interface
 
 				firstLoad = false;
 
-				BTProgressHUD.Dismiss ();
+				//BTProgressHUD.Dismiss ();
 			}
 
 			BoardScroll.SelectiveRendering ();

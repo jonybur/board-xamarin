@@ -280,44 +280,12 @@ namespace Board.Infrastructure
 			return false;
 		}
 
-		public static List<Content> GetTimeline(CLLocationCoordinate2D location){
-			string request = "https://" + AppDelegate.APIAddress + "/api/boards/timeline?latitude=" +
-			             location.Latitude.ToString (CultureInfo.InvariantCulture) + "&longitude=" + location.Longitude.ToString (CultureInfo.InvariantCulture) +
-			             "&authToken=" + AppDelegate.EncodedBoardToken;
-			string result = WebAPI.GetJsonSync (request);
+		public static async System.Threading.Tasks.Task<string> GetInstagramTimeline(){
+			string instagramTimeline = await WebAPI.GetJsonAsync ("http://api.goclubby.com:8092/default/_design/instagram/_view/timeline?connection_timeout=60000&descending=true&inclusive_end=true&limit=200&skip=0&stale=false");
 
-			if (result == "408" || result == "500") {
-				return new List<Content> ();
-			}
-
-			var jobject = JObject.Parse(result);
-
-			var datum = jobject ["data"];
-
-			var timeline = new List<Content> ();
-
-			foreach (var jsonContent in datum) {
-				switch (jsonContent ["Type"].ToString()) {
-				case "pictures":
-					timeline.Add (jsonContent.ToObject<Picture>());
-					break;
-				case "announcements":
-					timeline.Add (jsonContent.ToObject<Announcement>());
-					break;
-				case "videos":
-					timeline.Add (jsonContent.ToObject<Video>());
-					break;
-				case "polls":
-					timeline.Add (jsonContent.ToObject<Poll>());
-					break;
-				case "events":
-					timeline.Add (jsonContent.ToObject<BoardEvent>());
-					break;
-				}
-			}
-
-			return timeline;
+			return instagramTimeline;
 		}
+
 
 		public static MagazineResponse GetMagazine(CLLocationCoordinate2D location){
 
@@ -489,6 +457,12 @@ namespace Board.Infrastructure
 			return url;
 		}
 
+		public static async System.Threading.Tasks.Task<InstagramPageResponse> GetInstagramPage(string instagramId){
+			string result = await WebAPI.GetJsonAsync("https://www.instagram.com/"+instagramId+"/media/");
+
+			return JsonConvert.DeserializeObject<InstagramPageResponse> (result);
+		}
+
 		public static string UploadToAmazon(NSUrl localnsurl, string mime = "video/mp4"){
 			GetAmazonS3Ticket (mime);
 
@@ -594,6 +568,74 @@ namespace Board.Infrastructure
 			Console.WriteLine ("Deserializing Boards...");
 			var response = BoardResponse.Deserialize (result);
 
+			foreach (var data in response.data) {
+				switch (data.uuid) {
+				case "1068797e-87fb-4b08-8897-1dcc1d1e9915":
+					data.instagramID = "nantucketsurfing";
+					break;
+				case "35061938-95f4-484e-93ed-e67fdb4c3eaf":
+					data.instagramID = "pipizzeria";
+					break;
+				case "33ec06f2-ea78-4a71-9a9d-bfd063de1a45":
+					data.instagramID = "ciscobrewers";
+					break;
+				case "1b0ea66a-915c-4ed7-b2ae-cc7948441fc6":
+					data.instagramID = "ack_surf_school";
+					break;
+				case "206f7384-eec9-42b0-bf38-96c39c32d497":
+					data.instagramID = "lolaburgernantucket";
+					break;
+				case "84d257a6-34ae-421e-b887-56fc62744cf5":
+					data.instagramID = "theboxnantucket";
+					break;
+				case "8b4149b9-97c2-443f-97d4-fcef0e7d57cc":
+					data.instagramID = "atlasnantucket";
+					break;
+				case "6607a6ce-56f2-4db9-8d49-44178f3b1844":
+					data.instagramID = "nantucketfilmfestival";
+					break;
+				case "c3c25e75-7452-42de-ab8c-7dcbf3b09d02":
+					data.instagramID = "crunantucket";
+					break;
+				case "df39c3a8-3dc4-48aa-be6b-f9cc6a23b96d":
+					data.instagramID = "ackcoffee";
+					break;
+				case "2d2b0c06-ad84-42e4-b6cc-c93d8683b2f5":
+					data.instagramID = "lemonpressnantucket";
+					break;
+				case "62e04951-38ce-48b1-8850-01cc28f19c92":
+					data.instagramID = "stubbysnantucket";
+					break;
+				case "b5dedd56-ebd8-4f10-8e8e-cb2f61c29478":
+					data.instagramID = "nativmade";
+					break;
+				case "042a6722-f9e9-4a28-a959-a04f2b4eee11":
+					data.instagramID = "station21nantucket";
+					break;
+				case "d27a704c-2980-4440-b585-ce3636ea2cc0":
+					data.instagramID = "ventunorestaurant";
+					break;
+				case "92cbb05c-a3aa-4789-b98f-2f58f045929f":
+					data.instagramID = "currentvintagenantucket";
+					break;
+				case "6db9fbb1-580b-43e8-a6d0-e486c6bc2218":
+					data.instagramID = "lola41nantucket";
+					break;
+				case "dc6896f2-a854-4f68-bf1a-58d59f430edb":
+					data.instagramID = "samuelowen";
+					break;
+				case "efc6ea50-21fe-481b-8117-44e256357400":
+					data.instagramID = "sailnantucket";
+					break;
+				case "4e7cf4fe-0bb2-4e9d-87f3-98af2ac4d451":
+					data.instagramID = "nantucketgazebo";
+					break;
+				case "bc5c9a3f-c2dc-4282-ac90-db3dc2e00700":
+					data.instagramID = "straightwharf";
+					break;
+				}
+			}
+
 			Console.WriteLine ("Generating Board List...");
 			var boards = GenerateBoardListFromBoardResponse (response);
 
@@ -662,6 +704,7 @@ namespace Board.Infrastructure
 
 			// finishes compiling board
 			board.Name = datum.name;
+			board.InstagramId = datum.instagramID;
 			board.About = datum.about;
 			board.LogoUrl = datum.logoURL;
 			board.CoverImageUrl = datum.coverURL;

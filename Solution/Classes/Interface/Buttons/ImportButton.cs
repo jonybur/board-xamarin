@@ -19,14 +19,14 @@ namespace Board.Interface.Buttons
 
 			eventHandlers.Add ((sender, e) => {
 				if (UIBoardInterface.board.FacebookId != null) {
-					var importScreen = new AlbumsScreen();
-					AppDelegate.PushViewLikePresentView (importScreen);
+					//var importScreen = new AlbumsScreen();
+					//AppDelegate.PushViewLikePresentView (importScreen);
 				} else { 
 					UIAlertController alert = UIAlertController.Create("Facebook Page Importer", null, UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 					alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, delegate {
-						var importScreen = new AlbumsScreen(alert.TextFields[0].Text);
-						AppDelegate.PushViewLikePresentView (importScreen);
+						//var importScreen = new AlbumsScreen(alert.TextFields[0].Text);
+						//AppDelegate.PushViewLikePresentView (importScreen);
 					}));
 
 					alert.AddTextField(delegate(UITextField obj) {

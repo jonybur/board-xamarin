@@ -3,6 +3,7 @@ using CoreAnimation;
 using Haneke;
 using UIKit;
 using Foundation;
+using Board.Infrastructure;
 
 namespace Board.Screens
 {
@@ -82,7 +83,7 @@ namespace Board.Screens
 				// First launch
 				NSUserDefaults.StandardUserDefaults.SetBool (true, key);
 				defaults.Synchronize ();
-				BigTed.BTProgressHUD.Show ("Setting up Board\nfor first time use...");
+				BigTed.BTProgressHUD.Show ("Welcome to Board\nSetting up the app for first time use\nThis might take a moment");
 			} else { 
 				BigTed.BTProgressHUD.Show("Loading Nantucket...");
 			}

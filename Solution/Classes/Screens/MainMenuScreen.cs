@@ -144,21 +144,16 @@ namespace Board.Screens
 		public override void ViewDidDisappear(bool animated)
 		{
 			// unsuscribe from observers, gesture recgonizers, events
-			map.RemoveObserver (this, new NSString ("myLocation"));
+			try{
+				map.RemoveObserver (this, new NSString ("myLocation"));
+			}catch{ }
 
 			if (ContentDisplay != null) {
 				ContentDisplay.UnsuscribeToEvents ();
 			}
 
-			foreach (Marker mark in ListMapMarkers) {
-				mark.Dispose ();
-			}
-
-			MemoryUtility.ReleaseUIViewWithChildren (map);
-			ListMapMarkers = null;
 			Banner.UnsuscribeToEvents ();
 
-			MemoryUtility.ReleaseUIViewWithChildren (View);
 			GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
 		}
 
@@ -224,13 +219,16 @@ namespace Board.Screens
 			}
 		}
 
-		private void LoadContent()
+		private async void LoadContent()
 		{
 			ScrollView.BackgroundColor = UIColor.White;
 
 			if (FetchedBoards.BoardList == null || FetchedBoards.BoardList.Count == 0 || CommonUtils.DistanceBetweenCoordinates (FetchedBoards.Location, AppDelegate.UserLocation) > 1) {
 				Console.WriteLine ("Updates BoardList");
 				FetchedBoards.Update ();
+
+				// generates pages
+				await UIMagazine.GeneratePages (FetchedBoards.BoardList);
 			}
 
 			if (FetchedBoards.BoardList.Count > 0) {
@@ -241,27 +239,27 @@ namespace Board.Screens
 				switch (LastScreenStatus.CurrentScreen) {
 				case SubScreens.Timeline:
 					LowerButtons.ListButtons [0].SetFullImage ();
-					ContentDisplay = Magazine.Pages [0].ContentDisplay;
+					ContentDisplay = UIMagazine.Pages [0];
 					ContentDisplay.SelectiveRendering (ScrollView.ContentOffset);
 					break;
 				case SubScreens.Featured:
 					LowerButtons.ListButtons [1].SetFullImage ();
-					ContentDisplay = Magazine.Pages [1].ContentDisplay;
+					ContentDisplay = UIMagazine.Pages [1];
 					ContentDisplay.SelectiveRendering (ScrollView.ContentOffset);
 					break;
 				case SubScreens.Calendar:
 					LowerButtons.ListButtons [2].SetFullImage ();
-					ContentDisplay = Magazine.Pages [2].ContentDisplay;
+					ContentDisplay = UIMagazine.Pages [2];
 					ContentDisplay.SelectiveRendering (ScrollView.ContentOffset);
 					break;
 				case SubScreens.Directory:
 					LowerButtons.ListButtons [3].SetFullImage ();
-					ContentDisplay = Magazine.Pages [2].ContentDisplay;
+					ContentDisplay = UIMagazine.Pages [2];
 					((UIThumbsContentDisplay)ContentDisplay).SelectiveThumbsRendering (ScrollView.ContentOffset);
 					break;
 				case SubScreens.Map:
 					LowerButtons.ListButtons [4].SetFullImage ();
-					ContentDisplay = Magazine.Pages [0].ContentDisplay;
+					ContentDisplay = UIMagazine.Pages [0];
 					ShowMap ();
 					break;
 				}
@@ -310,7 +308,7 @@ namespace Board.Screens
 						Banner.Frame = new CGRect(Banner.Frame.X, 0, Banner.Frame.Width, Banner.Frame.Height);
 
 					} else if (ScrollView.ContentOffset.Y < ScrollView.ContentSize.Height - AppDelegate.ScreenHeight) {
-						
+
 						var diff = previousOffset - ScrollView.ContentOffset.Y;
 
 						if (Banner.Frame.Y + diff > 0){
@@ -320,18 +318,26 @@ namespace Board.Screens
 						} else {
 							Banner.Frame = new CGRect(Banner.Frame.X, Banner.Frame.Y + diff, Banner.Frame.Width, Banner.Frame.Height);
 						}
+
 					}
 
-					if (previousOffset < ScrollView.ContentOffset.Y) { 
-						direction = ScrollViewDirection.Down;
-					}else{
-						direction = ScrollViewDirection.Up;
+					if (ContentDisplay is UITimelineContentDisplay){
+
+						if ((ScrollView.ContentOffset.Y + AppDelegate.ScreenHeight) >= ScrollView.ContentSize.Height){
+
+							((UITimelineContentDisplay)ContentDisplay).FillMoreTimeline();
+							ScrollView.ContentSize = new CGSize (AppDelegate.ScreenWidth, ContentDisplay.Frame.Bottom);
+
+						}
+
+						((UITimelineContentDisplay)ContentDisplay).MuteVideos((float)ScrollView.ContentOffset.Y);
 					}
+
+					direction = previousOffset < ScrollView.ContentOffset.Y ? ScrollViewDirection.Down : ScrollViewDirection.Up;
 
 					previousOffset = (float)ScrollView.ContentOffset.Y;
 
 				};
-
 			}
 		}
 
@@ -340,14 +346,9 @@ namespace Board.Screens
 			Banner = new UIMenuBanner ("", "menu_left");
 			Banner.ChangeTitle ("Board", AppDelegate.Narwhal26);
 
-			bool taps = false;
 			var tap = new UITapGestureRecognizer (tg => {
 				if (tg.LocationInView(this.View).X < AppDelegate.ScreenWidth / 4){
-					if (!taps){
-						taps = true;
-						Facebook.FacebookAutoUpdater.UpdateAllBoards(FetchedBoards.BoardList);
-					}
-					//AppDelegate.containerScreen.BringSideMenuUp("main");
+					AppDelegate.containerScreen.BringSideMenuUp("main");
 				}
 			});
 
@@ -371,8 +372,7 @@ namespace Board.Screens
 			map.InfoTapped += (sender, e) => {
 				if (!mapInfoTapped) {
 					var board = FetchedBoards.BoardList.Find(t => t.Id == ((NSString)e.Marker.UserData).ToString());
-					AppDelegate.BoardInterface = new UIBoardInterface (board);
-					AppDelegate.NavigationController.PushViewController (AppDelegate.BoardInterface, true);
+					AppDelegate.OpenBoard(board);
 					mapInfoTapped = true;
 				}
 			};
@@ -413,14 +413,17 @@ namespace Board.Screens
 					}
 				}
 
-				((UIThumbsContentDisplay)newDisplay).SelectiveThumbsRendering (ScrollView.ContentOffset);
+				((UIThumbsContentDisplay)newDisplay).ForceSelectiveRendering (ScrollView.ContentOffset);
 				LastScreenStatus.CurrentScreen = SubScreens.Directory;
+
 			} else if (newDisplay is UICarouselContentDisplay) {
 				LastScreenStatus.CurrentScreen = SubScreens.Featured;
-				newDisplay.SelectiveRendering (ScrollView.ContentOffset);
+				newDisplay.ForceSelectiveRendering (ScrollView.ContentOffset);
+
 			} else if (newDisplay is UITimelineContentDisplay) {
 				LastScreenStatus.CurrentScreen = SubScreens.Timeline;
-				newDisplay.SelectiveRendering (ScrollView.ContentOffset);
+				newDisplay.ForceSelectiveRendering (ScrollView.ContentOffset);
+
 			}
 			ContentDisplay = newDisplay;
 
@@ -437,8 +440,8 @@ namespace Board.Screens
 			Banner.AnimateShow();
 		} 
 
-		public void ScrollsUp(){
-			ScrollView.SetContentOffset (new CGPoint (0, 0), true);
+		public void ScrollsUp(bool animated){
+			ScrollView.SetContentOffset (new CGPoint (0, 0), animated);
 		}
 
 		// map button
