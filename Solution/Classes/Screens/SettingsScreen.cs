@@ -102,7 +102,7 @@ namespace Board.Screens
 
 				LoadFBButton ((float)licensesButton.Frame.Bottom + 50);
 
-				AddSubviews(flagView, boardVersionLabel, aboutLabel, creditsButton, legalLabel, privacyButton, termsButton, licensesButton, LogOutButton);
+				AddSubviews (flagView, boardVersionLabel, aboutLabel, creditsButton, legalLabel, privacyButton, termsButton, licensesButton);//, LogOutButton);
 
 				ContentSize = new CGSize(AppDelegate.ScreenWidth, LogOutButton.Frame.Bottom + UIActionButton.Height * 2);
 			}

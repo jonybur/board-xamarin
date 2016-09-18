@@ -77,7 +77,7 @@ namespace Board.Screens
 			emailLabel.Frame = new CGRect (0, 0, emailView.Frame.Width, 0);
 			emailLabel.Font = UIFont.SystemFontOfSize (14, UIFontWeight.Light);
 			emailLabel.TextColor = UIColor.White;
-			emailLabel.Text = "or Log in with Email";
+			emailLabel.Text = "Log in with Email";
 			emailLabel.TextAlignment = UITextAlignment.Center;
 			emailLabel.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 
@@ -117,7 +117,7 @@ namespace Board.Screens
 			// Handle actions once the user is logged out
 			logInButton.LoggedOut += (sender, e) => CloudController.LogOut ();
 
-			View.AddSubview (logInButton);
+			//View.AddSubview (logInButton);
 		}
 
 		private void LoadWarning (){
